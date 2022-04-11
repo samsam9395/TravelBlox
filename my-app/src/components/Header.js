@@ -10,6 +10,8 @@ const Wrapper = styled.div`
   width: 100%;
   position: fixed;
   top: 0;
+  background-color: white;
+  padding: 0 24px;
 `;
 
 const NavLink = styled.div`
@@ -30,6 +32,7 @@ const Logo = styled.div`
 const NavLinkWrapper = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 30px;
 `;
 function Header() {
   return (

@@ -7,15 +7,18 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import AddTimeBlock from './pages/AddTimeBlock';
 
 function App() {
   return (
     <>
       <Header />
-      {/* <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes> */}
-      <LandingPage />
+      <Routes>
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/add-time-block" element={<AddTimeBlock />} />
+        <Route path="/landing" element={<LandingPage />} />
+      </Routes>
+
       <Footer />
     </>
   );
