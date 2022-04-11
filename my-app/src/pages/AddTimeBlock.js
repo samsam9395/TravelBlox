@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import {
   InputLabel,
   TextField,
@@ -14,11 +16,12 @@ import { async } from '@firebase/util';
 
 const BlackWrapper = styled.div`
   position: fixed;
-  background: #00000050;
+  background: rgba(0, 0, 0, 0.64);
   width: 100%;
   height: 100vh;
   top: 0;
   left: 0;
+  z-index: 10;
 `;
 
 const PopBox = styled.div`
@@ -65,65 +68,69 @@ function AddTimeBlock() {
   }, []);
 
   return (
-    <BlackWrapper>
-      <PopBox>
-        <DeleteBtn aria-label="delete">
-          <DeleteIcon />
-        </DeleteBtn>
-        <TextField
-          sx={{ m: 1, minWidth: 80 }}
-          size="small"
-          label="Title"
-          variant="outlined"
-          value={blockTitle}
-          onChange={(e) => {
-            setBlockTitle(e.target.value);
-          }}
-        />
-        <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-          <InputLabel id="select-country">County</InputLabel>
-          <Select
-            labelId="select-country"
-            value={country}
-            label="County"
+    <>
+      <Header />
+      <BlackWrapper>
+        <PopBox>
+          <DeleteBtn aria-label="delete">
+            <DeleteIcon />
+          </DeleteBtn>
+          <TextField
+            sx={{ m: 1, minWidth: 80 }}
+            size="small"
+            label="Title"
+            variant="outlined"
+            value={blockTitle}
             onChange={(e) => {
-              setCountry(e.target.value);
-            }}>
-            {countryList.map((country, index) => {
-              return (
-                <MenuItem value={country.name.common} key={index}>
-                  {country.flag} {country.name.common}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-        <TextField
-          sx={{ m: 1, minWidth: 80 }}
-          size="small"
-          label="Address"
-          variant="outlined"
-          value={address}
-          onChange={(e) => {
-            setAddress(e.target.value);
-          }}
-        />
-        <TextField
-          sx={{ m: 1, minWidth: 8, minHeight: 120 }}
-          multiline
-          size="small"
-          label="Description"
-          variant="outlined"
-          value={description}
-          rows={4}
-          helperText="Please enter description for this time block."
-          onChange={(e) => {
-            setDescription(e.target.value);
-          }}
-        />
-        <Button variant="contained">Submit</Button>
-      </PopBox>
-    </BlackWrapper>
+              setBlockTitle(e.target.value);
+            }}
+          />
+          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
+            <InputLabel id="select-country">County</InputLabel>
+            <Select
+              labelId="select-country"
+              value={country}
+              label="County"
+              onChange={(e) => {
+                setCountry(e.target.value);
+              }}>
+              {countryList.map((country, index) => {
+                return (
+                  <MenuItem value={country.name.common} key={index}>
+                    {country.flag} {country.name.common}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <TextField
+            sx={{ m: 1, minWidth: 80 }}
+            size="small"
+            label="Address"
+            variant="outlined"
+            value={address}
+            onChange={(e) => {
+              setAddress(e.target.value);
+            }}
+          />
+          <TextField
+            sx={{ m: 1, minWidth: 8, minHeight: 120 }}
+            multiline
+            size="small"
+            label="Description"
+            variant="outlined"
+            value={description}
+            rows={4}
+            helperText="Please enter description for this time block."
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+          />
+          <Button variant="contained">Submit</Button>
+        </PopBox>
+      </BlackWrapper>
+      <Footer />
+    </>
   );
 }
 
