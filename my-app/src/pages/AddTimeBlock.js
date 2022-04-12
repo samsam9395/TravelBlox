@@ -12,6 +12,7 @@ import {
 import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
+import DateTimeSelector from '../components/DateTimeSelector';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -26,7 +27,7 @@ const BlackWrapper = styled.div`
 const PopBox = styled.div`
   position: relative;
   width: 40vw;
-  height: 60%;
+  height: 70%;
   margin: 0 auto;
   background-color: white;
   margin-top: calc(100vh - 85vh - 20px);
@@ -54,9 +55,21 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
+const FormsContainer = styled.div`
+  flex-direction: column;
+  display: flex;
+  margin: 20px 0 40px 0;
+`;
+
 const db = firebaseDB();
 
-async function addToDataBase(blockTitle, description) {
+async function addToDataBase(
+  blockTitle,
+  description,
+  startTimeValue,
+  endTimeValue,
+  address
+) {
   // Create an initial document to update.
   const timeBlockRef = collection(
     db,
@@ -65,22 +78,22 @@ async function addToDataBase(blockTitle, description) {
     'time_blocks_test'
   );
 
-  console.log(blockTitle);
-  console.log(description);
-
   await addDoc(timeBlockRef, {
-    testTitle: 'Seoul 3 Days',
     title: blockTitle,
     text: description,
+    start: startTimeValue,
+    end: endTimeValue,
+    address: address,
   });
 }
 
 function AddTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
-  const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
+  const [startTimeValue, setStartTimeValue] = useState(new Date());
+  const [endTimeValue, setEndTimeValue] = useState(new Date());
 
   useEffect(async () => {
     const list = await (
@@ -105,66 +118,64 @@ function AddTimeBlock(props) {
               <Close />
             </CloseBtn>
           </ButtonContainer>
-          <TextField
-            sx={{ m: 1, minWidth: 80 }}
-            size="small"
-            label="Title"
-            variant="outlined"
-            value={blockTitle}
-            onChange={(e) => {
-              setBlockTitle(e.target.value);
-            }}
-          />
-          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-            <InputLabel id="select-country">County</InputLabel>
-            <Select
-              labelId="select-country"
-              value={country}
-              label="County"
+          <FormsContainer>
+            <TextField
+              required
+              sx={{ m: 1, minWidth: 80 }}
+              size="small"
+              label="Title"
+              variant="outlined"
+              value={blockTitle}
               onChange={(e) => {
-                setCountry(e.target.value);
-              }}>
-              {countryList.map((country, index) => {
-                return (
-                  <MenuItem value={country.name.common} key={index}>
-                    {country.flag} {country.name.common}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-          <TextField
-            sx={{ m: 1, minWidth: 80 }}
-            size="small"
-            label="Address"
-            variant="outlined"
-            value={address}
-            onChange={(e) => {
-              setAddress(e.target.value);
-            }}
-          />
-          <TextField
-            sx={{ m: 1, minWidth: 8, minHeight: 120 }}
-            multiline
-            size="small"
-            label="Description"
-            variant="outlined"
-            value={description}
-            rows={4}
-            helperText="Please enter description for this time block."
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-          />
+                setBlockTitle(e.target.value);
+              }}
+            />
+            <DateTimeSelector
+              setStartTimeValue={setStartTimeValue}
+              startTimeValue={startTimeValue}
+              setEndTimeValue={setEndTimeValue}
+              endTimeValue={endTimeValue}
+            />
+            <TextField
+              required
+              sx={{ m: 1, minWidth: 80 }}
+              size="small"
+              label="Address"
+              variant="outlined"
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+              }}
+            />
+            <TextField
+              sx={{ m: 1, minWidth: 8, minHeight: 120 }}
+              multiline
+              size="small"
+              label="Description"
+              variant="outlined"
+              value={description}
+              rows={4}
+              helperText="Please enter description for this time block."
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+            />
+          </FormsContainer>
           <Button
             variant="contained"
             onClick={(e) => {
-              if (blockTitle && address && description) {
-                addToDataBase(blockTitle, description);
+              if (blockTitle && address && startTimeValue && endTimeValue) {
+                addToDataBase(
+                  blockTitle,
+                  description,
+                  startTimeValue,
+                  endTimeValue,
+                  address
+                );
                 props.setShowPopUp(false);
                 alert('Successfully added!');
               } else {
-                alert('Please fill in all the inputs!');
+                alert('Please fill in all the requirements!');
               }
             }}>
             Submit

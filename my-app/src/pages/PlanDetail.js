@@ -14,8 +14,6 @@ import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
 import AddTimeBlock from './AddTimeBlock';
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
 import {
   doc,
   getDoc,
@@ -23,6 +21,7 @@ import {
   collectionGroup,
   query,
   where,
+  onSnapshot,
   collection,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
@@ -59,7 +58,6 @@ function PlanDetail() {
   const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
   const [showPopUp, setShowPopUp] = useState(false);
-  const [planDetail, setPlanDetail] = useState({});
   const [myEvents, setMyEvents] = useState([]);
 
   useEffect(async () => {
@@ -72,25 +70,31 @@ function PlanDetail() {
   useEffect(async () => {
     const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
     const docSnap = await getDoc(planRef);
+    setPlanTitle(docSnap.data().title);
+    setCountry(docSnap.data().country);
+  }, []);
+
+  useEffect(async () => {
     const blocksRef = collection(
       db,
       'plan101',
       'zqZZcY8RO85mFVmtHbVI',
-      'time-blocks'
+      'time_blocks_test'
     );
     const timeSnap = await getDocs(blocksRef);
+    onSnapshot(blocksRef, (doc) => {
+      const timeSnaphotArray = doc.docs.map((d) => d.data());
 
-    const timeBlockArray = timeSnap.docs.map((d) => d.data());
-
-    timeBlockArray.forEach((timeBlock) => {
-      setMyEvents((oldArray) => [
-        ...oldArray,
-        {
-          start: new Date(timeBlock.start_time.seconds * 1000),
-          end: new Date(timeBlock.end_time.seconds * 1000),
-          title: timeBlock.title,
-        },
-      ]);
+      timeSnaphotArray.forEach((timeBlock) => {
+        setMyEvents((oldArray) => [
+          ...oldArray,
+          {
+            start: new Date(timeBlock.start.seconds * 1000),
+            end: new Date(timeBlock.end.seconds * 1000),
+            title: timeBlock.title,
+          },
+        ]);
+      });
     });
   }, []);
 

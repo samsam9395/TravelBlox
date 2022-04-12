@@ -50,16 +50,16 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
 
   const handleSelectEvent = useCallback((event) => console.log(event), []);
 
-  //create event
-  const handleSelectSlot = useCallback(
-    ({ start, end }) => {
-      const title = window.prompt('New Event name');
-      if (title) {
-        props.setMyEvents((prev) => [...prev, { start, end, title }]);
-      }
-    },
-    [props.setMyEvents]
-  );
+  //   //create event
+  //   const handleSelectSlot = useCallback(
+  //     ({ start, end }) => {
+  //       const title = window.prompt('New Event name');
+  //       if (title) {
+  //         props.setMyEvents((prev) => [...prev, { start, end, title }]);
+  //       }
+  //     },
+  //     [props.setMyEvents]
+  //   );
 
   console.log(props.myEvents);
 
@@ -73,7 +73,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       localizer={localizer}
       events={props.myEvents}
       onSelectEvent={handleSelectEvent}
-      onSelectSlot={handleSelectSlot}
+      //   onSelectSlot={handleSelectSlot}
       onEventDrop={moveEvent}
       onEventResize={resizeEvent}
       scrollToTime={scrollToTime}
