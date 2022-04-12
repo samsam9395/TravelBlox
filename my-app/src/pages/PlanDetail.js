@@ -11,6 +11,8 @@ import {
   Box,
 } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
+import './planDetail.scss';
+import PlanCalendar from './Calendar';
 
 const Wrapper = styled.div`
   padding: 50px;
@@ -104,7 +106,10 @@ function PlanDetail() {
           </label>
         </Box>
       </TopContainer>
-      <CalendarContainer></CalendarContainer>
+      <CalendarContainer>
+        <PlanCalendar />
+      </CalendarContainer>
+      <Button variant="contained">Save</Button>
     </Wrapper>
   );
 }
