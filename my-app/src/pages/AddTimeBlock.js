@@ -12,7 +12,6 @@ import {
   IconButton,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { async } from '@firebase/util';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -38,12 +37,6 @@ const PopBox = styled.div`
 
 const BlockWrapper = styled.div`
   display: flex;
-`;
-
-const BlockTitle = styled.input`
-  font-size: 16px;
-  padding: 0 10px;
-  margin-left: 10px;
 `;
 
 const DeleteBtn = styled(IconButton)`

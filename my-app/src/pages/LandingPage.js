@@ -38,8 +38,10 @@ function LandingPage() {
 
   return (
     <>
+      <Header />
       <MainImage src={mainImage} />
       <Login />
+      <Footer />
     </>
   );
 }
