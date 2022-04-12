@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import {
   InputLabel,
   TextField,
@@ -11,7 +9,9 @@ import {
   Select,
   IconButton,
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Delete, Close } from '@mui/icons-material';
+import firebaseDB from '../utils/firebaseConfig';
+import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -35,10 +35,6 @@ const PopBox = styled.div`
   flex-direction: column;
 `;
 
-const BlockWrapper = styled.div`
-  display: flex;
-`;
-
 const DeleteBtn = styled(IconButton)`
   position: relative;
   top: 0;
@@ -46,7 +42,40 @@ const DeleteBtn = styled(IconButton)`
   margin-left: auto;
 `;
 
-function AddTimeBlock() {
+const CloseBtn = styled(IconButton)`
+  position: relative;
+  top: 0;
+  width: 60px;
+  margin-left: auto;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const db = firebaseDB();
+
+async function addToDataBase(blockTitle, description) {
+  // Create an initial document to update.
+  const timeBlockRef = collection(
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test'
+  );
+
+  console.log(blockTitle);
+  console.log(description);
+
+  await addDoc(timeBlockRef, {
+    testTitle: 'Seoul 3 Days',
+    title: blockTitle,
+    text: description,
+  });
+}
+
+function AddTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
   const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
@@ -62,12 +91,20 @@ function AddTimeBlock() {
 
   return (
     <>
-      <Header />
       <BlackWrapper>
         <PopBox>
-          <DeleteBtn aria-label="delete">
-            <DeleteIcon />
-          </DeleteBtn>
+          <ButtonContainer>
+            <DeleteBtn aria-label="delete">
+              <Delete />
+            </DeleteBtn>
+            <CloseBtn
+              aria-label="close"
+              onClick={() => {
+                props.setShowPopUp(false);
+              }}>
+              <Close />
+            </CloseBtn>
+          </ButtonContainer>
           <TextField
             sx={{ m: 1, minWidth: 80 }}
             size="small"
@@ -119,10 +156,21 @@ function AddTimeBlock() {
               setDescription(e.target.value);
             }}
           />
-          <Button variant="contained">Submit</Button>
+          <Button
+            variant="contained"
+            onClick={(e) => {
+              if (blockTitle && address && description) {
+                addToDataBase(blockTitle, description);
+                props.setShowPopUp(false);
+                alert('Successfully added!');
+              } else {
+                alert('Please fill in all the inputs!');
+              }
+            }}>
+            Submit
+          </Button>
         </PopBox>
       </BlackWrapper>
-      <Footer />
     </>
   );
 }
