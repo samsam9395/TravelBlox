@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
 
 const BlackWrapper = styled.div`
@@ -84,20 +84,48 @@ async function addToDataBase(
   });
 }
 
+async function retreiveFromDataBase(id) {
+  const timeBlockRef = doc(
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test',
+    id
+  );
+  const timeBlockSnap = await getDoc(timeBlockRef);
+
+  if (timeBlockSnap.exists()) {
+    console.log('Document data:', timeBlockSnap.data());
+    const initialData = timeBlockSnap.data();
+    return initialData;
+  } else {
+    console.log('No such document!');
+  }
+}
+
 function AddTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
-  const [countryList, setCountryList] = useState([]);
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [startTimeValue, setStartTimeValue] = useState(new Date());
-  const [endTimeValue, setEndTimeValue] = useState(new Date());
+  const [startTimeValue, setStartTimeValue] = useState(
+    props.currentSelectTimeData.start || new Date()
+  );
+  const [endTimeValue, setEndTimeValue] = useState(
+    props.currentSelectTimeData.end || new Date()
+  );
+  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
 
-  useEffect(async () => {
-    const list = await (
-      await fetch('https://restcountries.com/v3.1/all')
-    ).json();
-    setCountryList(list.sort());
+  useEffect(() => {
+    if (props.showTimePopUp) {
+      setInitialTimeBlockData(retreiveFromDataBase(props.currentSelectTimeId));
+    }
   }, []);
+
+  useEffect(() => {
+    if (props.showTimePopUp) {
+      setBlockTitle(initialTimeBlockData.title);
+    }
+  }, [initialTimeBlockData]);
 
   return (
     <>
@@ -110,29 +138,51 @@ function AddTimeBlock(props) {
             <CloseBtn
               aria-label="close"
               onClick={() => {
-                props.setShowPopUp(false);
+                if (props.showPopUp) {
+                  props.setShowPopUp(false);
+                }
+                if (props.showTimePopUp) {
+                  props.setShowTimePopUp(false);
+                }
               }}>
               <Close />
             </CloseBtn>
           </ButtonContainer>
           <FormsContainer>
-            <TextField
-              required
-              sx={{ m: 1, minWidth: 80 }}
-              size="small"
-              label="Title"
-              variant="outlined"
-              value={blockTitle}
-              onChange={(e) => {
-                setBlockTitle(e.target.value);
-              }}
-            />
+            {props.showPopUp && (
+              <TextField
+                required
+                sx={{ m: 1, minWidth: 80 }}
+                size="small"
+                label="Title"
+                variant="outlined"
+                value={blockTitle}
+                onChange={(e) => {
+                  setBlockTitle(e.target.value);
+                }}
+              />
+            )}
+            {props.showTimePopUp && (
+              <TextField
+                required
+                sx={{ m: 1, minWidth: 80 }}
+                size="small"
+                label="Title"
+                variant="outlined"
+                value={initialTimeBlockData.title}
+                onChange={(e) => {
+                  setBlockTitle(e.target.value);
+                }}
+              />
+            )}
+
             <DateTimeSelector
               setStartTimeValue={setStartTimeValue}
               startTimeValue={startTimeValue}
               setEndTimeValue={setEndTimeValue}
               endTimeValue={endTimeValue}
             />
+
             <TextField
               required
               sx={{ m: 1, minWidth: 80 }}

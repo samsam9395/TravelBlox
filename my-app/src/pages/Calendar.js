@@ -30,9 +30,15 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     props.setMyEvents(newEvents);
   };
 
-  const handleSelectEvent = useCallback((event) => console.log(event), []);
-
-  console.log(props.myEvents);
+  const handleSelectEvent = useCallback(
+    (event) => (
+      props.setCurrentSelectTimeData(event),
+      props.setShowTimePopUp(true),
+      props.setCurrentSelectTimeId(event.id),
+      console.log(event.id)
+    ),
+    []
+  );
 
   return (
     <DnDCalendar
@@ -43,7 +49,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       defaultView={Views.MONTH}
       localizer={localizer}
       events={props.myEvents}
-      //   onSelectEvent={handleSelectEvent}
+      onSelectEvent={handleSelectEvent}
       //   onSelectSlot={handleSelectSlot}
       onEventDrop={moveEvent}
       //   onEventResize={resizeEvent}

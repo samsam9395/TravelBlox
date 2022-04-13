@@ -83,6 +83,9 @@ function PlanDetail() {
   const [countryList, setCountryList] = useState([]);
   const [showPopUp, setShowPopUp] = useState(false);
   const [myEvents, setMyEvents] = useState([]);
+  const [showTimePopUp, setShowTimePopUp] = useState(false);
+  const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
+  const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
 
   useEffect(async () => {
     const list = await (
@@ -132,7 +135,17 @@ function PlanDetail() {
 
   return (
     <Wrapper>
-      {showPopUp ? <AddTimeBlock setShowPopUp={setShowPopUp} /> : null}
+      {showPopUp ? (
+        <AddTimeBlock setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
+      ) : null}
+      {showTimePopUp ? (
+        <AddTimeBlock
+          setShowTimePopUp={setShowTimePopUp}
+          showTimePopUp={showTimePopUp}
+          currentSelectTimeData={currentSelectTimeData}
+          currentSelectTimeId={currentSelectTimeId}
+        />
+      ) : null}
       <TopContainer>
         <TitleSection>
           <TextField
@@ -187,7 +200,14 @@ function PlanDetail() {
         </Box>
       </TopContainer>
       <CalendarContainer>
-        <PlanCalendar setMyEvents={setMyEvents} myEvents={myEvents} />
+        <PlanCalendar
+          setMyEvents={setMyEvents}
+          myEvents={myEvents}
+          setShowTimePopUp={setShowTimePopUp}
+          showTimePopUp={showTimePopUp}
+          setCurrentSelectTimeData={setCurrentSelectTimeData}
+          setCurrentSelectTimeId={setCurrentSelectTimeId}
+        />
       </CalendarContainer>
       <Button
         variant="contained"
