@@ -14,6 +14,7 @@ import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
 import AddTimeBlock from './AddTimeBlock';
+import EditTimeBlock from './EditTimeBlock';
 import {
   doc,
   getDoc,
@@ -83,7 +84,7 @@ function PlanDetail() {
   const [countryList, setCountryList] = useState([]);
   const [showPopUp, setShowPopUp] = useState(false);
   const [myEvents, setMyEvents] = useState([]);
-  const [showTimePopUp, setShowTimePopUp] = useState(false);
+  const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
 
@@ -138,10 +139,10 @@ function PlanDetail() {
       {showPopUp ? (
         <AddTimeBlock setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
       ) : null}
-      {showTimePopUp ? (
-        <AddTimeBlock
-          setShowTimePopUp={setShowTimePopUp}
-          showTimePopUp={showTimePopUp}
+      {showEditPopUp ? (
+        <EditTimeBlock
+          showEditPopUp={showEditPopUp}
+          setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
         />
@@ -203,8 +204,7 @@ function PlanDetail() {
         <PlanCalendar
           setMyEvents={setMyEvents}
           myEvents={myEvents}
-          setShowTimePopUp={setShowTimePopUp}
-          showTimePopUp={showTimePopUp}
+          setShowEditPopUp={setShowEditPopUp}
           setCurrentSelectTimeData={setCurrentSelectTimeData}
           setCurrentSelectTimeId={setCurrentSelectTimeId}
         />

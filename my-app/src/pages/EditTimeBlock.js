@@ -84,13 +84,54 @@ async function addToDataBase(
   });
 }
 
-function AddTimeBlock(props) {
-  const [blockTitle, setBlockTitle] = useState('');
+async function retreiveFromDataBase(id) {
+  const timeBlockRef = doc(
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test',
+    id
+  );
+  const timeBlockSnap = await getDoc(timeBlockRef);
+
+  if (timeBlockSnap.exists()) {
+    // console.log('Document data:', timeBlockSnap.data());
+    console.log('retreived');
+    const initialData = timeBlockSnap.data();
+    console.log(initialData);
+    return initialData;
+  } else {
+    console.log('No such document!');
+  }
+}
+
+function EditTimeBlock(props) {
+  const [initialTimeBlockData, setInitialTimeBlockData] = useState(
+    retreiveFromDataBase(props.currentSelectTimeId)
+  );
+  const [blockTitle, setBlockTitle] = useState(initialTimeBlockData.title);
   const [address, setAddress] = useState('');
-  const [description, setDescription] = useState('');
-  const [startTimeValue, setStartTimeValue] = useState(Date());
-  const [endTimeValue, setEndTimeValue] = useState(Date());
-  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  const [description, setDescription] = useState(initialTimeBlockData.text);
+  const [startTimeValue, setStartTimeValue] = useState(
+    props.currentSelectTimeData.start
+  );
+  const [endTimeValue, setEndTimeValue] = useState(
+    props.currentSelectTimeData.end
+  );
+
+  //   console.log(retreiveFromDataBase(props.currentSelectTimeId));
+  console.log(initialTimeBlockData);
+  //   useEffect(() => {
+  //     setInitialTimeBlockData(retreiveFromDataBase(props.currentSelectTimeId));
+  //   }, []);
+
+  //   useEffect(() => {
+  //     setBlockTitle(initialTimeBlockData.title);
+  //   }, [initialTimeBlockData]);
+
+  useEffect(() => {
+    setDescription(initialTimeBlockData.text);
+  }, [initialTimeBlockData]);
 
   return (
     <>
@@ -103,29 +144,51 @@ function AddTimeBlock(props) {
             <CloseBtn
               aria-label="close"
               onClick={() => {
-                props.setShowPopUp(false);
+                if (props.showPopUp) {
+                  props.setShowPopUp(false);
+                }
+                if (props.showTimePopUp) {
+                  props.setShowTimePopUp(false);
+                }
               }}>
               <Close />
             </CloseBtn>
           </ButtonContainer>
           <FormsContainer>
-            <TextField
-              required
-              sx={{ m: 1, minWidth: 80 }}
-              size="small"
-              label="Title"
-              variant="outlined"
-              value={initialTimeBlockData.title}
-              onChange={(e) => {
-                setBlockTitle(e.target.value);
-              }}
-            />
+            {props.showPopUp && (
+              <TextField
+                required
+                sx={{ m: 1, minWidth: 80 }}
+                size="small"
+                label="Title"
+                variant="outlined"
+                value={blockTitle}
+                onChange={(e) => {
+                  setBlockTitle(e.target.value);
+                }}
+              />
+            )}
+            {props.showTimePopUp && (
+              <TextField
+                required
+                sx={{ m: 1, minWidth: 80 }}
+                size="small"
+                label="Title"
+                variant="outlined"
+                value={initialTimeBlockData.title}
+                onChange={(e) => {
+                  setBlockTitle(e.target.value);
+                }}
+              />
+            )}
+
             <DateTimeSelector
               setStartTimeValue={setStartTimeValue}
               startTimeValue={startTimeValue}
               setEndTimeValue={setEndTimeValue}
               endTimeValue={endTimeValue}
             />
+
             <TextField
               required
               sx={{ m: 1, minWidth: 80 }}
@@ -176,4 +239,4 @@ function AddTimeBlock(props) {
   );
 }
 
-export default AddTimeBlock;
+export default EditTimeBlock;
