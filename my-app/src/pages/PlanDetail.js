@@ -23,6 +23,9 @@ import {
   where,
   onSnapshot,
   collection,
+  setDoc,
+  writeBatch,
+  updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 
@@ -53,6 +56,27 @@ const Input = styled('input')({
   display: 'none',
 });
 
+async function saveToDataBase(myEvents) {
+  const batch = writeBatch(db);
+
+  myEvents.forEach((singleEvent) => {
+    const id = singleEvent.id;
+    let updateRef = doc(
+      db,
+      'plan101',
+      'zqZZcY8RO85mFVmtHbVI',
+      'time_blocks_test',
+      id
+    );
+    batch.update(updateRef, {
+      end: singleEvent.end,
+      start: singleEvent.start,
+    });
+  });
+
+  await batch.commit();
+}
+
 function PlanDetail() {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -75,14 +99,14 @@ function PlanDetail() {
   }, []);
 
   useEffect(async () => {
-    const blocksRef = collection(
+    const blocksListRef = collection(
       db,
       'plan101',
       'zqZZcY8RO85mFVmtHbVI',
       'time_blocks_test'
     );
 
-    onSnapshot(blocksRef, (doc) => {
+    onSnapshot(blocksListRef, (doc) => {
       doc.docChanges().forEach((change) => {
         if (change.type === 'added') {
           // console.log(change.doc.data());
@@ -97,40 +121,13 @@ function PlanDetail() {
           ]);
         }
         if (change.type === 'modified') {
-          console.log('Modified time: ', change.doc.data());
+          // console.log('Modified time: ', change.doc.data());
         }
         if (change.type === 'removed') {
-          console.log('Removed time: ', change.doc.data());
+          // console.log('Removed time: ', change.doc.data());
         }
       });
     });
-
-    //   const timeSnaphotArray = doc.docs.map((d) => d.data());
-    //   timeSnaphotArray.forEach((timeBlock) => {
-    //     setMyEvents((prev) => [
-    //       ...prev,
-    //       {
-    //         start: new Date(timeBlock.start.seconds * 1000),
-    //         end: new Date(timeBlock.end.seconds * 1000),
-    //         title: timeBlock.title,
-    //       },
-    //     ]);
-    //   });
-    // });
-
-    // onSnapshot(blocksRef, (doc) => {
-    //   const timeSnaphotArray = doc.docs.map((d) => d.data());
-    //   timeSnaphotArray.forEach((timeBlock) => {
-    //     setMyEvents((prev) => [
-    //       ...prev,
-    //       {
-    //         start: new Date(timeBlock.start.seconds * 1000),
-    //         end: new Date(timeBlock.end.seconds * 1000),
-    //         title: timeBlock.title,
-    //       },
-    //     ]);
-    //   });
-    // });
   }, []);
 
   return (
@@ -199,7 +196,9 @@ function PlanDetail() {
         }}>
         Add new event
       </Button>
-      <Button variant="contained">Save</Button>
+      <Button variant="contained" onClick={() => saveToDataBase(myEvents)}>
+        Save
+      </Button>
     </Wrapper>
   );
 }

@@ -22,7 +22,6 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
   );
 
   const moveEvent = ({ event, start, end }) => {
-    const thisEvent = event;
     const newEvents = props.myEvents.map((existingEvent) => {
       return existingEvent.id == event.id
         ? { ...existingEvent, start, end }
