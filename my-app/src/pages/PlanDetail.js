@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import {
   InputLabel,
@@ -71,7 +71,7 @@ function PlanDetail() {
     const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
     const docSnap = await getDoc(planRef);
     setPlanTitle(docSnap.data().title);
-    setCountry(docSnap.data().country);
+    // setCountry(docSnap.data().country);
   }, []);
 
   useEffect(async () => {
@@ -81,21 +81,56 @@ function PlanDetail() {
       'zqZZcY8RO85mFVmtHbVI',
       'time_blocks_test'
     );
-    const timeSnap = await getDocs(blocksRef);
-    onSnapshot(blocksRef, (doc) => {
-      const timeSnaphotArray = doc.docs.map((d) => d.data());
 
-      timeSnaphotArray.forEach((timeBlock) => {
-        setMyEvents((oldArray) => [
-          ...oldArray,
-          {
-            start: new Date(timeBlock.start.seconds * 1000),
-            end: new Date(timeBlock.end.seconds * 1000),
-            title: timeBlock.title,
-          },
-        ]);
+    onSnapshot(blocksRef, (doc) => {
+      doc.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          // console.log(change.doc.data());
+          setMyEvents((prev) => [
+            ...prev,
+            {
+              start: new Date(change.doc.data().start.seconds * 1000),
+              end: new Date(change.doc.data().end.seconds * 1000),
+              title: change.doc.data().title,
+              id: change.doc.data().id,
+            },
+          ]);
+        }
+        if (change.type === 'modified') {
+          console.log('Modified time: ', change.doc.data());
+        }
+        if (change.type === 'removed') {
+          console.log('Removed time: ', change.doc.data());
+        }
       });
     });
+
+    //   const timeSnaphotArray = doc.docs.map((d) => d.data());
+    //   timeSnaphotArray.forEach((timeBlock) => {
+    //     setMyEvents((prev) => [
+    //       ...prev,
+    //       {
+    //         start: new Date(timeBlock.start.seconds * 1000),
+    //         end: new Date(timeBlock.end.seconds * 1000),
+    //         title: timeBlock.title,
+    //       },
+    //     ]);
+    //   });
+    // });
+
+    // onSnapshot(blocksRef, (doc) => {
+    //   const timeSnaphotArray = doc.docs.map((d) => d.data());
+    //   timeSnaphotArray.forEach((timeBlock) => {
+    //     setMyEvents((prev) => [
+    //       ...prev,
+    //       {
+    //         start: new Date(timeBlock.start.seconds * 1000),
+    //         end: new Date(timeBlock.end.seconds * 1000),
+    //         title: timeBlock.title,
+    //       },
+    //     ]);
+    //   });
+    // });
   }, []);
 
   return (

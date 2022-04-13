@@ -70,20 +70,17 @@ async function addToDataBase(
   endTimeValue,
   address
 ) {
-  // Create an initial document to update.
-  const timeBlockRef = collection(
-    db,
-    'plan101',
-    'zqZZcY8RO85mFVmtHbVI',
-    'time_blocks_test'
+  const timeBlockRef = doc(
+    collection(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI', 'time_blocks_test')
   );
 
-  await addDoc(timeBlockRef, {
+  await setDoc(timeBlockRef, {
     title: blockTitle,
     text: description,
     start: startTimeValue,
     end: endTimeValue,
     address: address,
+    id: timeBlockRef.id,
   });
 }
 

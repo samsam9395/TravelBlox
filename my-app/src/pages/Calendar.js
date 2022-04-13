@@ -21,45 +21,17 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     []
   );
 
-  const moveEvent = useCallback(
-    ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
-      const { allDay } = event;
-      if (!allDay && droppedOnAllDaySlot) {
-        event.allDay = true;
-      }
-
-      props.setMyEvents((prev) => {
-        const existing = prev.find((ev) => ev.id === event.id) ?? {};
-        const filtered = prev.filter((ev) => ev.id !== event.id);
-        return [...filtered, { ...existing, start, end, allDay }];
-      });
-    },
-    [props.setMyEvents]
-  );
-
-  const resizeEvent = useCallback(
-    ({ event, start, end }) => {
-      props.setMyEvents((prev) => {
-        const existing = prev.find((ev) => ev.id === event.id) ?? {};
-        const filtered = prev.filter((ev) => ev.id !== event.id);
-        return [...filtered, { ...existing, start, end }];
-      });
-    },
-    [props.setMyEvents]
-  );
+  const moveEvent = ({ event, start, end }) => {
+    const thisEvent = event;
+    const newEvents = props.myEvents.map((existingEvent) => {
+      return existingEvent.id == event.id
+        ? { ...existingEvent, start, end }
+        : existingEvent;
+    });
+    props.setMyEvents(newEvents);
+  };
 
   const handleSelectEvent = useCallback((event) => console.log(event), []);
-
-  //   //create event
-  //   const handleSelectSlot = useCallback(
-  //     ({ start, end }) => {
-  //       const title = window.prompt('New Event name');
-  //       if (title) {
-  //         props.setMyEvents((prev) => [...prev, { start, end, title }]);
-  //       }
-  //     },
-  //     [props.setMyEvents]
-  //   );
 
   console.log(props.myEvents);
 
@@ -69,16 +41,17 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       endAccessor="end"
       dayLayoutAlgorithm={dayLayoutAlgorithm}
       defaultDate={moment().toDate()}
-      defaultView={Views.WEEK}
+      defaultView={Views.MONTH}
       localizer={localizer}
       events={props.myEvents}
-      onSelectEvent={handleSelectEvent}
+      //   onSelectEvent={handleSelectEvent}
       //   onSelectSlot={handleSelectSlot}
       onEventDrop={moveEvent}
-      onEventResize={resizeEvent}
+      //   onEventResize={resizeEvent}
       scrollToTime={scrollToTime}
       draggableAccessor={(event) => true}
       selectable
+      resizable
     />
   );
 }
@@ -87,4 +60,4 @@ PlanCalendar.propTypes = {
   dayLayoutAlgorithm: PropTypes.string,
 };
 
-export default PlanCalendar;
+export default React.memo(PlanCalendar);
