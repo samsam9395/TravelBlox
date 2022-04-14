@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-} from '@mui/material';
+import { TextField, Button, IconButton } from '@mui/material';
 import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
@@ -84,7 +76,7 @@ async function addToDataBase(
   });
 }
 
-async function retreiveFromDataBase(id) {
+async function retreiveFromDataBase(id, setDataReady, setInitialTimeBlockData) {
   const timeBlockRef = doc(
     db,
     'plan101',
@@ -95,10 +87,15 @@ async function retreiveFromDataBase(id) {
   const timeBlockSnap = await getDoc(timeBlockRef);
 
   if (timeBlockSnap.exists()) {
-    // console.log('Document data:', timeBlockSnap.data());
     console.log('retreived');
     const initialData = timeBlockSnap.data();
     console.log(initialData);
+    if (setInitialTimeBlockData) {
+      setInitialTimeBlockData(initialData);
+    }
+    if (setDataReady) {
+      setDataReady(true);
+    }
     return initialData;
   } else {
     console.log('No such document!');
@@ -106,31 +103,31 @@ async function retreiveFromDataBase(id) {
 }
 
 function EditTimeBlock(props) {
-  const [initialTimeBlockData, setInitialTimeBlockData] = useState(
-    retreiveFromDataBase(props.currentSelectTimeId)
-  );
-  const [blockTitle, setBlockTitle] = useState(initialTimeBlockData.title);
+  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  const [blockTitle, setBlockTitle] = useState('');
   const [address, setAddress] = useState('');
-  const [description, setDescription] = useState(initialTimeBlockData.text);
+  const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
     props.currentSelectTimeData.start
   );
   const [endTimeValue, setEndTimeValue] = useState(
     props.currentSelectTimeData.end
   );
+  const [dataReady, setDataReady] = useState(false);
 
-  //   console.log(retreiveFromDataBase(props.currentSelectTimeId));
-  console.log(initialTimeBlockData);
-  //   useEffect(() => {
-  //     setInitialTimeBlockData(retreiveFromDataBase(props.currentSelectTimeId));
-  //   }, []);
+  // console.log(initialTimeBlockData);
 
-  //   useEffect(() => {
-  //     setBlockTitle(initialTimeBlockData.title);
-  //   }, [initialTimeBlockData]);
+  useEffect(() => {
+    retreiveFromDataBase(
+      props.currentSelectTimeId,
+      setDataReady,
+      setInitialTimeBlockData
+    );
+  }, []);
 
   useEffect(() => {
     setDescription(initialTimeBlockData.text);
+    setBlockTitle(initialTimeBlockData.title);
   }, [initialTimeBlockData]);
 
   return (
@@ -144,44 +141,23 @@ function EditTimeBlock(props) {
             <CloseBtn
               aria-label="close"
               onClick={() => {
-                if (props.showPopUp) {
-                  props.setShowPopUp(false);
-                }
-                if (props.showTimePopUp) {
-                  props.setShowTimePopUp(false);
-                }
+                props.setShowEditPopUp(false);
               }}>
               <Close />
             </CloseBtn>
           </ButtonContainer>
           <FormsContainer>
-            {props.showPopUp && (
-              <TextField
-                required
-                sx={{ m: 1, minWidth: 80 }}
-                size="small"
-                label="Title"
-                variant="outlined"
-                value={blockTitle}
-                onChange={(e) => {
-                  setBlockTitle(e.target.value);
-                }}
-              />
-            )}
-            {props.showTimePopUp && (
-              <TextField
-                required
-                sx={{ m: 1, minWidth: 80 }}
-                size="small"
-                label="Title"
-                variant="outlined"
-                value={initialTimeBlockData.title}
-                onChange={(e) => {
-                  setBlockTitle(e.target.value);
-                }}
-              />
-            )}
-
+            <TextField
+              required
+              sx={{ m: 1, minWidth: 80 }}
+              size="small"
+              label="Title"
+              variant="outlined"
+              value={blockTitle}
+              onChange={(e) => {
+                setBlockTitle(e.target.value);
+              }}
+            />
             <DateTimeSelector
               setStartTimeValue={setStartTimeValue}
               startTimeValue={startTimeValue}
