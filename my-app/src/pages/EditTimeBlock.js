@@ -55,25 +55,36 @@ const FormsContainer = styled.div`
 
 const db = firebaseDB();
 
-async function addToDataBase(
+async function UpdateToDataBase(
   blockTitle,
   description,
   startTimeValue,
   endTimeValue,
-  address
+  address,
+  id
 ) {
   const timeBlockRef = doc(
-    collection(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI', 'time_blocks_test')
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test',
+    id
+  );
+  await setDoc(
+    timeBlockRef,
+    {
+      title: blockTitle,
+      text: description,
+      start: startTimeValue,
+      end: endTimeValue,
+      address: address,
+    },
+    {
+      merge: true,
+    }
   );
 
-  await setDoc(timeBlockRef, {
-    title: blockTitle,
-    text: description,
-    start: startTimeValue,
-    end: endTimeValue,
-    address: address,
-    id: timeBlockRef.id,
-  });
+  console.log('successfully post to firebase!');
 }
 
 async function retreiveFromDataBase(id, setDataReady, setInitialTimeBlockData) {
@@ -193,16 +204,17 @@ function EditTimeBlock(props) {
           <Button
             variant="contained"
             onClick={(e) => {
-              if (blockTitle && address && startTimeValue && endTimeValue) {
-                addToDataBase(
+              if (address && blockTitle && startTimeValue && endTimeValue) {
+                UpdateToDataBase(
                   blockTitle,
                   description,
                   startTimeValue,
                   endTimeValue,
-                  address
+                  address,
+                  props.currentSelectTimeId
                 );
-                props.setShowPopUp(false);
-                alert('Successfully added!');
+                props.setShowEditPopUp(false);
+                alert('Successfully updated!');
               } else {
                 alert('Please fill in all the requirements!');
               }
