@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { TextField, Button, IconButton } from '@mui/material';
 import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
-import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
 
 const BlackWrapper = styled.div`
@@ -113,20 +113,32 @@ async function retreiveFromDataBase(id, setDataReady, setInitialTimeBlockData) {
   }
 }
 
+async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
+  await deleteDoc(timeBlockRef);
+  alert(blockTitle + 'is deleted!');
+  setShowEditPopUp(false);
+}
+
 function EditTimeBlock(props) {
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
-    props.currentSelectTimeData.start
+    props.currentSelectTimeData.start || null
   );
   const [endTimeValue, setEndTimeValue] = useState(
-    props.currentSelectTimeData.end
+    props.currentSelectTimeData.end || null
   );
   const [dataReady, setDataReady] = useState(false);
 
-  // console.log(initialTimeBlockData);
+  const timeBlockRef = doc(
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test',
+    props.currentSelectTimeId
+  );
 
   useEffect(() => {
     retreiveFromDataBase(
@@ -139,6 +151,7 @@ function EditTimeBlock(props) {
   useEffect(() => {
     setDescription(initialTimeBlockData.text);
     setBlockTitle(initialTimeBlockData.title);
+    setAddress(initialTimeBlockData.address);
   }, [initialTimeBlockData]);
 
   return (
@@ -146,7 +159,15 @@ function EditTimeBlock(props) {
       <BlackWrapper>
         <PopBox>
           <ButtonContainer>
-            <DeleteBtn aria-label="delete">
+            <DeleteBtn
+              aria-label="delete"
+              onClick={() =>
+                deleteFromDataBase(
+                  timeBlockRef,
+                  blockTitle,
+                  props.setShowEditPopUp
+                )
+              }>
               <Delete />
             </DeleteBtn>
             <CloseBtn

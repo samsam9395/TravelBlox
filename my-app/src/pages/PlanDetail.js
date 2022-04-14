@@ -78,6 +78,18 @@ async function saveToDataBase(myEvents) {
   await batch.commit();
 }
 
+function DeleteBlockInMylist(prev, id) {
+  const indexOfObject = prev.findIndex((timeblock) => {
+    return timeblock.id === id;
+  });
+  console.log(prev);
+  console.log(indexOfObject);
+  // let updateList = [...prev].slice(indexOfObject, 1);
+  let updateList = prev.splice(indexOfObject, 1);
+  console.log(prev);
+  return prev;
+}
+
 function PlanDetail() {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -113,6 +125,7 @@ function PlanDetail() {
     onSnapshot(blocksListRef, (doc) => {
       doc.docChanges().forEach((change) => {
         if (change.type === 'added') {
+          // console.log(myEvents);
           // console.log(change.doc.data());
           setMyEvents((prev) => [
             ...prev,
@@ -125,14 +138,28 @@ function PlanDetail() {
           ]);
         }
         if (change.type === 'modified') {
-          // console.log('Modified time: ', change.doc.data());
+          console.log('Modified time: ', change.doc.data());
+          const id = change.doc.data().id;
+          setMyEvents((prev) => [
+            ...DeleteBlockInMylist(prev, id),
+            {
+              start: new Date(change.doc.data().start.seconds * 1000),
+              end: new Date(change.doc.data().end.seconds * 1000),
+              title: change.doc.data().title,
+              id: change.doc.data().id,
+            },
+          ]);
         }
         if (change.type === 'removed') {
-          // console.log('Removed time: ', change.doc.data());
+          console.log('Removed time: ', change.doc.data());
+          const id = change.doc.data().id;
+          setMyEvents((prev) => [...DeleteBlockInMylist(prev, id)]);
         }
       });
     });
   }, []);
+
+  // console.log(myEvents);
 
   return (
     <Wrapper>

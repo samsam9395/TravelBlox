@@ -35,7 +35,9 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       props.setCurrentSelectTimeData(event),
       props.setShowEditPopUp(true),
       props.setCurrentSelectTimeId(event.id),
-      console.log(event.id)
+      console.log(event.id),
+      console.log(props.showEditPopUp),
+      console.log(props.currentSelectTimeId)
     ),
     []
   );

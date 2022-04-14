@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
+import { Timestamp } from 'firebase/firestore';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
 
@@ -34,13 +35,6 @@ const PopBox = styled.div`
   padding: 20px 20px;
   display: flex;
   flex-direction: column;
-`;
-
-const DeleteBtn = styled(IconButton)`
-  position: relative;
-  top: 0;
-  width: 60px;
-  margin-left: auto;
 `;
 
 const CloseBtn = styled(IconButton)`
@@ -88,8 +82,8 @@ function AddTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [startTimeValue, setStartTimeValue] = useState(Date());
-  const [endTimeValue, setEndTimeValue] = useState(Date());
+  const [startTimeValue, setStartTimeValue] = useState(null);
+  const [endTimeValue, setEndTimeValue] = useState(null);
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
 
   return (
@@ -97,9 +91,6 @@ function AddTimeBlock(props) {
       <BlackWrapper>
         <PopBox>
           <ButtonContainer>
-            <DeleteBtn aria-label="delete">
-              <Delete />
-            </DeleteBtn>
             <CloseBtn
               aria-label="close"
               onClick={() => {
