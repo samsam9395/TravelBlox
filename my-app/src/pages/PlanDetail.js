@@ -57,7 +57,7 @@ const Input = styled('input')({
   display: 'none',
 });
 
-async function saveToDataBase(myEvents) {
+async function saveToDataBase(myEvents, planTitle, country) {
   const batch = writeBatch(db);
 
   myEvents.forEach((singleEvent) => {
@@ -73,6 +73,12 @@ async function saveToDataBase(myEvents) {
       end: singleEvent.end,
       start: singleEvent.start,
     });
+  });
+
+  const upperLevelUpdateRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
+  batch.update(upperLevelUpdateRef, {
+    title: planTitle,
+    country: country,
   });
 
   await batch.commit();
@@ -243,7 +249,9 @@ function PlanDetail() {
         }}>
         Add new event
       </Button>
-      <Button variant="contained" onClick={() => saveToDataBase(myEvents)}>
+      <Button
+        variant="contained"
+        onClick={() => saveToDataBase(myEvents, planTitle, country)}>
         Save
       </Button>
     </Wrapper>
