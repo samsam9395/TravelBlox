@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-} from '@mui/material';
+import { TextField, Button, IconButton } from '@mui/material';
 import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
-import { Timestamp } from 'firebase/firestore';
-import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
 
 const BlackWrapper = styled.div`
@@ -37,6 +28,13 @@ const PopBox = styled.div`
   flex-direction: column;
 `;
 
+const DeleteBtn = styled(IconButton)`
+  position: relative;
+  top: 0;
+  width: 60px;
+  margin-left: auto;
+`;
+
 const CloseBtn = styled(IconButton)`
   position: relative;
   top: 0;
@@ -57,44 +55,125 @@ const FormsContainer = styled.div`
 
 const db = firebaseDB();
 
-async function addToDataBase(
+async function UpdateToDataBase(
   blockTitle,
   description,
   startTimeValue,
   endTimeValue,
-  address
+  address,
+  id
 ) {
   const timeBlockRef = doc(
-    collection(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI', 'time_blocks_test')
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test',
+    id
+  );
+  await setDoc(
+    timeBlockRef,
+    {
+      title: blockTitle,
+      text: description,
+      start: startTimeValue,
+      end: endTimeValue,
+      address: address,
+    },
+    {
+      merge: true,
+    }
   );
 
-  await setDoc(timeBlockRef, {
-    title: blockTitle,
-    text: description,
-    start: startTimeValue,
-    end: endTimeValue,
-    address: address,
-    id: timeBlockRef.id,
-  });
+  console.log('successfully post to firebase!');
 }
 
-function AddTimeBlock(props) {
+async function retreiveFromDataBase(id, setDataReady, setInitialTimeBlockData) {
+  const timeBlockRef = doc(
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test',
+    id
+  );
+  const timeBlockSnap = await getDoc(timeBlockRef);
+
+  if (timeBlockSnap.exists()) {
+    console.log('retreived');
+    const initialData = timeBlockSnap.data();
+    console.log(initialData);
+    if (setInitialTimeBlockData) {
+      setInitialTimeBlockData(initialData);
+    }
+    if (setDataReady) {
+      setDataReady(true);
+    }
+    return initialData;
+  } else {
+    console.log('No such document!');
+  }
+}
+
+async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
+  await deleteDoc(timeBlockRef);
+  alert(blockTitle + 'is deleted!');
+  setShowEditPopUp(false);
+}
+
+function EditTimeBlock(props) {
+  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [startTimeValue, setStartTimeValue] = useState(null);
-  const [endTimeValue, setEndTimeValue] = useState(null);
-  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  const [startTimeValue, setStartTimeValue] = useState(
+    props.currentSelectTimeData.start || null
+  );
+  const [endTimeValue, setEndTimeValue] = useState(
+    props.currentSelectTimeData.end || null
+  );
+  const [dataReady, setDataReady] = useState(false);
+
+  const timeBlockRef = doc(
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test',
+    props.currentSelectTimeId
+  );
+
+  useEffect(() => {
+    retreiveFromDataBase(
+      props.currentSelectTimeId,
+      setDataReady,
+      setInitialTimeBlockData
+    );
+  }, []);
+
+  useEffect(() => {
+    setDescription(initialTimeBlockData.text);
+    setBlockTitle(initialTimeBlockData.title);
+    setAddress(initialTimeBlockData.address);
+  }, [initialTimeBlockData]);
 
   return (
     <>
       <BlackWrapper>
         <PopBox>
           <ButtonContainer>
+            <DeleteBtn
+              aria-label="delete"
+              onClick={() =>
+                deleteFromDataBase(
+                  timeBlockRef,
+                  blockTitle,
+                  props.setShowEditPopUp
+                )
+              }>
+              <Delete />
+            </DeleteBtn>
             <CloseBtn
               aria-label="close"
               onClick={() => {
-                props.setShowPopUp(false);
+                props.setShowEditPopUp(false);
               }}>
               <Close />
             </CloseBtn>
@@ -106,7 +185,7 @@ function AddTimeBlock(props) {
               size="small"
               label="Title"
               variant="outlined"
-              value={initialTimeBlockData.title}
+              value={blockTitle}
               onChange={(e) => {
                 setBlockTitle(e.target.value);
               }}
@@ -117,6 +196,7 @@ function AddTimeBlock(props) {
               setEndTimeValue={setEndTimeValue}
               endTimeValue={endTimeValue}
             />
+
             <TextField
               required
               sx={{ m: 1, minWidth: 80 }}
@@ -145,16 +225,17 @@ function AddTimeBlock(props) {
           <Button
             variant="contained"
             onClick={(e) => {
-              if (blockTitle && address && startTimeValue && endTimeValue) {
-                addToDataBase(
+              if (address && blockTitle && startTimeValue && endTimeValue) {
+                UpdateToDataBase(
                   blockTitle,
                   description,
                   startTimeValue,
                   endTimeValue,
-                  address
+                  address,
+                  props.currentSelectTimeId
                 );
-                props.setShowPopUp(false);
-                alert('Successfully added!');
+                props.setShowEditPopUp(false);
+                alert('Successfully updated!');
               } else {
                 alert('Please fill in all the requirements!');
               }
@@ -167,4 +248,4 @@ function AddTimeBlock(props) {
   );
 }
 
-export default AddTimeBlock;
+export default EditTimeBlock;
