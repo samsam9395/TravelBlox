@@ -9,6 +9,9 @@ import {
   Select,
   IconButton,
   Box,
+  Card,
+  CardMedia,
+  CircularProgress,
 } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
@@ -57,7 +60,7 @@ const Input = styled('input')({
   display: 'none',
 });
 
-async function saveToDataBase(myEvents, planTitle, country) {
+async function saveToDataBase(myEvents, planTitle, country, mainImage) {
   const batch = writeBatch(db);
 
   myEvents.forEach((singleEvent) => {
@@ -79,6 +82,7 @@ async function saveToDataBase(myEvents, planTitle, country) {
   batch.update(upperLevelUpdateRef, {
     title: planTitle,
     country: country,
+    main_image: mainImage,
   });
 
   await batch.commit();
@@ -96,28 +100,48 @@ function DeleteBlockInMylist(prev, id) {
   return prev;
 }
 
+function handleImageUpload(e, setMainImage) {
+  console.log(e.target.files[0]);
+  const reader = new FileReader();
+  if (e) {
+    reader.readAsDataURL(e.target.files[0]);
+  }
+
+  reader.onload = function () {
+    // console.log(reader.result); //base64encoded string
+    setMainImage(reader.result);
+  };
+  reader.onerror = function (error) {
+    console.log('Error: ', error);
+  };
+}
+
 function PlanDetail() {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
+  const [mainImage, setMainImage] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);
   const [myEvents, setMyEvents] = useState([]);
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
     const list = await (
       await fetch('https://restcountries.com/v3.1/all')
     ).json();
     setCountryList(list.sort());
+    setIsLoading(false);
   }, []);
 
   useEffect(async () => {
     const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
     const docSnap = await getDoc(planRef);
     setPlanTitle(docSnap.data().title);
-    // setCountry(docSnap.data().country);
+    setCountry(docSnap.data().country);
+    setMainImage(docSnap.data().main_image);
   }, []);
 
   useEffect(async () => {
@@ -165,8 +189,6 @@ function PlanDetail() {
     });
   }, []);
 
-  // console.log(myEvents);
-
   return (
     <Wrapper>
       {showPopUp ? (
@@ -193,45 +215,50 @@ function PlanDetail() {
           />
           <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
             <InputLabel id="select-country">County</InputLabel>
-            <Select
-              labelId="select-country"
-              value={country}
-              label="County"
-              onChange={(e) => {
-                setCountry(e.target.value);
-              }}>
-              {countryList.map((country, index) => {
-                return (
-                  <MenuItem value={country.name.common} key={index}>
-                    {country.flag} {country.name.common}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+            {isLoading ? (
+              <Box sx={{ display: 'flex' }} align="center" justify="center">
+                <CircularProgress size={14} sx={{ py: 2 }} />
+              </Box>
+            ) : (
+              <Select
+                labelId="select-country"
+                value={country}
+                label="Country"
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                }}>
+                {countryList.map((country, index) => {
+                  return (
+                    <MenuItem value={country.name.common} key={index}>
+                      {country.flag} {country.name.common}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            )}
           </FormControl>
         </TitleSection>
-        <Box
-          sx={{
-            p: 2,
-            border: '1px dashed grey',
-            width: 400,
-            height: 200,
-            // backgroundColor: 'primary.dark',
-            // '&:hover': {
-            //   backgroundColor: 'primary.main',
-            //   opacity: [0.9, 0.8, 0.7],
-            // },
-          }}>
+        <Card sx={{ width: 400 }}>
+          <CardMedia component="img" image={mainImage} height="200" />
           <label htmlFor="icon-button-file">
-            <Input accept="image/*" id="icon-button-file" type="file" />
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="span">
-              <PhotoCamera />
-            </IconButton>
+            <Input
+              accept="image/*"
+              id="icon-button-file"
+              type="file"
+              onChange={(e) => {
+                handleImageUpload(e, setMainImage);
+              }}
+            />
+            <Box textAlign="center">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="div">
+                <PhotoCamera />
+              </IconButton>
+            </Box>
           </label>
-        </Box>
+        </Card>
       </TopContainer>
       <CalendarContainer>
         <PlanCalendar
@@ -251,7 +278,7 @@ function PlanDetail() {
       </Button>
       <Button
         variant="contained"
-        onClick={() => saveToDataBase(myEvents, planTitle, country)}>
+        onClick={() => saveToDataBase(myEvents, planTitle, country, mainImage)}>
         Save
       </Button>
     </Wrapper>
