@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   InputLabel,
@@ -116,7 +116,7 @@ function handleImageUpload(e, setMainImage) {
   };
 }
 
-function PlanDetail() {
+function EditPlanDetail() {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
@@ -285,4 +285,4 @@ function PlanDetail() {
   );
 }
 
-export default PlanDetail;
+export default EditPlanDetail;

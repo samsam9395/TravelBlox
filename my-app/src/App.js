@@ -9,7 +9,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import AddTimeBlock from './pages/AddTimeBlock';
-import PlanDetail from './pages/PlanDetail';
+import EditPlanDetail from './pages/EditPlanDetail';
+import StaticPlanDetail from './pages/StaticPlanDetail';
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/add-time-block" element={<AddTimeBlock />} />
-        <Route path="/plan-detail" element={<PlanDetail />} />
+        <Route path="/edit-plan-detail" element={<EditPlanDetail />} />
+        <Route path="/static-plan-detail" element={<StaticPlanDetail />} />
         <Route path="/landing" element={<LandingPage />} />
       </Routes>
       {/* <Footer /> */}
