@@ -13,13 +13,28 @@ import {
   CardMedia,
   CircularProgress,
   Typography,
+  Avatar,
 } from '@mui/material';
 import TimeBlockCard from '../components/TimeBlockCard';
 
 const UpperContainer = styled.div`
   display: flex;
-  flex-direction: column;
   padding: 0 30px;
+`;
+const PlanCardsWrapper = styled.div`
+  margin-top: 50px;
+  padding: 0 30px;
+`;
+
+const UserRightSideWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-left: 30px;
+`;
+
+const UserInfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 function StaticPlanDetail() {
@@ -35,8 +50,21 @@ function StaticPlanDetail() {
             {planTitle}
           </Typography>
         </Card>
+
+        <UserRightSideWrapper>
+          <UserInfoWrapper>
+            <Avatar
+              alt="Remy Sharp"
+              src="/static/images/avatar/1.jpg"
+              sx={{ width: 56, height: 56 }}
+            />
+            <span>Name</span>
+          </UserInfoWrapper>
+        </UserRightSideWrapper>
       </UpperContainer>
-      <TimeBlockCard />
+      <PlanCardsWrapper>
+        <TimeBlockCard />
+      </PlanCardsWrapper>
     </>
   );
 }
