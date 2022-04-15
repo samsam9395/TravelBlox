@@ -44,20 +44,20 @@ const Map = () => {
     const directionsRenderer = new window.google.maps.DirectionsRenderer();
 
     const directionsRequest = {
-      origin: 'Chicago, IL',
-      destination: 'Los Angeles, CA',
+      origin: { placeId: 'ChIJwbKbCiWuEmsRgBXuDPx5lJ0' },
+      destination: { placeId: 'ChIJu284rCWuEmsR0XGjjcQ0YOI' },
       waypoints: [
         {
-          location: 'Joplin, MO',
+          location: { placeId: 'ChIJZ16jQCSuEmsRMSwlmuwPU08' },
           stopover: false,
         },
-        {
-          location: 'Oklahoma City, OK',
-          stopover: true,
-        },
+        //   {
+        //     location: { placeId: 'ChIJld6bwiujfDURi41L4vVa10I' },
+        //     stopover: true,
+        //   },
       ],
       provideRouteAlternatives: false,
-      travelMode: 'DRIVING',
+      travelMode: 'WALKING',
     };
     directionsRenderer.setMap(map);
 
