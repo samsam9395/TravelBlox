@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import GoogleAPI from '../utils/GoogleAPI';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import { GoogleMap, LoadScript, useJsApiLoader } from '@react-google-maps/api';
 
 const ApiKey = 'AIzaSyAclJIAm-8LUEgGfbnL4fS9KiIHbg1ZR8k';
 const center = { lat: -33.8666, lng: 151.1958 };
@@ -14,12 +15,16 @@ const MapContainer = styled.div`
 `;
 
 const render = (status) => {
+  console.log(status);
   return <h1>{status}</h1>;
 };
 
 const Map = () => {
   const ref = useRef(null);
   const [map, setMap] = useState();
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: ApiKey,
+  });
 
   useEffect(() => {
     if (ref.current && !map) {
@@ -33,14 +38,51 @@ const Map = () => {
     }
   }, [ref, map]);
 
+  if (isLoaded) {
+    // console.log(window.google.maps);
+    const directionsService = new window.google.maps.DirectionsService();
+    const directionsRenderer = new window.google.maps.DirectionsRenderer();
+
+    const directionsRequest = {
+      origin: 'Chicago, IL',
+      destination: 'Los Angeles, CA',
+      waypoints: [
+        {
+          location: 'Joplin, MO',
+          stopover: false,
+        },
+        {
+          location: 'Oklahoma City, OK',
+          stopover: true,
+        },
+      ],
+      provideRouteAlternatives: false,
+      travelMode: 'DRIVING',
+    };
+    directionsRenderer.setMap(map);
+
+    //   renderDirections(directionsService, directionsRenderer, map);
+    directionsService.route(directionsRequest).then((result) => {
+      if (result.status === 'OK') {
+        directionsRenderer.setDirections(result);
+      } else console.log('something wrong');
+    });
+  }
+
+  if (loadError) {
+    console.log(loadError);
+  }
+
   return (
-    <div
-      style={{
-        height: '100%',
-        position: 'relative',
-      }}
-      ref={ref}
-    />
+    <>
+      <div
+        style={{
+          height: '100%',
+          position: 'relative',
+        }}
+        ref={ref}
+      />
+    </>
   );
 };
 
