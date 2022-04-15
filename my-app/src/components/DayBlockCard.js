@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-  Box,
-  Card,
-  CardMedia,
-  CircularProgress,
-} from '@mui/material';
-import PlanCalendar from '.././pages/Calendar';
+import PlanCalendar from '../pages/Calendar';
 import { display } from '@mui/system';
+import MapCard from './MapCard';
+import * as ReactDom from 'react-dom';
+import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import GoogleAPI from '../utils/GoogleAPI';
 
 const SampleDiv = styled.div`
   border: 1px solid grey;
@@ -42,13 +33,33 @@ const DayScheduleContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const DayMapContainer = styled.div`
-  min-height: 300px;
-  border: 1px solid black;
-  margin-bottom: 20px;
-`;
+const render = function (status) {
+  return <h1>{status}</h1>;
+};
 
-function TimeBlockCard() {
+const googleAPIKey = GoogleAPI();
+
+// const render = (status) => {
+//   switch (status) {
+//     case Status.LOADING:
+//       console.log(loading);
+//     // return <Spinner />;
+//     case Status.FAILURE:
+//       console.log(failed);
+
+//     // return <ErrorComponent />;
+//     case Status.SUCCESS:
+//       return <MapCard />;
+//   }
+// };
+
+function DayBlockCard() {
+  const [center, setCenter] = useState({
+    lat: 0,
+    lng: 0,
+  });
+  const zoom = 4;
+
   return (
     <>
       <SingleDayWrapper>
@@ -76,11 +87,13 @@ function TimeBlockCard() {
 
         <TimeMapContainer>
           <DayScheduleContainer>Calendar Here</DayScheduleContainer>
-          <DayMapContainer>Map Here</DayMapContainer>
+          {/* <Wrapper apiKey={googleAPIKey} render={render}> */}
+          <MapCard />
+          {/* </Wrapper> */}
         </TimeMapContainer>
       </SingleDayWrapper>
     </>
   );
 }
 
-export default TimeBlockCard;
+export default DayBlockCard;

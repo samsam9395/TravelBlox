@@ -11,6 +11,7 @@ import '@fontsource/roboto/700.css';
 import AddTimeBlock from './pages/AddTimeBlock';
 import EditPlanDetail from './pages/EditPlanDetail';
 import StaticPlanDetail from './pages/StaticPlanDetail';
+import TestMap from './components/TestMap';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/edit-plan-detail" element={<EditPlanDetail />} />
         <Route path="/static-plan-detail" element={<StaticPlanDetail />} />
         <Route path="/landing" element={<LandingPage />} />
+        <Route path="/test-map" element={<TestMap />} />
       </Routes>
       {/* <Footer /> */}
     </>

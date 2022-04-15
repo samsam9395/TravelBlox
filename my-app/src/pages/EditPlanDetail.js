@@ -119,6 +119,7 @@ function handleImageUpload(e, setMainImage) {
 function EditPlanDetail() {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
+  const [countryLatlng, setCountryLatlng] = useState('');
   const [countryList, setCountryList] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);

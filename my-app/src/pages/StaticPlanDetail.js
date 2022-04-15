@@ -15,14 +15,12 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
-import TimeBlockCard from '../components/TimeBlockCard';
+import DayBlockCard from '../components/DayBlockCard';
+import MarCard from '../components/MapCard';
+import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
 const UpperContainer = styled.div`
   display: flex;
-  padding: 0 30px;
-`;
-const PlanCardsWrapper = styled.div`
-  margin-top: 50px;
   padding: 0 30px;
 `;
 
@@ -35,6 +33,11 @@ const UserRightSideWrapper = styled.div`
 const UserInfoWrapper = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const PlanCardsWrapper = styled.div`
+  margin-top: 50px;
+  padding: 0 30px;
 `;
 
 function StaticPlanDetail() {
@@ -63,7 +66,7 @@ function StaticPlanDetail() {
         </UserRightSideWrapper>
       </UpperContainer>
       <PlanCardsWrapper>
-        <TimeBlockCard />
+        <DayBlockCard />
       </PlanCardsWrapper>
     </>
   );
