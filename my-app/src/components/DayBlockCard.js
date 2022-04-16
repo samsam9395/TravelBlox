@@ -6,6 +6,19 @@ import MapCard from './MapCard';
 import * as ReactDom from 'react-dom';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import GoogleAPI from '../utils/GoogleAPI';
+import {
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  collection,
+  query,
+  where,
+  orderBy,
+} from 'firebase/firestore';
+import firebaseDB from '../utils/firebaseConfig';
+
+const db = firebaseDB();
 
 const SampleDiv = styled.div`
   border: 1px solid grey;
@@ -33,25 +46,37 @@ const DayScheduleContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const render = function (status) {
-  return <h1>{status}</h1>;
-};
-
 const googleAPIKey = GoogleAPI();
 
-// const render = (status) => {
-//   switch (status) {
-//     case Status.LOADING:
-//       console.log(loading);
-//     // return <Spinner />;
-//     case Status.FAILURE:
-//       console.log(failed);
+function CalendarByDay() {
+  const [dayEvent, setDayEvent] = useState('');
+  console.log('calendar by day is rendered');
 
-//     // return <ErrorComponent />;
-//     case Status.SUCCESS:
-//       return <MapCard />;
-//   }
-// };
+  useEffect(async () => {
+    const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
+    const docSnap = await getDoc(planRef);
+    const blocksListRef = collection(
+      db,
+      'plan101',
+      'zqZZcY8RO85mFVmtHbVI',
+      'time_blocks_test'
+    );
+    let timestamp = new Date(docSnap.data().start_date);
+
+    const qAscend = query(blocksListRef, orderBy('start', 'asc'));
+    //new Date(doc.data().start.second * 1000) equals to human readable date
+
+    const q = query(
+      blocksListRef,
+      where('start', '>=', timestamp)
+      // where('start', '<=', '1650196740')
+    );
+    const querySnapshot = await getDocs(qAscend);
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data());
+    });
+  }, []);
+}
 
 function DayBlockCard() {
   const [center, setCenter] = useState({
@@ -59,6 +84,8 @@ function DayBlockCard() {
     lng: 0,
   });
   const zoom = 4;
+
+  // CalendarByDay();
 
   return (
     <>
@@ -70,14 +97,7 @@ function DayBlockCard() {
             reprehenderit dolorum aspernatur molestias nihil modi praesentium
             magni vero odio! Voluptates explicabo saepe velit nesciunt adipisci,
             natus officia facilis excepturi distinctio. Aliquam, tenetur quasi!
-            Est deserunt consequuntur culpa. Officiis sed unde corrupti
-            voluptates, ut incidunt, nihil maiores magnam aperiam explicabo rem
-            voluptatibus praesentium accusantium quod laborum veritatis!
-            Molestiae ea soluta dolore. Porro totam omnis fuga! Deserunt,
-            deleniti beatae! Iste nobis ullam esse temporibus earum quasi
-            asperiores, ipsa obcaecati fugit. Optio repellendus suscipit
-            dignissimos incidunt sequi maxime praesentium? Rerum minus saepe
-            aut.
+            Est deserunt consequuntur culpa.
           </div>
           <SampleDiv>
             <span>image here</span>

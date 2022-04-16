@@ -15,10 +15,23 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
+import {
+  doc,
+  getDoc,
+  getDocs,
+  collectionGroup,
+  query,
+  where,
+  onSnapshot,
+  collection,
+  setDoc,
+} from 'firebase/firestore';
+import firebaseDB from '../utils/firebaseConfig';
 import DayBlockCard from '../components/DayBlockCard';
 import MarCard from '../components/MapCard';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
+const db = firebaseDB();
 const UpperContainer = styled.div`
   display: flex;
   padding: 0 30px;
@@ -40,9 +53,59 @@ const PlanCardsWrapper = styled.div`
   padding: 0 30px;
 `;
 
+function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function loopThroughDays(startday, days) {
+  const scheduleTimestampList = [];
+  const lastDay = addDays(startday, days - 1);
+  for (let i = 0; i < days; i++) {
+    const nextday = addDays(startday, i);
+    scheduleTimestampList.push(nextday);
+    // console.log(nextday)
+    if (nextday === lastDay) {
+      console.log('reached last day');
+      break;
+    }
+  }
+  return scheduleTimestampList;
+}
+
 function StaticPlanDetail() {
   const [mainImage, setMainImage] = useState(null);
-  const [planTitle, setPlanTitle] = useState('' || 'not yet');
+  const [planTitle, setPlanTitle] = useState('');
+  const [country, setCountry] = useState('');
+  const [hasVisited, setHasVitied] = useState(true);
+  const [author, setAuthor] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [numberofDays, setNumberofDays] = useState(0);
+  const [timestampList, setTimestampList] = useState([]);
+
+  useEffect(async () => {
+    const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
+    const docSnap = await getDoc(planRef);
+    const data = docSnap.data();
+
+    setPlanTitle(data.title);
+    setCountry(data.country);
+    setMainImage(data.main_image);
+    setStartDate(data.start_date);
+    setEndDate(data.end_date);
+    setHasVitied(data.visited);
+    setAuthor(data.author);
+  }, []);
+
+  useEffect(() => {
+    const nofDays =
+      (endDate.seconds * 1000 - startDate.seconds * 1000) /
+      (1000 * 60 * 60 * 24);
+    setNumberofDays(nofDays);
+    setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
+  }, [endDate, startDate]);
 
   return (
     <>
@@ -61,7 +124,7 @@ function StaticPlanDetail() {
               src="/static/images/avatar/1.jpg"
               sx={{ width: 56, height: 56 }}
             />
-            <span>Name</span>
+            <span>Made by: {author}</span>
           </UserInfoWrapper>
         </UserRightSideWrapper>
       </UpperContainer>
