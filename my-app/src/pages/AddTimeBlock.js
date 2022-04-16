@@ -14,6 +14,7 @@ import firebaseDB from '../utils/firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
+import AutoCompleteInput from '../components/AutoCompleteInput';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -62,7 +63,7 @@ async function addToDataBase(
   description,
   startTimeValue,
   endTimeValue,
-  address
+  location
 ) {
   const timeBlockRef = doc(
     collection(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI', 'time_blocks_test')
@@ -73,18 +74,21 @@ async function addToDataBase(
     text: description,
     start: startTimeValue,
     end: endTimeValue,
-    address: address,
+    // location: location,
+    place_id: location.place_id,
+    place_name: location.name,
     id: timeBlockRef.id,
   });
 }
 
 function AddTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
-  const [address, setAddress] = useState('');
+  //   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(null);
   const [endTimeValue, setEndTimeValue] = useState(null);
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  const [location, setLocation] = useState('');
 
   return (
     <>
@@ -117,7 +121,8 @@ function AddTimeBlock(props) {
               setEndTimeValue={setEndTimeValue}
               endTimeValue={endTimeValue}
             />
-            <TextField
+            <AutoCompleteInput setLocation={setLocation} />
+            {/* <TextField
               required
               sx={{ m: 1, minWidth: 80 }}
               size="small"
@@ -127,7 +132,7 @@ function AddTimeBlock(props) {
               onChange={(e) => {
                 setAddress(e.target.value);
               }}
-            />
+            /> */}
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
@@ -145,13 +150,13 @@ function AddTimeBlock(props) {
           <Button
             variant="contained"
             onClick={(e) => {
-              if (blockTitle && address && startTimeValue && endTimeValue) {
+              if (blockTitle && location && startTimeValue && endTimeValue) {
                 addToDataBase(
                   blockTitle,
                   description,
                   startTimeValue,
                   endTimeValue,
-                  address
+                  location
                 );
                 props.setShowPopUp(false);
                 alert('Successfully added!');

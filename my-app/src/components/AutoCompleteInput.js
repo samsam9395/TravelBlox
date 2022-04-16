@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { InputLabel, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import GoogleAPI from '../utils/GoogleAPI';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
 const ApiKey = GoogleAPI();
 
-function SearchInput() {
+function SearchInput(props) {
+  const [inputLocationValue, setInputLocationValue] = useState('');
   const ref = useRef(null);
-  const [location, setLocation] = useState('');
-  const [placeId, setPlaceId] = useState('');
+  // const [location, setLocation] = useState('');
 
   useEffect(() => {
     if (ref.current) {
@@ -18,11 +17,16 @@ function SearchInput() {
       );
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
-        setLocation(place);
-        setPlaceId(location.place_id);
+        props.setLocation(place);
+        console.log(place);
+        setInputLocationValue(place.name);
       });
     }
-  }, [ref, setLocation]);
+  }, [ref, props.setLocation]);
+
+  useEffect(() => {
+    setInputLocationValue(props.locationName);
+  }, [props.locationName]);
 
   return (
     <>
@@ -35,17 +39,23 @@ function SearchInput() {
         size="small"
         label="Address"
         variant="outlined"
-        // value={address}
+        value={inputLocationValue}
+        onChange={(e) => {
+          setInputLocationValue(e.target.value);
+        }}
       />
     </>
   );
 }
 
-function AutoCompleteInput() {
+function AutoCompleteInput(props) {
   return (
     <>
       <Wrapper apiKey={ApiKey} libraries={['places']}>
-        <SearchInput />
+        <SearchInput
+          setLocation={props.setLocation}
+          locationName={props.locationName || null}
+        />
       </Wrapper>
     </>
   );

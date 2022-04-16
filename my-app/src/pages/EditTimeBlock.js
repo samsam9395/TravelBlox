@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { TextField, Button, IconButton } from '@mui/material';
+import { TextField, Button, IconButton, Autocomplete } from '@mui/material';
 import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
+import AutoCompleteInput from '../components/AutoCompleteInput';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -60,7 +61,7 @@ async function UpdateToDataBase(
   description,
   startTimeValue,
   endTimeValue,
-  address,
+  location,
   id
 ) {
   const timeBlockRef = doc(
@@ -77,7 +78,8 @@ async function UpdateToDataBase(
       text: description,
       start: startTimeValue,
       end: endTimeValue,
-      address: address,
+      place_id: location.place_id,
+      place_name: location.name,
     },
     {
       merge: true,
@@ -101,6 +103,7 @@ async function retreiveFromDataBase(id, setDataReady, setInitialTimeBlockData) {
     console.log('retreived');
     const initialData = timeBlockSnap.data();
     console.log(initialData);
+
     if (setInitialTimeBlockData) {
       setInitialTimeBlockData(initialData);
     }
@@ -122,7 +125,8 @@ async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
 function EditTimeBlock(props) {
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
-  const [address, setAddress] = useState('');
+  const [locationName, setLocationName] = useState('');
+  const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
     props.currentSelectTimeData.start || null
@@ -151,7 +155,8 @@ function EditTimeBlock(props) {
   useEffect(() => {
     setDescription(initialTimeBlockData.text);
     setBlockTitle(initialTimeBlockData.title);
-    setAddress(initialTimeBlockData.address);
+    //  setLocation(initialTimeBlockData.place_id);
+    setLocationName(initialTimeBlockData.place_name);
   }, [initialTimeBlockData]);
 
   return (
@@ -196,8 +201,11 @@ function EditTimeBlock(props) {
               setEndTimeValue={setEndTimeValue}
               endTimeValue={endTimeValue}
             />
-
-            <TextField
+            <AutoCompleteInput
+              setLocation={setLocation}
+              locationName={locationName}
+            />
+            {/* <TextField
               required
               sx={{ m: 1, minWidth: 80 }}
               size="small"
@@ -207,7 +215,7 @@ function EditTimeBlock(props) {
               onChange={(e) => {
                 setAddress(e.target.value);
               }}
-            />
+            /> */}
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
@@ -225,19 +233,24 @@ function EditTimeBlock(props) {
           <Button
             variant="contained"
             onClick={(e) => {
-              if (address && blockTitle && startTimeValue && endTimeValue) {
-                UpdateToDataBase(
-                  blockTitle,
-                  description,
-                  startTimeValue,
-                  endTimeValue,
-                  address,
-                  props.currentSelectTimeId
-                );
-                props.setShowEditPopUp(false);
-                alert('Successfully updated!');
+              if (location && blockTitle && startTimeValue && endTimeValue) {
+                try {
+                  UpdateToDataBase(
+                    blockTitle,
+                    description,
+                    startTimeValue,
+                    endTimeValue,
+                    location,
+                    props.currentSelectTimeId
+                  );
+                  props.setShowEditPopUp(false);
+                  alert('Successfully updated!');
+                } catch (error) {
+                  alert('Something went wrong, please try again!');
+                  console.log(error);
+                }
               } else {
-                alert('Please fill in all the requirements!');
+                alert('Please check your inputs!');
               }
             }}>
             Submit
