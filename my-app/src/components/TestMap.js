@@ -49,7 +49,7 @@ const Map = () => {
       waypoints: [
         {
           location: { placeId: 'ChIJZ16jQCSuEmsRMSwlmuwPU08' },
-          stopover: false,
+          stopover: true,
         },
         //   {
         //     location: { placeId: 'ChIJld6bwiujfDURi41L4vVa10I' },
