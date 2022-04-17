@@ -28,7 +28,7 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayBlockCard from '../components/DayBlockCard';
-import MarCard from '../components/MapCard';
+import DayMapCard from '../components/DayMapCard';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
 const db = firebaseDB();

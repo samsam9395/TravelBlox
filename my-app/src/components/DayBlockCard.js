@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
-import MapCard from './MapCard';
+import DayMapCard from './DayMapCard';
 import * as ReactDom from 'react-dom';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import GoogleAPI from '../utils/GoogleAPI';
@@ -101,7 +101,7 @@ function DayBlockCard(props) {
   useEffect(() => {
     CalendarByDay(props.currentDayDate)
       .then((eventList) => {
-        console.log(eventList);
+        // console.log(eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         return eventList;
@@ -159,8 +159,8 @@ function DayBlockCard(props) {
             )}
             )
           </DayScheduleContainer>
-          {/* <Wrapper apiKey={googleAPIKey} render={render}> */}
-          <MapCard />
+          {/* <Wrapper apiKey={googleAPIKey} > */}
+          <DayMapCard dayEvents={dayEvents} />
           {/* </Wrapper> */}
         </TimeMapContainer>
       </SingleDayWrapper>

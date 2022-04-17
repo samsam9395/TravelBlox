@@ -12,24 +12,6 @@ const DateTitle = styled.div`
 export default function DayCalendar(props) {
   //   const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
   const localizer = momentLocalizer(moment);
-  //   console.log(props.dayEvents);
-
-  //   useEffect(() => {
-  //     props.dayEvents.forEach((block) => {
-  //       console.log(block);
-  //       setDayTimeBlocks((prev) => [
-  //         ...prev,
-  //         {
-  //           start: new Date(block.start.seconds * 1000),
-  //           end: new Date(block.end.seconds * 1000),
-  //           title: block.title,
-  //           id: block.id,
-  //           address: block.address,
-  //           text: block.text,
-  //         },
-  //       ]);
-  //     });
-  //   }, []);
 
   return (
     <>
