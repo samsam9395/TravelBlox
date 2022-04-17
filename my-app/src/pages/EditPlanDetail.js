@@ -32,6 +32,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
+import { useLocation } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -128,6 +129,10 @@ function EditPlanDetail() {
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  const { state } = useLocation();
+  const { data } = state;
+  console.log(data);
 
   useEffect(async () => {
     const list = await (

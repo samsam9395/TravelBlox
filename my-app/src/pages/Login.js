@@ -105,8 +105,8 @@ function logOn(email, password) {
     });
 }
 
-function Login() {
-  const [hasSignedIn, setHasSignedIn] = useState(false);
+function Login(props) {
+  // const [hasSignedIn, setHasSignedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showSignUp, setShowSignUp] = useState(false);
@@ -116,15 +116,17 @@ function Login() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setHasSignedIn(true);
         // console.log(user.accessToken);
-        const uid = user.uid;
+        const uid = user.email;
         localStorage.setItem('accessToken', user.accessToken);
+        localStorage.setItem('userEmail', user.email);
+        alert(`Welcome! ${uid}`);
+        props.setHasSignedIn(true);
       } else {
         console.log('not logged in');
       }
     });
-    console.log(hasSignedIn);
+    console.log(props.hasSignedIn);
   }, []);
 
   return (
@@ -135,7 +137,7 @@ function Login() {
           <InputContainer>
             {!showSignUp ? (
               <>
-                <Title>Start your journey!</Title>
+                <Title>Welcome Back!</Title>
                 <InputWrapper>
                   <TextField
                     required
@@ -195,7 +197,7 @@ function Login() {
               </>
             ) : (
               <>
-                <Title>Welcome Back</Title>
+                <Title>Start your journey!</Title>
                 <InputWrapper>
                   <TextField
                     required

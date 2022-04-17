@@ -13,6 +13,8 @@ import EditPlanDetail from './pages/EditPlanDetail';
 import StaticPlanDetail from './pages/StaticPlanDetail';
 import TestMap from './components/TestMap';
 import AutoCompleteInput from './components/AutoCompleteInput';
+import Dashboard from './pages/Dashboard';
+import AddNewPlan from './pages/AddNewPlan';
 
 function App() {
   return (
@@ -22,10 +24,12 @@ function App() {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/add-time-block" element={<AddTimeBlock />} />
         <Route path="/edit-plan-detail" element={<EditPlanDetail />} />
+        <Route path="/add-new-plan" element={<AddNewPlan />} />
         <Route path="/static-plan-detail" element={<StaticPlanDetail />} />
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/test-map" element={<TestMap />} />
         <Route path="/autocomplete" element={<AutoCompleteInput />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       {/* <Footer /> */}
     </>

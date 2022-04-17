@@ -63,10 +63,12 @@ async function addToDataBase(
   description,
   startTimeValue,
   endTimeValue,
-  location
+  location,
+  collectionID,
+  planDocRef
 ) {
   const timeBlockRef = doc(
-    collection(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI', 'time_blocks_test')
+    collection(db, collectionID, planDocRef, 'time_blocks_test')
   );
 
   await setDoc(timeBlockRef, {
@@ -89,7 +91,12 @@ function AddTimeBlock(props) {
   const [endTimeValue, setEndTimeValue] = useState(null);
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [location, setLocation] = useState('');
-
+  // const firebaseBlockListRef = collection(
+  //   db,
+  //   props.collectionID,
+  //   props.planDocRef,
+  //   'time_blocks'
+  // );
   return (
     <>
       <BlackWrapper>
@@ -122,17 +129,6 @@ function AddTimeBlock(props) {
               endTimeValue={endTimeValue}
             />
             <AutoCompleteInput setLocation={setLocation} />
-            {/* <TextField
-              required
-              sx={{ m: 1, minWidth: 80 }}
-              size="small"
-              label="Address"
-              variant="outlined"
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-              }}
-            /> */}
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
@@ -156,7 +152,9 @@ function AddTimeBlock(props) {
                   description,
                   startTimeValue,
                   endTimeValue,
-                  location
+                  location,
+                  props.collectionID,
+                  props.planDocRef
                 );
                 props.setShowPopUp(false);
                 alert('Successfully added!');

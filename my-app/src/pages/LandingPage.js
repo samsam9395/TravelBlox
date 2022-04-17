@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDocs, collection } from 'firebase/firestore';
 import Login from './Login';
+import { Link, Navigate } from 'react-router-dom';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyANvhkQrPiRG0nnj-OB0ScD5V4Om67NNYA',
@@ -28,6 +29,7 @@ const MainImage = styled.img`
 
 function LandingPage() {
   const [mainImage, setMainImage] = useState(null);
+  const [hasSignedIn, setHasSignedIn] = useState(false);
 
   useEffect(async () => {
     const querySnapshot = await getDocs(collection(db, 'main-components'));
@@ -36,11 +38,18 @@ function LandingPage() {
     });
   }, []);
 
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      setHasSignedIn(true);
+    }
+  }, []);
+
   return (
     <>
       <Header />
       <MainImage src={mainImage} />
-      <Login />
+      <Login setHasSignedIn={setHasSignedIn} hasSignedIn={hasSignedIn} />
+      {hasSignedIn && <Navigate to="/dashboard"></Navigate>}
       <Footer />
     </>
   );
