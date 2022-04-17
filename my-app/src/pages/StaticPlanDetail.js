@@ -107,6 +107,8 @@ function StaticPlanDetail() {
     setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
   }, [endDate, startDate]);
 
+  let currentDayDate = new Date('7 Apr 2022');
+
   return (
     <>
       <UpperContainer>
@@ -129,7 +131,7 @@ function StaticPlanDetail() {
         </UserRightSideWrapper>
       </UpperContainer>
       <PlanCardsWrapper>
-        <DayBlockCard />
+        <DayBlockCard currentDayDate={currentDayDate} />
       </PlanCardsWrapper>
     </>
   );

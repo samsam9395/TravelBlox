@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import PlanCalendar from '../pages/Calendar';
 import { display } from '@mui/system';
+import { Box, CircularProgress } from '@mui/material';
 import MapCard from './MapCard';
 import * as ReactDom from 'react-dom';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import GoogleAPI from '../utils/GoogleAPI';
-import {
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  collection,
-  query,
-  where,
-  orderBy,
-} from 'firebase/firestore';
+import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
+// import './planDetail.scss';
+// import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
+// import moment from 'moment';
+// import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
+// import PropTypes from 'prop-types';
+import DayCalendar from './DayCalendar';
 
 const db = firebaseDB();
 
@@ -39,6 +36,12 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const DailyContentWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding-right: 15px;
+`;
 
 const DayScheduleContainer = styled.div`
   min-height: 400px;
@@ -46,67 +49,116 @@ const DayScheduleContainer = styled.div`
   margin-bottom: 20px;
 `;
 
+const CalendarWrapper = styled.div`
+  width: 300px;
+  height: 300px;
+`;
+
 const googleAPIKey = GoogleAPI();
 
-function CalendarByDay() {
-  const [dayEvent, setDayEvent] = useState('');
-  console.log('calendar by day is rendered');
-
-  useEffect(async () => {
-    const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
-    const docSnap = await getDoc(planRef);
-    const blocksListRef = collection(
-      db,
-      'plan101',
-      'zqZZcY8RO85mFVmtHbVI',
-      'time_blocks_test'
-    );
-    let timestamp = new Date(docSnap.data().start_date);
-
-    const qAscend = query(blocksListRef, orderBy('start', 'asc'));
-    //new Date(doc.data().start.second * 1000) equals to human readable date
-
-    const q = query(
-      blocksListRef,
-      where('start', '>=', timestamp)
-      // where('start', '<=', '1650196740')
-    );
-    const querySnapshot = await getDocs(qAscend);
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data());
-    });
-  }, []);
+function addOneDay(date) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + 1);
+  return result;
 }
 
-function DayBlockCard() {
-  const [center, setCenter] = useState({
-    lat: 0,
-    lng: 0,
+async function CalendarByDay(currentDayDate) {
+  const eventByDayList = [];
+  console.log('calendar by day is rendered');
+  // const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
+  // const docSnap = await getDoc(planRef);
+  const blocksListRef = collection(
+    db,
+    'plan101',
+    'zqZZcY8RO85mFVmtHbVI',
+    'time_blocks_test'
+  );
+
+  const q = query(
+    blocksListRef,
+    where('start', '>=', currentDayDate),
+    where('start', '<=', addOneDay(currentDayDate)),
+    orderBy('start', 'asc')
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    eventByDayList.push(doc.data());
   });
-  const zoom = 4;
 
-  // CalendarByDay();
+  return eventByDayList;
+}
 
+function DayBlockCard(props) {
+  const [dayEvents, setDayEvents] = useState([]);
+  const [hasReturned, setHasReturned] = useState(false);
+  const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
+  // const [center, setCenter] = useState({
+  //   lat: 0,
+  //   lng: 0,
+  // });
+  // const zoom = 4;
+
+  useEffect(() => {
+    CalendarByDay(props.currentDayDate)
+      .then((eventList) => {
+        console.log(eventList);
+        setDayEvents(eventList);
+        setHasReturned(true);
+        return eventList;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    dayEvents.forEach((block) => {
+      setDayTimeBlocks((prev) => [
+        ...prev,
+        {
+          start: new Date(block.start.seconds * 1000),
+          end: new Date(block.end.seconds * 1000),
+          title: block.title,
+          id: block.id,
+          address: block.address,
+          text: block.text,
+        },
+      ]);
+    });
+  }, [hasReturned]);
   return (
     <>
+      <h2>Day1, {props.currentDayDate.toDateString()}</h2>
       <SingleDayWrapper>
-        <ContentContainer>
-          <h2>Day 1</h2>
-          <div className="content">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus
-            reprehenderit dolorum aspernatur molestias nihil modi praesentium
-            magni vero odio! Voluptates explicabo saepe velit nesciunt adipisci,
-            natus officia facilis excepturi distinctio. Aliquam, tenetur quasi!
-            Est deserunt consequuntur culpa.
-          </div>
-          <SampleDiv>
-            <span>image here</span>
-            <img src="" alt="" />
-          </SampleDiv>
-        </ContentContainer>
+        <DailyContentWrapper>
+          {dayTimeBlocks.map((singleBlock, index) => {
+            return (
+              <ContentContainer key={index}>
+                <div className="content">{singleBlock.text}</div>
+                <SampleDiv>
+                  <span>image here</span>
+                  <img src="" alt="" />
+                </SampleDiv>
+                <div>{singleBlock.address}</div>
+              </ContentContainer>
+            );
+          })}
+        </DailyContentWrapper>
 
         <TimeMapContainer>
-          <DayScheduleContainer>Calendar Here</DayScheduleContainer>
+          <DayScheduleContainer>
+            {hasReturned ? (
+              <DayCalendar
+                currentDayDate={props.currentDayDate}
+                dayTimeBlocks={dayTimeBlocks}
+              />
+            ) : (
+              <Box sx={{ display: 'flex' }} align="center" justify="center">
+                <CircularProgress size={14} sx={{ py: 2 }} />
+              </Box>
+            )}
+            )
+          </DayScheduleContainer>
           {/* <Wrapper apiKey={googleAPIKey} render={render}> */}
           <MapCard />
           {/* </Wrapper> */}

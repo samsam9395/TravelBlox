@@ -42,6 +42,8 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     []
   );
 
+  console.log(props.myEvents);
+
   return (
     <DnDCalendar
       startAccessor="start"
