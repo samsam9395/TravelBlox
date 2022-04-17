@@ -19,6 +19,7 @@ import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
 import AddTimeBlock from './AddTimeBlock';
+import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import {
   doc,
@@ -253,7 +254,7 @@ function AddNewPlan() {
   return (
     <Wrapper>
       {showPopUp ? (
-        <AddTimeBlock
+        <AddNewTimeBlock
           setShowPopUp={setShowPopUp}
           showPopUp={showPopUp}
           collectionID={collectionID}

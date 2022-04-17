@@ -130,10 +130,6 @@ function EditPlanDetail() {
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  const { state } = useLocation();
-  const { data } = state;
-  console.log(data);
-
   useEffect(async () => {
     const list = await (
       await fetch('https://restcountries.com/v3.1/all')
