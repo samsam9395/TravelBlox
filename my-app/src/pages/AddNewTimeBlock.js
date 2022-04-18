@@ -58,45 +58,42 @@ const FormsContainer = styled.div`
 
 const db = firebaseDB();
 
-async function addToDataBase(
-  blockTitle,
-  description,
-  startTimeValue,
-  endTimeValue,
-  location,
-  collectionID,
-  planDocRef
-) {
-  const timeBlockRef = doc(
-    collection(db, collectionID, planDocRef, 'time_blocks_test')
-  );
-
-  await setDoc(timeBlockRef, {
-    title: blockTitle,
-    text: description,
-    start: startTimeValue,
-    end: endTimeValue,
-    // location: location,
-    place_id: location.place_id,
-    place_name: location.name,
-    id: timeBlockRef.id,
-  });
-}
-
 function AddNewTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
   //   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [startTimeValue, setStartTimeValue] = useState(null);
-  const [endTimeValue, setEndTimeValue] = useState(null);
+  const [startTimeValue, setStartTimeValue] = useState(props.startDateValue);
+  const [endTimeValue, setEndTimeValue] = useState(props.startDateValue);
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [location, setLocation] = useState('');
-  // const firebaseBlockListRef = collection(
-  //   db,
-  //   props.collectionID,
-  //   props.planDocRef,
-  //   'time_blocks'
-  // );
+
+  async function addToDataBase(
+    blockTitle,
+    description,
+    startTimeValue,
+    endTimeValue,
+    location,
+    collectionID,
+    planDocRef
+  ) {
+    const timeBlockRef = doc(
+      collection(db, collectionID, planDocRef, 'time_blocks')
+    );
+
+    await setDoc(timeBlockRef, {
+      title: blockTitle,
+      text: description,
+      start: startTimeValue,
+      end: endTimeValue,
+      // location: location,
+      place_id: location.place_id,
+      place_name: location.name,
+      id: timeBlockRef.id,
+    });
+
+    props.setAddedTimeBlock(true);
+  }
+
   return (
     <>
       <BlackWrapper>
@@ -130,6 +127,7 @@ function AddNewTimeBlock(props) {
             />
             <AutoCompleteInput setLocation={setLocation} />
             <TextField
+              required
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
               size="small"

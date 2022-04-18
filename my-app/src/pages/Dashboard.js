@@ -70,8 +70,6 @@ function CreateNewPlan(props) {
   );
 }
 
-function createFirebaseCollection() {}
-
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [willRedirect, setWillRedirect] = useState(false);
@@ -97,15 +95,9 @@ function Dashboard(props) {
         }}>
         Add New Plan
       </AddPlanBtn>
-      {showAddPlanPopUp && (
-        <CreateNewPlan
-          //   setCollectionName={setCollectionName}
-          //   collectionName={collectionName}
-          setWillRedirect={setWillRedirect}
-        />
-      )}
+      {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
       {/* {willRedirect && <Navigate to="/edit-plan-detail"></Navigate>} */}
-      {willRedirect && <Navigate to="/add-new-plan"></Navigate>}
+      {/* {willRedirect && <Navigate to="/add-new-plan"></Navigate>} */}
     </>
   );
 }

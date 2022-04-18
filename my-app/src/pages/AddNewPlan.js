@@ -21,6 +21,7 @@ import PlanCalendar from './Calendar';
 import AddTimeBlock from './AddTimeBlock';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
+import EditNewTimeBlock from './EditNewTimeBlock';
 import {
   doc,
   getDoc,
@@ -66,29 +67,34 @@ const Input = styled('input')({
   display: 'none',
 });
 
-async function saveToDataBase(myEvents, planTitle, country, mainImage) {
+async function saveToDataBase(
+  myEvents,
+  planTitle,
+  country,
+  mainImage,
+  collectionRef,
+  planDocRef,
+  startDateValue,
+  endDateValue
+) {
   const batch = writeBatch(db);
 
   myEvents.forEach((singleEvent) => {
     const id = singleEvent.id;
-    let updateRef = doc(
-      db,
-      'plan101',
-      'zqZZcY8RO85mFVmtHbVI',
-      'time_blocks_test',
-      id
-    );
+    let updateRef = doc(db, collectionRef, planDocRef, 'time_blocks', id);
     batch.update(updateRef, {
       end: singleEvent.end,
       start: singleEvent.start,
     });
   });
 
-  const upperLevelUpdateRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
+  const upperLevelUpdateRef = doc(db, collectionRef, planDocRef);
   batch.update(upperLevelUpdateRef, {
     title: planTitle,
     country: country,
     main_image: mainImage,
+    start_date: startDateValue,
+    end_date: endDateValue,
   });
 
   await batch.commit();
@@ -152,15 +158,15 @@ function AddNewPlan() {
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasCreatedCollection, setHasCreatedCollection] = useState(false);
-  const [collectionName, setCollectionName] = useState('');
+  const [firebaseReady, setFirebaseReady] = useState(false);
+  const [collectionRef, setCollectionRef] = useState(null);
   const [startDateValue, setStartDateValue] = useState(null);
   const [endDateValue, setEndDateValue] = useState(null);
   const [planDocRef, setPlanDocRef] = useState('');
   const [collectionID, setCollectionId] = useState('');
-  const [firebaseBlockListRef, setFirebaseBlockListRef] = useState(null);
+  const [addedTimeBlock, setAddedTimeBlock] = useState(false);
 
   const createNewCollection = async (
-    collectionName,
     startDateValue,
     endDateValue,
     planTitle,
@@ -182,11 +188,6 @@ function AddNewPlan() {
       setHasCreatedCollection(true);
       setPlanDocRef(docRef.id);
       setCollectionId(createCollectionId);
-      // setFirebaseBlockListRef(
-      //     collection(db, collectionID, planDocRef, 'time_blocks')
-      //   );
-
-      // return docRef.id;
     } catch (e) {
       console.error('Error adding document: ', e);
     }
@@ -206,50 +207,61 @@ function AddNewPlan() {
     setIsLoading(false);
   }, []);
 
-  //   useEffect(async () => {
-  //     const blocksListRef = collection(
-  //       db,
-  //       collectionID,
-  //       planDocRef,
-  //       'time_blocks'
-  //     );
-
-  //     onSnapshot(blocksListRef, (doc) => {
-  //       doc.docChanges().forEach((change) => {
-  //         if (change.type === 'added') {
-  //           // console.log(myEvents);
-  //           // console.log(change.doc.data());
-  //           setMyEvents((prev) => [
-  //             ...prev,
-  //             {
-  //               start: new Date(change.doc.data().start.seconds * 1000),
-  //               end: new Date(change.doc.data().end.seconds * 1000),
-  //               title: change.doc.data().title,
-  //               id: change.doc.data().id,
-  //             },
-  //           ]);
-  //         }
-  //         if (change.type === 'modified') {
-  //           console.log('Modified time: ', change.doc.data());
-  //           const id = change.doc.data().id;
-  //           setMyEvents((prev) => [
-  //             ...DeleteBlockInMylist(prev, id),
-  //             {
-  //               start: new Date(change.doc.data().start.seconds * 1000),
-  //               end: new Date(change.doc.data().end.seconds * 1000),
-  //               title: change.doc.data().title,
-  //               id: change.doc.data().id,
-  //             },
-  //           ]);
-  //         }
-  //         if (change.type === 'removed') {
-  //           console.log('Removed time: ', change.doc.data());
-  //           const id = change.doc.data().id;
-  //           setMyEvents((prev) => [...DeleteBlockInMylist(prev, id)]);
-  //         }
-  //       });
-  //     });
-  //   }, []);
+  useEffect(async () => {
+    if (addedTimeBlock) {
+      try {
+        const blocksListRef = collection(
+          db,
+          collectionID,
+          planDocRef,
+          'time_blocks'
+        );
+        setFirebaseReady(true);
+        setCollectionRef(blocksListRef);
+        console.log('setFirebaseReady' + firebaseReady);
+      } catch (error) {
+        console.log(error);
+      }
+      if (firebaseReady) {
+        console.log('onsnap open');
+        onSnapshot(collectionRef, (doc) => {
+          doc.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              // console.log(myEvents);
+              // console.log(change.doc.data());
+              setMyEvents((prev) => [
+                ...prev,
+                {
+                  start: new Date(change.doc.data().start.seconds * 1000),
+                  end: new Date(change.doc.data().end.seconds * 1000),
+                  title: change.doc.data().title,
+                  id: change.doc.data().id,
+                },
+              ]);
+            }
+            if (change.type === 'modified') {
+              console.log('Modified time: ', change.doc.data());
+              const id = change.doc.data().id;
+              setMyEvents((prev) => [
+                ...DeleteBlockInMylist(prev, id),
+                {
+                  start: new Date(change.doc.data().start.seconds * 1000),
+                  end: new Date(change.doc.data().end.seconds * 1000),
+                  title: change.doc.data().title,
+                  id: change.doc.data().id,
+                },
+              ]);
+            }
+            if (change.type === 'removed') {
+              console.log('Removed time: ', change.doc.data());
+              const id = change.doc.data().id;
+              setMyEvents((prev) => [...DeleteBlockInMylist(prev, id)]);
+            }
+          });
+        });
+      }
+    }
+  }, [addedTimeBlock, firebaseReady]);
 
   return (
     <Wrapper>
@@ -259,14 +271,18 @@ function AddNewPlan() {
           showPopUp={showPopUp}
           collectionID={collectionID}
           planDocRef={planDocRef}
+          setAddedTimeBlock={setAddedTimeBlock}
+          startDateValue={startDateValue}
         />
       ) : null}
       {showEditPopUp ? (
-        <EditTimeBlock
+        <EditNewTimeBlock
           showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
+          collectionID={collectionID}
+          planDocRef={planDocRef}
         />
       ) : null}
       <>
@@ -274,6 +290,7 @@ function AddNewPlan() {
         <TopContainer>
           <TitleSection>
             <TextField
+              required
               sx={{ m: 1, minWidth: 80 }}
               label="Title"
               variant="outlined"
@@ -290,6 +307,7 @@ function AddNewPlan() {
                 </Box>
               ) : (
                 <Select
+                  required
                   labelId="select-country"
                   value={country}
                   label="Country"
@@ -356,7 +374,14 @@ function AddNewPlan() {
             <Button
               variant="contained"
               onClick={() =>
-                saveToDataBase(myEvents, planTitle, country, mainImage)
+                saveToDataBase(
+                  myEvents,
+                  planTitle,
+                  country,
+                  mainImage,
+                  collectionRef,
+                  planDocRef
+                )
               }>
               Save
             </Button>
@@ -367,13 +392,16 @@ function AddNewPlan() {
               <Button
                 variant="contained"
                 onClick={() => {
-                  createNewCollection(
-                    collectionName,
-                    startDateValue,
-                    endDateValue,
-                    planTitle,
-                    mainImage
-                  );
+                  if (startDateValue && endDateValue && planTitle) {
+                    createNewCollection(
+                      startDateValue,
+                      endDateValue,
+                      planTitle,
+                      mainImage
+                    );
+                  } else {
+                    alert('Please provide the required fields!');
+                  }
                 }}>
                 All Set
               </Button>
