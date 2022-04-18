@@ -75,21 +75,6 @@ const ClickTag = styled.div`
   padding: 0 10px;
 `;
 
-function signUP(email, password) {
-  const auth = getAuth();
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log(user);
-      // ...
-    })
-    .catch((error) => {
-      console.log(error.message);
-      console.log(error.code);
-    });
-}
-
 function logOn(email, password) {
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
@@ -100,8 +85,11 @@ function logOn(email, password) {
       console.log(user);
     })
     .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
+      console.log(error.code);
+      console.log(error.message);
+      if (error.message === 'EMAIL_NOT_FOUND') {
+        alert('Email not found! Please check again!');
+      }
     });
 }
 
@@ -112,6 +100,21 @@ function Login(props) {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  function signUP(email, password) {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        props.setIsNewUser(true);
+      })
+      .catch((error) => {
+        console.log(error.message);
+        console.log(error.code);
+      });
+  }
+
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
@@ -120,6 +123,7 @@ function Login(props) {
         const uid = user.email;
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
+        props.setUserId(uid);
         alert(`Welcome! ${uid}`);
         props.setHasSignedIn(true);
       } else {

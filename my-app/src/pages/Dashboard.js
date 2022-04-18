@@ -14,22 +14,15 @@ import {
   CircularProgress,
   Typography,
   Avatar,
+  Stack,
 } from '@mui/material';
-import {
-  doc,
-  getDoc,
-  getDocs,
-  collectionGroup,
-  query,
-  where,
-  onSnapshot,
-  collection,
-  setDoc,
-} from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
 import EditPlanDetail from './EditPlanDetail';
 import { Link, Navigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
+import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
+import firebaseDB from '../utils/firebaseConfig';
+
+const db = firebaseDB();
 
 const TopSectionWrapper = styled.div`
   display: flex;
@@ -45,39 +38,35 @@ const AddPlanBtn = styled.button`
   background-color: aliceblue;
 `;
 
-function CreateNewPlan(props) {
-  return (
-    <>
-      <TextField
-        sx={{ m: 1, minWidth: 100 }}
-        size="small"
-        label="Name for New Plan"
-        variant="outlined"
-        value={props.collectionName}
-        onChange={(e) => {
-          props.setCollectionName(e.target.value);
-        }}
-      />
-      <CountrySelector />
-      <Button
-        variant="outlined"
-        onClick={() => {
-          props.setWillRedirect(true);
-        }}>
-        Create
-      </Button>
-    </>
-  );
-}
+const PlanCollectionWrapper = styled.div`
+  display: flex;
+  padding: 15px;
+  width: 100%;
+  box-sizing: content-box;
+  overflow: auto;
+  border: 1px solid black;
+  margin: 30px 0;
+`;
+
+const SinglePlanContainer = styled.div`
+  width: 350px;
+  height: 350px;
+`;
+
+const SinglePlanText = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+`;
 
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
-  const [willRedirect, setWillRedirect] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState('');
 
-  function handlePopupAddPlan() {
-    console.log('redirected');
-    setWillRedirect(true);
-  }
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      setCurrentUserId(localStorage.getItem('userEmail'));
+    }
+  }, []);
 
   return (
     <>
@@ -87,7 +76,7 @@ function Dashboard(props) {
           src="/static/images/avatar/1.jpg"
           sx={{ width: 56, height: 56 }}
         />
-        <h4>Name</h4>
+        <h4>Welcom! {currentUserId}</h4>
       </TopSectionWrapper>
       <AddPlanBtn
         onClick={() => {
@@ -96,8 +85,12 @@ function Dashboard(props) {
         Add New Plan
       </AddPlanBtn>
       {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
-      {/* {willRedirect && <Navigate to="/edit-plan-detail"></Navigate>} */}
-      {/* {willRedirect && <Navigate to="/add-new-plan"></Navigate>} */}
+      <PlanCollectionWrapper>
+        <SinglePlanContainer>
+          <img src="" alt="" />
+          <SinglePlanText>Plan</SinglePlanText>
+        </SinglePlanContainer>
+      </PlanCollectionWrapper>
     </>
   );
 }
