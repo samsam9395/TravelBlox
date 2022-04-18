@@ -25,6 +25,7 @@ const Map = (props) => {
   const ref = useRef(null);
   const [map, setMap] = useState();
   const [placeIdList, setPlaceIdList] = useState([]);
+  // console.log(props.dayEvents);
 
   useEffect(() => {
     props.dayEvents.forEach((eventBlock) => {
@@ -32,7 +33,7 @@ const Map = (props) => {
       setPlaceIdList(placeIdList);
       console.log(placeIdList);
     });
-  }, [ref.current]);
+  }, [props.dayEvents, ref.current]);
 
   useEffect(() => {
     if (ref.current && !map) {

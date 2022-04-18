@@ -144,6 +144,24 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `;
 
+async function addPlanToUserInfo(currentUserId, createCollectionId) {
+  try {
+    const userInfoRef = doc(
+      collection(db, 'userId', currentUserId, 'own plans')
+    );
+
+    await setDoc(
+      userInfoRef,
+      {
+        collection_id: createCollectionId,
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function AddNewPlan() {
   const [user, setUser] = useState('');
   const [planTitle, setPlanTitle] = useState('');
@@ -165,6 +183,13 @@ function AddNewPlan() {
   const [planDocRef, setPlanDocRef] = useState('');
   const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(''); //this is completely duplicated with dashboard, need to find a way to pass data to here
+
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      setCurrentUserId(localStorage.getItem('userEmail'));
+    }
+  }, []);
 
   const createNewCollection = async (
     startDateValue,
@@ -188,6 +213,7 @@ function AddNewPlan() {
       setHasCreatedCollection(true);
       setPlanDocRef(docRef.id);
       setCollectionId(createCollectionId);
+      addPlanToUserInfo(currentUserId, createCollectionId);
     } catch (e) {
       console.error('Error adding document: ', e);
     }

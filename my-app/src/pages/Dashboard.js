@@ -19,7 +19,14 @@ import {
 import EditPlanDetail from './EditPlanDetail';
 import { Link, Navigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
-import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
+import {
+  getDocs,
+  collection,
+  query,
+  where,
+  orderBy,
+  doc,
+} from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 
 const db = firebaseDB();
@@ -58,15 +65,76 @@ const SinglePlanText = styled.div`
   font-weight: 600;
 `;
 
+const PlanMainImageContainer = styled.div`
+  width: 100%;
+`;
+
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
+  const [hasRetreived, sethasRetreived] = useState(false);
+  const [ownPlansList, setOwnPlansList] = useState([]);
+  const [ownPlansListData, setOwnPlansListData] = useState([]);
 
-  useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setCurrentUserId(localStorage.getItem('userEmail'));
-    }
+  useEffect(async () => {
+    const user = localStorage.getItem('userEmail');
+    setCurrentUserId(localStorage.getItem('userEmail'));
+
+    const ref = collection(db, 'userId', user, 'own_plans');
+
+    const plansList = await getDocs(ref);
+
+    // setOwnPlansList(plansList);
+    console.log('planlist  run');
+    const test = [];
+    plansList.forEach((plan) => {
+      console.log('planlistData  run');
+      console.log(plan);
+      console.log(plan.data().collection_id);
+      // setOwnPlansList(plansList);
+      test.push(plan.data().collection_id);
+    });
+    // console.log(ownPlansListData);
+    // console.log(typeof ownPlansList);
+    // if (ownPlansList !== []) {
+    //   console.log(123, ownPlansList);
+    //   const test = ownPlansList.map((plan) => plan.data().collection_id);
+    //   console.log(345, test);
+    //   setOwnPlansListData(test);
+    // }
+    console.log(4321, test);
+    setOwnPlansListData(test);
   }, []);
+
+  // useEffect(() => {
+  //   // console.log(123, ownPlansList);
+  //   const test = [];
+  //   ownPlansList.forEach((plan) => {
+  //     console.log('planlistData  run');
+  //     console.log(plan);
+  //     console.log(plan.data().collection_id);
+  //     // setOwnPlansList(plansList);
+  //     test.push(plan.data().collection_id);
+  //   });
+  //   // console.log(ownPlansListData);
+  //   console.log(typeof ownPlansList);
+  //   // if (ownPlansList !== []) {
+  //   //   console.log(123, ownPlansList);
+  //   //   const test = ownPlansList.map((plan) => plan.data().collection_id);
+  //   //   console.log(345, test);
+  //   //   setOwnPlansListData(test);
+  //   // }
+  //   console.log(4321, test);
+  //   setOwnPlansListData(test);
+  // }, [ownPlansList]);
+
+  // if (ownPlansListData) {
+  //   console.log('ownPlansListData is now true');
+  // }
+
+  // console.log(1234, ownPlansListData, ownPlansListData?.[0]);
+
+  // return ownPlansListData?.[0] ?? 'test';
 
   return (
     <>
@@ -85,12 +153,26 @@ function Dashboard(props) {
         Add New Plan
       </AddPlanBtn>
       {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
-      <PlanCollectionWrapper>
-        <SinglePlanContainer>
-          <img src="" alt="" />
-          <SinglePlanText>Plan</SinglePlanText>
-        </SinglePlanContainer>
-      </PlanCollectionWrapper>
+      <div>{ownPlansListData?.[0]}</div>
+      <div>
+        {ownPlansListData.map(
+          (plan, index) => (
+            <SinglePlanContainer key={index}>
+              <PlanMainImageContainer>
+                <img src={plan.main_image} alt="main image" />
+              </PlanMainImageContainer>
+              <SinglePlanText>{plan.title}</SinglePlanText>
+            </SinglePlanContainer>
+          )
+
+          // <SinglePlanContainer key={index}>
+          //   <PlanMainImageContainer>
+          //     <img src={plan.main_image} alt="main image" />
+          //   </PlanMainImageContainer>
+          //   <SinglePlanText>{plan.title}</SinglePlanText>
+          // </SinglePlanContainer>
+        )}
+      </div>
     </>
   );
 }
