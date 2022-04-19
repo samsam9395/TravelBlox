@@ -90,13 +90,14 @@ function FavouritePlanCard(props) {
         collectionID: planId,
         planDocId: doc.id,
       });
-      props.setCurrentPlanRef((prev) => [
-        ...prev,
-        {
-          collectionID: planId,
-          planDocId: doc.id,
-        },
-      ]);
+
+      // props.setCurrentPlanRef((prev) => [
+      //   ...prev,
+      //   {
+      //     collectionID: planId,
+      //     planDocId: doc.id,
+      //   },
+      // ]);
 
       setDocData(doc.data());
       return doc.data();
@@ -168,7 +169,7 @@ function Dashboard(props) {
         Add New Plan
       </AddPlanBtn>
       {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
-      {openEditPopUp && <EditPlanDetail currentPlanRef={currentPlanRef} />}
+      {/* {openEditPopUp && <EditPlanDetail currentPlanRef={currentPlanRef} />} */}
       {openEditPopUp && <Navigate to="/add-new-plan"></Navigate>}
 
       <PlanCollectionWrapper>

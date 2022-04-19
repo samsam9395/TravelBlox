@@ -88,6 +88,7 @@ function AddNewTimeBlock(props) {
       // location: location,
       place_id: location.place_id,
       place_name: location.name,
+      place_format_address: location.formatted_address,
       id: timeBlockRef.id,
     });
 

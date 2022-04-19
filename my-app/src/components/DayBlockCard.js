@@ -62,17 +62,16 @@ function addOneDay(date) {
   return result;
 }
 
-async function CalendarByDay(currentDayDate) {
+async function CalendarByDay(blocksListRef, currentDayDate) {
   const eventByDayList = [];
   console.log('calendar by day is rendered');
-  // const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
-  // const docSnap = await getDoc(planRef);
-  const blocksListRef = collection(
-    db,
-    'plan101',
-    'zqZZcY8RO85mFVmtHbVI',
-    'time_blocks_test'
-  );
+
+  // const blocksListRef = collection(
+  //   db,
+  //   'plan101',
+  //   'zqZZcY8RO85mFVmtHbVI',
+  //   'time_blocks_test'
+  // );
 
   const q = query(
     blocksListRef,
@@ -98,10 +97,16 @@ function DayBlockCard(props) {
   // });
   // const zoom = 4;
 
+  const blocksListRef = collection(
+    db,
+    props.collectionID,
+    props.planDocRef,
+    'time_blocks'
+  );
+
   useEffect(() => {
-    CalendarByDay(props.currentDayDate)
+    CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
-        // console.log(eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         return eventList;
@@ -126,6 +131,11 @@ function DayBlockCard(props) {
       ]);
     });
   }, [hasReturned]);
+
+  useEffect(() => {
+    console.log(dayEvents);
+  }, [dayEvents]);
+
   return (
     <>
       <h2>Day1, {props.currentDayDate.toDateString()}</h2>

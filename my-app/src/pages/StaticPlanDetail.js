@@ -30,11 +30,17 @@ import firebaseDB from '../utils/firebaseConfig';
 import DayBlockCard from '../components/DayBlockCard';
 import DayMapCard from '../components/DayMapCard';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import { useLocation } from 'react-router-dom';
 
 const db = firebaseDB();
 const UpperContainer = styled.div`
   display: flex;
   padding: 0 30px;
+`;
+
+const PlanInfoWrapper = styled.div`
+  padding: 0 30px;
+  width: 100%;
 `;
 
 const UserRightSideWrapper = styled.div`
@@ -85,10 +91,18 @@ function StaticPlanDetail() {
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
 
+  const location = useLocation();
+  const collectionID = location.state.collectionID;
+  const planDocRef = location.state.planDocRef;
+
+  //plan1650219920723
+  const planCollectionRef = doc(db, collectionID, planDocRef);
+
   useEffect(async () => {
-    const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
-    const docSnap = await getDoc(planRef);
+    // const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
+    const docSnap = await getDoc(planCollectionRef);
     const data = docSnap.data();
+    console.log(data);
 
     setPlanTitle(data.title);
     setCountry(data.country);
@@ -107,7 +121,7 @@ function StaticPlanDetail() {
     setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
   }, [endDate, startDate]);
 
-  let currentDayDate = new Date('7 Apr 2022');
+  let currentDayDate = new Date('20 Apr 2022');
 
   return (
     <>
@@ -130,8 +144,17 @@ function StaticPlanDetail() {
           </UserInfoWrapper>
         </UserRightSideWrapper>
       </UpperContainer>
+      <PlanInfoWrapper>
+        <Typography variant="h5" component="div">
+          Location: {country}
+        </Typography>
+      </PlanInfoWrapper>
       <PlanCardsWrapper>
-        <DayBlockCard currentDayDate={currentDayDate} />
+        <DayBlockCard
+          currentDayDate={currentDayDate}
+          collectionID={collectionID}
+          planDocRef={planDocRef}
+        />
       </PlanCardsWrapper>
     </>
   );

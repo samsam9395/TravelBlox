@@ -12,11 +12,11 @@ import {
   Card,
   CardMedia,
   CircularProgress,
+  Stack,
 } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
-import AddTimeBlock from './AddTimeBlock';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import OnlyDatePicker from '../components/onlyDatePicker';
@@ -34,7 +34,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -64,13 +64,15 @@ const Input = styled('input')({
 });
 
 async function saveToDataBase(
-  upperLevelUpdateRef,
+  planCollectionRef,
   collectionID,
   planDocRef,
   myEvents,
   planTitle,
   country,
-  mainImage
+  mainImage,
+  startDateValue,
+  endDateValue
 ) {
   const batch = writeBatch(db);
 
@@ -83,10 +85,12 @@ async function saveToDataBase(
     });
   });
 
-  batch.update(upperLevelUpdateRef, {
+  batch.update(planCollectionRef, {
     title: planTitle,
     country: country,
     main_image: mainImage,
+    start_date: startDateValue,
+    end_date: endDateValue,
   });
 
   await batch.commit();
@@ -96,11 +100,10 @@ function DeleteBlockInMylist(prev, id) {
   const indexOfObject = prev.findIndex((timeblock) => {
     return timeblock.id === id;
   });
-  console.log(prev);
-  console.log(indexOfObject);
+
   // let updateList = [...prev].slice(indexOfObject, 1);
   let updateList = prev.splice(indexOfObject, 1);
-  console.log(prev);
+
   return prev;
 }
 
@@ -135,16 +138,26 @@ function EditPlanDetail(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [startDateValue, setStartDateValue] = useState(0);
   const [endDateValue, setEndDateValue] = useState(0);
-
+  //React Route
   const location = useLocation();
   const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocId;
 
-  const upperLevelUpdateRef = doc(db, collectionID, planDocRef);
+  const planCollectionRef = doc(db, collectionID, planDocRef);
   const blocksListRef = collection(db, collectionID, planDocRef, 'time_blocks');
 
+  const navigate = useNavigate();
+  const redirectToStatic = () => {
+    navigate('/static-plan-detail', {
+      state: {
+        collectionID: collectionID,
+        planDocRef: planDocRef,
+      },
+    });
+  };
+
   useEffect(() => {
-    console.log(console.log(location.state));
+    console.log(console.log('location state is', location.state));
   }, []);
 
   useEffect(async () => {
@@ -156,13 +169,13 @@ function EditPlanDetail(props) {
   }, []);
 
   useEffect(async () => {
-    const docSnap = await getDoc(upperLevelUpdateRef);
+    const docSnap = await getDoc(planCollectionRef);
     console.log(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
     // if (docSnap.data().country) {
     //   setCountry(docSnap.data().country);
     // }
-    console.log(docSnap.data().start_date);
+    // console.log(docSnap.data().start_date);
     setMainImage(docSnap.data().main_image);
     setStartDateValue(new Date(docSnap.data().start_date.seconds * 1000));
     setEndDateValue(new Date(docSnap.data().end_date.seconds * 1000));
@@ -208,7 +221,7 @@ function EditPlanDetail(props) {
 
   return (
     <Wrapper>
-      {showPopUp ? (
+      {showPopUp && (
         <AddNewTimeBlock
           setShowPopUp={setShowPopUp}
           showPopUp={showPopUp}
@@ -218,19 +231,15 @@ function EditPlanDetail(props) {
           startDateValue={startDateValue}
           endDateValue={endDateValue}
         />
-      ) : // <AddTimeBlock
-      //   setShowPopUp={setShowPopUp}
-      //   showPopUp={showPopUp}
-      //   collectionID={collectionID}
-      //   planDocRef={planDocRef}
-      // />
-      null}
+      )}
       {showEditPopUp ? (
         <EditTimeBlock
           showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
+          collectionID={collectionID}
+          planDocRef={planDocRef}
         />
       ) : null}
       <TopContainer>
@@ -306,34 +315,41 @@ function EditPlanDetail(props) {
           setCurrentSelectTimeId={setCurrentSelectTimeId}
         />
       </CalendarContainer>
-      <Button
-        variant="contained"
-        onClick={() => {
-          setShowPopUp(true);
-        }}>
-        Add new event
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => {
-          try {
-            saveToDataBase(
-              upperLevelUpdateRef,
-              collectionID,
-              planDocRef,
-              myEvents,
-              planTitle,
-              country,
-              mainImage
-            );
-            alert('Saved!');
-          } catch (error) {
-            console.log(error);
-            alert('Oops!Something went wrong, please try again!');
-          }
-        }}>
-        Save
-      </Button>
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setShowPopUp(true);
+          }}>
+          Add new event
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            try {
+              saveToDataBase(
+                planCollectionRef,
+                collectionID,
+                planDocRef,
+                myEvents,
+                planTitle,
+                country,
+                mainImage,
+                startDateValue,
+                endDateValue
+              );
+              alert('Saved!');
+            } catch (error) {
+              console.log(error);
+              alert('Oops!Something went wrong, please try again!');
+            }
+          }}>
+          Save
+        </Button>
+        <Button variant="contained" onClick={() => redirectToStatic()}>
+          Publish
+        </Button>
+      </Stack>
     </Wrapper>
   );
 }

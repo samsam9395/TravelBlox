@@ -8,7 +8,6 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import AddTimeBlock from './pages/AddTimeBlock';
 import EditPlanDetail from './pages/EditPlanDetail';
 import StaticPlanDetail from './pages/StaticPlanDetail';
 import TestMap from './components/TestMap';
@@ -22,7 +21,6 @@ function App() {
       {/* <Header /> */}
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/add-time-block" element={<AddTimeBlock />} />
         <Route path="/edit-plan-detail" element={<EditPlanDetail />} />
         <Route path="/add-new-plan" element={<AddNewPlan />} />
         <Route path="/static-plan-detail" element={<StaticPlanDetail />} />

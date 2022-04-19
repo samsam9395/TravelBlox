@@ -18,7 +18,6 @@ import {
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
-import AddTimeBlock from './AddTimeBlock';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import EditNewTimeBlock from './EditNewTimeBlock';
@@ -167,7 +166,7 @@ function AddNewPlan() {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
-  const [mainImage, setMainImage] = useState(null);
+  const [mainImage, setMainImage] = useState('');
   const [showPopUp, setShowPopUp] = useState(false);
   const [myEvents, setMyEvents] = useState([]);
   const [showEditPopUp, setShowEditPopUp] = useState(false);

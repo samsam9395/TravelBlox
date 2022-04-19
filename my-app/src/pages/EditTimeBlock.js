@@ -57,20 +57,13 @@ const FormsContainer = styled.div`
 const db = firebaseDB();
 
 async function UpdateToDataBase(
+  timeBlockRef,
   blockTitle,
   description,
   startTimeValue,
   endTimeValue,
-  location,
-  id
+  location
 ) {
-  const timeBlockRef = doc(
-    db,
-    'plan101',
-    'zqZZcY8RO85mFVmtHbVI',
-    'time_blocks_test',
-    id
-  );
   await setDoc(
     timeBlockRef,
     {
@@ -89,14 +82,7 @@ async function UpdateToDataBase(
   console.log('successfully post to firebase!');
 }
 
-async function retreiveFromDataBase(id, setDataReady, setInitialTimeBlockData) {
-  const timeBlockRef = doc(
-    db,
-    'plan101',
-    'zqZZcY8RO85mFVmtHbVI',
-    'time_blocks_test',
-    id
-  );
+async function retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData) {
   const timeBlockSnap = await getDoc(timeBlockRef);
 
   if (timeBlockSnap.exists()) {
@@ -107,9 +93,7 @@ async function retreiveFromDataBase(id, setDataReady, setInitialTimeBlockData) {
     if (setInitialTimeBlockData) {
       setInitialTimeBlockData(initialData);
     }
-    if (setDataReady) {
-      setDataReady(true);
-    }
+
     return initialData;
   } else {
     console.log('No such document!');
@@ -122,11 +106,15 @@ async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
   setShowEditPopUp(false);
 }
 
+// collectionID={collectionID}
+//planDocRef={planDocRef}
+
 function EditTimeBlock(props) {
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [locationName, setLocationName] = useState('');
   const [location, setLocation] = useState('');
+  const [helperInitAddress, setHelperInitAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
     props.currentSelectTimeData.start || null
@@ -134,28 +122,24 @@ function EditTimeBlock(props) {
   const [endTimeValue, setEndTimeValue] = useState(
     props.currentSelectTimeData.end || null
   );
-  const [dataReady, setDataReady] = useState(false);
 
   const timeBlockRef = doc(
     db,
-    'plan101',
-    'zqZZcY8RO85mFVmtHbVI',
-    'time_blocks_test',
+    props.collectionID,
+    props.planDocRef,
+    'time_blocks',
     props.currentSelectTimeId
   );
 
   useEffect(() => {
-    retreiveFromDataBase(
-      props.currentSelectTimeId,
-      setDataReady,
-      setInitialTimeBlockData
-    );
+    retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData);
   }, []);
 
   useEffect(() => {
     setDescription(initialTimeBlockData.text);
     setBlockTitle(initialTimeBlockData.title);
     //  setLocation(initialTimeBlockData.place_id);
+    setHelperInitAddress(initialTimeBlockData.formatted_address);
     setLocationName(initialTimeBlockData.place_name);
   }, [initialTimeBlockData]);
 
@@ -204,18 +188,8 @@ function EditTimeBlock(props) {
             <AutoCompleteInput
               setLocation={setLocation}
               locationName={locationName}
+              helperInitAddress={helperInitAddress}
             />
-            {/* <TextField
-              required
-              sx={{ m: 1, minWidth: 80 }}
-              size="small"
-              label="Address"
-              variant="outlined"
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-              }}
-            /> */}
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
@@ -236,12 +210,12 @@ function EditTimeBlock(props) {
               if (location && blockTitle && startTimeValue && endTimeValue) {
                 try {
                   UpdateToDataBase(
+                    timeBlockRef,
                     blockTitle,
                     description,
                     startTimeValue,
                     endTimeValue,
-                    location,
-                    props.currentSelectTimeId
+                    location
                   );
                   props.setShowEditPopUp(false);
                   alert('Successfully updated!');

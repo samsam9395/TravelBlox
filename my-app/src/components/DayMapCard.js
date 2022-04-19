@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import styled from 'styled-components';
 import GoogleAPI from '../utils/GoogleAPI';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
-import { GoogleMap, LoadScript, useJsApiLoader } from '@react-google-maps/api';
 
 const ApiKey = GoogleAPI();
 const center = { lat: -33.8666, lng: 151.1958 };
@@ -21,10 +20,35 @@ const MapContainer = styled.div`
   width: 450px;
 `;
 
+const Marker = (position) => {
+  const [marker, setMarker] = React.useState();
+
+  React.useEffect(() => {
+    if (!marker) {
+      setMarker(new window.google.maps.Marker());
+    }
+
+    // remove marker from map on unmount
+    return () => {
+      if (marker) {
+        marker.setMap(null);
+      }
+    };
+  }, [marker]);
+
+  React.useEffect(() => {
+    if (marker) {
+      marker.setOptions(position);
+    }
+  }, [marker, position]);
+  return null;
+};
+
 const Map = (props) => {
   const ref = useRef(null);
   const [map, setMap] = useState();
   const [placeIdList, setPlaceIdList] = useState([]);
+
   // console.log(props.dayEvents);
 
   useEffect(() => {
@@ -51,6 +75,46 @@ const Map = (props) => {
     const directionsService = new window.google.maps.DirectionsService();
     const directionsRenderer = new window.google.maps.DirectionsRenderer();
 
+    if (placeIdList && placeIdList.length === 1) {
+      props.setMarkerPosition({ placeId: placeIdList });
+      // const marker = new google.maps.Marker({
+      //   position: { placeId: placeIdList },
+      //   map: map,
+      // });
+
+      const directionsRequest = {
+        origin: { placeId: placeIdList[0] },
+        destination: { placeId: placeIdList.at(-1) },
+        provideRouteAlternatives: false,
+        travelMode: 'WALKING',
+      };
+      directionsRenderer.setMap(map);
+
+      directionsService.route(directionsRequest).then((result) => {
+        if (result.status === 'OK') {
+          directionsRenderer.setDirections(result);
+        } else console.log('something wrong');
+      });
+
+      props.setHasMarker(true);
+    }
+
+    if (placeIdList && placeIdList.length === 2) {
+      const directionsRequest = {
+        origin: { placeId: placeIdList[0] },
+        destination: { placeId: placeIdList.at(-1) },
+        provideRouteAlternatives: false,
+        travelMode: 'WALKING',
+      };
+      directionsRenderer.setMap(map);
+
+      directionsService.route(directionsRequest).then((result) => {
+        if (result.status === 'OK') {
+          directionsRenderer.setDirections(result);
+        } else console.log('something wrong');
+      });
+    }
+
     if (placeIdList && placeIdList.length > 2) {
       const waypointsList = placeIdList.slice(1).slice(0, -1);
       const waypoints = [];
@@ -61,9 +125,10 @@ const Map = (props) => {
           stopover: true,
         });
       });
-      console.log(waypoints); //ChIJJQ6Ck8zFyIARfxB2vQVF2Z0
-      console.log(placeIdList[0]); //ChIJ69QoNDjEyIARTIMmDF0Z4kM
-      console.log(placeIdList.at(-1)); //ChIJVY-sauoz3YARb5koICraTBw
+      // console.log(waypoints); //ChIJJQ6Ck8zFyIARfxB2vQVF2Z0
+      // console.log(placeIdList[0]); //ChIJ69QoNDjEyIARTIMmDF0Z4kM
+      // console.log(placeIdList.at(-1)); //ChIJVY-sauoz3YARb5koICraTBw
+
       const directionsRequest = {
         origin: { placeId: placeIdList[0] },
         destination: { placeId: placeIdList.at(-1) },
@@ -98,10 +163,20 @@ const Map = (props) => {
 
 function DayMapCard(props) {
   console.log('this is rendered');
+  const [hasMarker, setHasMarker] = useState(false);
+  const [markerPosition, setMarkerPosition] = useState('');
+
   return (
     <DayMapContainer>
       <Wrapper apiKey={ApiKey}>
-        <Map center={center} zoom={zoom} dayEvents={props.dayEvents} />
+        <Map
+          center={center}
+          zoom={zoom}
+          dayEvents={props.dayEvents}
+          setHasMarker={setHasMarker}
+          setMarkerPosition={setMarkerPosition}
+        />
+        {hasMarker && <Marker position={markerPosition} />}
       </Wrapper>
     </DayMapContainer>
   );
