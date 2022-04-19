@@ -62,7 +62,6 @@ const CalendarContainer = styled.div`
 const Input = styled('input')({
   display: 'none',
 });
-
 async function saveToDataBase(
   planCollectionRef,
   collectionID,
@@ -219,6 +218,8 @@ function EditPlanDetail(props) {
     });
   }, []);
 
+  console.log(myEvents);
+
   return (
     <Wrapper>
       {showPopUp && (
@@ -313,6 +314,7 @@ function EditPlanDetail(props) {
           setShowEditPopUp={setShowEditPopUp}
           setCurrentSelectTimeData={setCurrentSelectTimeData}
           setCurrentSelectTimeId={setCurrentSelectTimeId}
+          startDateValue={startDateValue}
         />
       </CalendarContainer>
       <Stack direction="row" alignItems="center" spacing={2}>

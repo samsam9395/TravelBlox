@@ -145,7 +145,7 @@ const ButtonContainer = styled.div`
 async function addPlanToUserInfo(currentUserId, createCollectionId) {
   try {
     const userInfoRef = doc(
-      collection(db, 'userId', currentUserId, 'own plans')
+      collection(db, 'userId', currentUserId, 'own_plans')
     );
 
     await setDoc(
