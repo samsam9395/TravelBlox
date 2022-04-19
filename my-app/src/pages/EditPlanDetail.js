@@ -17,6 +17,7 @@ import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
 import AddTimeBlock from './AddTimeBlock';
+import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import OnlyDatePicker from '../components/onlyDatePicker';
 import {
@@ -208,21 +209,22 @@ function EditPlanDetail(props) {
   return (
     <Wrapper>
       {showPopUp ? (
-        //    <AddNewTimeBlock
-        //    setShowPopUp={setShowPopUp}
-        //    showPopUp={showPopUp}
-        //    collectionID={collectionID}
-        //    planDocRef={planDocRef}
-        //    setAddedTimeBlock={setAddedTimeBlock}
-        //    startDateValue={startDateValue}
-        //  />
-        <AddTimeBlock
+        <AddNewTimeBlock
           setShowPopUp={setShowPopUp}
           showPopUp={showPopUp}
           collectionID={collectionID}
           planDocRef={planDocRef}
+          //  setAddedTimeBlock={setAddedTimeBlock}
+          startDateValue={startDateValue}
+          endDateValue={endDateValue}
         />
-      ) : null}
+      ) : // <AddTimeBlock
+      //   setShowPopUp={setShowPopUp}
+      //   showPopUp={showPopUp}
+      //   collectionID={collectionID}
+      //   planDocRef={planDocRef}
+      // />
+      null}
       {showEditPopUp ? (
         <EditTimeBlock
           showEditPopUp={showEditPopUp}

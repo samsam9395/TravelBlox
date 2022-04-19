@@ -166,7 +166,6 @@ function AddNewPlan() {
   const [user, setUser] = useState('');
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  const [countryLatlng, setCountryLatlng] = useState('');
   const [countryList, setCountryList] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);
@@ -178,8 +177,8 @@ function AddNewPlan() {
   const [hasCreatedCollection, setHasCreatedCollection] = useState(false);
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [collectionRef, setCollectionRef] = useState(null);
-  const [startDateValue, setStartDateValue] = useState(null);
-  const [endDateValue, setEndDateValue] = useState(null);
+  const [startDateValue, setStartDateValue] = useState(0);
+  const [endDateValue, setEndDateValue] = useState(0);
   const [planDocRef, setPlanDocRef] = useState('');
   const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
