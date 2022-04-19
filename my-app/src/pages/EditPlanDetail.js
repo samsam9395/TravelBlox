@@ -18,6 +18,7 @@ import './planDetail.scss';
 import PlanCalendar from './Calendar';
 import AddTimeBlock from './AddTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
+import OnlyDatePicker from '../components/onlyDatePicker';
 import {
   doc,
   getDoc,
@@ -61,25 +62,26 @@ const Input = styled('input')({
   display: 'none',
 });
 
-async function saveToDataBase(myEvents, planTitle, country, mainImage) {
+async function saveToDataBase(
+  upperLevelUpdateRef,
+  collectionID,
+  planDocRef,
+  myEvents,
+  planTitle,
+  country,
+  mainImage
+) {
   const batch = writeBatch(db);
 
   myEvents.forEach((singleEvent) => {
     const id = singleEvent.id;
-    let updateRef = doc(
-      db,
-      'plan101',
-      'zqZZcY8RO85mFVmtHbVI',
-      'time_blocks_test',
-      id
-    );
+    let updateRef = doc(db, collectionID, planDocRef, 'time_blocks', id);
     batch.update(updateRef, {
       end: singleEvent.end,
       start: singleEvent.start,
     });
   });
 
-  const upperLevelUpdateRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
   batch.update(upperLevelUpdateRef, {
     title: planTitle,
     country: country,
@@ -117,10 +119,11 @@ function handleImageUpload(e, setMainImage) {
   };
 }
 
-function EditPlanDetail() {
+//currentPlanRef
+
+function EditPlanDetail(props) {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  const [countryLatlng, setCountryLatlng] = useState('');
   const [countryList, setCountryList] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);
@@ -129,6 +132,19 @@ function EditPlanDetail() {
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [startDateValue, setStartDateValue] = useState(0);
+  const [endDateValue, setEndDateValue] = useState(0);
+
+  const location = useLocation();
+  const collectionID = location.state.collectionID;
+  const planDocRef = location.state.planDocId;
+
+  const upperLevelUpdateRef = doc(db, collectionID, planDocRef);
+  const blocksListRef = collection(db, collectionID, planDocRef, 'time_blocks');
+
+  useEffect(() => {
+    console.log(console.log(location.state));
+  }, []);
 
   useEffect(async () => {
     const list = await (
@@ -139,21 +155,19 @@ function EditPlanDetail() {
   }, []);
 
   useEffect(async () => {
-    const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
-    const docSnap = await getDoc(planRef);
+    const docSnap = await getDoc(upperLevelUpdateRef);
+    console.log(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
-    setCountry(docSnap.data().country);
+    // if (docSnap.data().country) {
+    //   setCountry(docSnap.data().country);
+    // }
+    console.log(docSnap.data().start_date);
     setMainImage(docSnap.data().main_image);
+    setStartDateValue(new Date(docSnap.data().start_date.seconds * 1000));
+    setEndDateValue(new Date(docSnap.data().end_date.seconds * 1000));
   }, []);
 
   useEffect(async () => {
-    const blocksListRef = collection(
-      db,
-      'plan101',
-      'zqZZcY8RO85mFVmtHbVI',
-      'time_blocks_test'
-    );
-
     onSnapshot(blocksListRef, (doc) => {
       doc.docChanges().forEach((change) => {
         if (change.type === 'added') {
@@ -194,7 +208,20 @@ function EditPlanDetail() {
   return (
     <Wrapper>
       {showPopUp ? (
-        <AddTimeBlock setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
+        //    <AddNewTimeBlock
+        //    setShowPopUp={setShowPopUp}
+        //    showPopUp={showPopUp}
+        //    collectionID={collectionID}
+        //    planDocRef={planDocRef}
+        //    setAddedTimeBlock={setAddedTimeBlock}
+        //    startDateValue={startDateValue}
+        //  />
+        <AddTimeBlock
+          setShowPopUp={setShowPopUp}
+          showPopUp={showPopUp}
+          collectionID={collectionID}
+          planDocRef={planDocRef}
+        />
       ) : null}
       {showEditPopUp ? (
         <EditTimeBlock
@@ -229,16 +256,22 @@ function EditPlanDetail() {
                 onChange={(e) => {
                   setCountry(e.target.value);
                 }}>
-                {countryList.map((country, index) => {
+                {countryList.map((countryData, index) => {
                   return (
-                    <MenuItem value={country.name.common} key={index}>
-                      {country.flag} {country.name.common}
+                    <MenuItem value={countryData.name.common} key={index}>
+                      {countryData.flag} {countryData.name.common}
                     </MenuItem>
                   );
                 })}
               </Select>
             )}
           </FormControl>
+          <OnlyDatePicker
+            setStartDateValue={setStartDateValue}
+            startDateValue={startDateValue}
+            setEndDateValue={setEndDateValue}
+            endDateValue={endDateValue}
+          />
         </TitleSection>
         <Card sx={{ width: 400 }}>
           <CardMedia component="img" image={mainImage} height="200" />
@@ -280,7 +313,23 @@ function EditPlanDetail() {
       </Button>
       <Button
         variant="contained"
-        onClick={() => saveToDataBase(myEvents, planTitle, country, mainImage)}>
+        onClick={() => {
+          try {
+            saveToDataBase(
+              upperLevelUpdateRef,
+              collectionID,
+              planDocRef,
+              myEvents,
+              planTitle,
+              country,
+              mainImage
+            );
+            alert('Saved!');
+          } catch (error) {
+            console.log(error);
+            alert('Oops!Something went wrong, please try again!');
+          }
+        }}>
         Save
       </Button>
     </Wrapper>

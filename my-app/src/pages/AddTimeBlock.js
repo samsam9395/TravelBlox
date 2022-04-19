@@ -59,16 +59,13 @@ const FormsContainer = styled.div`
 const db = firebaseDB();
 
 async function addToDataBase(
+  timeBlockRef,
   blockTitle,
   description,
   startTimeValue,
   endTimeValue,
   location
 ) {
-  const timeBlockRef = doc(
-    collection(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI', 'time_blocks_test')
-  );
-
   await setDoc(timeBlockRef, {
     title: blockTitle,
     text: description,
@@ -81,6 +78,8 @@ async function addToDataBase(
   });
 }
 
+//collectionID={collectionID} planDocRef={planDocRef}
+
 function AddTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
   //   const [address, setAddress] = useState('');
@@ -89,6 +88,10 @@ function AddTimeBlock(props) {
   const [endTimeValue, setEndTimeValue] = useState(null);
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [location, setLocation] = useState('');
+
+  const timeBlockRef = doc(
+    collection(db, props.collectionID, props.planDocRef, 'time_blocks')
+  );
 
   return (
     <>
@@ -122,17 +125,6 @@ function AddTimeBlock(props) {
               endTimeValue={endTimeValue}
             />
             <AutoCompleteInput setLocation={setLocation} />
-            {/* <TextField
-              required
-              sx={{ m: 1, minWidth: 80 }}
-              size="small"
-              label="Address"
-              variant="outlined"
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-              }}
-            /> */}
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
@@ -152,6 +144,7 @@ function AddTimeBlock(props) {
             onClick={(e) => {
               if (blockTitle && location && startTimeValue && endTimeValue) {
                 addToDataBase(
+                  timeBlockRef,
                   blockTitle,
                   description,
                   startTimeValue,

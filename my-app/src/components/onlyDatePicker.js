@@ -18,6 +18,7 @@ export default function OnlyDatePicker(props) {
         value={props.startDateValue}
         onChange={(e) => {
           props.setStartDateValue(e);
+          console.log(e);
         }}
         renderInput={(params) => <TextField {...params} />}
       />

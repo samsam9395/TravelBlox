@@ -17,7 +17,7 @@ import {
   Stack,
 } from '@mui/material';
 import EditPlanDetail from './EditPlanDetail';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
 import {
   getDocs,
@@ -72,21 +72,52 @@ const PlanMainImageContainer = styled.div`
 
 function FavouritePlanCard(props) {
   const [docData, setDocData] = useState(null);
+  const [testCurrentPlanRef, setTestCurrentPlanRef] = useState(null);
   const planId = props.ownPlanId;
+
+  const navigate = useNavigate();
+
+  const redirectToEdit = () => {
+    navigate('/edit-plan-detail', { state: testCurrentPlanRef });
+  };
 
   useEffect(async () => {
     const ref = collection(db, planId);
     const ownPlanData = await getDocs(ref);
 
     ownPlanData.forEach((doc) => {
+      setTestCurrentPlanRef({
+        collectionID: planId,
+        planDocId: doc.id,
+      });
+      props.setCurrentPlanRef((prev) => [
+        ...prev,
+        {
+          collectionID: planId,
+          planDocId: doc.id,
+        },
+      ]);
+
       setDocData(doc.data());
       return doc.data();
     });
   }, [planId]);
 
+  // function redirectToEdit() {
+  //   () => navigate('/edit-plan-detail'),
+  //     {
+  //       state: { testCurrentPlanRef },
+  //     };
+  // }
+
   return (
     docData && (
-      <SinglePlanContainer>
+      <SinglePlanContainer
+        onClick={() => redirectToEdit()}
+        // onClick={() => {
+        //   props.setOpenEditPopUp(!props.openEditPopUp);
+        // }}
+      >
         <PlanMainImageContainer>
           <SinglePlanText>{docData.title}</SinglePlanText>
           <img src={docData.main_image} alt="main image" />
@@ -94,14 +125,14 @@ function FavouritePlanCard(props) {
       </SinglePlanContainer>
     )
   );
-
-  return null;
 }
 
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState(null);
+  const [openEditPopUp, setOpenEditPopUp] = useState(false);
+  const [currentPlanRef, setCurrentPlanRef] = useState([]);
 
   useEffect(async () => {
     const user = localStorage.getItem('userEmail');
@@ -121,6 +152,9 @@ function Dashboard(props) {
     <>
       <TopSectionWrapper>
         <Avatar
+          onClick={() => {
+            console.log('clicked');
+          }}
           alt="Remy Sharp"
           src="/static/images/avatar/1.jpg"
           sx={{ width: 56, height: 56 }}
@@ -134,11 +168,19 @@ function Dashboard(props) {
         Add New Plan
       </AddPlanBtn>
       {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
+      {openEditPopUp && <EditPlanDetail currentPlanRef={currentPlanRef} />}
+      {openEditPopUp && <Navigate to="/add-new-plan"></Navigate>}
 
       <PlanCollectionWrapper>
         {ownPlansIdList &&
-          ownPlansIdList.map((ownPlanId, index) => (
-            <FavouritePlanCard ownPlanId={ownPlanId} key={index} />
+          ownPlansIdList.map((ownPlanId) => (
+            <FavouritePlanCard
+              ownPlanId={ownPlanId}
+              key={ownPlanId}
+              setOpenEditPopUp={setOpenEditPopUp}
+              openEditPopUp={openEditPopUp}
+              setCurrentPlanRef={setCurrentPlanRef}
+            />
           ))}
       </PlanCollectionWrapper>
     </>
