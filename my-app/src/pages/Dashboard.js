@@ -70,6 +70,15 @@ const PlanMainImageContainer = styled.div`
   width: 100%;
 `;
 
+const ImageContainer = styled.div`
+  height: 300px;
+  width: 300px;
+`;
+
+const MainImage = styled.img`
+  max-height: 100%;
+`;
+
 function FavouritePlanCard(props) {
   const [docData, setDocData] = useState(null);
   const [testCurrentPlanRef, setTestCurrentPlanRef] = useState(null);
@@ -91,37 +100,21 @@ function FavouritePlanCard(props) {
         planDocId: doc.id,
       });
 
-      // props.setCurrentPlanRef((prev) => [
-      //   ...prev,
-      //   {
-      //     collectionID: planId,
-      //     planDocId: doc.id,
-      //   },
-      // ]);
-
       setDocData(doc.data());
       return doc.data();
     });
   }, [planId]);
 
-  // function redirectToEdit() {
-  //   () => navigate('/edit-plan-detail'),
-  //     {
-  //       state: { testCurrentPlanRef },
-  //     };
-  // }
-
   return (
     docData && (
-      <SinglePlanContainer
-        onClick={() => redirectToEdit()}
-        // onClick={() => {
-        //   props.setOpenEditPopUp(!props.openEditPopUp);
-        // }}
-      >
+      <SinglePlanContainer onClick={() => redirectToEdit()}>
         <PlanMainImageContainer>
           <SinglePlanText>{docData.title}</SinglePlanText>
-          <img src={docData.main_image} alt="main image" />
+          <ImageContainer>
+            <MainImage src={docData.main_image} alt="main image"></MainImage>
+          </ImageContainer>
+
+          {/* <ImageContainer src={docData.main_image} alt="main image" /> */}
         </PlanMainImageContainer>
       </SinglePlanContainer>
     )

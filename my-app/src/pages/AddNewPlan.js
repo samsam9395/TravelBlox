@@ -20,7 +20,6 @@ import './planDetail.scss';
 import PlanCalendar from './Calendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
-import EditNewTimeBlock from './EditNewTimeBlock';
 import {
   doc,
   getDoc,
@@ -300,7 +299,15 @@ function AddNewPlan() {
         />
       ) : null}
       {showEditPopUp ? (
-        <EditNewTimeBlock
+        // <EditNewTimeBlock
+        //   showEditPopUp={showEditPopUp}
+        //   setShowEditPopUp={setShowEditPopUp}
+        //   currentSelectTimeData={currentSelectTimeData}
+        //   currentSelectTimeId={currentSelectTimeId}
+        //   collectionID={collectionID}
+        //   planDocRef={planDocRef}
+        // />
+        <EditTimeBlock
           showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
