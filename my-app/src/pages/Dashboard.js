@@ -21,6 +21,7 @@ import { Link, Navigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
 import {
   getDocs,
+  getDoc,
   collection,
   query,
   where,
@@ -69,72 +70,52 @@ const PlanMainImageContainer = styled.div`
   width: 100%;
 `;
 
+function FavouritePlanCard(props) {
+  const [docData, setDocData] = useState(null);
+  const planId = props.ownPlanId;
+
+  useEffect(async () => {
+    const ref = collection(db, planId);
+    const ownPlanData = await getDocs(ref);
+
+    ownPlanData.forEach((doc) => {
+      setDocData(doc.data());
+      return doc.data();
+    });
+  }, [planId]);
+
+  return (
+    docData && (
+      <SinglePlanContainer>
+        <PlanMainImageContainer>
+          <SinglePlanText>{docData.title}</SinglePlanText>
+          <img src={docData.main_image} alt="main image" />
+        </PlanMainImageContainer>
+      </SinglePlanContainer>
+    )
+  );
+
+  return null;
+}
+
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
-  const [hasRetreived, sethasRetreived] = useState(false);
-  const [ownPlansList, setOwnPlansList] = useState([]);
-  const [ownPlansListData, setOwnPlansListData] = useState([]);
+  const [ownPlansIdList, setOwnPlansIdList] = useState(null);
 
   useEffect(async () => {
     const user = localStorage.getItem('userEmail');
     setCurrentUserId(localStorage.getItem('userEmail'));
 
     const ref = collection(db, 'userId', user, 'own_plans');
-
     const plansList = await getDocs(ref);
 
-    // setOwnPlansList(plansList);
-    console.log('planlist  run');
-    const test = [];
+    const list = [];
     plansList.forEach((plan) => {
-      console.log('planlistData  run');
-      console.log(plan);
-      console.log(plan.data().collection_id);
-      // setOwnPlansList(plansList);
-      test.push(plan.data().collection_id);
+      list.push(plan.data().collection_id);
     });
-    // console.log(ownPlansListData);
-    // console.log(typeof ownPlansList);
-    // if (ownPlansList !== []) {
-    //   console.log(123, ownPlansList);
-    //   const test = ownPlansList.map((plan) => plan.data().collection_id);
-    //   console.log(345, test);
-    //   setOwnPlansListData(test);
-    // }
-    console.log(4321, test);
-    setOwnPlansListData(test);
+    setOwnPlansIdList(list);
   }, []);
-
-  // useEffect(() => {
-  //   // console.log(123, ownPlansList);
-  //   const test = [];
-  //   ownPlansList.forEach((plan) => {
-  //     console.log('planlistData  run');
-  //     console.log(plan);
-  //     console.log(plan.data().collection_id);
-  //     // setOwnPlansList(plansList);
-  //     test.push(plan.data().collection_id);
-  //   });
-  //   // console.log(ownPlansListData);
-  //   console.log(typeof ownPlansList);
-  //   // if (ownPlansList !== []) {
-  //   //   console.log(123, ownPlansList);
-  //   //   const test = ownPlansList.map((plan) => plan.data().collection_id);
-  //   //   console.log(345, test);
-  //   //   setOwnPlansListData(test);
-  //   // }
-  //   console.log(4321, test);
-  //   setOwnPlansListData(test);
-  // }, [ownPlansList]);
-
-  // if (ownPlansListData) {
-  //   console.log('ownPlansListData is now true');
-  // }
-
-  // console.log(1234, ownPlansListData, ownPlansListData?.[0]);
-
-  // return ownPlansListData?.[0] ?? 'test';
 
   return (
     <>
@@ -153,26 +134,13 @@ function Dashboard(props) {
         Add New Plan
       </AddPlanBtn>
       {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
-      <div>{ownPlansListData?.[0]}</div>
-      <div>
-        {ownPlansListData.map(
-          (plan, index) => (
-            <SinglePlanContainer key={index}>
-              <PlanMainImageContainer>
-                <img src={plan.main_image} alt="main image" />
-              </PlanMainImageContainer>
-              <SinglePlanText>{plan.title}</SinglePlanText>
-            </SinglePlanContainer>
-          )
 
-          // <SinglePlanContainer key={index}>
-          //   <PlanMainImageContainer>
-          //     <img src={plan.main_image} alt="main image" />
-          //   </PlanMainImageContainer>
-          //   <SinglePlanText>{plan.title}</SinglePlanText>
-          // </SinglePlanContainer>
-        )}
-      </div>
+      <PlanCollectionWrapper>
+        {ownPlansIdList &&
+          ownPlansIdList.map((ownPlanId, index) => (
+            <FavouritePlanCard ownPlanId={ownPlanId} key={index} />
+          ))}
+      </PlanCollectionWrapper>
     </>
   );
 }
