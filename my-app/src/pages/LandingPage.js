@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
 import styled from 'styled-components';
 import {
   getFirestore,
@@ -52,7 +50,6 @@ function LandingPage() {
 
   return (
     <>
-      <Header />
       <MainImage src={mainImage} />
       <Login
         setHasSignedIn={setHasSignedIn}
@@ -61,7 +58,6 @@ function LandingPage() {
         setUserId={setUserId}
       />
       {canRedirect && <Navigate to="/dashboard"></Navigate>}
-      <Footer />
     </>
   );
 }

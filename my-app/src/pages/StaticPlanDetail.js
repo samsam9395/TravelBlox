@@ -68,20 +68,23 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
-async function handleFavAction(collectionID) {
+async function handleFavAction(collectionID, author) {
   const currentUserEmail = localStorage.getItem('userEmail');
   console.log(currentUserEmail);
   console.log(collectionID);
 
-  const favRef = doc(collection(db, 'userId', currentUserEmail, 'fav_plans'));
-
-  try {
-    await setDoc(favRef, {
-      fav_collection_id: collectionID,
-    });
-    alert('Successfully favourite this plan!');
-  } catch (error) {
-    console.log(error);
+  if (currentUserEmail === author) {
+    alert('Do not favourite your own plan!');
+  } else {
+    const favRef = doc(collection(db, 'userId', currentUserEmail, 'fav_plans'));
+    try {
+      await setDoc(favRef, {
+        fav_collection_id: collectionID,
+      });
+      alert('Successfully favourite this plan!');
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
@@ -166,7 +169,7 @@ function StaticPlanDetail() {
         </Typography>
         <Button
           variant="contained"
-          onClick={() => handleFavAction(collectionID)}>
+          onClick={() => handleFavAction(collectionID, author)}>
           Favourite this plan
         </Button>
       </PlanInfoWrapper>

@@ -115,11 +115,13 @@ function Allplans() {
   }, []);
 
   return (
-    <PlanCollectionWrapper>
-      {allPlansList.map((planInfo, index) => (
-        <FavPlanCard planInfo={planInfo} key={index} />
-      ))}
-    </PlanCollectionWrapper>
+    <>
+      <PlanCollectionWrapper>
+        {allPlansList.map((planInfo, index) => (
+          <FavPlanCard planInfo={planInfo} key={index} />
+        ))}
+      </PlanCollectionWrapper>
+    </>
   );
 }
 
