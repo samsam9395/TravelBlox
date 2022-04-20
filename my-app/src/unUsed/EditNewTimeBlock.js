@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  TextField,
-  Button,
-  IconButton,
-  Autocomplete,
-  CardMedia,
-  Card,
-  Box,
-} from '@mui/material';
-import { Delete, Close, PhotoCamera } from '@mui/icons-material';
+import { TextField, Button, IconButton, Autocomplete } from '@mui/material';
+import { Delete, Close } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
@@ -60,67 +52,67 @@ const FormsContainer = styled.div`
   flex-direction: column;
   display: flex;
   margin: 20px 0 40px 0;
-  overflow: auto;
 `;
 
 const db = firebaseDB();
 
-const Input = styled('input')({
-  display: 'none',
-});
-
-const TimeBlockImgContainer = styled.div`
-  width: 100%;
-  margin-top: 30px;
-  margin-bottom: 30px;
-`;
-
-function handleImageUpload(e, setTimeBlockImage) {
-  console.log(e.target.files[0]);
-  const reader = new FileReader();
-  if (e) {
-    reader.readAsDataURL(e.target.files[0]);
-  }
-
-  reader.onload = function () {
-    // console.log(reader.result); //base64encoded string
-    setTimeBlockImage(reader.result);
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-  };
-}
-
 async function UpdateToDataBase(
-  timeBlockRef,
   blockTitle,
   description,
   startTimeValue,
   endTimeValue,
   location,
-  timeBlockImage
+  locationId,
+  locationName,
+  id,
+  collectionID,
+  planDocRef
 ) {
-  await setDoc(
-    timeBlockRef,
-    {
-      title: blockTitle,
-      text: description,
-      start: startTimeValue,
-      end: endTimeValue,
-      place_id: location.place_id,
-      place_name: location.name,
-      place_format_address: location.formatted_address,
-      timeblock_img: timeBlockImage,
-    },
-    {
-      merge: true,
-    }
-  );
+  const timeBlockRef = doc(db, collectionID, planDocRef, 'time_blocks', id);
+
+  if (location) {
+    await setDoc(
+      timeBlockRef,
+      {
+        title: blockTitle,
+        text: description,
+        start: startTimeValue,
+        end: endTimeValue,
+        place_id: location.place_id,
+        place_name: location.place_name,
+      },
+      {
+        merge: true,
+      }
+    );
+  } else {
+    await setDoc(
+      timeBlockRef,
+      {
+        title: blockTitle,
+        text: description,
+        start: startTimeValue,
+        end: endTimeValue,
+        place_id: locationId,
+        place_name: locationName,
+      },
+      {
+        merge: true,
+      }
+    );
+  }
 
   console.log('successfully post to firebase!');
 }
 
-async function retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData) {
+async function retreiveFromDataBase(
+  id,
+  setDataReady,
+  setInitialTimeBlockData,
+  collectionID,
+  planDocRef
+) {
+  const timeBlockRef = doc(db, collectionID, planDocRef, 'time_blocks', id);
   const timeBlockSnap = await getDoc(timeBlockRef);
 
   if (timeBlockSnap.exists()) {
@@ -131,7 +123,9 @@ async function retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData) {
     if (setInitialTimeBlockData) {
       setInitialTimeBlockData(initialData);
     }
-
+    if (setDataReady) {
+      setDataReady(true);
+    }
     return initialData;
   } else {
     console.log('No such document!');
@@ -144,16 +138,12 @@ async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
   setShowEditPopUp(false);
 }
 
-// collectionID={collectionID}
-//planDocRef={planDocRef}
-
-function EditTimeBlock(props) {
+function EditNewTimeBlock(props) {
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [locationName, setLocationName] = useState('');
+  const [locationId, setLocationId] = useState('');
   const [location, setLocation] = useState('');
-  const [placeId, setPlaceId] = useState('');
-  const [helperInitAddress, setHelperInitAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
     props.currentSelectTimeData.start || null
@@ -161,7 +151,10 @@ function EditTimeBlock(props) {
   const [endTimeValue, setEndTimeValue] = useState(
     props.currentSelectTimeData.end || null
   );
-  const [timeBlockImage, setTimeBlockImage] = useState('');
+  const [dataReady, setDataReady] = useState(false);
+
+  //   collectionID={collectionID}
+  //   planDocRef={planDocRef}
 
   const timeBlockRef = doc(
     db,
@@ -172,24 +165,21 @@ function EditTimeBlock(props) {
   );
 
   useEffect(() => {
-    retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData);
+    retreiveFromDataBase(
+      props.currentSelectTimeId,
+      setDataReady,
+      setInitialTimeBlockData,
+      props.collectionID,
+      props.planDocRef
+    );
   }, []);
 
   useEffect(() => {
     setDescription(initialTimeBlockData.text);
     setBlockTitle(initialTimeBlockData.title);
-    setPlaceId(initialTimeBlockData.place_id);
-    setHelperInitAddress(initialTimeBlockData.place_format_address);
+    //  setLocation(initialTimeBlockData.place_id);
     setLocationName(initialTimeBlockData.place_name);
-
-    const initFirebaseLocationData = {
-      place_id: initialTimeBlockData.place_id,
-      name: initialTimeBlockData.place_name,
-      formatted_address: initialTimeBlockData.place_format_address,
-    };
-    setLocation(initFirebaseLocationData);
-
-    setTimeBlockImage(initialTimeBlockData.timeblock_img);
+    setLocationId(initialTimeBlockData.id);
   }, [initialTimeBlockData]);
 
   return (
@@ -237,9 +227,6 @@ function EditTimeBlock(props) {
             <AutoCompleteInput
               setLocation={setLocation}
               locationName={locationName}
-              helperInitAddress={helperInitAddress}
-              setHelperInitAddress={setHelperInitAddress}
-              placeId={placeId}
             />
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
@@ -254,48 +241,28 @@ function EditTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
-            <TimeBlockImgContainer>
-              <Card sx={{ m: 1, minWidthh: 200, minHeight: 200 }}>
-                <CardMedia
-                  component="img"
-                  image={timeBlockImage}
-                  height="300"
-                />
-                <label htmlFor="icon-button-file">
-                  <Input
-                    helperText="Add an image for this time block."
-                    accept="image/*"
-                    id="icon-button-file"
-                    type="file"
-                    onChange={(e) => {
-                      handleImageUpload(e, setTimeBlockImage);
-                    }}
-                  />
-                  <Box textAlign="center">
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="div">
-                      <PhotoCamera />
-                    </IconButton>
-                  </Box>
-                </label>
-              </Card>
-            </TimeBlockImgContainer>
           </FormsContainer>
           <Button
             variant="contained"
             onClick={(e) => {
-              if (location && blockTitle && startTimeValue && endTimeValue) {
+              if (
+                (location || locationId) &&
+                blockTitle &&
+                startTimeValue &&
+                endTimeValue
+              ) {
                 try {
                   UpdateToDataBase(
-                    timeBlockRef,
                     blockTitle,
                     description,
                     startTimeValue,
                     endTimeValue,
                     location,
-                    timeBlockImage
+                    locationId,
+                    locationName,
+                    props.currentSelectTimeId,
+                    props.collectionID,
+                    props.planDocRef
                   );
                   props.setShowEditPopUp(false);
                   alert('Successfully updated!');
@@ -315,4 +282,4 @@ function EditTimeBlock(props) {
   );
 }
 
-export default EditTimeBlock;
+export default EditNewTimeBlock;

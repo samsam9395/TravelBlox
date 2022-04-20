@@ -10,8 +10,6 @@ const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
 
 function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
-  // const [myEvents, setMyEvents] = useState([]);
-
   //resize and dragable
   const { defaultDate, scrollToTime } = useMemo(
     () => ({
@@ -42,13 +40,18 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     []
   );
 
+  console.log(props.myEvents);
+
+  console.log(props.startDateValue);
+
   return (
     <DnDCalendar
       startAccessor="start"
       endAccessor="end"
       dayLayoutAlgorithm={dayLayoutAlgorithm}
-      defaultDate={moment().toDate()}
-      defaultView={Views.MONTH}
+      // defaultDate={moment().toDate()}
+      defaultDate={props.startDateValue}
+      defaultView={Views.WEEK}
       localizer={localizer}
       events={props.myEvents}
       onSelectEvent={handleSelectEvent}

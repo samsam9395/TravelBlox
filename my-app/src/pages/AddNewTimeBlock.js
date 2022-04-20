@@ -8,12 +8,16 @@ import {
   MenuItem,
   Select,
   IconButton,
+  CardMedia,
+  Card,
+  Box,
 } from '@mui/material';
-import { Delete, Close } from '@mui/icons-material';
+import { Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
+import AutoCompleteInput from '../components/AutoCompleteInput';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -49,42 +53,72 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
+const db = firebaseDB();
+
 const FormsContainer = styled.div`
   flex-direction: column;
   display: flex;
   margin: 20px 0 40px 0;
+  overflow: auto;
 `;
 
-const db = firebaseDB();
+const Input = styled('input')({
+  display: 'none',
+});
 
-async function addToDataBase(
-  blockTitle,
-  description,
-  startTimeValue,
-  endTimeValue,
-  address
-) {
-  const timeBlockRef = doc(
-    collection(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI', 'time_blocks_test')
-  );
+function handleImageUpload(e, setTimeBlockImage) {
+  console.log(e.target.files[0]);
+  const reader = new FileReader();
+  if (e) {
+    reader.readAsDataURL(e.target.files[0]);
+  }
 
-  await setDoc(timeBlockRef, {
-    title: blockTitle,
-    text: description,
-    start: startTimeValue,
-    end: endTimeValue,
-    address: address,
-    id: timeBlockRef.id,
-  });
+  reader.onload = function () {
+    // console.log(reader.result); //base64encoded string
+    setTimeBlockImage(reader.result);
+  };
+  reader.onerror = function (error) {
+    console.log('Error: ', error);
+  };
 }
 
-function AddTimeBlock(props) {
+function AddNewTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
-  const [address, setAddress] = useState('');
+  //   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [startTimeValue, setStartTimeValue] = useState(null);
-  const [endTimeValue, setEndTimeValue] = useState(null);
+  const [startTimeValue, setStartTimeValue] = useState(props.startDateValue);
+  const [endTimeValue, setEndTimeValue] = useState(props.startDateValue);
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  const [location, setLocation] = useState('');
+  const [timeBlockImage, setTimeBlockImage] = useState('');
+
+  async function addToDataBase(
+    blockTitle,
+    description,
+    startTimeValue,
+    endTimeValue,
+    location,
+    collectionID,
+    planDocRef
+  ) {
+    const timeBlockRef = doc(
+      collection(db, collectionID, planDocRef, 'time_blocks')
+    );
+
+    await setDoc(timeBlockRef, {
+      title: blockTitle,
+      text: description,
+      start: startTimeValue,
+      end: endTimeValue,
+      // location: location,
+      place_id: location.place_id,
+      place_name: location.name,
+      place_format_address: location.formatted_address,
+      id: timeBlockRef.id,
+    });
+
+    props.setAddedTimeBlock(true);
+  }
 
   return (
     <>
@@ -117,18 +151,9 @@ function AddTimeBlock(props) {
               setEndTimeValue={setEndTimeValue}
               endTimeValue={endTimeValue}
             />
+            <AutoCompleteInput setLocation={setLocation} />
             <TextField
               required
-              sx={{ m: 1, minWidth: 80 }}
-              size="small"
-              label="Address"
-              variant="outlined"
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-              }}
-            />
-            <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
               size="small"
@@ -141,17 +166,40 @@ function AddTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
+            <Card sx={{ width: 400 }}>
+              <CardMedia component="img" image={timeBlockImage} height="200" />
+              <label htmlFor="icon-button-file">
+                <Input
+                  accept="image/*"
+                  id="icon-button-file"
+                  type="file"
+                  onChange={(e) => {
+                    handleImageUpload(e, setTimeBlockImage);
+                  }}
+                />
+                <Box textAlign="center">
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="div">
+                    <PhotoCamera />
+                  </IconButton>
+                </Box>
+              </label>
+            </Card>
           </FormsContainer>
           <Button
             variant="contained"
             onClick={(e) => {
-              if (blockTitle && address && startTimeValue && endTimeValue) {
+              if (blockTitle && location && startTimeValue && endTimeValue) {
                 addToDataBase(
                   blockTitle,
                   description,
                   startTimeValue,
                   endTimeValue,
-                  address
+                  location,
+                  props.collectionID,
+                  props.planDocRef
                 );
                 props.setShowPopUp(false);
                 alert('Successfully added!');
@@ -167,4 +215,4 @@ function AddTimeBlock(props) {
   );
 }
 
-export default AddTimeBlock;
+export default AddNewTimeBlock;

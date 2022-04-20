@@ -75,21 +75,6 @@ const ClickTag = styled.div`
   padding: 0 10px;
 `;
 
-function signUP(email, password) {
-  const auth = getAuth();
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log(user);
-      // ...
-    })
-    .catch((error) => {
-      console.log(error.message);
-      console.log(error.code);
-    });
-}
-
 function logOn(email, password) {
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email, password)
@@ -100,31 +85,52 @@ function logOn(email, password) {
       console.log(user);
     })
     .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
+      console.log(error.code);
+      console.log(error.message);
+      if (error.message === 'EMAIL_NOT_FOUND') {
+        alert('Email not found! Please check again!');
+      }
     });
 }
 
-function Login() {
-  const [hasSignedIn, setHasSignedIn] = useState(false);
+function Login(props) {
+  // const [hasSignedIn, setHasSignedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  function signUP(email, password) {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        props.setIsNewUser(true);
+      })
+      .catch((error) => {
+        console.log(error.message);
+        console.log(error.code);
+      });
+  }
+
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setHasSignedIn(true);
         // console.log(user.accessToken);
-        const uid = user.uid;
+        const uid = user.email;
         localStorage.setItem('accessToken', user.accessToken);
+        localStorage.setItem('userEmail', user.email);
+        props.setUserId(uid);
+        alert(`Welcome! ${uid}`);
+        props.setHasSignedIn(true);
       } else {
         console.log('not logged in');
       }
     });
-    console.log(hasSignedIn);
+    console.log(props.hasSignedIn);
   }, []);
 
   return (
@@ -135,7 +141,7 @@ function Login() {
           <InputContainer>
             {!showSignUp ? (
               <>
-                <Title>Start your journey!</Title>
+                <Title>Welcome Back!</Title>
                 <InputWrapper>
                   <TextField
                     required
@@ -195,7 +201,7 @@ function Login() {
               </>
             ) : (
               <>
-                <Title>Welcome Back</Title>
+                <Title>Start your journey!</Title>
                 <InputWrapper>
                   <TextField
                     required

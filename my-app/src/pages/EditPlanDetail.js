@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   InputLabel,
@@ -12,12 +12,14 @@ import {
   Card,
   CardMedia,
   CircularProgress,
+  Stack,
 } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
-import AddTimeBlock from './AddTimeBlock';
+import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
+import OnlyDatePicker from '../components/onlyDatePicker';
 import {
   doc,
   getDoc,
@@ -32,6 +34,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -59,44 +62,47 @@ const CalendarContainer = styled.div`
 const Input = styled('input')({
   display: 'none',
 });
-
-async function saveToDataBase(myEvents, planTitle, country, mainImage) {
+async function saveToDataBase(
+  planCollectionRef,
+  collectionID,
+  planDocRef,
+  myEvents,
+  planTitle,
+  country,
+  mainImage,
+  startDateValue,
+  endDateValue
+) {
   const batch = writeBatch(db);
 
   myEvents.forEach((singleEvent) => {
     const id = singleEvent.id;
-    let updateRef = doc(
-      db,
-      'plan101',
-      'zqZZcY8RO85mFVmtHbVI',
-      'time_blocks_test',
-      id
-    );
+    let updateRef = doc(db, collectionID, planDocRef, 'time_blocks', id);
     batch.update(updateRef, {
       end: singleEvent.end,
       start: singleEvent.start,
     });
   });
 
-  const upperLevelUpdateRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
-  batch.update(upperLevelUpdateRef, {
+  batch.update(planCollectionRef, {
     title: planTitle,
     country: country,
     main_image: mainImage,
+    start_date: startDateValue,
+    end_date: endDateValue,
   });
 
   await batch.commit();
 }
 
-function DeleteBlockInMylist(prev, id) {
+function deleteBlockInMylist(prev, id) {
   const indexOfObject = prev.findIndex((timeblock) => {
     return timeblock.id === id;
   });
-  console.log(prev);
-  console.log(indexOfObject);
+
   // let updateList = [...prev].slice(indexOfObject, 1);
   let updateList = prev.splice(indexOfObject, 1);
-  console.log(prev);
+
   return prev;
 }
 
@@ -116,7 +122,9 @@ function handleImageUpload(e, setMainImage) {
   };
 }
 
-function PlanDetail() {
+//currentPlanRef
+
+function EditPlanDetail(props) {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
@@ -127,6 +135,29 @@ function PlanDetail() {
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [startDateValue, setStartDateValue] = useState(0);
+  const [endDateValue, setEndDateValue] = useState(0);
+  //React Route
+  const location = useLocation();
+  const collectionID = location.state.collectionID;
+  const planDocRef = location.state.planDocId;
+
+  const planCollectionRef = doc(db, collectionID, planDocRef);
+  const blocksListRef = collection(db, collectionID, planDocRef, 'time_blocks');
+
+  const navigate = useNavigate();
+  const redirectToStatic = () => {
+    navigate('/static-plan-detail', {
+      state: {
+        collectionID: collectionID,
+        planDocRef: planDocRef,
+      },
+    });
+  };
+
+  useEffect(() => {
+    console.log(console.log('location state is', location.state));
+  }, []);
 
   useEffect(async () => {
     const list = await (
@@ -137,21 +168,19 @@ function PlanDetail() {
   }, []);
 
   useEffect(async () => {
-    const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
-    const docSnap = await getDoc(planRef);
+    const docSnap = await getDoc(planCollectionRef);
+    console.log(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
-    setCountry(docSnap.data().country);
+    // if (docSnap.data().country) {
+    //   setCountry(docSnap.data().country);
+    // }
+    // console.log(docSnap.data().start_date);
     setMainImage(docSnap.data().main_image);
+    setStartDateValue(new Date(docSnap.data().start_date.seconds * 1000));
+    setEndDateValue(new Date(docSnap.data().end_date.seconds * 1000));
   }, []);
 
   useEffect(async () => {
-    const blocksListRef = collection(
-      db,
-      'plan101',
-      'zqZZcY8RO85mFVmtHbVI',
-      'time_blocks_test'
-    );
-
     onSnapshot(blocksListRef, (doc) => {
       doc.docChanges().forEach((change) => {
         if (change.type === 'added') {
@@ -171,7 +200,7 @@ function PlanDetail() {
           console.log('Modified time: ', change.doc.data());
           const id = change.doc.data().id;
           setMyEvents((prev) => [
-            ...DeleteBlockInMylist(prev, id),
+            ...deleteBlockInMylist(prev, id),
             {
               start: new Date(change.doc.data().start.seconds * 1000),
               end: new Date(change.doc.data().end.seconds * 1000),
@@ -183,23 +212,35 @@ function PlanDetail() {
         if (change.type === 'removed') {
           console.log('Removed time: ', change.doc.data());
           const id = change.doc.data().id;
-          setMyEvents((prev) => [...DeleteBlockInMylist(prev, id)]);
+          setMyEvents((prev) => [...deleteBlockInMylist(prev, id)]);
         }
       });
     });
   }, []);
 
+  console.log(myEvents);
+
   return (
     <Wrapper>
-      {showPopUp ? (
-        <AddTimeBlock setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
-      ) : null}
+      {showPopUp && (
+        <AddNewTimeBlock
+          setShowPopUp={setShowPopUp}
+          showPopUp={showPopUp}
+          collectionID={collectionID}
+          planDocRef={planDocRef}
+          //  setAddedTimeBlock={setAddedTimeBlock}
+          startDateValue={startDateValue}
+          endDateValue={endDateValue}
+        />
+      )}
       {showEditPopUp ? (
         <EditTimeBlock
           showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
+          collectionID={collectionID}
+          planDocRef={planDocRef}
         />
       ) : null}
       <TopContainer>
@@ -227,16 +268,22 @@ function PlanDetail() {
                 onChange={(e) => {
                   setCountry(e.target.value);
                 }}>
-                {countryList.map((country, index) => {
+                {countryList.map((countryData, index) => {
                   return (
-                    <MenuItem value={country.name.common} key={index}>
-                      {country.flag} {country.name.common}
+                    <MenuItem value={countryData.name.common} key={index}>
+                      {countryData.flag} {countryData.name.common}
                     </MenuItem>
                   );
                 })}
               </Select>
             )}
           </FormControl>
+          <OnlyDatePicker
+            setStartDateValue={setStartDateValue}
+            startDateValue={startDateValue}
+            setEndDateValue={setEndDateValue}
+            endDateValue={endDateValue}
+          />
         </TitleSection>
         <Card sx={{ width: 400 }}>
           <CardMedia component="img" image={mainImage} height="200" />
@@ -267,22 +314,46 @@ function PlanDetail() {
           setShowEditPopUp={setShowEditPopUp}
           setCurrentSelectTimeData={setCurrentSelectTimeData}
           setCurrentSelectTimeId={setCurrentSelectTimeId}
+          startDateValue={startDateValue}
         />
       </CalendarContainer>
-      <Button
-        variant="contained"
-        onClick={() => {
-          setShowPopUp(true);
-        }}>
-        Add new event
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => saveToDataBase(myEvents, planTitle, country, mainImage)}>
-        Save
-      </Button>
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setShowPopUp(true);
+          }}>
+          Add new event
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            try {
+              saveToDataBase(
+                planCollectionRef,
+                collectionID,
+                planDocRef,
+                myEvents,
+                planTitle,
+                country,
+                mainImage,
+                startDateValue,
+                endDateValue
+              );
+              alert('Saved!');
+            } catch (error) {
+              console.log(error);
+              alert('Oops!Something went wrong, please try again!');
+            }
+          }}>
+          Save
+        </Button>
+        <Button variant="contained" onClick={() => redirectToStatic()}>
+          Publish
+        </Button>
+      </Stack>
     </Wrapper>
   );
 }
 
-export default PlanDetail;
+export default EditPlanDetail;
