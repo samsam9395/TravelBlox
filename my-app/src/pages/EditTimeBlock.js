@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { TextField, Button, IconButton, Autocomplete } from '@mui/material';
-import { Delete, Close } from '@mui/icons-material';
+import {
+  TextField,
+  Button,
+  IconButton,
+  Autocomplete,
+  CardMedia,
+  Card,
+  Box,
+} from '@mui/material';
+import { Delete, Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
@@ -52,9 +60,36 @@ const FormsContainer = styled.div`
   flex-direction: column;
   display: flex;
   margin: 20px 0 40px 0;
+  overflow: auto;
 `;
 
 const db = firebaseDB();
+
+const Input = styled('input')({
+  display: 'none',
+});
+
+const TimeBlockImgContainer = styled.div`
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 30px;
+`;
+
+function handleImageUpload(e, setTimeBlockImage) {
+  console.log(e.target.files[0]);
+  const reader = new FileReader();
+  if (e) {
+    reader.readAsDataURL(e.target.files[0]);
+  }
+
+  reader.onload = function () {
+    // console.log(reader.result); //base64encoded string
+    setTimeBlockImage(reader.result);
+  };
+  reader.onerror = function (error) {
+    console.log('Error: ', error);
+  };
+}
 
 async function UpdateToDataBase(
   timeBlockRef,
@@ -62,7 +97,8 @@ async function UpdateToDataBase(
   description,
   startTimeValue,
   endTimeValue,
-  location
+  location,
+  timeBlockImage
 ) {
   await setDoc(
     timeBlockRef,
@@ -73,6 +109,8 @@ async function UpdateToDataBase(
       end: endTimeValue,
       place_id: location.place_id,
       place_name: location.name,
+      place_format_address: location.formatted_address,
+      timeblock_img: timeBlockImage,
     },
     {
       merge: true,
@@ -114,6 +152,7 @@ function EditTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
   const [locationName, setLocationName] = useState('');
   const [location, setLocation] = useState('');
+  const [placeId, setPlaceId] = useState('');
   const [helperInitAddress, setHelperInitAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
@@ -122,6 +161,7 @@ function EditTimeBlock(props) {
   const [endTimeValue, setEndTimeValue] = useState(
     props.currentSelectTimeData.end || null
   );
+  const [timeBlockImage, setTimeBlockImage] = useState('');
 
   const timeBlockRef = doc(
     db,
@@ -138,9 +178,18 @@ function EditTimeBlock(props) {
   useEffect(() => {
     setDescription(initialTimeBlockData.text);
     setBlockTitle(initialTimeBlockData.title);
-    //  setLocation(initialTimeBlockData.place_id);
-    setHelperInitAddress(initialTimeBlockData.formatted_address);
+    setPlaceId(initialTimeBlockData.place_id);
+    setHelperInitAddress(initialTimeBlockData.place_format_address);
     setLocationName(initialTimeBlockData.place_name);
+
+    const initFirebaseLocationData = {
+      place_id: initialTimeBlockData.place_id,
+      name: initialTimeBlockData.place_name,
+      formatted_address: initialTimeBlockData.place_format_address,
+    };
+    setLocation(initFirebaseLocationData);
+
+    setTimeBlockImage(initialTimeBlockData.timeblock_img);
   }, [initialTimeBlockData]);
 
   return (
@@ -189,6 +238,8 @@ function EditTimeBlock(props) {
               setLocation={setLocation}
               locationName={locationName}
               helperInitAddress={helperInitAddress}
+              setHelperInitAddress={setHelperInitAddress}
+              placeId={placeId}
             />
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
@@ -203,6 +254,34 @@ function EditTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
+            <TimeBlockImgContainer>
+              <Card sx={{ m: 1, minWidthh: 200, minHeight: 200 }}>
+                <CardMedia
+                  component="img"
+                  image={timeBlockImage}
+                  height="300"
+                />
+                <label htmlFor="icon-button-file">
+                  <Input
+                    helperText="Add an image for this time block."
+                    accept="image/*"
+                    id="icon-button-file"
+                    type="file"
+                    onChange={(e) => {
+                      handleImageUpload(e, setTimeBlockImage);
+                    }}
+                  />
+                  <Box textAlign="center">
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="div">
+                      <PhotoCamera />
+                    </IconButton>
+                  </Box>
+                </label>
+              </Card>
+            </TimeBlockImgContainer>
           </FormsContainer>
           <Button
             variant="contained"
@@ -215,7 +294,8 @@ function EditTimeBlock(props) {
                     description,
                     startTimeValue,
                     endTimeValue,
-                    location
+                    location,
+                    timeBlockImage
                   );
                   props.setShowEditPopUp(false);
                   alert('Successfully updated!');

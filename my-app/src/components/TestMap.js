@@ -4,7 +4,7 @@ import GoogleAPI from '../utils/GoogleAPI';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import { GoogleMap, LoadScript, useJsApiLoader } from '@react-google-maps/api';
 
-const ApiKey = 'AIzaSyAclJIAm-8LUEgGfbnL4fS9KiIHbg1ZR8k';
+const ApiKey = GoogleAPI();
 const center = { lat: -33.8666, lng: 151.1958 };
 const zoom = 15;
 

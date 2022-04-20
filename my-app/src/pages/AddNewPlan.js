@@ -98,7 +98,7 @@ async function saveToDataBase(
   await batch.commit();
 }
 
-function DeleteBlockInMylist(prev, id) {
+function deleteBlockInMylist(prev, id) {
   const indexOfObject = prev.findIndex((timeblock) => {
     return timeblock.id === id;
   });
@@ -266,7 +266,7 @@ function AddNewPlan() {
               console.log('Modified time: ', change.doc.data());
               const id = change.doc.data().id;
               setMyEvents((prev) => [
-                ...DeleteBlockInMylist(prev, id),
+                ...deleteBlockInMylist(prev, id),
                 {
                   start: new Date(change.doc.data().start.seconds * 1000),
                   end: new Date(change.doc.data().end.seconds * 1000),
@@ -278,7 +278,7 @@ function AddNewPlan() {
             if (change.type === 'removed') {
               console.log('Removed time: ', change.doc.data());
               const id = change.doc.data().id;
-              setMyEvents((prev) => [...DeleteBlockInMylist(prev, id)]);
+              setMyEvents((prev) => [...deleteBlockInMylist(prev, id)]);
             }
           });
         });
@@ -299,14 +299,6 @@ function AddNewPlan() {
         />
       ) : null}
       {showEditPopUp ? (
-        // <EditNewTimeBlock
-        //   showEditPopUp={showEditPopUp}
-        //   setShowEditPopUp={setShowEditPopUp}
-        //   currentSelectTimeData={currentSelectTimeData}
-        //   currentSelectTimeId={currentSelectTimeId}
-        //   collectionID={collectionID}
-        //   planDocRef={planDocRef}
-        // />
         <EditTimeBlock
           showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}

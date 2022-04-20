@@ -8,8 +8,11 @@ import {
   MenuItem,
   Select,
   IconButton,
+  CardMedia,
+  Card,
+  Box,
 } from '@mui/material';
-import { Delete, Close } from '@mui/icons-material';
+import { Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
@@ -50,13 +53,34 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
+const db = firebaseDB();
+
 const FormsContainer = styled.div`
   flex-direction: column;
   display: flex;
   margin: 20px 0 40px 0;
+  overflow: auto;
 `;
 
-const db = firebaseDB();
+const Input = styled('input')({
+  display: 'none',
+});
+
+function handleImageUpload(e, setTimeBlockImage) {
+  console.log(e.target.files[0]);
+  const reader = new FileReader();
+  if (e) {
+    reader.readAsDataURL(e.target.files[0]);
+  }
+
+  reader.onload = function () {
+    // console.log(reader.result); //base64encoded string
+    setTimeBlockImage(reader.result);
+  };
+  reader.onerror = function (error) {
+    console.log('Error: ', error);
+  };
+}
 
 function AddNewTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
@@ -66,6 +90,7 @@ function AddNewTimeBlock(props) {
   const [endTimeValue, setEndTimeValue] = useState(props.startDateValue);
   const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [location, setLocation] = useState('');
+  const [timeBlockImage, setTimeBlockImage] = useState('');
 
   async function addToDataBase(
     blockTitle,
@@ -141,6 +166,27 @@ function AddNewTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
+            <Card sx={{ width: 400 }}>
+              <CardMedia component="img" image={timeBlockImage} height="200" />
+              <label htmlFor="icon-button-file">
+                <Input
+                  accept="image/*"
+                  id="icon-button-file"
+                  type="file"
+                  onChange={(e) => {
+                    handleImageUpload(e, setTimeBlockImage);
+                  }}
+                />
+                <Box textAlign="center">
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="div">
+                    <PhotoCamera />
+                  </IconButton>
+                </Box>
+              </label>
+            </Card>
           </FormsContainer>
           <Button
             variant="contained"

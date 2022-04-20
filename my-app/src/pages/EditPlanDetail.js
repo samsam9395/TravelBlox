@@ -95,7 +95,7 @@ async function saveToDataBase(
   await batch.commit();
 }
 
-function DeleteBlockInMylist(prev, id) {
+function deleteBlockInMylist(prev, id) {
   const indexOfObject = prev.findIndex((timeblock) => {
     return timeblock.id === id;
   });
@@ -200,7 +200,7 @@ function EditPlanDetail(props) {
           console.log('Modified time: ', change.doc.data());
           const id = change.doc.data().id;
           setMyEvents((prev) => [
-            ...DeleteBlockInMylist(prev, id),
+            ...deleteBlockInMylist(prev, id),
             {
               start: new Date(change.doc.data().start.seconds * 1000),
               end: new Date(change.doc.data().end.seconds * 1000),
@@ -212,7 +212,7 @@ function EditPlanDetail(props) {
         if (change.type === 'removed') {
           console.log('Removed time: ', change.doc.data());
           const id = change.doc.data().id;
-          setMyEvents((prev) => [...DeleteBlockInMylist(prev, id)]);
+          setMyEvents((prev) => [...deleteBlockInMylist(prev, id)]);
         }
       });
     });

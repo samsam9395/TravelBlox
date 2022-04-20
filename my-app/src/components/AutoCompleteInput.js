@@ -19,7 +19,6 @@ function SearchInput(props) {
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
         props.setLocation(place);
-        console.log(place);
         setHelperInputAddress(place.formatted_address);
         setInputLocationValue(place.name);
       });
@@ -58,7 +57,10 @@ function AutoCompleteInput(props) {
       <Wrapper apiKey={ApiKey} libraries={['places']}>
         <SearchInput
           setLocation={props.setLocation}
-          locationName={props.locationName || null}
+          locationName={props.locationName || ''}
+          helperInitAddress={props.helperInitAddress || ''}
+          setHelperInitAddress={props.setHelperInitAddress}
+          placeId={props.placeId}
         />
       </Wrapper>
     </>
