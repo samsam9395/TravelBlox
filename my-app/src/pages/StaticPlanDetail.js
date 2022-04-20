@@ -15,7 +15,7 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
@@ -68,6 +68,20 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
+async function handleFavAction(collectionID) {
+  const userEmail = localStorage.getItem('userEmail');
+  const favRef = collection(db, 'userId', userEmail, 'fav_plans');
+
+  try {
+    await setDoc(favRef, {
+      fav_collection_id: collectionID,
+    });
+    alert('Successfully favourite this plan!');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function StaticPlanDetail() {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
@@ -86,7 +100,6 @@ function StaticPlanDetail() {
   const planCollectionRef = doc(db, collectionID, planDocRef);
 
   useEffect(async () => {
-    // const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
     const docSnap = await getDoc(planCollectionRef);
     const data = docSnap.data();
     console.log(data);
@@ -139,6 +152,11 @@ function StaticPlanDetail() {
         <Typography variant="h5" component="div">
           Location: {country}
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => handleFavAction(collectionID)}>
+          Favourite this plan
+        </Button>
       </PlanInfoWrapper>
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {
