@@ -36,7 +36,8 @@ function LandingPage() {
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
-      setCanRedirect(true);
+      // setCanRedirect(true);
+      console.log('accessToken is  ', localStorage.getItem('accessToken'));
     }
   }, []);
 
@@ -45,6 +46,7 @@ function LandingPage() {
       await setDoc(doc(db, 'userId', userId), {
         id: userId,
       });
+      await setDoc(collection(db, 'userId', userId, 'time_blocks'));
     }
   }, [isNewUser]);
 
