@@ -14,6 +14,7 @@ import StaticPlanDetail from './pages/StaticPlanDetail';
 import AutoCompleteInput from './components/AutoCompleteInput';
 import Dashboard from './pages/Dashboard';
 import AddNewPlan from './pages/AddNewPlan';
+import Allplans from './pages/AllPlans';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         {/* <Route path="/test-map" element={<TestMap />} /> */}
         <Route path="/autocomplete" element={<AutoCompleteInput />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/all-plans" element={<Allplans />} />
       </Routes>
       {/* <Footer /> */}
     </>
