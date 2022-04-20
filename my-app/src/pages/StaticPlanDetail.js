@@ -117,10 +117,14 @@ function StaticPlanDetail() {
       (endDate.seconds * 1000 - startDate.seconds * 1000) /
       (1000 * 60 * 60 * 24);
     setNumberofDays(nofDays);
-    setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
+    console.log('nofday calc run');
   }, [endDate, startDate]);
 
-  let currentDayDate = new Date('14 Jan 2022');
+  useEffect(() => {
+    setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
+  }, [numberofDays]);
+
+  //let currentDayDate = new Date('14 Jan 2022');
 
   return (
     <>
@@ -149,14 +153,18 @@ function StaticPlanDetail() {
         </Typography>
       </PlanInfoWrapper>
       <PlanCardsWrapper>
-        <DayBlockCard
-          currentDayDate={currentDayDate}
-          collectionID={collectionID}
-          planDocRef={planDocRef}
-        />
+        {timestampList.map((day, index) => {
+          return (
+            <DayBlockCard
+              currentDayDate={day}
+              collectionID={collectionID}
+              planDocRef={planDocRef}
+              index={index}
+            />
+          );
+        })}
       </PlanCardsWrapper>
     </>
   );
 }
-
 export default StaticPlanDetail;

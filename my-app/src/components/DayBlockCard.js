@@ -131,7 +131,9 @@ function DayBlockCard(props) {
 
   return (
     <>
-      <h2>Day1, {props.currentDayDate.toDateString()}</h2>
+      <h2>
+        Day{props.index + 1}, {props.currentDayDate.toDateString()}
+      </h2>
       <SingleDayWrapper>
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
