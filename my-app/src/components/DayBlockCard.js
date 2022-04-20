@@ -59,13 +59,6 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
   const eventByDayList = [];
   console.log('calendar by day is rendered');
 
-  // const blocksListRef = collection(
-  //   db,
-  //   'plan101',
-  //   'zqZZcY8RO85mFVmtHbVI',
-  //   'time_blocks_test'
-  // );
-
   const q = query(
     blocksListRef,
     where('start', '>=', currentDayDate),

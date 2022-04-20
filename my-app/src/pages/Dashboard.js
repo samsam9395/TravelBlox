@@ -124,7 +124,8 @@ function FavouritePlanCard(props) {
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
-  const [ownPlansIdList, setOwnPlansIdList] = useState(null);
+  const [ownPlansIdList, setOwnPlansIdList] = useState([]);
+  const [favPlansIdList, setFavlansIdList] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [currentPlanRef, setCurrentPlanRef] = useState([]);
 
@@ -135,12 +136,36 @@ function Dashboard(props) {
     const ref = collection(db, 'userId', user, 'own_plans');
     const plansList = await getDocs(ref);
 
-    const list = [];
-    plansList.forEach((plan) => {
-      list.push(plan.data().collection_id);
-    });
-    setOwnPlansIdList(list);
+    if (plansList.docs.length === 0) {
+      console.log('No own plans yet!');
+    } else {
+      const list = [];
+      plansList.forEach((plan) => {
+        list.push(plan.data().collection_id);
+      });
+      setOwnPlansIdList(list);
+    }
   }, []);
+
+  useEffect(async () => {
+    // const blocksListRef = collection(
+    //   db,
+    //   props.collectionID,
+    //   props.planDocRef,
+    //   'time_blocks'
+    // );
+    // const querySnapshot = await getDocs(q);
+
+    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+    const favPlansIdList = await getDocs(favRef);
+
+    if (favPlansIdList.docs.length === 0) {
+      console.log('No fav plans yet!');
+    } else {
+      const favList = favPlansIdList.docs.map((e) => e.data());
+      setFavlansIdList(favPlansIdList.docs.map((e) => e.data()));
+    }
+  }, [currentUserId]);
 
   return (
     <>
@@ -177,6 +202,8 @@ function Dashboard(props) {
             />
           ))}
       </PlanCollectionWrapper>
+
+      <PlanCollectionWrapper></PlanCollectionWrapper>
     </>
   );
 }
