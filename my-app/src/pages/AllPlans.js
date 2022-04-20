@@ -59,26 +59,19 @@ const MainImage = styled.img`
 function FavPlanCard(props) {
   const navigate = useNavigate();
 
+  console.log(props);
+  console.log(props.planInfo.collection_id);
+  console.log(props.planInfo.plan_doc_ref);
+
   const redirectToStatic = () => {
     navigate('/static-plan-detail', {
-      state: { collection_id: props.collection_id },
+      state: {
+        fromPage: 'allPlans',
+        collectionID: props.planInfo.collection_id,
+        planDocRef: props.planInfo.plan_doc_ref,
+      },
     });
   };
-
-  //   useEffect(async () => {
-  //     const ref = collection(db, planId);
-  //     const ownPlanData = await getDocs(ref);
-
-  //     ownPlanData.forEach((doc) => {
-  //       setTestCurrentPlanRef({
-  //         collectionID: planId,
-  //         planDocId: doc.id,
-  //       });
-
-  //       setDocData(doc.data());
-  //       return doc.data();
-  //     });
-  //   }, [planId]);
 
   return (
     <SinglePlanContainer onClick={() => redirectToStatic()}>

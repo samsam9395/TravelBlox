@@ -149,6 +149,7 @@ function EditPlanDetail(props) {
   const redirectToStatic = () => {
     navigate('/static-plan-detail', {
       state: {
+        fromPage: 'editPlans',
         collectionID: collectionID,
         planDocRef: planDocRef,
       },

@@ -94,6 +94,16 @@ function StaticPlanDetail() {
   const [timestampList, setTimestampList] = useState([]);
 
   const location = useLocation();
+  // if (location.state.fromPage === 'editPlans') {
+  //   const collectionID = location.state.collectionID;
+  //   const planDocRef = location.state.planDocRef;
+  // } else if (location.state.fromPage === 'allPlans') {
+  //   const collectionID = location.state.collection_id
+  // }
+  console.log(location.state);
+  console.log(location.state.collectionID);
+  console.log(location.state.planDocRef);
+
   const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
