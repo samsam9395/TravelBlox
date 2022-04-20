@@ -118,9 +118,9 @@ function DayBlockCard(props) {
     });
   }, [hasReturned]);
 
-  useEffect(() => {
-    console.log(dayEvents);
-  }, [dayEvents]);
+  // useEffect(() => {
+  //   console.log(dayEvents);
+  // }, [dayEvents]);
 
   return (
     <>
@@ -130,9 +130,8 @@ function DayBlockCard(props) {
       <SingleDayWrapper>
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
-            // console.log(singleEvent.start.secodns);
-            console.log('here', singleEvent.end.secodns);
-            console.log('here', singleEvent.start.seconds);
+            // console.log('here', singleEvent.end.secodns); //single event end time
+            // console.log('here', singleEvent.start.seconds);
 
             return (
               <ContentContainer key={index}>

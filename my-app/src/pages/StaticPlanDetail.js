@@ -69,8 +69,11 @@ function loopThroughDays(startday, days) {
 }
 
 async function handleFavAction(collectionID) {
-  const userEmail = localStorage.getItem('userEmail');
-  const favRef = collection(db, 'userId', userEmail, 'fav_plans');
+  const currentUserEmail = localStorage.getItem('userEmail');
+  console.log(currentUserEmail);
+  console.log(collectionID);
+
+  const favRef = doc(collection(db, 'userId', currentUserEmail, 'fav_plans'));
 
   try {
     await setDoc(favRef, {
@@ -100,9 +103,9 @@ function StaticPlanDetail() {
   // } else if (location.state.fromPage === 'allPlans') {
   //   const collectionID = location.state.collection_id
   // }
-  console.log(location.state);
-  console.log(location.state.collectionID);
-  console.log(location.state.planDocRef);
+  // console.log(location.state);
+  // console.log(location.state.collectionID);
+  // console.log(location.state.planDocRef);
 
   const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
@@ -128,7 +131,6 @@ function StaticPlanDetail() {
       (endDate.seconds * 1000 - startDate.seconds * 1000) /
       (1000 * 60 * 60 * 24);
     setNumberofDays(nofDays);
-    console.log('nofday calc run');
   }, [endDate, startDate]);
 
   useEffect(() => {
