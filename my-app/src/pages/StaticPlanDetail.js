@@ -15,21 +15,9 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
-import {
-  doc,
-  getDoc,
-  getDocs,
-  collectionGroup,
-  query,
-  where,
-  onSnapshot,
-  collection,
-  setDoc,
-} from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayBlockCard from '../components/DayBlockCard';
-import DayMapCard from '../components/DayMapCard';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import { useLocation } from 'react-router-dom';
 
 const db = firebaseDB();

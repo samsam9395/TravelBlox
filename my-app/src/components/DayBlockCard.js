@@ -2,16 +2,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
-import DayMapCard from './DayMapCard';
+
 import GoogleAPI from '../utils/GoogleAPI';
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-// import './planDetail.scss';
-// import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
-// import moment from 'moment';
-// import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
-// import PropTypes from 'prop-types';
-import DayCalendar from './DayCalendar';
+import DayMapCard from './DailyEventCard/DayMapCard';
+import DayCalendar from './DailyEventCard/DayCalendar';
 
 const db = firebaseDB();
 
@@ -84,6 +80,10 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
   return eventByDayList;
 }
 
+// function calculateTimeBlockDUration(startTime, endTime) {
+//   endTime.seconds - startTime.seconds;
+// }
+
 function DayBlockCard(props) {
   const [dayEvents, setDayEvents] = useState([]);
   const [hasReturned, setHasReturned] = useState(false);
@@ -137,6 +137,10 @@ function DayBlockCard(props) {
       <SingleDayWrapper>
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
+            // console.log(singleEvent.start.secodns);
+            console.log('here', singleEvent.end.secodns);
+            console.log('here', singleEvent.start.seconds);
+
             return (
               <ContentContainer key={index}>
                 <h2>{singleEvent.title}</h2>

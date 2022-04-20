@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import styled from 'styled-components';
-import GoogleAPI from '../utils/GoogleAPI';
+import GoogleAPI from '../../utils/GoogleAPI';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
 const ApiKey = GoogleAPI();
@@ -118,16 +118,13 @@ const Map = (props) => {
     if (placeIdList && placeIdList.length > 2) {
       const waypointsList = placeIdList.slice(1).slice(0, -1);
       const waypoints = [];
-      // console.log(waypointsList);
+
       waypointsList.forEach((singleRoute) => {
         waypoints.push({
           location: { placeId: singleRoute },
           stopover: true,
         });
       });
-      // console.log(waypoints); //ChIJJQ6Ck8zFyIARfxB2vQVF2Z0
-      // console.log(placeIdList[0]); //ChIJ69QoNDjEyIARTIMmDF0Z4kM
-      // console.log(placeIdList.at(-1)); //ChIJVY-sauoz3YARb5koICraTBw
 
       const directionsRequest = {
         origin: { placeId: placeIdList[0] },
@@ -143,6 +140,7 @@ const Map = (props) => {
       directionsService.route(directionsRequest).then((result) => {
         if (result.status === 'OK') {
           directionsRenderer.setDirections(result);
+          console.log(result);
         } else console.log('something wrong');
       });
     }
