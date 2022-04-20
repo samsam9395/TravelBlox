@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
 import DayMapCard from './DayMapCard';
-import * as ReactDom from 'react-dom';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import GoogleAPI from '../utils/GoogleAPI';
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
@@ -35,6 +33,7 @@ const ContentContainer = styled.div`
   padding-right: 15px;
   display: flex;
   flex-direction: column;
+  margin: 20px 0;
 `;
 const DailyContentWrapper = styled.div`
   display: flex;
@@ -53,8 +52,6 @@ const CalendarWrapper = styled.div`
   width: 300px;
   height: 300px;
 `;
-
-const googleAPIKey = GoogleAPI();
 
 function addOneDay(date) {
   var result = new Date(date);
@@ -91,11 +88,7 @@ function DayBlockCard(props) {
   const [dayEvents, setDayEvents] = useState([]);
   const [hasReturned, setHasReturned] = useState(false);
   const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
-  // const [center, setCenter] = useState({
-  //   lat: 0,
-  //   lng: 0,
-  // });
-  // const zoom = 4;
+  const [timeBlockImage, setTimeBlockImage] = useState('');
 
   const blocksListRef = collection(
     db,
@@ -141,15 +134,14 @@ function DayBlockCard(props) {
       <h2>Day1, {props.currentDayDate.toDateString()}</h2>
       <SingleDayWrapper>
         <DailyContentWrapper>
-          {dayTimeBlocks.map((singleBlock, index) => {
+          {dayEvents.map((singleEvent, index) => {
             return (
               <ContentContainer key={index}>
-                <div className="content">{singleBlock.text}</div>
-                <SampleDiv>
-                  <span>image here</span>
-                  <img src="" alt="" />
-                </SampleDiv>
-                <div>{singleBlock.address}</div>
+                <h2>{singleEvent.title}</h2>
+                <div>Place: {singleEvent.place_name}</div>
+                <div>Name: {singleEvent.place_format_address}</div>
+                <img src={singleEvent.timeblock_img} alt="" />
+                <h3 className="content">Context: {singleEvent.text}</h3>
               </ContentContainer>
             );
           })}

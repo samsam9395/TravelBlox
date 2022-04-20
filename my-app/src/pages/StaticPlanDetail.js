@@ -95,7 +95,6 @@ function StaticPlanDetail() {
   const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
-  //plan1650219920723
   const planCollectionRef = doc(db, collectionID, planDocRef);
 
   useEffect(async () => {
@@ -121,7 +120,7 @@ function StaticPlanDetail() {
     setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
   }, [endDate, startDate]);
 
-  let currentDayDate = new Date('20 Apr 2022');
+  let currentDayDate = new Date('14 Jan 2022');
 
   return (
     <>
