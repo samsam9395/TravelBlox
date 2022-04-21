@@ -3,6 +3,11 @@
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
+  padding: 80;
+}
+
+.bodyWrapper {
+  padding: 100px 40px;
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -76,7 +76,16 @@ async function saveToDataBase(
   endDateValue
 ) {
   const batch = writeBatch(db);
-
+  console.log(
+    myEvents,
+    planTitle,
+    country,
+    mainImage,
+    collectionRef,
+    planDocRef,
+    startDateValue,
+    endDateValue
+  );
   myEvents.forEach((singleEvent) => {
     const id = singleEvent.id;
     let updateRef = doc(db, collectionRef, planDocRef, 'time_blocks', id);
@@ -380,6 +389,7 @@ function AddNewPlan() {
           <>
             <CalendarContainer>
               <PlanCalendar
+                startDateValue={startDateValue}
                 setMyEvents={setMyEvents}
                 myEvents={myEvents}
                 setShowEditPopUp={setShowEditPopUp}

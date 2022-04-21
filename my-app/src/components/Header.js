@@ -22,6 +22,17 @@ const NavLink = styled.div`
   width: 80px;
 `;
 
+const TestLink = styled(Link)`
+  text-decoration: none;
+  &:active,
+  &:visited {
+    text-decoration: none;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 const Logo = styled.div`
   width: 80px;
   height: 80px;
@@ -39,9 +50,13 @@ function Header() {
     <Wrapper>
       <Logo></Logo>
       <NavLinkWrapper>
-        <NavLink>Home</NavLink>
-        <NavLink>Discover</NavLink>
-        <NavLink>Dashboard</NavLink>
+        <NavLink>Home{/* <TestLink to="/">Home</TestLink> */}</NavLink>
+        <NavLink>
+          <TestLink to="/all-plans">Discover</TestLink>
+        </NavLink>
+        <NavLink>
+          <TestLink to="/dashboard">Dashboard</TestLink>
+        </NavLink>
       </NavLinkWrapper>
     </Wrapper>
   );

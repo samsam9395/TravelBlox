@@ -15,7 +15,16 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
-import { doc, getDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  collection,
+  setDoc,
+  addDoc,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
@@ -68,6 +77,35 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
+async function handleFavAction(collectionID, author) {
+  const currentUserEmail = localStorage.getItem('userEmail');
+  console.log(currentUserEmail);
+  console.log(collectionID);
+
+  if (currentUserEmail === author) {
+    alert('Do not favourite your own plan!');
+  } else {
+    const favRef = doc(collection(db, 'userId', currentUserEmail, 'fav_plans'));
+    const q = query(favRef, where('fav_collection_id' === collectionID));
+    try {
+      const docSnap = await getDocs(q);
+
+      if (docSnap.exists()) {
+        console.log(docSnap.exists());
+        console.log('Document data:', docSnap.data());
+      } else {
+        await setDoc(favRef, {
+          fav_collection_id: collectionID,
+          fav_plan_doc_ref: favRef.id,
+        });
+        alert('Successfully favourite this plan!');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
 function StaticPlanDetail() {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
@@ -86,7 +124,6 @@ function StaticPlanDetail() {
   const planCollectionRef = doc(db, collectionID, planDocRef);
 
   useEffect(async () => {
-    // const planRef = doc(db, 'plan101', 'zqZZcY8RO85mFVmtHbVI');
     const docSnap = await getDoc(planCollectionRef);
     const data = docSnap.data();
     console.log(data);
@@ -105,14 +142,11 @@ function StaticPlanDetail() {
       (endDate.seconds * 1000 - startDate.seconds * 1000) /
       (1000 * 60 * 60 * 24);
     setNumberofDays(nofDays);
-    console.log('nofday calc run');
   }, [endDate, startDate]);
 
   useEffect(() => {
     setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
   }, [numberofDays]);
-
-  //let currentDayDate = new Date('14 Jan 2022');
 
   return (
     <>
@@ -139,6 +173,11 @@ function StaticPlanDetail() {
         <Typography variant="h5" component="div">
           Location: {country}
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => handleFavAction(collectionID, author)}>
+          Favourite this plan
+        </Button>
       </PlanInfoWrapper>
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {
@@ -148,6 +187,7 @@ function StaticPlanDetail() {
               collectionID={collectionID}
               planDocRef={planDocRef}
               index={index}
+              key={index}
             />
           );
         })}

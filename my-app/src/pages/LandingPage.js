@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
 import styled from 'styled-components';
 import {
   getFirestore,
@@ -23,7 +21,7 @@ const MainImage = styled.img`
 function LandingPage() {
   const [mainImage, setMainImage] = useState(null);
   const [hasSignedIn, setHasSignedIn] = useState(false);
-  const [isNewUser, setIsNewUser] = useState(false);
+  // const [isNewUser, setIsNewUser] = useState(false);
   const [canRedirect, setCanRedirect] = useState(false);
   const [userId, setUserId] = useState('');
 
@@ -37,29 +35,29 @@ function LandingPage() {
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
       setCanRedirect(true);
+      console.log('accessToken is  ', localStorage.getItem('accessToken'));
     }
   }, []);
 
-  useEffect(async () => {
-    if (isNewUser && userId) {
-      await setDoc(doc(db, 'userId', userId), {
-        id: userId,
-      });
-    }
-  }, [isNewUser]);
+  // useEffect(async () => {
+  //   if (isNewUser && userId) {
+  //     await setDoc(doc(db, 'userId', userId), {
+  //       id: userId,
+  //     });
+  //     await setDoc(collection(db, 'userId', userId, 'time_blocks'));
+  //   }
+  // }, [isNewUser]);
 
   return (
     <>
-      <Header />
       <MainImage src={mainImage} />
       <Login
         setHasSignedIn={setHasSignedIn}
         hasSignedIn={hasSignedIn}
-        setIsNewUser={setIsNewUser}
+        // setIsNewUser={setIsNewUser}
         setUserId={setUserId}
       />
       {canRedirect && <Navigate to="/dashboard"></Navigate>}
-      <Footer />
     </>
   );
 }

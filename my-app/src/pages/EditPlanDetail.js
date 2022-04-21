@@ -140,7 +140,7 @@ function EditPlanDetail(props) {
   //React Route
   const location = useLocation();
   const collectionID = location.state.collectionID;
-  const planDocRef = location.state.planDocId;
+  const planDocRef = location.state.planDocRef;
 
   const planCollectionRef = doc(db, collectionID, planDocRef);
   const blocksListRef = collection(db, collectionID, planDocRef, 'time_blocks');
@@ -149,6 +149,7 @@ function EditPlanDetail(props) {
   const redirectToStatic = () => {
     navigate('/static-plan-detail', {
       state: {
+        fromPage: 'editPlans',
         collectionID: collectionID,
         planDocRef: planDocRef,
       },

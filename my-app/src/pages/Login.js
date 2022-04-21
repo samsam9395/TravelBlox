@@ -3,13 +3,18 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  signOut,
 } from 'firebase/auth';
+import { doc, getDoc, addDoc, setDoc, collection } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
 import { InputAdornment } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import firebaseDB from '../utils/firebaseConfig';
+
+const db = firebaseDB();
 
 const Wrapper = styled.div`
   height: 400px;
@@ -75,22 +80,53 @@ const ClickTag = styled.div`
   padding: 0 10px;
 `;
 
-function logOn(email, password) {
+function signOutFirebase() {
   const auth = getAuth();
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log(auth);
-      console.log(user);
+
+  signOut(auth)
+    .then(() => {
+      if (localStorage.getItem('accessToken')) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userEmail');
+        alert('You have been signed out!');
+      } else {
+        alert('You were not signed in!');
+      }
     })
     .catch((error) => {
-      console.log(error.code);
-      console.log(error.message);
-      if (error.message === 'EMAIL_NOT_FOUND') {
-        alert('Email not found! Please check again!');
-      }
+      console.log(error);
     });
+}
+
+async function signUP(email, password, setIsNewUser) {
+  const docRef = doc(db, 'userId', email);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    alert('You are a member already!');
+  } else {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        // setIsNewUser(true);
+        return user.email;
+      })
+      .then((emailId) => {
+        setDoc(doc(db, 'userId', emailId), {
+          id: emailId,
+        });
+        // setDoc(collection(db, 'userId', emailId, 'time_blocks'));
+      })
+      .catch((error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          alert('Email already in use, please pick another one!');
+        }
+        console.log(error.message);
+        console.log(error.code);
+      });
+  }
 }
 
 function Login(props) {
@@ -99,19 +135,21 @@ function Login(props) {
   const [password, setPassword] = useState('');
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const setIsNewUser = props.setIsNewUser;
 
-  function signUP(email, password) {
+  function logOn(email, password) {
     const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
-        props.setIsNewUser(true);
       })
       .catch((error) => {
-        console.log(error.message);
         console.log(error.code);
+        console.log(error.message);
+        if (error.message === 'EMAIL_NOT_FOUND') {
+          alert('Email not found! Please check again!');
+        }
       });
   }
 
@@ -121,10 +159,11 @@ function Login(props) {
       if (user) {
         // console.log(user.accessToken);
         const uid = user.email;
+        console.log(user);
+        props.setUserId(uid);
+        // alert(`Welcome! ${uid}`);
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
-        props.setUserId(uid);
-        alert(`Welcome! ${uid}`);
         props.setHasSignedIn(true);
       } else {
         console.log('not logged in');
@@ -242,7 +281,10 @@ function Login(props) {
                 <Button
                   onClick={() =>
                     email && password
-                      ? (signUP(email, password), setEmail(''), setPassword(''))
+                      ? (signUP(email, password),
+                        setEmail(''),
+                        setPassword(''),
+                        setIsNewUser)
                       : alert('please fill in both !')
                   }>
                   Sign Up
@@ -253,6 +295,15 @@ function Login(props) {
                   <ClickTag
                     onClick={() => {
                       setShowSignUp(!showSignUp);
+                    }}>
+                    here!
+                  </ClickTag>
+                </SignUpSwitcher>
+                <SignUpSwitcher>
+                  Sign out
+                  <ClickTag
+                    onClick={() => {
+                      signOutFirebase();
                     }}>
                     here!
                   </ClickTag>
