@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Try creating on imac what???</p>
+        <p>Try creating on imac what??? It's actually working srsly</p>
         <Try />
       </header>
     </div>
