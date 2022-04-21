@@ -35,8 +35,9 @@ import {
   addDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import OnlyDatePicker from '../components/onlyDatePicker';
+import OwnPlanCard from '../components/OwnPlanCard';
 
 const db = firebaseDB();
 
@@ -159,12 +160,23 @@ async function addPlanToAllPlans(
   }
 }
 
-function FavCollections() {
-  return <FavCollectionContainer></FavCollectionContainer>;
+function FavCollections(props) {
+  return (
+    <FavCollectionContainer>
+      {props.favPlansIdList &&
+        props.favPlansIdList.map((favPlanId) => (
+          <OwnPlanCard
+            userIdentity="importer"
+            ownPlanId={favPlanId.fav_collection_id}
+            key={favPlanId.fav_collection_id}
+          />
+        ))}
+    </FavCollectionContainer>
+  );
 }
 
 function AddNewPlan() {
-  const [user, setUser] = useState('');
+  const [userToken, setUserToken] = useState('');
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([]);
@@ -187,9 +199,15 @@ function AddNewPlan() {
   const [showFavContainer, setShowFavContainer] = useState(false);
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const favPlansIdList = location.state;
+
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
       setCurrentUserId(localStorage.getItem('userEmail'));
+    }
+    if (localStorage.getItem('accessToken')) {
+      setUserToken(localStorage.getItem('accessToken'));
     }
   }, []);
 
@@ -270,12 +288,6 @@ function AddNewPlan() {
       console.log(error.message);
     }
   }
-
-  useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setUser(localStorage.getItem('accessToken'));
-    }
-  }, []);
 
   useEffect(async () => {
     const list = await (
@@ -456,6 +468,9 @@ function AddNewPlan() {
               onClick={() => setShowFavContainer(!showFavContainer)}>
               Import Favourite
             </Button>
+            {showFavContainer && (
+              <FavCollections favPlansIdList={favPlansIdList} />
+            )}
             <Button
               variant="contained"
               onClick={() => {

@@ -58,48 +58,6 @@ const PlanCollectionWrapper = styled.div`
   margin: 30px 0;
 `;
 
-// function OwnPlanCard(props) {
-//   const [docData, setDocData] = useState(null);
-//   const [testCurrentPlanRef, setTestCurrentPlanRef] = useState(null);
-//   const planId = props.ownPlanId;
-
-//   const navigate = useNavigate();
-
-//   const redirectToEdit = () => {
-//     navigate('/edit-plan-detail', { state: testCurrentPlanRef });
-//   };
-
-//   useEffect(async () => {
-//     const ref = collection(db, planId);
-//     const ownPlanData = await getDocs(ref);
-
-//     ownPlanData.forEach((doc) => {
-//       setTestCurrentPlanRef({
-//         collectionID: planId,
-//         planDocId: doc.id,
-//       });
-
-//       setDocData(doc.data());
-//       return doc.data();
-//     });
-//   }, [planId]);
-
-//   return (
-//     docData && (
-//       <SinglePlanContainer onClick={() => redirectToEdit()}>
-//         <PlanMainImageContainer>
-//           <SinglePlanText>{docData.title}</SinglePlanText>
-//           <ImageContainer>
-//             <MainImage src={docData.main_image} alt="main image"></MainImage>
-//           </ImageContainer>
-
-//           {/* <ImageContainer src={docData.main_image} alt="main image" /> */}
-//         </PlanMainImageContainer>
-//       </SinglePlanContainer>
-//     )
-//   );
-// }
-
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
@@ -107,9 +65,14 @@ function Dashboard(props) {
   const [favPlansIdList, setFavlansIdList] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [currentPlanRef, setCurrentPlanRef] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(async () => {
     const user = localStorage.getItem('userEmail');
+    if (!user) {
+      alert('Please login first!');
+      navigate('/landing');
+    }
     setCurrentUserId(localStorage.getItem('userEmail'));
 
     const ref = collection(db, 'userId', user, 'own_plans');
@@ -138,11 +101,7 @@ function Dashboard(props) {
         setFavlansIdList(favPlansIdList.docs.map((e) => e.data()));
       }
     }
-
-    // console.log('1 db', '2 userId', currentUserId, '4 fav_plans');
   }, [currentUserId]);
-
-  console.log(favPlansIdList);
 
   return (
     <>
@@ -163,10 +122,8 @@ function Dashboard(props) {
         }}>
         Add New Plan
       </AddPlanBtn>
-      {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
-      {/* {openEditPopUp && <EditPlanDetail currentPlanRef={currentPlanRef} />} */}
-      {/* {openEditPopUp && <Navigate to="/add-new-plan"></Navigate>} */}
-
+      {/* {showAddPlanPopUp && <Navigate to="/add-new-plan" ></Navigate>} */}
+      {showAddPlanPopUp && navigate('/add-new-plan', { state: favPlansIdList })}
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => (
@@ -176,7 +133,6 @@ function Dashboard(props) {
               key={ownPlanId}
               setOpenEditPopUp={setOpenEditPopUp}
               openEditPopUp={openEditPopUp}
-              setCurrentPlanRef={setCurrentPlanRef}
             />
           ))}
       </PlanCollectionWrapper>
@@ -188,7 +144,6 @@ function Dashboard(props) {
               userIdentity="public"
               ownPlanId={favPlanId.fav_collection_id}
               key={favPlanId.fav_collection_id}
-              setCurrentPlanRef={setCurrentPlanRef}
             />
           ))}
       </PlanCollectionWrapper>

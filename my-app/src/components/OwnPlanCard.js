@@ -51,18 +51,18 @@ const MainImage = styled.img`
 
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
-  const [testCurrentPlanRef, setTestCurrentPlanRef] = useState(null);
-  const [planDocRef, setPlanDocRef] = useState('');
+  const [currentPlanRef, setCurrentPlanRef] = useState(null);
+  const [doImport, setDoimport] = useState(false);
   const planId = props.ownPlanId;
 
   const navigate = useNavigate();
 
   const redirectToEdit = () => {
-    navigate('/edit-plan-detail', { state: testCurrentPlanRef });
+    navigate('/edit-plan-detail', { state: currentPlanRef });
   };
 
   const redirectToStatic = () => {
-    navigate('/static-plan-detail', { state: testCurrentPlanRef });
+    navigate('/static-plan-detail', { state: currentPlanRef });
   };
 
   useEffect(async () => {
@@ -70,32 +70,59 @@ function OwnPlanCard(props) {
     const ownPlanData = await getDocs(ref);
 
     ownPlanData.forEach((doc) => {
-      setTestCurrentPlanRef({
+      setCurrentPlanRef({
         collectionID: planId,
         planDocRef: doc.id,
       });
-      setPlanDocRef();
 
       setDocData(doc.data());
       return doc.data();
     });
   }, [planId]);
 
+  useEffect(async () => {
+    if (doImport) {
+      const ref = collection(
+        db,
+        planId,
+        currentPlanRef.planDocRef,
+        'time_blocks'
+      );
+      const importTimeBlocks = await getDocs(ref);
+
+      importTimeBlocks.forEach((doc) => {
+        console.log(doc.data());
+        return doc.data();
+      });
+    }
+  }, [doImport]);
+
+  function renderSwitch(identity) {
+    switch (identity) {
+      case 'author':
+        redirectToEdit();
+      case 'importer':
+        // redirectToimport();
+        setDoimport(true);
+      default:
+        redirectToStatic();
+    }
+  }
+
   return (
     docData && (
       <SinglePlanContainer
-        onClick={() =>
-          props.userIdentity === 'author'
-            ? redirectToEdit()
-            : redirectToStatic()
+        onClick={
+          () => renderSwitch(props.userIdentity)
+          // props.userIdentity === 'author'
+          //   ? redirectToEdit()
+          //   : redirectToStatic()
         }>
         <PlanMainImageContainer>
           <SinglePlanText>{docData.title}</SinglePlanText>
           <ImageContainer>
             <MainImage src={docData.main_image} alt="main image"></MainImage>
           </ImageContainer>
-
-          {/* <ImageContainer src={docData.main_image} alt="main image" /> */}
         </PlanMainImageContainer>
       </SinglePlanContainer>
     )
