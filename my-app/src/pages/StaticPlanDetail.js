@@ -15,7 +15,16 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
-import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  collection,
+  setDoc,
+  addDoc,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
@@ -77,11 +86,20 @@ async function handleFavAction(collectionID, author) {
     alert('Do not favourite your own plan!');
   } else {
     const favRef = doc(collection(db, 'userId', currentUserEmail, 'fav_plans'));
+    const q = query(favRef, where('fav_collection_id' === collectionID));
     try {
-      await setDoc(favRef, {
-        fav_collection_id: collectionID,
-      });
-      alert('Successfully favourite this plan!');
+      const docSnap = await getDocs(q);
+
+      if (docSnap.exists()) {
+        console.log(docSnap.exists());
+        console.log('Document data:', docSnap.data());
+      } else {
+        await setDoc(favRef, {
+          fav_collection_id: collectionID,
+          fav_plan_doc_ref: favRef.id,
+        });
+        alert('Successfully favourite this plan!');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -100,16 +118,6 @@ function StaticPlanDetail() {
   const [timestampList, setTimestampList] = useState([]);
 
   const location = useLocation();
-  // if (location.state.fromPage === 'editPlans') {
-  //   const collectionID = location.state.collectionID;
-  //   const planDocRef = location.state.planDocRef;
-  // } else if (location.state.fromPage === 'allPlans') {
-  //   const collectionID = location.state.collection_id
-  // }
-  // console.log(location.state);
-  // console.log(location.state.collectionID);
-  // console.log(location.state.planDocRef);
-
   const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
@@ -139,8 +147,6 @@ function StaticPlanDetail() {
   useEffect(() => {
     setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
   }, [numberofDays]);
-
-  //let currentDayDate = new Date('14 Jan 2022');
 
   return (
     <>
@@ -181,6 +187,7 @@ function StaticPlanDetail() {
               collectionID={collectionID}
               planDocRef={planDocRef}
               index={index}
+              key={index}
             />
           );
         })}

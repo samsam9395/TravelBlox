@@ -50,12 +50,19 @@ const MainImage = styled.img`
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
   const [testCurrentPlanRef, setTestCurrentPlanRef] = useState(null);
+  const [planDocRef, setPlanDocRef] = useState('');
   const planId = props.ownPlanId;
 
   const navigate = useNavigate();
 
+  console.log(props.userIdentity);
+
   const redirectToEdit = () => {
     navigate('/edit-plan-detail', { state: testCurrentPlanRef });
+  };
+
+  const redirectToStatic = () => {
+    navigate('/static-plan-detail', { state: testCurrentPlanRef });
   };
 
   useEffect(async () => {
@@ -65,8 +72,9 @@ function OwnPlanCard(props) {
     ownPlanData.forEach((doc) => {
       setTestCurrentPlanRef({
         collectionID: planId,
-        planDocId: doc.id,
+        planDocRef: doc.id,
       });
+      setPlanDocRef();
 
       setDocData(doc.data());
       return doc.data();
@@ -75,7 +83,12 @@ function OwnPlanCard(props) {
 
   return (
     docData && (
-      <SinglePlanContainer onClick={() => redirectToEdit()}>
+      <SinglePlanContainer
+        onClick={() =>
+          props.userIdentity === 'author'
+            ? redirectToEdit()
+            : redirectToStatic()
+        }>
         <PlanMainImageContainer>
           <SinglePlanText>{docData.title}</SinglePlanText>
           <ImageContainer>

@@ -30,6 +30,7 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
+import FavPlanCard from '../components/PublicPlanCard';
 
 const db = firebaseDB();
 
@@ -126,24 +127,22 @@ function Dashboard(props) {
   }, []);
 
   useEffect(async () => {
-    // const blocksListRef = collection(
-    //   db,
-    //   props.collectionID,
-    //   props.planDocRef,
-    //   'time_blocks'
-    // );
-    // const querySnapshot = await getDocs(q);
+    if (currentUserId) {
+      const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+      const favPlansIdList = await getDocs(favRef);
 
-    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
-    const favPlansIdList = await getDocs(favRef);
-
-    if (favPlansIdList.docs.length === 0) {
-      console.log('No fav plans yet!');
-    } else {
-      const favList = favPlansIdList.docs.map((e) => e.data());
-      setFavlansIdList(favPlansIdList.docs.map((e) => e.data()));
+      if (favPlansIdList.docs.length === 0) {
+        console.log('No fav plans yet!');
+      } else {
+        const favList = favPlansIdList.docs.map((e) => e.data());
+        setFavlansIdList(favPlansIdList.docs.map((e) => e.data()));
+      }
     }
+
+    // console.log('1 db', '2 userId', currentUserId, '4 fav_plans');
   }, [currentUserId]);
+
+  console.log(favPlansIdList);
 
   return (
     <>
@@ -166,12 +165,13 @@ function Dashboard(props) {
       </AddPlanBtn>
       {showAddPlanPopUp && <Navigate to="/add-new-plan"></Navigate>}
       {/* {openEditPopUp && <EditPlanDetail currentPlanRef={currentPlanRef} />} */}
-      {openEditPopUp && <Navigate to="/add-new-plan"></Navigate>}
+      {/* {openEditPopUp && <Navigate to="/add-new-plan"></Navigate>} */}
 
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => (
             <OwnPlanCard
+              userIdentity="author"
               ownPlanId={ownPlanId}
               key={ownPlanId}
               setOpenEditPopUp={setOpenEditPopUp}
@@ -181,7 +181,17 @@ function Dashboard(props) {
           ))}
       </PlanCollectionWrapper>
 
-      <PlanCollectionWrapper></PlanCollectionWrapper>
+      <PlanCollectionWrapper>
+        {favPlansIdList &&
+          favPlansIdList.map((favPlanId) => (
+            <OwnPlanCard
+              userIdentity="public"
+              ownPlanId={favPlanId.fav_collection_id}
+              key={favPlanId.fav_collection_id}
+              setCurrentPlanRef={setCurrentPlanRef}
+            />
+          ))}
+      </PlanCollectionWrapper>
     </>
   );
 }
