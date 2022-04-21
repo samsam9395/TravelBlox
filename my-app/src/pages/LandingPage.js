@@ -25,6 +25,9 @@ function LandingPage() {
   const [canRedirect, setCanRedirect] = useState(false);
   const [userId, setUserId] = useState('');
 
+  const a = undefined;
+  console.log(a);
+
   useEffect(async () => {
     const querySnapshot = await getDocs(collection(db, 'main-components'));
     querySnapshot.forEach((doc) => {
