@@ -35,7 +35,7 @@ import {
   addDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import OnlyDatePicker from '../components/onlyDatePicker';
 
 const db = firebaseDB();
@@ -64,48 +64,6 @@ const CalendarContainer = styled.div`
 const Input = styled('input')({
   display: 'none',
 });
-
-async function saveToDataBase(
-  myEvents,
-  planTitle,
-  country,
-  mainImage,
-  collectionRef,
-  planDocRef,
-  startDateValue,
-  endDateValue
-) {
-  const batch = writeBatch(db);
-  console.log(
-    myEvents,
-    planTitle,
-    country,
-    mainImage,
-    collectionRef,
-    planDocRef,
-    startDateValue,
-    endDateValue
-  );
-  myEvents.forEach((singleEvent) => {
-    const id = singleEvent.id;
-    let updateRef = doc(db, collectionRef, planDocRef, 'time_blocks', id);
-    batch.update(updateRef, {
-      end: singleEvent.end,
-      start: singleEvent.start,
-    });
-  });
-
-  const upperLevelUpdateRef = doc(db, collectionRef, planDocRef);
-  batch.update(upperLevelUpdateRef, {
-    title: planTitle,
-    country: country,
-    main_image: mainImage,
-    start_date: startDateValue,
-    end_date: endDateValue,
-  });
-
-  await batch.commit();
-}
 
 function deleteBlockInMylist(prev, id) {
   const indexOfObject = prev.findIndex((timeblock) => {
@@ -184,12 +142,13 @@ function AddNewPlan() {
   const [hasCreatedCollection, setHasCreatedCollection] = useState(false);
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [collectionRef, setCollectionRef] = useState(null);
-  const [startDateValue, setStartDateValue] = useState(0);
-  const [endDateValue, setEndDateValue] = useState(0);
+  const [startDateValue, setStartDateValue] = useState(new Date());
+  const [endDateValue, setEndDateValue] = useState(new Date());
   const [planDocRef, setPlanDocRef] = useState('');
   const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(''); //this is completely duplicated with dashboard, need to find a way to pass data to here
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
@@ -218,12 +177,61 @@ function AddNewPlan() {
       console.log('Document written with ID: ', docRef.id);
       setHasCreatedCollection(true);
       setPlanDocRef(docRef.id);
-      setCollectionId(createCollectionId);
+      setCollectionRef(createCollectionId);
       addPlanToUserInfo(currentUserId, createCollectionId);
     } catch (e) {
       console.error('Error adding document: ', e);
     }
   };
+
+  async function saveToDataBase(
+    myEvents,
+    planTitle,
+    country,
+    mainImage,
+    collectionRef,
+    planDocRef,
+    startDateValue,
+    endDateValue
+  ) {
+    const batch = writeBatch(db);
+    console.log(
+      myEvents,
+      planTitle,
+      country,
+      'mainImage',
+      collectionRef, //null
+      planDocRef,
+      startDateValue, //undefine
+      endDateValue //undefine
+    );
+    myEvents.forEach((singleEvent) => {
+      const id = singleEvent.id;
+      let updateRef = doc(db, collectionRef, planDocRef, 'time_blocks', id);
+      batch.update(updateRef, {
+        end: singleEvent.end,
+        start: singleEvent.start,
+      });
+    });
+
+    const upperLevelUpdateRef = doc(db, collectionRef, planDocRef);
+    batch.update(upperLevelUpdateRef, {
+      title: planTitle,
+      country: country,
+      main_image: mainImage,
+      start_date: startDateValue,
+      end_date: endDateValue,
+    });
+
+    try {
+      await batch.commit();
+      alert('Successfully created new plan!');
+      navigate('/dashboard');
+      // return <Navigate to="/dashboard"></Navigate>;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
@@ -385,6 +393,7 @@ function AddNewPlan() {
             </label>
           </Card>
         </TopContainer>
+        {/* hasCreatedCollection */}
         {hasCreatedCollection ? (
           <>
             <CalendarContainer>
@@ -406,16 +415,20 @@ function AddNewPlan() {
             </Button>
             <Button
               variant="contained"
-              onClick={() =>
+              onClick={() => {
+                console.log(collectionRef);
+                console.log(planDocRef);
                 saveToDataBase(
                   myEvents,
                   planTitle,
                   country,
                   mainImage,
                   collectionRef,
-                  planDocRef
-                )
-              }>
+                  planDocRef,
+                  startDateValue,
+                  endDateValue
+                );
+              }}>
               Save
             </Button>
           </>
@@ -426,6 +439,7 @@ function AddNewPlan() {
                 variant="contained"
                 onClick={() => {
                   if (startDateValue && endDateValue && planTitle) {
+                    console.log('going to create new plan');
                     createNewCollection(
                       startDateValue,
                       endDateValue,
