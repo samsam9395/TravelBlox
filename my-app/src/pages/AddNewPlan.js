@@ -109,6 +109,12 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `;
 
+const FavCollectionContainer = styled.div`
+  width: 100%;
+  padding: 20px;
+  border: 1px solid black;
+`;
+
 async function addPlanToUserInfo(currentUserId, createCollectionId) {
   try {
     const userInfoRef = doc(
@@ -154,7 +160,7 @@ async function addPlanToAllPlans(
 }
 
 function FavCollections() {
-  return <></>;
+  return <FavCollectionContainer></FavCollectionContainer>;
 }
 
 function AddNewPlan() {
@@ -425,7 +431,7 @@ function AddNewPlan() {
             </label>
           </Card>
         </TopContainer>
-        {/* hasCreatedCollection */}
+
         {hasCreatedCollection ? (
           <>
             <CalendarContainer>
