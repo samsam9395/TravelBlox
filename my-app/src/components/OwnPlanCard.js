@@ -25,8 +25,9 @@ import CountrySelector from '../components/CountrySelector';
 const db = firebaseDB();
 
 const SinglePlanContainer = styled.div`
-  width: 350px;
-  height: 350px;
+  width: 400px;
+  height: 400px;
+  margin: 0 30px;
 `;
 
 const SinglePlanText = styled.div`
@@ -39,12 +40,13 @@ const PlanMainImageContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  height: 300px;
   width: 300px;
+  max-width: 100%;
 `;
 
 const MainImage = styled.img`
-  max-height: 100%;
+  /* max-height: 100%; */
+  max-width: 100%;
 `;
 
 function OwnPlanCard(props) {

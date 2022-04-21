@@ -127,6 +127,36 @@ async function addPlanToUserInfo(currentUserId, createCollectionId) {
   }
 }
 
+async function addPlanToAllPlans(
+  currentUserId,
+  createCollectionId,
+  docRefId,
+  planTitle,
+  mainImage
+) {
+  try {
+    const allPlansRef = doc(db, 'allPlans', createCollectionId);
+
+    await setDoc(
+      allPlansRef,
+      {
+        author: currentUserId,
+        collection_id: createCollectionId,
+        // plan_doc_ref: docRefId,
+        title: planTitle,
+        mainImage: mainImage,
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function FavCollections() {
+  return <></>;
+}
+
 function AddNewPlan() {
   const [user, setUser] = useState('');
   const [planTitle, setPlanTitle] = useState('');
@@ -148,6 +178,7 @@ function AddNewPlan() {
   const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(''); //this is completely duplicated with dashboard, need to find a way to pass data to here
+  const [showFavContainer, setShowFavContainer] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -175,16 +206,25 @@ function AddNewPlan() {
         main_image: mainImage,
       });
       console.log('Document written with ID: ', docRef.id);
+
       setHasCreatedCollection(true);
       setPlanDocRef(docRef.id);
       setCollectionRef(createCollectionId);
       addPlanToUserInfo(currentUserId, createCollectionId);
+      addPlanToAllPlans(
+        currentUserId,
+        createCollectionId,
+        docRef.id,
+        planTitle,
+        mainImage
+      );
     } catch (e) {
       console.error('Error adding document: ', e);
     }
   };
 
   async function saveToDataBase(
+    currentUserId,
     myEvents,
     planTitle,
     country,
@@ -195,16 +235,7 @@ function AddNewPlan() {
     endDateValue
   ) {
     const batch = writeBatch(db);
-    console.log(
-      myEvents,
-      planTitle,
-      country,
-      'mainImage',
-      collectionRef, //null
-      planDocRef,
-      startDateValue, //undefine
-      endDateValue //undefine
-    );
+
     myEvents.forEach((singleEvent) => {
       const id = singleEvent.id;
       let updateRef = doc(db, collectionRef, planDocRef, 'time_blocks', id);
@@ -221,6 +252,7 @@ function AddNewPlan() {
       main_image: mainImage,
       start_date: startDateValue,
       end_date: endDateValue,
+      origin_author: currentUserId,
     });
 
     try {
@@ -415,10 +447,14 @@ function AddNewPlan() {
             </Button>
             <Button
               variant="contained"
+              onClick={() => setShowFavContainer(!showFavContainer)}>
+              Import Favourite
+            </Button>
+            <Button
+              variant="contained"
               onClick={() => {
-                console.log(collectionRef);
-                console.log(planDocRef);
                 saveToDataBase(
+                  currentUserId,
                   myEvents,
                   planTitle,
                   country,
