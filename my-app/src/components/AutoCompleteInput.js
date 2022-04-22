@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TextField } from '@mui/material';
 import GoogleAPI from '../utils/GoogleAPI';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import { Wrapper } from '@googlemaps/react-wrapper';
 
 const ApiKey = GoogleAPI();
 

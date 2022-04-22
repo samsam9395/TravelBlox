@@ -18,12 +18,11 @@ const MainImage = styled.img`
   width: 100%;
 `;
 
-function LandingPage() {
+function LandingPage(props) {
   const [mainImage, setMainImage] = useState(null);
   const [hasSignedIn, setHasSignedIn] = useState(false);
   // const [isNewUser, setIsNewUser] = useState(false);
   const [canRedirect, setCanRedirect] = useState(false);
-  const [userId, setUserId] = useState('');
 
   useEffect(async () => {
     const querySnapshot = await getDocs(collection(db, 'main-components'));
@@ -33,11 +32,14 @@ function LandingPage() {
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setCanRedirect(true);
-      console.log('accessToken is  ', localStorage.getItem('accessToken'));
+    if (props.user) {
+      console.log(props.user);
     }
-  }, []);
+    // if (localStorage.getItem('accessToken')) {
+    //   setCanRedirect(true);
+    //   console.log('accessToken is  ', localStorage.getItem('accessToken'));
+    // }
+  }, [props.user]);
 
   return (
     <>
@@ -46,9 +48,9 @@ function LandingPage() {
         setHasSignedIn={setHasSignedIn}
         hasSignedIn={hasSignedIn}
         // setIsNewUser={setIsNewUser}
-        setUserId={setUserId}
+        setUser={props.setUser}
       />
-      {canRedirect && <Navigate to="/discover"></Navigate>}
+      {/* {canRedirect && <Navigate to="/discover"></Navigate>} */}
     </>
   );
 }

@@ -7,7 +7,7 @@ import {
   Box,
   Card,
   CardMedia,
-  CircularProgress,
+  // CircularProgress,
   Stack,
 } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
@@ -17,18 +17,19 @@ import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import OnlyDatePicker from '../components/onlyDatePicker';
 import CountrySelector from '../components/CountrySelector';
+
 import {
   doc,
   getDoc,
-  getDocs,
-  collectionGroup,
-  query,
-  where,
+  // getDocs,
+  // collectionGroup,
+  // query,
+  // where,
   onSnapshot,
   collection,
-  setDoc,
+  // setDoc,
   writeBatch,
-  updateDoc,
+  // updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -59,6 +60,13 @@ const CalendarContainer = styled.div`
 const Input = styled('input')({
   display: 'none',
 });
+
+const FavCollectionContainer = styled.div`
+  width: 100%;
+  padding: 20px;
+  border: 1px solid black;
+`;
+
 async function saveToDataBase(
   planCollectionRef,
   collectionID,
@@ -119,20 +127,20 @@ function handleImageUpload(e, setMainImage) {
   };
 }
 
-function FavCollections(props) {
-  return (
-    <FavCollectionContainer>
-      {props.favPlansIdList &&
-        props.favPlansIdList.map((favPlanId) => (
-          <OwnPlanCard
-            userIdentity="importer"
-            ownPlanId={favPlanId.fav_collection_id}
-            key={favPlanId.fav_collection_id}
-          />
-        ))}
-    </FavCollectionContainer>
-  );
-}
+// function FavCollections(props) {
+//   return (
+//     <FavCollectionContainer>
+//       {props.favPlansIdList &&
+//         props.favPlansIdList.map((favPlanId) => (
+//           <OwnPlanCard
+//             userIdentity="importer"
+//             ownPlanId={favPlanId.fav_collection_id}
+//             key={favPlanId.fav_collection_id}
+//           />
+//         ))}
+//     </FavCollectionContainer>
+//   );
+// }
 
 //currentPlanRef
 function EditPlanDetail(props) {
@@ -319,9 +327,9 @@ function EditPlanDetail(props) {
             onClick={() => setShowFavContainer(!showFavContainer)}>
             Import Favourite
           </Button>
-          {showFavContainer && (
+          {/* {showFavContainer && (
             <FavCollections favPlansIdList={favPlansIdList} />
-          )}
+          )} */}
           <Button
             variant="contained"
             onClick={() => {

@@ -15,12 +15,30 @@ import AutoCompleteInput from './components/AutoCompleteInput';
 import Dashboard from './pages/Dashboard';
 import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BodyWrapper = styled.div`
   padding: 100px 30px 150px 30px;
 `;
 
 function App() {
+  const [user, setUser] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      // setCanRedirect(true);
+      setUser({
+        accessToken: localStorage.getItem('accessToken'),
+        email: localStorage.getItem('userEmail'),
+      });
+    } else {
+      console.log('User has not signed in to app yet!');
+      navigate('/landing');
+    }
+  }, []);
+
   return (
     <>
       <Header />
@@ -30,7 +48,10 @@ function App() {
           <Route path="/edit-plan-detail" element={<EditPlanDetail />} />
           <Route path="/add-new-plan" element={<AddNewPlan />} />
           <Route path="/static-plan-detail" element={<StaticPlanDetail />} />
-          <Route path="/landing" element={<LandingPage />} />
+          <Route
+            path="/landing"
+            element={<LandingPage user={user} setUser={setUser} />}
+          />
           {/* <Route path="/test-map" element={<TestMap />} /> */}
           <Route path="/autocomplete" element={<AutoCompleteInput />} />
           <Route path="/dashboard" element={<Dashboard />} />

@@ -7,7 +7,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { doc, getDoc, addDoc, setDoc, collection } from 'firebase/firestore';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
@@ -169,10 +169,9 @@ function Login(props) {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // console.log(user.accessToken);
-        const uid = user.email;
         console.log(user);
-        props.setUserId(uid);
-        // alert(`Welcome! ${uid}`);
+        // props.setUserId(uid);
+        alert(`Welcome! ${user.email}`);
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
         navigate('/discover');
