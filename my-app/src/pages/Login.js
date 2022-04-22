@@ -118,7 +118,16 @@ async function signUP(email, password, setIsNewUser) {
         setDoc(doc(db, 'userId', emailId), {
           id: emailId,
         });
-        // setDoc(collection(db, 'userId', emailId, 'time_blocks'));
+        return emailId;
+      })
+      .then((emailId) => {
+        setDoc(doc(db, 'userId', emailId, 'fav_folders', 'default'), {
+          folder_name: 'default',
+        });
+        // // const q = query(favRef, where('fav_collection_id' === collectionID));
+
+        // // setDoc(collection(db, 'userId', emailId, 'time_blocks'));
+        //   })
       })
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {

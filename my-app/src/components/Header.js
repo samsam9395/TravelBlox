@@ -54,7 +54,7 @@ function Header() {
           <TestLink to="/landing">Home</TestLink>
         </NavLink>
         <NavLink>
-          <TestLink to="/all-plans">Discover</TestLink>
+          <TestLink to="/discover">Discover</TestLink>
         </NavLink>
         <NavLink>
           <TestLink to="/dashboard">Dashboard</TestLink>

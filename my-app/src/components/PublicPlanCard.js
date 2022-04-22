@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-  Box,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Typography,
-  Stack,
-} from '@mui/material';
-
+import { Stack } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 const SinglePlanContainer = styled.div`

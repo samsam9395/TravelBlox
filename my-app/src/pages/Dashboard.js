@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   InputLabel,
-  TextField,
   Button,
   FormControl,
   MenuItem,
@@ -12,10 +11,11 @@ import {
   Card,
   CardMedia,
   CircularProgress,
-  Typography,
   Avatar,
   Stack,
 } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import EditPlanDetail from './EditPlanDetail';
 import { useNavigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
@@ -84,6 +84,7 @@ function Dashboard(props) {
   const [favPlansIdList, setFavlansIdList] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [currentPlanRef, setCurrentPlanRef] = useState([]);
+  const [showFavFolderEdit, setShowFavFolderEdit] = useState(false);
   const navigate = useNavigate();
 
   useEffect(async () => {
@@ -135,21 +136,39 @@ function Dashboard(props) {
         />
         <h4>Welcom! {currentUserId}</h4>
       </TopSectionWrapper>
-      <AddPlanBtn
-        onClick={() => {
-          signOutFirebase();
-          navigate('/landing');
-        }}>
-        Logout
-      </AddPlanBtn>
+      <Stack direction="column" alignItems="center" spacing={2}>
+        <AddPlanBtn
+          onClick={() => {
+            signOutFirebase();
+            navigate('/landing');
+          }}>
+          Logout
+        </AddPlanBtn>
 
-      <AddPlanBtn
-        onClick={() => {
-          setShowAddPlanPopup(!showAddPlanPopUp);
-        }}>
-        Add New Plan
-      </AddPlanBtn>
-      {/* {showAddPlanPopUp && <Navigate to="/add-new-plan" ></Navigate>} */}
+        <AddPlanBtn
+          onClick={() => {
+            setShowAddPlanPopup(!showAddPlanPopUp);
+          }}>
+          Add New Plan
+        </AddPlanBtn>
+
+        <AddPlanBtn
+          onClick={() => {
+            setShowAddPlanPopup(!showAddPlanPopUp);
+          }}>
+          Edit Favourtie Folder
+        </AddPlanBtn>
+      </Stack>
+      {/* {showFavFolderEdit && (
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={favList}
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Movie" />}
+        />
+      )} */}
+
       {showAddPlanPopUp && navigate('/add-new-plan', { state: favPlansIdList })}
       <PlanCollectionWrapper>
         {ownPlansIdList &&

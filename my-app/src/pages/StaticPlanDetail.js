@@ -85,24 +85,38 @@ async function handleFavAction(collectionID, author) {
   if (currentUserEmail === author) {
     alert('Do not favourite your own plan!');
   } else {
-    const favRef = doc(collection(db, 'userId', currentUserEmail, 'fav_plans'));
-    const q = query(favRef, where('fav_collection_id' === collectionID));
-    try {
-      const docSnap = await getDocs(q);
+    const favRef = doc(
+      db,
+      'userId',
+      currentUserEmail,
+      'fav_plans',
+      collectionID
+    );
+    // const q = query(favRef, where('fav_collection_id' === collectionID));
 
-      if (docSnap.exists()) {
-        console.log(docSnap.exists());
-        console.log('Document data:', docSnap.data());
-      } else {
-        await setDoc(favRef, {
-          fav_collection_id: collectionID,
-          fav_plan_doc_ref: favRef.id,
-        });
-        alert('Successfully favourite this plan!');
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    await setDoc(favRef, {
+      fav_collection_id: collectionID,
+      fav_plan_doc_ref: favRef.id,
+      infolder: 'default',
+    });
+
+    //   try {
+    //     const docSnap = await getDocs(q);
+    //     console.log('Document data FIRST:', docSnap.data());
+
+    //     if (docSnap.exists()) {
+    //       console.log(docSnap.exists());
+    //       console.log('Document data:', docSnap.data());
+    //     } else {
+    //       await setDoc(favRef, {
+    //         fav_collection_id: collectionID,
+    //         fav_plan_doc_ref: favRef.id,
+    //       });
+    //       alert('Successfully favourite this plan!');
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
   }
 }
 
