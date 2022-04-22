@@ -4,9 +4,6 @@ import {
   InputLabel,
   TextField,
   Button,
-  FormControl,
-  MenuItem,
-  Select,
   IconButton,
   CardMedia,
   Card,
@@ -14,10 +11,11 @@ import {
 } from '@mui/material';
 import { Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
-import { Timestamp } from 'firebase/firestore';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
+
+const db = firebaseDB();
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -52,8 +50,6 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
-
-const db = firebaseDB();
 
 const FormsContainer = styled.div`
   flex-direction: column;
@@ -92,6 +88,8 @@ function AddNewTimeBlock(props) {
   const [location, setLocation] = useState('');
   const [timeBlockImage, setTimeBlockImage] = useState('');
 
+  console.log(props.collectionID);
+
   async function addToDataBase(
     blockTitle,
     description,
@@ -99,23 +97,36 @@ function AddNewTimeBlock(props) {
     endTimeValue,
     location,
     collectionID,
-    planDocRef
+    planDocRef,
+    timeBlockImage
   ) {
+    console.log('db', collectionID, planDocRef, 'time_blocks');
+
     const timeBlockRef = doc(
       collection(db, collectionID, planDocRef, 'time_blocks')
     );
 
-    await setDoc(timeBlockRef, {
-      title: blockTitle,
-      text: description,
-      start: startTimeValue,
-      end: endTimeValue,
-      // location: location,
-      place_id: location.place_id,
-      place_name: location.name,
-      place_format_address: location.formatted_address,
-      id: timeBlockRef.id,
-    });
+    console.log('db', collectionID, planDocRef, 'time_blocks');
+
+    try {
+      await setDoc(timeBlockRef, {
+        title: blockTitle,
+        text: description,
+        start: startTimeValue,
+        end: endTimeValue,
+        // location: location,
+        place_id: location.place_id,
+        place_name: location.name,
+        place_format_address: location.formatted_address,
+        id: timeBlockRef.id,
+        timeblock_img: timeBlockImage,
+      });
+
+      props.setShowPopUp(false);
+      alert('Successfully added!');
+    } catch (error) {
+      console.log(error);
+    }
 
     props.setAddedTimeBlock(true);
   }
@@ -199,10 +210,9 @@ function AddNewTimeBlock(props) {
                   endTimeValue,
                   location,
                   props.collectionID,
-                  props.planDocRef
+                  props.planDocRef,
+                  timeBlockImage
                 );
-                props.setShowPopUp(false);
-                alert('Successfully added!');
               } else {
                 alert('Please fill in all the requirements!');
               }

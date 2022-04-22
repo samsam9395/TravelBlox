@@ -100,22 +100,26 @@ async function UpdateToDataBase(
   location,
   timeBlockImage
 ) {
-  await setDoc(
-    timeBlockRef,
-    {
-      title: blockTitle,
-      text: description,
-      start: startTimeValue,
-      end: endTimeValue,
-      place_id: location.place_id,
-      place_name: location.name,
-      place_format_address: location.formatted_address,
-      timeblock_img: timeBlockImage,
-    },
-    {
-      merge: true,
-    }
-  );
+  try {
+    await setDoc(
+      timeBlockRef,
+      {
+        title: blockTitle,
+        text: description,
+        start: startTimeValue,
+        end: endTimeValue,
+        place_id: location.place_id,
+        place_name: location.name,
+        place_format_address: location.formatted_address,
+        timeblock_img: timeBlockImage,
+      },
+      {
+        merge: true,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 
   console.log('successfully post to firebase!');
 }

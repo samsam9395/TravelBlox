@@ -13,9 +13,6 @@ export default function CountrySelector(props) {
     const list = await (
       await fetch('https://restcountries.com/v3.1/all')
     ).json();
-    if (list) {
-      props.setIsLoading(false);
-    }
 
     const countries = list.map((e) => {
       return {

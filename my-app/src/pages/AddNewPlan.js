@@ -133,7 +133,7 @@ async function addPlanToUserInfo(currentUserId, createCollectionId) {
 async function addPlanToAllPlans(
   currentUserId,
   createCollectionId,
-  docRefId,
+  planDocRef,
   planTitle,
   mainImage,
   country
@@ -146,7 +146,7 @@ async function addPlanToAllPlans(
       {
         author: currentUserId,
         collection_id: createCollectionId,
-        plan_doc_ref: docRefId,
+        plan_doc_ref: planDocRef,
         title: planTitle,
         mainImage: mainImage,
         country: country,
@@ -177,14 +177,13 @@ function AddNewPlan() {
   const [userToken, setUserToken] = useState('');
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  const [countryList, setCountryList] = useState([]);
   const [mainImage, setMainImage] = useState('');
   const [showPopUp, setShowPopUp] = useState(false);
   const [myEvents, setMyEvents] = useState([]);
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [hasCreatedCollection, setHasCreatedCollection] = useState(false);
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [collectionRef, setCollectionRef] = useState(null);
@@ -218,6 +217,7 @@ function AddNewPlan() {
     const currentTimeMilli = new Date().getTime();
     const author = localStorage.getItem('userEmail');
     const createCollectionId = `plan${currentTimeMilli}`;
+    setCollectionId(createCollectionId);
 
     try {
       const docRef = await addDoc(collection(db, createCollectionId), {
@@ -232,8 +232,20 @@ function AddNewPlan() {
       setHasCreatedCollection(true);
       setPlanDocRef(docRef.id);
       setCollectionRef(createCollectionId);
+
       addPlanToUserInfo(currentUserId, createCollectionId);
+
       addPlanToAllPlans(
+        currentUserId,
+        createCollectionId,
+        docRef.id,
+        planTitle,
+        mainImage,
+        country
+      );
+
+      console.log(
+        '247 adding these ',
         currentUserId,
         createCollectionId,
         docRef.id,
@@ -257,6 +269,19 @@ function AddNewPlan() {
     startDateValue,
     endDateValue
   ) {
+    console.log(
+      111111,
+      currentUserId,
+      myEvents,
+      planTitle,
+      country,
+      mainImage,
+      collectionRef,
+      planDocRef,
+      startDateValue,
+      endDateValue
+    );
+
     const batch = writeBatch(db);
 
     myEvents.forEach((singleEvent) => {
@@ -282,19 +307,10 @@ function AddNewPlan() {
       await batch.commit();
       alert('Successfully created new plan!');
       navigate('/dashboard');
-      // return <Navigate to="/dashboard"></Navigate>;
     } catch (error) {
       console.log(error.message);
     }
   }
-
-  // useEffect(async () => {
-  //   const list = await (
-  //     await fetch('https://restcountries.com/v3.1/all')
-  //   ).json();
-  //   setCountryList(list.sort());
-  //   setIsLoading(false);
-  // }, []);
 
   useEffect(async () => {
     if (addedTimeBlock) {
@@ -390,7 +406,7 @@ function AddNewPlan() {
             />
             <CountrySelector
               setCountry={setCountry}
-              setIsLoading={setIsLoading}
+              // setIsLoading={setIsLoading}
             />
             <OnlyDatePicker
               setStartDateValue={setStartDateValue}

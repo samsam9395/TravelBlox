@@ -21,6 +21,7 @@ import { getDocs, getDoc, collection } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import EditPlanDetail from '../pages/EditPlanDetail';
 import CountrySelector from '../components/CountrySelector';
+import { Dashboard } from '@mui/icons-material';
 
 const db = firebaseDB();
 
@@ -58,7 +59,13 @@ function OwnPlanCard(props) {
   const navigate = useNavigate();
 
   const redirectToEdit = () => {
-    navigate('/edit-plan-detail', { state: currentPlanRef });
+    navigate('/edit-plan-detail', {
+      state: {
+        from: 'dashboard',
+        collectionID: currentPlanRef.collectionID,
+        planDocRef: currentPlanRef.planDocRef,
+      },
+    });
   };
 
   const redirectToStatic = () => {
@@ -98,16 +105,17 @@ function OwnPlanCard(props) {
   }, [doImport]);
 
   function renderSwitch(identity) {
+    console.log(identity);
     switch (identity) {
       case 'author':
         redirectToEdit();
+        break;
       case 'importer':
-        // redirectToimport();
         setDoimport(true);
+        break;
       case 'public':
         redirectToStatic();
-      // default:
-      //   redirectToStatic();
+        break;
     }
   }
 

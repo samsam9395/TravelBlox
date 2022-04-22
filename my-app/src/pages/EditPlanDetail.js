@@ -119,12 +119,25 @@ function handleImageUpload(e, setMainImage) {
   };
 }
 
-//currentPlanRef
+function FavCollections(props) {
+  return (
+    <FavCollectionContainer>
+      {props.favPlansIdList &&
+        props.favPlansIdList.map((favPlanId) => (
+          <OwnPlanCard
+            userIdentity="importer"
+            ownPlanId={favPlanId.fav_collection_id}
+            key={favPlanId.fav_collection_id}
+          />
+        ))}
+    </FavCollectionContainer>
+  );
+}
 
+//currentPlanRef
 function EditPlanDetail(props) {
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  const [countryList, setCountryList] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);
   const [myEvents, setMyEvents] = useState([]);
@@ -134,8 +147,12 @@ function EditPlanDetail(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [startDateValue, setStartDateValue] = useState(0);
   const [endDateValue, setEndDateValue] = useState(0);
+  const [showFavContainer, setShowFavContainer] = useState(false);
+  // const favPlansIdList = location.state;
   //React Route
   const location = useLocation();
+
+  // if (location.state.from === 'dashboard')
   const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
@@ -155,14 +172,6 @@ function EditPlanDetail(props) {
 
   useEffect(() => {
     console.log(console.log('location state is', location.state));
-  }, []);
-
-  useEffect(async () => {
-    const list = await (
-      await fetch('https://restcountries.com/v3.1/all')
-    ).json();
-    setCountryList(list.sort());
-    setIsLoading(false);
   }, []);
 
   useEffect(async () => {
@@ -252,10 +261,7 @@ function EditPlanDetail(props) {
               setPlanTitle(e.target.value);
             }}
           />
-          <CountrySelector
-            setCountry={setCountry}
-            setIsLoading={setIsLoading}
-          />
+          <CountrySelector setCountry={setCountry} />
           <OnlyDatePicker
             setStartDateValue={setStartDateValue}
             startDateValue={startDateValue}
@@ -295,40 +301,55 @@ function EditPlanDetail(props) {
           startDateValue={startDateValue}
         />
       </CalendarContainer>
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setShowPopUp(true);
-          }}>
-          Add new event
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            try {
-              saveToDataBase(
-                planCollectionRef,
-                collectionID,
-                planDocRef,
-                myEvents,
-                planTitle,
-                country,
-                mainImage,
-                startDateValue,
-                endDateValue
-              );
-              alert('Saved!');
-            } catch (error) {
-              console.log(error);
-              alert('Oops!Something went wrong, please try again!');
-            }
-          }}>
-          Save
-        </Button>
-        <Button variant="contained" onClick={() => redirectToStatic()}>
-          Publish
-        </Button>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setShowPopUp(true);
+            }}>
+            Add new event
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => setShowFavContainer(!showFavContainer)}>
+            Import Favourite
+          </Button>
+          {showFavContainer && (
+            <FavCollections favPlansIdList={favPlansIdList} />
+          )}
+          <Button
+            variant="contained"
+            onClick={() => {
+              try {
+                saveToDataBase(
+                  planCollectionRef,
+                  collectionID,
+                  planDocRef,
+                  myEvents,
+                  planTitle,
+                  country,
+                  mainImage,
+                  startDateValue,
+                  endDateValue
+                );
+                alert('Saved!');
+              } catch (error) {
+                console.log(error);
+                alert('Oops!Something went wrong, please try again!');
+              }
+            }}>
+            Save
+          </Button>
+          <Button variant="contained" onClick={() => redirectToStatic()}>
+            Publish
+          </Button>
+        </Stack>
+        <Button variant="contained">Delete</Button>
       </Stack>
     </Wrapper>
   );

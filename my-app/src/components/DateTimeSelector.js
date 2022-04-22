@@ -14,6 +14,7 @@ export default function DateTimeSelector(props) {
         label="Start Time"
         value={props.startTimeValue}
         onChange={(newValue) => {
+          console.log(newValue);
           props.setStartTimeValue(newValue);
         }}
       />
@@ -24,6 +25,7 @@ export default function DateTimeSelector(props) {
         label="End Time"
         value={props.endTimeValue}
         onChange={(newValue) => {
+          console.log(newValue);
           props.setEndTimeValue(newValue);
         }}
       />

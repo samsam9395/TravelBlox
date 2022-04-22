@@ -80,7 +80,6 @@ function loopThroughDays(startday, days) {
 async function handleFavAction(collectionID, author) {
   const currentUserEmail = localStorage.getItem('userEmail');
   console.log(currentUserEmail);
-  console.log(collectionID);
 
   if (currentUserEmail === author) {
     alert('Do not favourite your own plan!');
