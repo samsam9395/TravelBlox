@@ -82,6 +82,7 @@ function Dashboard(props) {
   const [currentUserId, setCurrentUserId] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
   const [favPlansIdList, setFavlansIdList] = useState(null);
+  const [favFolderNames, setFavFolderNames] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [currentPlanRef, setCurrentPlanRef] = useState([]);
   const [showFavFolderEdit, setShowFavFolderEdit] = useState(false);
@@ -123,6 +124,27 @@ function Dashboard(props) {
     }
   }, [currentUserId]);
 
+  useEffect(async () => {
+    if (currentUserId) {
+      const favFolderRef = collection(
+        db,
+        'userId',
+        currentUserId,
+        'fav_folders'
+      );
+      const doc = await getDocs(favFolderRef);
+      const list = doc.docs
+        .map((e) => e.data())
+        .map((e) => {
+          return {
+            label: e.folder_name,
+          };
+        });
+
+      setFavFolderNames(list);
+    }
+  }, [currentUserId]);
+
   return (
     <>
       <TopSectionWrapper>
@@ -154,20 +176,22 @@ function Dashboard(props) {
 
         <AddPlanBtn
           onClick={() => {
-            setShowAddPlanPopup(!showAddPlanPopUp);
+            setShowFavFolderEdit(!showFavFolderEdit);
           }}>
           Edit Favourtie Folder
         </AddPlanBtn>
       </Stack>
-      {/* {showFavFolderEdit && (
+      {showFavFolderEdit && (
         <Autocomplete
           disablePortal
           id="combo-box-demo"
-          options={favList}
+          options={favFolderNames}
           sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Movie" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Favourite Folders" />
+          )}
         />
-      )} */}
+      )}
 
       {showAddPlanPopUp && navigate('/add-new-plan', { state: favPlansIdList })}
       <PlanCollectionWrapper>

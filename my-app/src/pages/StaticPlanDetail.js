@@ -94,29 +94,16 @@ async function handleFavAction(collectionID, author) {
     );
     // const q = query(favRef, where('fav_collection_id' === collectionID));
 
-    await setDoc(favRef, {
-      fav_collection_id: collectionID,
-      fav_plan_doc_ref: favRef.id,
-      infolder: 'default',
-    });
-
-    //   try {
-    //     const docSnap = await getDocs(q);
-    //     console.log('Document data FIRST:', docSnap.data());
-
-    //     if (docSnap.exists()) {
-    //       console.log(docSnap.exists());
-    //       console.log('Document data:', docSnap.data());
-    //     } else {
-    //       await setDoc(favRef, {
-    //         fav_collection_id: collectionID,
-    //         fav_plan_doc_ref: favRef.id,
-    //       });
-    //       alert('Successfully favourite this plan!');
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
+    try {
+      await setDoc(favRef, {
+        fav_collection_id: collectionID,
+        fav_plan_doc_ref: favRef.id,
+        infolder: 'default',
+      });
+      alert('Successfully favourite this plan!');
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
