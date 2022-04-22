@@ -34,7 +34,7 @@ function App() {
           {/* <Route path="/test-map" element={<TestMap />} /> */}
           <Route path="/autocomplete" element={<AutoCompleteInput />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/all-plans" element={<Allplans />} />
+          <Route path="/discover" element={<Allplans />} />
         </Routes>
       </BodyWrapper>
       <Footer />

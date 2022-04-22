@@ -104,8 +104,10 @@ function OwnPlanCard(props) {
       case 'importer':
         // redirectToimport();
         setDoimport(true);
-      default:
+      case 'public':
         redirectToStatic();
+      // default:
+      //   redirectToStatic();
     }
   }
 

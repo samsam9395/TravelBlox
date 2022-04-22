@@ -50,7 +50,9 @@ function Header() {
     <Wrapper>
       <Logo></Logo>
       <NavLinkWrapper>
-        <NavLink>Home{/* <TestLink to="/">Home</TestLink> */}</NavLink>
+        <NavLink>
+          <TestLink to="/landing">Home</TestLink>
+        </NavLink>
         <NavLink>
           <TestLink to="/all-plans">Discover</TestLink>
         </NavLink>

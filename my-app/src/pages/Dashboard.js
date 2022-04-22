@@ -17,7 +17,7 @@ import {
   Stack,
 } from '@mui/material';
 import EditPlanDetail from './EditPlanDetail';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
 import {
   getDocs,
@@ -28,6 +28,7 @@ import {
   orderBy,
   doc,
 } from 'firebase/firestore';
+import { getAuth, signOut } from 'firebase/auth';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
 import FavPlanCard from '../components/PublicPlanCard';
@@ -57,6 +58,24 @@ const PlanCollectionWrapper = styled.div`
   border: 1px solid black;
   margin: 30px 0;
 `;
+
+function signOutFirebase() {
+  const auth = getAuth();
+
+  signOut(auth)
+    .then(() => {
+      if (localStorage.getItem('accessToken')) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userEmail');
+        alert('You have been signed out!');
+      } else {
+        alert('You were not signed in!');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
@@ -116,6 +135,14 @@ function Dashboard(props) {
         />
         <h4>Welcom! {currentUserId}</h4>
       </TopSectionWrapper>
+      <AddPlanBtn
+        onClick={() => {
+          signOutFirebase();
+          navigate('/landing');
+        }}>
+        Logout
+      </AddPlanBtn>
+
       <AddPlanBtn
         onClick={() => {
           setShowAddPlanPopup(!showAddPlanPopUp);

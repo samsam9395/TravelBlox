@@ -8,7 +8,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import Login from './Login';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 
 const db = firebaseDB();
@@ -39,15 +39,6 @@ function LandingPage() {
     }
   }, []);
 
-  // useEffect(async () => {
-  //   if (isNewUser && userId) {
-  //     await setDoc(doc(db, 'userId', userId), {
-  //       id: userId,
-  //     });
-  //     await setDoc(collection(db, 'userId', userId, 'time_blocks'));
-  //   }
-  // }, [isNewUser]);
-
   return (
     <>
       <MainImage src={mainImage} />
@@ -57,7 +48,7 @@ function LandingPage() {
         // setIsNewUser={setIsNewUser}
         setUserId={setUserId}
       />
-      {canRedirect && <Navigate to="/dashboard"></Navigate>}
+      {canRedirect && <Navigate to="/discover"></Navigate>}
     </>
   );
 }

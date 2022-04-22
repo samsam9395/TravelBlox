@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -6,7 +7,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { doc, getDoc, addDoc, setDoc, collection } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
@@ -136,6 +137,7 @@ function Login(props) {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const setIsNewUser = props.setIsNewUser;
+  const navigate = useNavigate();
 
   function logOn(email, password) {
     const auth = getAuth();
@@ -164,12 +166,11 @@ function Login(props) {
         // alert(`Welcome! ${uid}`);
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
-        props.setHasSignedIn(true);
+        navigate('/discover');
       } else {
         console.log('not logged in');
       }
     });
-    console.log(props.hasSignedIn);
   }, []);
 
   return (

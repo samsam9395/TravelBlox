@@ -139,7 +139,8 @@ async function addPlanToAllPlans(
   createCollectionId,
   docRefId,
   planTitle,
-  mainImage
+  mainImage,
+  country
 ) {
   try {
     const allPlansRef = doc(db, 'allPlans', createCollectionId);
@@ -149,9 +150,10 @@ async function addPlanToAllPlans(
       {
         author: currentUserId,
         collection_id: createCollectionId,
-        // plan_doc_ref: docRefId,
+        plan_doc_ref: docRefId,
         title: planTitle,
         mainImage: mainImage,
+        country: country,
       },
       { merge: true }
     );
@@ -240,7 +242,8 @@ function AddNewPlan() {
         createCollectionId,
         docRef.id,
         planTitle,
-        mainImage
+        mainImage,
+        country
       );
     } catch (e) {
       console.error('Error adding document: ', e);
