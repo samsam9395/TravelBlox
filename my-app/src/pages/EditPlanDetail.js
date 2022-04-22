@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
-  InputLabel,
   TextField,
   Button,
-  FormControl,
-  MenuItem,
-  Select,
   IconButton,
   Box,
   Card,
@@ -20,6 +16,7 @@ import PlanCalendar from './Calendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import OnlyDatePicker from '../components/onlyDatePicker';
+import CountrySelector from '../components/CountrySelector';
 import {
   doc,
   getDoc,
@@ -255,30 +252,10 @@ function EditPlanDetail(props) {
               setPlanTitle(e.target.value);
             }}
           />
-          <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-            <InputLabel id="select-country">County</InputLabel>
-            {isLoading ? (
-              <Box sx={{ display: 'flex' }} align="center" justify="center">
-                <CircularProgress size={14} sx={{ py: 2 }} />
-              </Box>
-            ) : (
-              <Select
-                labelId="select-country"
-                value={country}
-                label="Country"
-                onChange={(e) => {
-                  setCountry(e.target.value);
-                }}>
-                {countryList.map((countryData, index) => {
-                  return (
-                    <MenuItem value={countryData.name.common} key={index}>
-                      {countryData.flag} {countryData.name.common}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            )}
-          </FormControl>
+          <CountrySelector
+            setCountry={setCountry}
+            setIsLoading={setIsLoading}
+          />
           <OnlyDatePicker
             setStartDateValue={setStartDateValue}
             startDateValue={startDateValue}

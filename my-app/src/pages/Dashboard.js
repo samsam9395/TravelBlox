@@ -19,15 +19,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import EditPlanDetail from './EditPlanDetail';
 import { useNavigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
-import {
-  getDocs,
-  getDoc,
-  collection,
-  query,
-  where,
-  orderBy,
-  doc,
-} from 'firebase/firestore';
+import { getDocs, getDoc, collection } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';

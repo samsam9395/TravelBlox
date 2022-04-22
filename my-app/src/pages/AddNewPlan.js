@@ -22,11 +22,6 @@ import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import {
   doc,
-  getDoc,
-  getDocs,
-  collectionGroup,
-  query,
-  where,
   onSnapshot,
   collection,
   setDoc,
@@ -38,6 +33,7 @@ import firebaseDB from '../utils/firebaseConfig';
 import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import OnlyDatePicker from '../components/onlyDatePicker';
 import OwnPlanCard from '../components/OwnPlanCard';
+import CountrySelector from '../components/CountrySelector';
 
 const db = firebaseDB();
 
@@ -292,13 +288,13 @@ function AddNewPlan() {
     }
   }
 
-  useEffect(async () => {
-    const list = await (
-      await fetch('https://restcountries.com/v3.1/all')
-    ).json();
-    setCountryList(list.sort());
-    setIsLoading(false);
-  }, []);
+  // useEffect(async () => {
+  //   const list = await (
+  //     await fetch('https://restcountries.com/v3.1/all')
+  //   ).json();
+  //   setCountryList(list.sort());
+  //   setIsLoading(false);
+  // }, []);
 
   useEffect(async () => {
     if (addedTimeBlock) {
@@ -392,31 +388,10 @@ function AddNewPlan() {
                 setPlanTitle(e.target.value);
               }}
             />
-            <FormControl sx={{ m: 1, minWidth: 80 }} size="small">
-              <InputLabel id="select-country">County</InputLabel>
-              {isLoading ? (
-                <Box sx={{ display: 'flex' }} align="center" justify="center">
-                  <CircularProgress size={14} sx={{ py: 2 }} />
-                </Box>
-              ) : (
-                <Select
-                  required
-                  labelId="select-country"
-                  value={country}
-                  label="Country"
-                  onChange={(e) => {
-                    setCountry(e.target.value);
-                  }}>
-                  {countryList.map((country, index) => {
-                    return (
-                      <MenuItem value={country.name.common} key={index}>
-                        {country.flag} {country.name.common}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              )}
-            </FormControl>
+            <CountrySelector
+              setCountry={setCountry}
+              setIsLoading={setIsLoading}
+            />
             <OnlyDatePicker
               setStartDateValue={setStartDateValue}
               startDateValue={startDateValue}

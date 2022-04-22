@@ -13,7 +13,7 @@ export default function OnlyDatePicker(props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
-        sx={{ m: 1, minWidth: 80 }}
+        sx={{ m: 1, width: 80 }}
         label="start date"
         value={props.startDateValue}
         onChange={(e) => {
