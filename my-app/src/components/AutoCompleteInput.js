@@ -6,8 +6,8 @@ import { Wrapper } from '@googlemaps/react-wrapper';
 const ApiKey = GoogleAPI();
 
 function SearchInput(props) {
-  const [inputLocationValue, setInputLocationValue] = useState();
-  const [helperInputAddress, setHelperInputAddress] = useState();
+  const [inputLocationValue, setInputLocationValue] = useState('');
+
   const ref = useRef(null);
   // const [location, setLocation] = useState('');
 
@@ -19,7 +19,6 @@ function SearchInput(props) {
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
         props.setLocation(place);
-        setHelperInputAddress(place.formatted_address);
         setInputLocationValue(place.name);
       });
     }
@@ -27,8 +26,7 @@ function SearchInput(props) {
 
   useEffect(() => {
     setInputLocationValue(props.locationName);
-    setHelperInputAddress(props.helperInitAddress);
-  }, [props.locationName, props.helperInitAddress]);
+  }, [props.locationName]);
 
   return (
     <>
@@ -45,7 +43,6 @@ function SearchInput(props) {
         onChange={(e) => {
           setInputLocationValue(e.target.value);
         }}
-        helperText={helperInputAddress}
       />
     </>
   );
@@ -58,8 +55,6 @@ function AutoCompleteInput(props) {
         <SearchInput
           setLocation={props.setLocation}
           locationName={props.locationName || ''}
-          helperInitAddress={props.helperInitAddress || ''}
-          setHelperInitAddress={props.setHelperInitAddress}
           placeId={props.placeId}
         />
       </Wrapper>

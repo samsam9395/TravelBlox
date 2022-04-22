@@ -9,11 +9,15 @@ import {
   Card,
   Box,
 } from '@mui/material';
-import { Close, PhotoCamera } from '@mui/icons-material';
+// import { Close, PhotoCamera } from '@mui/icons-material';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Close from '@mui/icons-material/Close';
+import AddLocationIcon from '@mui/icons-material/AddLocation';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
+import LocationCard from '../components/LocationCard';
 
 const db = firebaseDB();
 
@@ -29,7 +33,7 @@ const BlackWrapper = styled.div`
 
 const PopBox = styled.div`
   position: relative;
-  width: 40vw;
+  width: 80vw;
   height: 70%;
   margin: 0 auto;
   background-color: white;
@@ -90,6 +94,10 @@ function AddNewTimeBlock(props) {
 
   console.log(props.collectionID);
 
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
+
   async function addToDataBase(
     blockTitle,
     description,
@@ -106,8 +114,6 @@ function AddNewTimeBlock(props) {
       collection(db, collectionID, planDocRef, 'time_blocks')
     );
 
-    console.log('db', collectionID, planDocRef, 'time_blocks');
-
     try {
       await setDoc(timeBlockRef, {
         title: blockTitle,
@@ -120,6 +126,7 @@ function AddNewTimeBlock(props) {
         place_format_address: location.formatted_address,
         id: timeBlockRef.id,
         timeblock_img: timeBlockImage,
+        location: location,
       });
 
       props.setShowPopUp(false);
@@ -163,6 +170,7 @@ function AddNewTimeBlock(props) {
               endTimeValue={endTimeValue}
             />
             <AutoCompleteInput setLocation={setLocation} />
+            <LocationCard location={location} />
             <TextField
               required
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}

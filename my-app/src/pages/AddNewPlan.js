@@ -174,7 +174,9 @@ function FavCollections(props) {
 }
 
 function AddNewPlan() {
-  const [userToken, setUserToken] = useState('');
+  const location = useLocation();
+  const [userToken, setUserToken] = useState(location.state.user.accessToken);
+  const [currentUserId, setCurrentUserId] = useState(location.state.user.email);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [mainImage, setMainImage] = useState('');
@@ -192,21 +194,20 @@ function AddNewPlan() {
   const [planDocRef, setPlanDocRef] = useState('');
   const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(''); //this is completely duplicated with dashboard, need to find a way to pass data to here
+
   const [showFavContainer, setShowFavContainer] = useState(false);
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const favPlansIdList = location.state;
+  const favPlansIdList = location.state.favPlansIdList;
 
-  useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setCurrentUserId(localStorage.getItem('userEmail'));
-    }
-    if (localStorage.getItem('accessToken')) {
-      setUserToken(localStorage.getItem('accessToken'));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (localStorage.getItem('accessToken')) {
+  //     setCurrentUserId(localStorage.getItem('userEmail'));
+  //   }
+  //   if (localStorage.getItem('accessToken')) {
+  //     setUserToken(localStorage.getItem('accessToken'));
+  //   }
+  // }, []);
 
   const createNewCollection = async (
     startDateValue,
@@ -403,6 +404,7 @@ function AddNewPlan() {
               onChange={(e) => {
                 setPlanTitle(e.target.value);
               }}
+              autoComplete="off"
             />
             <CountrySelector
               setCountry={setCountry}
@@ -437,7 +439,7 @@ function AddNewPlan() {
             </label>
           </Card>
         </TopContainer>
-
+        {/* hasCreatedCollection */}
         {hasCreatedCollection ? (
           <>
             <CalendarContainer>
@@ -505,7 +507,8 @@ function AddNewPlan() {
               </Button>
               <Button
                 variant="outlined"
-                onClick={() => <Navigate to="/dashboard"></Navigate>}>
+                // onClick={() => <Navigate to="/dashboard"></Navigate>}>
+                onClick={() => navigate('/dashboard')}>
                 Nah create later
               </Button>
             </Stack>

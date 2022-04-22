@@ -53,8 +53,8 @@ export default function CountrySelector(props) {
           label="Choose a country"
           inputProps={{
             ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
           }}
+          autoComplete="off" // disable autocomplete and autofill
           // value={country}
           onChange={(e) => {
             props.setCountry(e.target.value);

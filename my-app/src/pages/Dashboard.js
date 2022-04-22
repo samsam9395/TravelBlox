@@ -185,7 +185,10 @@ function Dashboard(props) {
         />
       )}
 
-      {showAddPlanPopUp && navigate('/add-new-plan', { state: favPlansIdList })}
+      {showAddPlanPopUp &&
+        navigate('/add-new-plan', {
+          state: { favPlansIdList: favPlansIdList, user: props.user },
+        })}
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => (
