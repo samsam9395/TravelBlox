@@ -1,34 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  // InputLabel,
-  // Button,
-  // FormControl,
-  // MenuItem,
-  // Select,
-  // IconButton,
-  // Box,
-  // Card,
-  // CardMedia,
-  // CircularProgress,
-  Avatar,
-  Stack,
-} from '@mui/material';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import EditPlanDetail from './EditPlanDetail';
+import { Avatar, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import CountrySelector from '../components/CountrySelector';
 import { getDocs, getDoc, collection } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
 import FavPlanCard from '../components/PublicPlanCard';
+import FavFolder from '../components/FavFolder';
 
 const db = firebaseDB();
-
 const TopSectionWrapper = styled.div`
   display: flex;
+`;
+
+const PlanCollectionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  width: 100%;
+  box-sizing: content-box;
+  overflow: auto;
+  border: 1px solid black;
+  margin: 30px 0;
+  height: 400px;
+`;
+
+const SinglePlanContainer = styled.div`
+  width: 300px;
+  height: 300px;
+  margin: 0 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const AddPlanBtn = styled.button`
@@ -39,16 +43,6 @@ const AddPlanBtn = styled.button`
   border: none;
   border-radius: 15px;
   background-color: aliceblue;
-`;
-
-const PlanCollectionWrapper = styled.div`
-  display: flex;
-  padding: 15px;
-  width: 100%;
-  box-sizing: content-box;
-  overflow: auto;
-  border: 1px solid black;
-  margin: 30px 0;
 `;
 
 function signOutFirebase() {
@@ -73,7 +67,7 @@ function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
-  const [favPlansIdList, setFavlansIdList] = useState(null);
+
   const [favFolderNames, setFavFolderNames] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [currentPlanRef, setCurrentPlanRef] = useState([]);
@@ -104,20 +98,6 @@ function Dashboard(props) {
 
   useEffect(async () => {
     if (currentUserId) {
-      const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
-      const favPlansIdList = await getDocs(favRef);
-
-      if (favPlansIdList.docs.length === 0) {
-        console.log('No fav plans yet!');
-      } else {
-        const favList = favPlansIdList.docs.map((e) => e.data());
-        setFavlansIdList(favPlansIdList.docs.map((e) => e.data()));
-      }
-    }
-  }, [currentUserId]);
-
-  useEffect(async () => {
-    if (currentUserId) {
       const favFolderRef = collection(
         db,
         'userId',
@@ -125,13 +105,7 @@ function Dashboard(props) {
         'fav_folders'
       );
       const doc = await getDocs(favFolderRef);
-      const list = doc.docs
-        .map((e) => e.data())
-        .map((e) => {
-          return {
-            label: e.folder_name,
-          };
-        });
+      const list = doc.docs.map((e) => e.data().folder_name);
 
       setFavFolderNames(list);
     }
@@ -173,7 +147,7 @@ function Dashboard(props) {
           Edit Favourtie Folder
         </AddPlanBtn>
       </Stack>
-      {showFavFolderEdit && (
+      {/* {showFavFolderEdit && (
         <Autocomplete
           disablePortal
           id="combo-box-demo"
@@ -183,34 +157,39 @@ function Dashboard(props) {
             <TextField {...params} label="Favourite Folders" />
           )}
         />
-      )}
+      )} */}
 
       {showAddPlanPopUp &&
         navigate('/add-new-plan', {
-          state: { favPlansIdList: favPlansIdList, user: props.user },
+          // state: { favPlansIdList: favPlansIdList, user: props.user },
+          state: { user: props.user },
         })}
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => (
-            <OwnPlanCard
-              userIdentity="author"
-              ownPlanId={ownPlanId}
-              key={ownPlanId}
-              setOpenEditPopUp={setOpenEditPopUp}
-              openEditPopUp={openEditPopUp}
-            />
+            <SinglePlanContainer>
+              <OwnPlanCard
+                userIdentity="author"
+                ownPlanId={ownPlanId}
+                key={ownPlanId}
+                setOpenEditPopUp={setOpenEditPopUp}
+                openEditPopUp={openEditPopUp}
+              />
+            </SinglePlanContainer>
           ))}
       </PlanCollectionWrapper>
 
       <PlanCollectionWrapper>
-        {favPlansIdList &&
-          favPlansIdList.map((favPlanId) => (
-            <OwnPlanCard
-              userIdentity="public"
-              ownPlanId={favPlanId.fav_collection_id}
-              key={favPlanId.fav_collection_id}
-            />
-          ))}
+        {favFolderNames &&
+          favFolderNames.map((favFolderName) => {
+            console.log(favFolderName);
+            return (
+              <FavFolder
+                favFolderName={favFolderName}
+                currentUserId={currentUserId}
+              />
+            );
+          })}
       </PlanCollectionWrapper>
     </>
   );

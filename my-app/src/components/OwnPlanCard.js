@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-  Box,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Typography,
-  Avatar,
-  Stack,
-} from '@mui/material';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+// import {
+//   InputLabel,
+//   TextField,
+//   Button,
+//   FormControl,
+//   MenuItem,
+//   Select,
+//   IconButton,
+//   Box,
+//   Card,
+//   CardMedia,
+//   CircularProgress,
+//   Typography,
+//   Avatar,
+//   Stack,
+// } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { getDocs, getDoc, collection } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import EditPlanDetail from '../pages/EditPlanDetail';
@@ -50,6 +50,8 @@ const MainImage = styled.img`
   max-width: 100%;
 `;
 
+// props.ownPlanId
+// props.userIdentity
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
   const [currentPlanRef, setCurrentPlanRef] = useState(null);
