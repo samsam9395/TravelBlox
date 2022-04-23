@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import StarRateIcon from '@mui/icons-material/StarRate';
+import StarHalfIcon from '@mui/icons-material/StarHalf';
 
 const CardWrapper = styled.div`
   width: 100%;
@@ -22,7 +24,9 @@ const InfoWrapper = styled.div`
 const InfoContainer = styled.div`
   display: flex;
   padding: 5px 10px;
+  margin-left: 20px;
   width: 100%;
+  align-items: center;
 `;
 
 const InfoTitle = styled.div`
@@ -51,6 +55,12 @@ const Tag = styled.div`
   margin-right: 15px;
 `;
 
+const StarContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+`;
+
 export default function LocationCard(props) {
   const [mainImg, setMainImg] = useState('');
   const [locationTypes, setLocationTypes] = useState([]);
@@ -67,6 +77,10 @@ export default function LocationCard(props) {
       setLocationTypes(location.types);
     }
   }, [location]);
+
+  useEffect(() => {
+    let integer = Math.trunc(location.rating);
+  }, [location.rating]);
 
   return (
     <CardWrapper>
@@ -99,13 +113,21 @@ export default function LocationCard(props) {
         </InfoContainer>
 
         <InfoContainer>
-          <InfoTitle>See on </InfoTitle>
+          <InfoTitle>See on: </InfoTitle>
           <ATag href={location.url}>Google</ATag>
         </InfoContainer>
 
         <InfoContainer>
           <InfoTitle>Rating: </InfoTitle>
           {location.rating}
+          <StarContainer>
+            {[...Array(Math.trunc(location.rating))].map((e, i) => (
+              <StarRateIcon style={{ color: '#FFD700' }} key={i}></StarRateIcon>
+            ))}
+            {location.rating % 1 != 0 && (
+              <StarHalfIcon style={{ color: '#FFD700' }}></StarHalfIcon>
+            )}
+          </StarContainer>
         </InfoContainer>
 
         <InfoContainer>
