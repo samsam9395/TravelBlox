@@ -176,6 +176,7 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.end || null
   );
   const [timeBlockImage, setTimeBlockImage] = useState('');
+  const [isImported, setIsImported] = useState(false);
 
   const timeBlockRef = doc(
     db,
@@ -186,36 +187,43 @@ function EditTimeBlock(props) {
   );
 
   useEffect(() => {
-    retreiveFromDataBase(timeBlockRef, setInitBlockData);
+    if (currentSelectTimeData.status === 'imported') {
+      console.log(6666, 'imported yes');
+      setIsImported(true);
+    } else {
+      retreiveFromDataBase(timeBlockRef, setInitBlockData);
+    }
   }, []);
 
   useEffect(() => {
-    setDescription(initBlockData.text);
-    setBlockTitle(initBlockData.title);
-    setPlaceId(initBlockData.place_id);
-    setHelperInitAddress(initBlockData.place_format_address);
-    setLocationName(initBlockData.place_name);
+    if (!isImported && initBlockData) {
+      setDescription(initBlockData.text);
+      setBlockTitle(initBlockData.title);
+      setPlaceId(initBlockData.place_id);
+      setHelperInitAddress(initBlockData.place_format_address);
+      setLocationName(initBlockData.place_name);
 
-    const initFirebaseLocationData = {
-      place_id: initBlockData.place_id,
-      name: initBlockData.place_name,
-      formatted_address: initBlockData.place_format_address,
-    };
+      // const initFirebaseLocationData = {
+      //   place_id: initBlockData.place_id,
+      //   name: initBlockData.place_name,
+      //   formatted_address: initBlockData.place_format_address,
+      // };
 
-    setTimeBlockImage(initBlockData.timeblock_img);
+      setTimeBlockImage(initBlockData.timeblock_img);
 
-    setLocation({
-      name: initBlockData.place_name,
-      formatted_address: initBlockData.place_format_address,
-      formatted_phone_number: initBlockData.place_formatted_phone_number,
-      international_phone_number:
-        initBlockData.place_international_phone_number,
-      url: initBlockData.place_url,
-      types: initBlockData.types,
-      mainImg: initBlockData.place_img,
-      rating: initBlockData.place_rating,
-      // from: 'editMode',
-    });
+      setLocation({
+        name: initBlockData.place_name,
+        formatted_address: initBlockData.place_format_address,
+        formatted_phone_number: initBlockData.place_formatted_phone_number,
+        international_phone_number:
+          initBlockData.place_international_phone_number,
+        url: initBlockData.place_url,
+        types: initBlockData.types,
+        mainImg: initBlockData.place_img,
+        rating: initBlockData.place_rating,
+        // from: 'editMode',
+      });
+    }
   }, [initBlockData]);
 
   return (

@@ -28,17 +28,21 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     props.setMyEvents(newEvents);
   };
 
-  const handleSelectEvent = useCallback(
-    (event) => (
-      props.setCurrentSelectTimeData(event),
-      props.setShowEditPopUp(true),
-      props.setCurrentSelectTimeId(event.id),
-      console.log(event.id),
-      console.log(props.showEditPopUp),
-      console.log(props.currentSelectTimeId)
-    ),
-    []
-  );
+  const handleSelectEvent = useCallback((event) => {
+    if (event.status === 'imported') {
+      console.log(event.status);
+      console.log('okies');
+      console.log(event.blockData);
+      props.setCurrentSelectTimeData(event);
+    } else {
+      console.log(event);
+      props.setCurrentSelectTimeData(event);
+      props.setShowEditPopUp(true);
+      props.setCurrentSelectTimeId(event.id);
+      console.log(event.id);
+      console.log(props.currentSelectTimeId);
+    }
+  });
 
   console.log(props.myEvents);
 

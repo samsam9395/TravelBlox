@@ -230,6 +230,7 @@ function EditPlanDetail(props) {
       console.log('No fav plans yet!');
       setFavPlansNameList('');
     } else {
+      console.log(list);
       setFavPlansNameList(list);
       console.log(5555, favPlansNameList);
     }
@@ -246,12 +247,29 @@ function EditPlanDetail(props) {
 
     const docSnap = await getDocs(blocksListRef);
 
-    if (docSnap) {
-      console.log(docSnap.docs.map((e) => e.data()));
-      // console.log(docSnap.map((e) => e.data()));
-    }
+    // if (docSnap) {
+    // console.log(docSnap.docs.map((e) => e.data()));
+    const data = docSnap.docs.map((e) => e.data());
+    console.log(data);
+    const importEvents = data.map((e) => ({
+      status: 'imported',
+      start: new Date(e.start.seconds * 1000),
+      end: new Date(e.end.seconds * 1000),
+      title: e.title,
+      id: e.id,
+      blockData: {
+        place_id: e.place_id,
+        place_format_address: e.place_format_address,
+        place_name: e.place_name,
+        place_url: e.place_url,
+        place_types: e.place_types,
+        place_img: e.place_img,
+      },
+    }));
+    console.log(importEvents);
+    // }
+    return importEvents;
   }
-
   /*=====  End of import on edit plan  ======*/
 
   useEffect(() => {
@@ -311,7 +329,7 @@ function EditPlanDetail(props) {
     });
   }, []);
 
-  // console.log(myEvents);
+  console.log(myEvents);
 
   return (
     <Wrapper>
@@ -455,7 +473,12 @@ function EditPlanDetail(props) {
                   </FormControl>
                   <Button
                     variant="outlined"
-                    onClick={() => importTimeBlock(selectedPlanId)}>
+                    onClick={async () => {
+                      // importTimeBlock(selectedPlanId)
+                      const result = await importTimeBlock(selectedPlanId);
+                      console.log(result);
+                      setMyEvents(result);
+                    }}>
                     Import
                   </Button>
                 </Stack>
