@@ -73,7 +73,11 @@ export default function FavFolder(props) {
             ))}
         </SinglePlanContainer>
       ) : (
-        <SingleFolderContainer onClick={() => setShowFavPlans(true)}>
+        <SingleFolderContainer
+          onClick={() => {
+            setShowFavPlans(true);
+            // props.setHideOtherCards(true);
+          }}>
           <FavFolderContainer>
             <SingleFolderText>{props.favFolderName}</SingleFolderText>
           </FavFolderContainer>

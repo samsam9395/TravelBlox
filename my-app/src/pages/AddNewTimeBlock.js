@@ -109,10 +109,12 @@ function AddNewTimeBlock(props) {
     timeBlockImage
   ) {
     console.log('db', collectionID, planDocRef, 'time_blocks');
+    console.log(location);
 
     const timeBlockRef = doc(
       collection(db, collectionID, planDocRef, 'time_blocks')
     );
+    const location_img = location.photos[0].getUrl();
 
     try {
       await setDoc(timeBlockRef, {
@@ -126,7 +128,11 @@ function AddNewTimeBlock(props) {
         place_format_address: location.formatted_address,
         id: timeBlockRef.id,
         timeblock_img: timeBlockImage,
-        location: location,
+        place_img: location_img || '',
+        place_formatted_phone_number: location.formatted_phone_number || '',
+        place_international_phone_number:
+          location.international_phone_number || '',
+        place_url: location.url,
       });
 
       props.setShowPopUp(false);

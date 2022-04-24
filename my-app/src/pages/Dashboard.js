@@ -97,7 +97,7 @@ function Dashboard(props) {
   const [newFolderName, setNewFolderName] = useState('');
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [currentPlanRef, setCurrentPlanRef] = useState([]);
-  const [showFavFolderEdit, setShowFavFolderEdit] = useState(false);
+  const [hideOtherCards, setHideOtherCards] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
 
@@ -133,10 +133,10 @@ function Dashboard(props) {
       );
       const doc = await getDocs(favFolderRef);
       const list = doc.docs.map((e) => e.data().folder_name);
-
+      console.log(list);
       setFavFolderNames(list);
     }
-  }, [currentUserId, favFolderNames]);
+  }, [currentUserId]);
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
@@ -183,25 +183,19 @@ function Dashboard(props) {
           }}>
           Add New Plan
         </AddPlanBtn>
-
-        <AddPlanBtn
-          onClick={() => {
-            setShowFavFolderEdit(!showFavFolderEdit);
-          }}>
-          Edit Favourtie Folder
-        </AddPlanBtn>
       </Stack>
 
       {showAddPlanPopUp &&
         navigate('/add-new-plan', {
           // state: { favPlansIdList: favPlansIdList, user: props.user },
-          state: { user: props.user },
+          state: { user: props.user, favFolderNames: favFolderNames },
         })}
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => (
             <SinglePlanContainer key={ownPlanId}>
               <OwnPlanCard
+                setHideOtherCards={setHideOtherCards}
                 userIdentity="author"
                 ownPlanId={ownPlanId}
                 key={ownPlanId}
@@ -216,12 +210,14 @@ function Dashboard(props) {
         {favFolderNames &&
           favFolderNames.map((favFolderName, index) => {
             return (
-              <FavFolder
-                onClick={() => console.log('cicked index of this: ', index)}
-                key={index}
-                favFolderName={favFolderName}
-                currentUserId={currentUserId}
-              />
+              !hideOtherCards && (
+                <FavFolder
+                  key={index}
+                  favFolderName={favFolderName}
+                  currentUserId={currentUserId}
+                  // setHideOtherCards={setHideOtherCards}
+                />
+              )
             );
           })}
 

@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  doc,
-  getDoc,
-  collection,
-  setDoc,
-  addDoc,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
+import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
 
 import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -67,10 +58,14 @@ function loopThroughDays(startday, days) {
 }
 
 // handleFavAction(collectionID, author)
-async function handleFavAction(collectionID, author, selectFavFolder) {
+async function handleFavAction(
+  collectionID,
+  author,
+  selectFavFolder,
+  planTitle
+) {
   const currentUserEmail = localStorage.getItem('userEmail');
-  console.log(selectFavFolder);
-  console.log('selected');
+
   if (currentUserEmail === author) {
     alert('Do not favourite your own plan!');
   } else if (selectFavFolder !== '') {
@@ -89,6 +84,7 @@ async function handleFavAction(collectionID, author, selectFavFolder) {
         fav_collection_id: collectionID,
         fav_plan_doc_ref: favRef.id,
         infolder: selectFavFolder,
+        fav_plan_title: planTitle,
       });
       alert('Successfully favourite this plan!');
     } catch (error) {
@@ -183,7 +179,12 @@ function StaticPlanDetail(props) {
               <TextField {...params} label="Favourite Folders" />
             )}
             onChange={(e) => {
-              handleFavAction(collectionID, author, e.target.textContent);
+              handleFavAction(
+                collectionID,
+                author,
+                e.target.textContent,
+                planTitle
+              );
             }}
           />
         )}

@@ -121,10 +121,13 @@ export default function LocationCard(props) {
           <InfoTitle>Rating: </InfoTitle>
           {location.rating}
           <StarContainer>
-            {[...Array(Math.trunc(location.rating))].map((e, i) => (
-              <StarRateIcon style={{ color: '#FFD700' }} key={i}></StarRateIcon>
-            ))}
-            {location.rating % 1 != 0 && (
+            {location.rating &&
+              [...Array(Math.trunc(location.rating))].map((e, i) => (
+                <StarRateIcon
+                  style={{ color: '#FFD700' }}
+                  key={i}></StarRateIcon>
+              ))}
+            {location.rating && location.rating % 1 != 0 && (
               <StarHalfIcon style={{ color: '#FFD700' }}></StarHalfIcon>
             )}
           </StarContainer>

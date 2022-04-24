@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import {
-  InputLabel,
   TextField,
   Button,
-  FormControl,
-  MenuItem,
-  Select,
   IconButton,
   Box,
   Card,
@@ -15,6 +11,11 @@ import {
   CircularProgress,
   Stack,
 } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
@@ -28,6 +29,9 @@ import {
   writeBatch,
   updateDoc,
   addDoc,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
@@ -146,7 +150,8 @@ async function addPlanToAllPlans(
       {
         author: currentUserId,
         collection_id: createCollectionId,
-        plan_doc_ref: planDocRef,
+        // plan_doc_ref: planDocRef,
+        plan_doc_ref: createCollectionId,
         title: planTitle,
         mainImage: mainImage,
         country: country,
@@ -158,24 +163,8 @@ async function addPlanToAllPlans(
   }
 }
 
-function FavCollections(props) {
-  return (
-    <FavCollectionContainer>
-      {props.favPlansIdList &&
-        props.favPlansIdList.map((favPlanId) => (
-          <OwnPlanCard
-            userIdentity="importer"
-            ownPlanId={favPlanId.fav_collection_id}
-            key={favPlanId.fav_collection_id}
-          />
-        ))}
-    </FavCollectionContainer>
-  );
-}
-
 function AddNewPlan() {
   const location = useLocation();
-  const [userToken, setUserToken] = useState(location.state.user.accessToken);
   const [currentUserId, setCurrentUserId] = useState(location.state.user.email);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -198,16 +187,7 @@ function AddNewPlan() {
   const [showFavContainer, setShowFavContainer] = useState(false);
   const navigate = useNavigate();
 
-  const favPlansIdList = location.state.favPlansIdList;
-
-  // useEffect(() => {
-  //   if (localStorage.getItem('accessToken')) {
-  //     setCurrentUserId(localStorage.getItem('userEmail'));
-  //   }
-  //   if (localStorage.getItem('accessToken')) {
-  //     setUserToken(localStorage.getItem('accessToken'));
-  //   }
-  // }, []);
+  const favFolderNames = location.state.favFolderNames;
 
   const createNewCollection = async (
     startDateValue,
@@ -221,17 +201,20 @@ function AddNewPlan() {
     setCollectionId(createCollectionId);
 
     try {
-      const docRef = await addDoc(collection(db, createCollectionId), {
-        author: author,
-        start_date: startDateValue,
-        end_date: endDateValue,
-        title: planTitle,
-        main_image: mainImage,
-      });
-      console.log('Document written with ID: ', docRef.id);
+      const docRef = await setDoc(
+        doc(db, createCollectionId, createCollectionId),
+        {
+          author: author,
+          start_date: startDateValue,
+          end_date: endDateValue,
+          title: planTitle,
+          main_image: mainImage,
+        }
+      );
+      console.log('Document written with ID: ', docRef);
 
       setHasCreatedCollection(true);
-      setPlanDocRef(docRef.id);
+      setPlanDocRef(createCollectionId);
       setCollectionRef(createCollectionId);
 
       addPlanToUserInfo(currentUserId, createCollectionId);
@@ -239,7 +222,7 @@ function AddNewPlan() {
       addPlanToAllPlans(
         currentUserId,
         createCollectionId,
-        docRef.id,
+        createCollectionId,
         planTitle,
         mainImage,
         country
@@ -249,7 +232,7 @@ function AddNewPlan() {
         '247 adding these ',
         currentUserId,
         createCollectionId,
-        docRef.id,
+        createCollectionId,
         planTitle,
         mainImage,
         country
@@ -312,6 +295,49 @@ function AddNewPlan() {
       console.log(error.message);
     }
   }
+
+  /*=============================================
+  =            import            =
+  =============================================*/
+  const [favPlansNameList, setFavPlansNameList] = useState(null);
+  const [favPlansIdList, setFavlansNameList] = useState(null);
+  const [showFavPlans, setShowFavPlans] = useState(false);
+  const [dropDownOption, setDropDownOption] = useState(
+    location.state.favFolderNames || []
+  );
+  const [selectedPlanId, setSelectedPlanId] = useState('');
+
+  async function getFavPlan(folderName) {
+    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+    const planQuery = query(favRef, where('infolder', '==', folderName));
+    const plansList = await getDocs(planQuery);
+
+    console.log(plansList.docs.map((e) => e.data().fav_plan_title));
+    const list = plansList.docs.map((e) => e.data());
+
+    if (list.length === 0) {
+      console.log('No fav plans yet!');
+      setFavPlansNameList('');
+    } else {
+      setFavPlansNameList(list);
+      console.log(5555, favPlansNameList);
+    }
+  }
+
+  async function importTimeBlock(selectedPlanId) {
+    const blocksListRef = collection(
+      db,
+      selectedPlanId,
+      selectedPlanId,
+      'time_blocks'
+    );
+
+    const docSnap = await getDocs(blocksListRef);
+
+    console.log(docSnap);
+  }
+
+  /*=====  End of import  ======*/
 
   useEffect(async () => {
     if (addedTimeBlock) {
@@ -452,22 +478,83 @@ function AddNewPlan() {
                 setCurrentSelectTimeId={setCurrentSelectTimeId}
               />
             </CalendarContainer>
+            <Stack
+              sx={{ m: 2 }}
+              direction="row"
+              alignItems="center"
+              spacing={2}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setShowPopUp(true);
+                }}>
+                Add new event
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => setShowFavContainer(!showFavContainer)}>
+                Import Favourite
+              </Button>
+
+              {showFavContainer && (
+                <div>
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={dropDownOption}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Favourite Folders" />
+                    )}
+                    onChange={(e) => {
+                      setShowFavPlans(true);
+                      console.log(e.target.textContent);
+                      getFavPlan(e.target.textContent);
+                    }}
+                  />
+                  {showFavPlans && favPlansNameList && (
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <FormControl
+                        variant="standard"
+                        sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="demo-simple-select-standard-label">
+                          Age
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          // value={selectedPlanId.planId || ''}
+                          onChange={
+                            (e) => setSelectedPlanId(e.target.value)
+                            // setSelectedPlan({
+                            //   planId: e.target.value,
+                            //   planRef: e.target.data,
+                            // })
+                          }
+                          label="Plans">
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {favPlansNameList.map((e, index) => (
+                            <MenuItem value={e.fav_collection_id} key={index}>
+                              {e.fav_plan_title}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <Button
+                        variant="outlined"
+                        onClick={() => importTimeBlock(selectedPlanId)}>
+                        Import
+                      </Button>
+                    </Stack>
+                  )}
+                </div>
+              )}
+            </Stack>
+
             <Button
-              variant="contained"
-              onClick={() => {
-                setShowPopUp(true);
-              }}>
-              Add new event
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => setShowFavContainer(!showFavContainer)}>
-              Import Favourite
-            </Button>
-            {showFavContainer && (
-              <FavCollections favPlansIdList={favPlansIdList} />
-            )}
-            <Button
+              sx={{ m: 5 }}
               variant="contained"
               onClick={() => {
                 saveToDataBase(
@@ -505,10 +592,7 @@ function AddNewPlan() {
                 }}>
                 All Set
               </Button>
-              <Button
-                variant="outlined"
-                // onClick={() => <Navigate to="/dashboard"></Navigate>}>
-                onClick={() => navigate('/dashboard')}>
+              <Button variant="outlined" onClick={() => navigate('/dashboard')}>
                 Nah create later
               </Button>
             </Stack>
