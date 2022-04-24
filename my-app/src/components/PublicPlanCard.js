@@ -32,9 +32,9 @@ const MainImage = styled.img`
 function PublicPlanCard(props) {
   const navigate = useNavigate();
 
-  console.log(props);
-  console.log(props.planInfo.collection_id);
-  console.log(props.planInfo.plan_doc_ref);
+  // console.log(props);
+  // console.log(props.planInfo.collection_id);
+  // console.log(props.planInfo.plan_doc_ref);
 
   const redirectToStatic = () => {
     navigate('/static-plan-detail', {

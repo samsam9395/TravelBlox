@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -241,7 +241,6 @@ function AddNewPlan() {
       console.error('Error adding document: ', e);
     }
   };
-
   async function saveToDataBase(
     currentUserId,
     myEvents,
@@ -325,6 +324,7 @@ function AddNewPlan() {
   }
 
   async function importTimeBlock(selectedPlanId) {
+    console.log(selectedPlanId);
     const blocksListRef = collection(
       db,
       selectedPlanId,
@@ -334,7 +334,10 @@ function AddNewPlan() {
 
     const docSnap = await getDocs(blocksListRef);
 
-    console.log(docSnap);
+    if (docSnap) {
+      console.log(docSnap.docs.map((e) => e.data()));
+      // console.log(docSnap.map((e) => e.data()));
+    }
   }
 
   /*=====  End of import  ======*/
@@ -518,12 +521,12 @@ function AddNewPlan() {
                         variant="standard"
                         sx={{ m: 1, minWidth: 120 }}>
                         <InputLabel id="demo-simple-select-standard-label">
-                          Age
+                          Plan
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
-                          // value={selectedPlanId.planId || ''}
+                          value={selectedPlanId}
                           onChange={
                             (e) => setSelectedPlanId(e.target.value)
                             // setSelectedPlan({
@@ -536,7 +539,9 @@ function AddNewPlan() {
                             <em>None</em>
                           </MenuItem>
                           {favPlansNameList.map((e, index) => (
-                            <MenuItem value={e.fav_collection_id} key={index}>
+                            <MenuItem
+                              value={e.fav_collection_id || ''}
+                              key={index}>
                               {e.fav_plan_title}
                             </MenuItem>
                           ))}
@@ -557,17 +562,22 @@ function AddNewPlan() {
               sx={{ m: 5 }}
               variant="contained"
               onClick={() => {
-                saveToDataBase(
-                  currentUserId,
-                  myEvents,
-                  planTitle,
-                  country,
-                  mainImage,
-                  collectionRef,
-                  planDocRef,
-                  startDateValue,
-                  endDateValue
-                );
+                console.log(myEvents.length);
+                if (myEvents.length === 0) {
+                  alert('Please create at least one event!');
+                } else {
+                  saveToDataBase(
+                    currentUserId,
+                    myEvents,
+                    planTitle,
+                    country,
+                    mainImage,
+                    collectionRef,
+                    planDocRef,
+                    startDateValue,
+                    endDateValue
+                  );
+                }
               }}>
               Save
             </Button>
