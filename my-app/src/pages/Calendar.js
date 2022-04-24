@@ -33,7 +33,10 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       console.log(event.status);
       console.log('okies');
       console.log(event.blockData);
-      props.setCurrentSelectTimeData(event);
+      console.log(event);
+      props.setImportData(event);
+      props.setShowEditPopUp(true);
+      // props.setCurrentSelectTimeData(event);
     } else {
       console.log(event);
       props.setCurrentSelectTimeData(event);

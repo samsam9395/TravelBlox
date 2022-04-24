@@ -167,7 +167,7 @@ function EditTimeBlock(props) {
   const [locationName, setLocationName] = useState('');
   const [location, setLocation] = useState('');
   const [placeId, setPlaceId] = useState('');
-  const [helperInitAddress, setHelperInitAddress] = useState('');
+  // const [helperInitAddress, setHelperInitAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
     props.currentSelectTimeData.start || null
@@ -177,30 +177,52 @@ function EditTimeBlock(props) {
   );
   const [timeBlockImage, setTimeBlockImage] = useState('');
   const [isImported, setIsImported] = useState(false);
+  const [importPlaceData, setImportPlaceData] = useState({});
+  const [timeBlockRef, setTimeBlockRef] = useState('');
 
-  const timeBlockRef = doc(
-    db,
-    props.collectionID,
-    props.planDocRef,
-    'time_blocks',
-    props.currentSelectTimeId
-  );
+  // might need to be assigned outside???
+  // const timeBlockRef = doc(
+  //   db,
+  //   props.collectionID,
+  //   props.planDocRef,
+  //   'time_blocks',
+  //   props.currentSelectTimeId
+  // );
+
+  console.log(props.importData);
 
   useEffect(() => {
-    if (currentSelectTimeData.status === 'imported') {
+    if (props.importData.status === 'imported') {
+      const data = props.importData.blockData;
+      setBlockTitle(props.importData.title);
       console.log(6666, 'imported yes');
+      console.log(data);
       setIsImported(true);
-    } else {
-      retreiveFromDataBase(timeBlockRef, setInitBlockData);
+      setLocationName(data.place_name);
+      setPlaceId(data.place_id);
+      setImportPlaceData(data);
+      setStartTimeValue(new Date(props.importData.start));
+      setEndTimeValue(new Date(props.importData.end));
+    } else if (props.importData.status === 'origin') {
+      console.log('wrong origin');
+      setTimeBlockRef(
+        doc(
+          db,
+          props.collectionID,
+          props.planDocRef,
+          'time_blocks',
+          props.currentSelectTimeId
+        )
+      );
+      // retreiveFromDataBase(timeBlockRef, setInitBlockData);
     }
-  }, []);
+  }, [props.importData.status]);
 
   useEffect(() => {
-    if (!isImported && initBlockData) {
+    if (props.importData.status === 'origin' && initBlockData) {
       setDescription(initBlockData.text);
       setBlockTitle(initBlockData.title);
       setPlaceId(initBlockData.place_id);
-      setHelperInitAddress(initBlockData.place_format_address);
       setLocationName(initBlockData.place_name);
 
       // const initFirebaseLocationData = {
@@ -271,11 +293,14 @@ function EditTimeBlock(props) {
             <AutoCompleteInput
               setLocation={setLocation}
               locationName={locationName}
-              helperInitAddress={helperInitAddress}
-              setHelperInitAddress={setHelperInitAddress}
+              // helperInitAddress={helperInitAddress}
+              // setHelperInitAddress={setHelperInitAddress}
               placeId={placeId}
             />
-            <LocationCard location={location} />
+            <LocationCard
+              location={location}
+              importPlaceData={importPlaceData}
+            />
 
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}

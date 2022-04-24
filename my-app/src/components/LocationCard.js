@@ -64,7 +64,16 @@ const StarContainer = styled.div`
 export default function LocationCard(props) {
   const [mainImg, setMainImg] = useState('');
   const [locationTypes, setLocationTypes] = useState([]);
-  const location = props.location;
+  const [location, setLocation] = useState({});
+
+  useEffect(() => {
+    if (props.location) {
+      setLocation(props.location);
+    } else if (props.importPlaceData) {
+      console.log('has importPlaceData', 10000);
+      setLocation(props.importPlaceData);
+    }
+  }, []);
 
   useEffect(() => {
     console.log(location);
@@ -72,6 +81,9 @@ export default function LocationCard(props) {
       setMainImg(location.mainImg);
     } else if (location.photos) {
       setMainImg(location.photos[0].getUrl());
+    } else if (location.place_img) {
+      setMainImg(location.place_img);
+      setLocationTypes(location.place_types);
     }
 
     if (location) {
@@ -91,12 +103,13 @@ export default function LocationCard(props) {
 
         <InfoContainer>
           <InfoTitle>Address: </InfoTitle>
-          {location.formatted_address}
+          {location.formatted_address || location.place_format_address}
         </InfoContainer>
 
         <InfoContainer>
           <InfoTitle>Contact number: </InfoTitle>
-          {location.formatted_phone_number}
+          {location.formatted_phone_number ||
+            location.place_formatted_phone_number}
         </InfoContainer>
 
         <InfoContainer>
@@ -113,7 +126,7 @@ export default function LocationCard(props) {
 
         <InfoContainer>
           <InfoTitle>See on: </InfoTitle>
-          <ATag href={location.url}>Google</ATag>
+          <ATag href={location.url || location.place_url}>Google</ATag>
         </InfoContainer>
 
         <InfoContainer>

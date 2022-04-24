@@ -242,37 +242,26 @@ function AddNewPlan() {
     planTitle,
     country,
     mainImage,
-    collectionRef,
-    planDocRef,
+    collectionID,
     startDateValue,
     endDateValue,
     isPublished
   ) {
-    console.log(
-      111111,
-      currentUserId,
-      myEvents,
-      planTitle,
-      country,
-      mainImage,
-      collectionRef,
-      planDocRef,
-      startDateValue,
-      endDateValue
-    );
+    console.log(100, collectionRef);
+    console.log(200, collectionID);
 
     const batch = writeBatch(db);
 
     myEvents.forEach((singleEvent) => {
       const id = singleEvent.id;
-      let updateRef = doc(db, collectionRef, planDocRef, 'time_blocks', id);
+      let updateRef = doc(db, collectionID, collectionID, 'time_blocks', id);
       batch.update(updateRef, {
         end: singleEvent.end,
         start: singleEvent.start,
       });
     });
 
-    const upperLevelUpdateRef = doc(db, collectionRef, planDocRef);
+    const upperLevelUpdateRef = doc(db, collectionID, collectionID);
     batch.update(upperLevelUpdateRef, {
       title: planTitle,
       country: country,
@@ -345,7 +334,7 @@ function AddNewPlan() {
         const blocksListRef = collection(
           db,
           collectionID,
-          planDocRef,
+          collectionID,
           'time_blocks'
         );
         setFirebaseReady(true);
@@ -579,10 +568,10 @@ function AddNewPlan() {
                     planTitle,
                     country,
                     mainImage,
-                    collectionRef,
-                    planDocRef,
+                    collectionID,
                     startDateValue,
-                    endDateValue
+                    endDateValue,
+                    isPublished
                   );
                 }
               }}>
