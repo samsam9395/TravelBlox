@@ -162,7 +162,7 @@ function StaticPlanDetail(props) {
       </UpperContainer>
       <PlanInfoWrapper>
         <Typography variant="h5" component="div">
-          Location: {country}
+          Location: {country.label}
         </Typography>
         <Button
           variant="contained"

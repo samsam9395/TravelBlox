@@ -22,6 +22,8 @@ import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import OnlyDatePicker from '../components/Input/onlyDatePicker';
 import CountrySelector from '../components/CountrySelector';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 import {
   doc,
@@ -32,7 +34,7 @@ import {
   where,
   onSnapshot,
   collection,
-  // setDoc,
+  setDoc,
   writeBatch,
   // updateDoc,
 } from 'firebase/firestore';
@@ -81,7 +83,8 @@ async function saveToDataBase(
   country,
   mainImage,
   startDateValue,
-  endDateValue
+  endDateValue,
+  isPublished
 ) {
   const batch = writeBatch(db);
   console.log(9999, country);
@@ -101,6 +104,7 @@ async function saveToDataBase(
     main_image: mainImage,
     start_date: startDateValue,
     end_date: endDateValue,
+    published: isPublished,
   });
 
   await batch.commit();
@@ -132,6 +136,37 @@ function handleImageUpload(e, setMainImage) {
     console.log('Error: ', error);
   };
 }
+
+async function addPlanToAllPlans(
+  currentUserId,
+  collectionID,
+  planTitle,
+  mainImage,
+  country,
+  isPublished
+) {
+  try {
+    const allPlansRef = doc(db, 'allPlans', collectionID);
+
+    await setDoc(
+      allPlansRef,
+      {
+        author: currentUserId,
+        collection_id: collectionID,
+        // plan_doc_ref: planDocRef,
+        plan_doc_ref: collectionID,
+        title: planTitle,
+        mainImage: mainImage,
+        country: country,
+        published: isPublished,
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // props
 // userId={user.email} favFolderNames={favFolderNames}
 
@@ -149,7 +184,8 @@ function EditPlanDetail(props) {
   const [startDateValue, setStartDateValue] = useState(0);
   const [endDateValue, setEndDateValue] = useState(0);
   const [showFavContainer, setShowFavContainer] = useState(false);
-  // const favPlansIdList = location.state;
+  const [isPublished, setIsPublished] = useState(false);
+
   //React Route
   const location = useLocation();
   const collectionID = location.state.collectionID;
@@ -318,6 +354,15 @@ function EditPlanDetail(props) {
             setEndDateValue={setEndDateValue}
             endDateValue={endDateValue}
           />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isPublished}
+                onChange={() => setIsPublished(!isPublished)}
+              />
+            }
+            label="Published"
+          />
         </TitleSection>
         <Card sx={{ width: 400 }}>
           <CardMedia component="img" image={mainImage} height="200" />
@@ -431,7 +476,8 @@ function EditPlanDetail(props) {
                   country,
                   mainImage,
                   startDateValue,
-                  endDateValue
+                  endDateValue,
+                  isPublished
                 );
                 alert('Saved!');
               } catch (error) {
@@ -441,7 +487,19 @@ function EditPlanDetail(props) {
             }}>
             Save
           </Button>
-          <Button variant="contained" onClick={() => redirectToStatic()}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              addPlanToAllPlans(
+                currentUserId,
+                collectionID,
+                planTitle,
+                mainImage,
+                country,
+                isPublished
+              );
+              redirectToStatic();
+            }}>
             Publish
           </Button>
         </Stack>

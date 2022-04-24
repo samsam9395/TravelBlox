@@ -38,6 +38,8 @@ import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import OnlyDatePicker from '../components/Input/onlyDatePicker';
 import OwnPlanCard from '../components/OwnPlanCard';
 import CountrySelector from '../components/CountrySelector';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 const db = firebaseDB();
 
@@ -137,10 +139,10 @@ async function addPlanToUserInfo(currentUserId, createCollectionId) {
 async function addPlanToAllPlans(
   currentUserId,
   createCollectionId,
-  planDocRef,
   planTitle,
   mainImage,
-  country
+  country,
+  isPublished
 ) {
   try {
     const allPlansRef = doc(db, 'allPlans', createCollectionId);
@@ -155,6 +157,7 @@ async function addPlanToAllPlans(
         title: planTitle,
         mainImage: mainImage,
         country: country,
+        published: isPublished,
       },
       { merge: true }
     );
@@ -183,6 +186,7 @@ function AddNewPlan() {
   const [planDocRef, setPlanDocRef] = useState('');
   const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
 
   const [showFavContainer, setShowFavContainer] = useState(false);
   const navigate = useNavigate();
@@ -209,6 +213,7 @@ function AddNewPlan() {
           end_date: endDateValue,
           title: planTitle,
           main_image: mainImage,
+          published: false,
         }
       );
       console.log('Document written with ID: ', docRef);
@@ -222,20 +227,10 @@ function AddNewPlan() {
       addPlanToAllPlans(
         currentUserId,
         createCollectionId,
-        createCollectionId,
         planTitle,
         mainImage,
-        country
-      );
-
-      console.log(
-        '247 adding these ',
-        currentUserId,
-        createCollectionId,
-        createCollectionId,
-        planTitle,
-        mainImage,
-        country
+        country,
+        isPublished
       );
     } catch (e) {
       console.error('Error adding document: ', e);
@@ -250,7 +245,8 @@ function AddNewPlan() {
     collectionRef,
     planDocRef,
     startDateValue,
-    endDateValue
+    endDateValue,
+    isPublished
   ) {
     console.log(
       111111,
@@ -284,6 +280,7 @@ function AddNewPlan() {
       start_date: startDateValue,
       end_date: endDateValue,
       origin_author: currentUserId,
+      published: isPublished,
     });
 
     try {
@@ -444,6 +441,16 @@ function AddNewPlan() {
               startDateValue={startDateValue}
               setEndDateValue={setEndDateValue}
               endDateValue={endDateValue}
+            />
+
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isPublished}
+                  onChange={() => setIsPublished(!isPublished)}
+                />
+              }
+              label="Published"
             />
           </TitleSection>
           <Card sx={{ width: 400 }}>
