@@ -84,6 +84,7 @@ async function saveToDataBase(
   endDateValue
 ) {
   const batch = writeBatch(db);
+  console.log(9999, country);
 
   myEvents.forEach((singleEvent) => {
     const id = singleEvent.id;
@@ -228,11 +229,9 @@ function EditPlanDetail(props) {
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
     console.log(docSnap.data().country);
+    setCountry(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
-    // if (docSnap.data().country) {
-    //   setCountry(docSnap.data().country);
-    // }
-    // console.log(docSnap.data().start_date);
+
     setMainImage(docSnap.data().main_image);
     setStartDateValue(new Date(docSnap.data().start_date.seconds * 1000));
     setEndDateValue(new Date(docSnap.data().end_date.seconds * 1000));
@@ -312,7 +311,7 @@ function EditPlanDetail(props) {
               setPlanTitle(e.target.value);
             }}
           />
-          <CountrySelector setCountry={setCountry} />
+          <CountrySelector setCountry={setCountry} country={country} />
           <OnlyDatePicker
             setStartDateValue={setStartDateValue}
             startDateValue={startDateValue}

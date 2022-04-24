@@ -7,7 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 export default function CountrySelector(props) {
   // const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([{ label: '' }]);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [initValue, setInitValue] = useState({});
 
   useEffect(async () => {
     const list = await (
@@ -19,7 +19,7 @@ export default function CountrySelector(props) {
         label: e.name.common,
         region: e.region,
         subregion: e.subregion,
-        trans_mando: e.translations.zho,
+        trans_mando: e.translations.zho || '',
         map: e.maps.googleMaps,
         flags: e.flags.svg,
       };
@@ -28,15 +28,31 @@ export default function CountrySelector(props) {
     setCountryList(countries);
   }, []);
 
+  useEffect(() => {
+    if (props.country) {
+      setInitValue(props.country);
+    }
+  }, [props.country]);
+
   return (
     <Autocomplete
       id="country-select"
       sx={{ m: 1, width: 300 }}
+      value={initValue || {}}
       options={countryList}
       autoHighlight
-      getOptionLabel={(option) => option.label}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      getOptionLabel={(option) => option.label || ''}
       onChange={(e) => {
-        props.setCountry(e.target.textContent);
+        for (let country of countryList) {
+          if (country.label === e.target.textContent) {
+            console.log(country);
+            props.setCountry(country);
+            setInitValue(country);
+          }
+        }
+        // console.log(e.target);
+        // props.setCountry(e.target.textContent || value);
       }}
       renderOption={(props, option) => (
         <Box
@@ -62,30 +78,5 @@ export default function CountrySelector(props) {
         />
       )}
     />
-
-    // <FormControl sx={{ m: 1, minWidth: 100 }} size="small">
-    //   <InputLabel id="select-country">County</InputLabel>
-    //   {isLoading ? (
-    //     <Box sx={{ display: 'flex' }} align="center" justify="center">
-    //       <CircularProgress size={14} sx={{ py: 2 }} />
-    //     </Box>
-    //   ) : (
-    //     <Select
-    //       labelId="select-country"
-    //       value={country}
-    //       label="Country"
-    //       onChange={(e) => {
-    //         setCountry(e.target.value);
-    //       }}>
-    //       {countryList.map((country, index) => {
-    //         return (
-    //           <MenuItem value={country.name.common} key={index}>
-    //             {country.flag} {country.name.common}
-    //           </MenuItem>
-    //         );
-    //       })}
-    //     </Select>
-    //   )}
-    // </FormControl>
   );
 }
