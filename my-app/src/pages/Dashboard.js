@@ -182,7 +182,6 @@ function Dashboard(props) {
       <PlanCollectionWrapper>
         {favFolderNames &&
           favFolderNames.map((favFolderName) => {
-            console.log(favFolderName);
             return (
               <FavFolder
                 favFolderName={favFolderName}

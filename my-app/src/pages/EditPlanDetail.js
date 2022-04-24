@@ -15,7 +15,7 @@ import './planDetail.scss';
 import PlanCalendar from './Calendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
-import OnlyDatePicker from '../components/onlyDatePicker';
+import OnlyDatePicker from '../components/Input/onlyDatePicker';
 import CountrySelector from '../components/CountrySelector';
 
 import {

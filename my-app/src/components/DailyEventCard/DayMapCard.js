@@ -180,4 +180,4 @@ function DayMapCard(props) {
   );
 }
 
-export default DayMapCard;
+export default memo(DayMapCard);

@@ -15,7 +15,7 @@ import Close from '@mui/icons-material/Close';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
-import DateTimeSelector from '../components/DateTimeSelector';
+import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
 

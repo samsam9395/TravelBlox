@@ -12,7 +12,7 @@ import {
 import { Delete, Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
-import DateTimeSelector from '../components/DateTimeSelector';
+import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 
 const BlackWrapper = styled.div`

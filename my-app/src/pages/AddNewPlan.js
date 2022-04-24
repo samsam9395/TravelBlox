@@ -31,7 +31,7 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import OnlyDatePicker from '../components/onlyDatePicker';
+import OnlyDatePicker from '../components/Input/onlyDatePicker';
 import OwnPlanCard from '../components/OwnPlanCard';
 import CountrySelector from '../components/CountrySelector';
 

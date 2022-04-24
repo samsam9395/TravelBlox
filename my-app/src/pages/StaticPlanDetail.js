@@ -1,21 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-  Box,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Typography,
-  Avatar,
-} from '@mui/material';
-import {
   doc,
   getDoc,
   collection,
@@ -25,10 +10,14 @@ import {
   where,
   getDocs,
 } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
+
+import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
-
+import firebaseDB from '../utils/firebaseConfig';
 const db = firebaseDB();
 const UpperContainer = styled.div`
   display: flex;
@@ -77,13 +66,15 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
-async function handleFavAction(collectionID, author) {
+// handleFavAction(collectionID, author)
+async function handleFavAction(collectionID, author, selectFavFolder) {
   const currentUserEmail = localStorage.getItem('userEmail');
-  console.log(currentUserEmail);
-
+  console.log(selectFavFolder);
+  console.log('selected');
   if (currentUserEmail === author) {
     alert('Do not favourite your own plan!');
-  } else {
+  } else if (selectFavFolder !== '') {
+    console.log(selectFavFolder);
     const favRef = doc(
       db,
       'userId',
@@ -97,16 +88,18 @@ async function handleFavAction(collectionID, author) {
       await setDoc(favRef, {
         fav_collection_id: collectionID,
         fav_plan_doc_ref: favRef.id,
-        infolder: 'default',
+        infolder: selectFavFolder,
       });
       alert('Successfully favourite this plan!');
     } catch (error) {
       console.log(error);
     }
+  } else {
+    alert('Please select a folder!');
   }
 }
 
-function StaticPlanDetail() {
+function StaticPlanDetail(props) {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -116,6 +109,8 @@ function StaticPlanDetail() {
   const [endDate, setEndDate] = useState('');
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
+  const [showfavDropDown, setShowFavDropDown] = useState(false);
+  // const [selectFavFolder, setSelectFavFolder] = useState('default');
 
   const location = useLocation();
   const collectionID = location.state.collectionID;
@@ -175,9 +170,23 @@ function StaticPlanDetail() {
         </Typography>
         <Button
           variant="contained"
-          onClick={() => handleFavAction(collectionID, author)}>
+          onClick={() => setShowFavDropDown(!showfavDropDown)}>
           Favourite this plan
         </Button>
+        {showfavDropDown && (
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={props.favFolderNames}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Favourite Folders" />
+            )}
+            onChange={(e) => {
+              handleFavAction(collectionID, author, e.target.textContent);
+            }}
+          />
+        )}
       </PlanInfoWrapper>
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {

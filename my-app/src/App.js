@@ -10,13 +10,16 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import EditPlanDetail from './pages/EditPlanDetail';
 import StaticPlanDetail from './pages/StaticPlanDetail';
-// import TestMap from './components/TestMap';
 import AutoCompleteInput from './components/AutoCompleteInput';
 import Dashboard from './pages/Dashboard';
 import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import firebaseDB from './utils/firebaseConfig';
+import { getDocs, collection } from 'firebase/firestore';
+
+const db = firebaseDB();
 
 const BodyWrapper = styled.div`
   padding: 100px 30px 150px 30px;
@@ -24,6 +27,7 @@ const BodyWrapper = styled.div`
 
 function App() {
   const [user, setUser] = useState('');
+  const [favFolderNames, setFavFolderNames] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +43,16 @@ function App() {
     }
   }, []);
 
+  useEffect(async () => {
+    if (user) {
+      const favFolderRef = collection(db, 'userId', user.email, 'fav_folders');
+      const doc = await getDocs(favFolderRef);
+      const list = doc.docs.map((e) => e.data().folder_name);
+
+      setFavFolderNames(list);
+    }
+  }, [user]);
+
   return (
     <>
       <Header />
@@ -47,7 +61,10 @@ function App() {
           {/* <Route path="/" element={<Home />} /> */}
           <Route path="/edit-plan-detail" element={<EditPlanDetail />} />
           <Route path="/add-new-plan" element={<AddNewPlan />} />
-          <Route path="/static-plan-detail" element={<StaticPlanDetail />} />
+          <Route
+            path="/static-plan-detail"
+            element={<StaticPlanDetail favFolderNames={favFolderNames} />}
+          />
           <Route
             path="/landing"
             element={<LandingPage user={user} setUser={setUser} />}

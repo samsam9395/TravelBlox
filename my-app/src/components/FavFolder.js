@@ -33,8 +33,6 @@ export default function FavFolder(props) {
   const [favPlansIdList, setFavlansIdList] = useState(null);
   const [showFavPlans, setShowFavPlans] = useState(false);
 
-  console.log('outside runs');
-
   useEffect(async () => {
     const favRef = collection(db, 'userId', props.currentUserId, 'fav_plans');
     const planQuery = query(
