@@ -29,36 +29,32 @@ function SearchInput(props) {
   }, [props.locationName]);
 
   return (
-    <>
-      <TextField
-        // ref={ref}
-        inputRef={ref}
-        required
-        autoComplete="off"
-        sx={{ m: 1, minWidth: 80 }}
-        size="small"
-        label="Address"
-        variant="outlined"
-        value={inputLocationValue}
-        onChange={(e) => {
-          setInputLocationValue(e.target.value);
-        }}
-      />
-    </>
+    <TextField
+      // ref={ref}
+      inputRef={ref}
+      required
+      autoComplete="off"
+      sx={{ m: 1, minWidth: 80 }}
+      size="small"
+      label="Address"
+      variant="outlined"
+      value={inputLocationValue}
+      onChange={(e) => {
+        setInputLocationValue(e.target.value);
+      }}
+    />
   );
 }
 
 function AutoCompleteInput(props) {
   return (
-    <>
-      <Wrapper apiKey={ApiKey} libraries={['places']}>
-        <SearchInput
-          setLocation={props.setLocation}
-          locationName={props.locationName || ''}
-          placeId={props.placeId}
-        />
-      </Wrapper>
-    </>
+    <Wrapper apiKey={ApiKey} libraries={['places']}>
+      <SearchInput
+        setLocation={props.setLocation}
+        locationName={props.locationName || ''}
+        placeId={props.placeId}
+      />
+    </Wrapper>
   );
 }
 

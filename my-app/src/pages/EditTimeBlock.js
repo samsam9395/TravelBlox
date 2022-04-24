@@ -14,6 +14,7 @@ import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
+import LocationCard from '../components/LocationCard';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -27,7 +28,7 @@ const BlackWrapper = styled.div`
 
 const PopBox = styled.div`
   position: relative;
-  width: 40vw;
+  width: 80vw;
   height: 70%;
   margin: 0 auto;
   background-color: white;
@@ -100,6 +101,8 @@ async function UpdateToDataBase(
   location,
   timeBlockImage
 ) {
+  // const location_img = location.photos[0].getUrl();
+
   try {
     await setDoc(
       timeBlockRef,
@@ -112,6 +115,13 @@ async function UpdateToDataBase(
         place_name: location.name,
         place_format_address: location.formatted_address,
         timeblock_img: timeBlockImage,
+        place_img: location.photos[0].getUrl() || '',
+        place_formatted_phone_number: location.formatted_phone_number || '',
+        place_international_phone_number:
+          location.international_phone_number || '',
+        place_url: location.url,
+        place_rating: location.rating,
+        place_types: location.types,
       },
       {
         merge: true,
@@ -124,7 +134,7 @@ async function UpdateToDataBase(
   console.log('successfully post to firebase!');
 }
 
-async function retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData) {
+async function retreiveFromDataBase(timeBlockRef, setInitBlockData) {
   const timeBlockSnap = await getDoc(timeBlockRef);
 
   if (timeBlockSnap.exists()) {
@@ -132,8 +142,8 @@ async function retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData) {
     const initialData = timeBlockSnap.data();
     console.log(initialData);
 
-    if (setInitialTimeBlockData) {
-      setInitialTimeBlockData(initialData);
+    if (setInitBlockData) {
+      setInitBlockData(initialData);
     }
 
     return initialData;
@@ -152,7 +162,7 @@ async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
 //planDocRef={planDocRef}
 
 function EditTimeBlock(props) {
-  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  const [initBlockData, setInitBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [locationName, setLocationName] = useState('');
   const [location, setLocation] = useState('');
@@ -176,25 +186,37 @@ function EditTimeBlock(props) {
   );
 
   useEffect(() => {
-    retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData);
+    retreiveFromDataBase(timeBlockRef, setInitBlockData);
   }, []);
 
   useEffect(() => {
-    setDescription(initialTimeBlockData.text);
-    setBlockTitle(initialTimeBlockData.title);
-    setPlaceId(initialTimeBlockData.place_id);
-    setHelperInitAddress(initialTimeBlockData.place_format_address);
-    setLocationName(initialTimeBlockData.place_name);
+    setDescription(initBlockData.text);
+    setBlockTitle(initBlockData.title);
+    setPlaceId(initBlockData.place_id);
+    setHelperInitAddress(initBlockData.place_format_address);
+    setLocationName(initBlockData.place_name);
 
     const initFirebaseLocationData = {
-      place_id: initialTimeBlockData.place_id,
-      name: initialTimeBlockData.place_name,
-      formatted_address: initialTimeBlockData.place_format_address,
+      place_id: initBlockData.place_id,
+      name: initBlockData.place_name,
+      formatted_address: initBlockData.place_format_address,
     };
-    setLocation(initFirebaseLocationData);
 
-    setTimeBlockImage(initialTimeBlockData.timeblock_img);
-  }, [initialTimeBlockData]);
+    setTimeBlockImage(initBlockData.timeblock_img);
+
+    setLocation({
+      name: initBlockData.place_name,
+      formatted_address: initBlockData.place_format_address,
+      formatted_phone_number: initBlockData.place_formatted_phone_number,
+      international_phone_number:
+        initBlockData.place_international_phone_number,
+      url: initBlockData.place_url,
+      types: initBlockData.types,
+      mainImg: initBlockData.place_img,
+      rating: initBlockData.place_rating,
+      // from: 'editMode',
+    });
+  }, [initBlockData]);
 
   return (
     <>
@@ -245,6 +267,8 @@ function EditTimeBlock(props) {
               setHelperInitAddress={setHelperInitAddress}
               placeId={placeId}
             />
+            <LocationCard location={location} />
+
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline

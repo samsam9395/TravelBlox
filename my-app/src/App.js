@@ -62,7 +62,15 @@ function App() {
       <BodyWrapper>
         <Routes>
           {/* <Route path="/" element={<Home />} /> */}
-          <Route path="/edit-plan-detail" element={<EditPlanDetail />} />
+          <Route
+            path="/edit-plan-detail"
+            element={
+              <EditPlanDetail
+                userId={user.email}
+                favFolderNames={favFolderNames}
+              />
+            }
+          />
           <Route path="/add-new-plan" element={<AddNewPlan />} />
           <Route
             path="/static-plan-detail"

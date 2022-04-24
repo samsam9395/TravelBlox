@@ -10,6 +10,11 @@ import {
   // CircularProgress,
   Stack,
 } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './Calendar';
@@ -21,10 +26,10 @@ import CountrySelector from '../components/CountrySelector';
 import {
   doc,
   getDoc,
-  // getDocs,
+  getDocs,
   // collectionGroup,
-  // query,
-  // where,
+  query,
+  where,
   onSnapshot,
   collection,
   // setDoc,
@@ -126,21 +131,8 @@ function handleImageUpload(e, setMainImage) {
     console.log('Error: ', error);
   };
 }
-
-// function FavCollections(props) {
-//   return (
-//     <FavCollectionContainer>
-//       {props.favPlansIdList &&
-//         props.favPlansIdList.map((favPlanId) => (
-//           <OwnPlanCard
-//             userIdentity="importer"
-//             ownPlanId={favPlanId.fav_collection_id}
-//             key={favPlanId.fav_collection_id}
-//           />
-//         ))}
-//     </FavCollectionContainer>
-//   );
-// }
+// props
+// userId={user.email} favFolderNames={favFolderNames}
 
 //currentPlanRef
 function EditPlanDetail(props) {
@@ -159,10 +151,10 @@ function EditPlanDetail(props) {
   // const favPlansIdList = location.state;
   //React Route
   const location = useLocation();
-
-  // if (location.state.from === 'dashboard')
   const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
+
+  const currentUserId = props.userId;
 
   const planCollectionRef = doc(db, collectionID, planDocRef);
   const blocksListRef = collection(db, collectionID, planDocRef, 'time_blocks');
@@ -178,9 +170,60 @@ function EditPlanDetail(props) {
     });
   };
 
+  /*=============================================
+=            import on edit plan            =
+=============================================*/
+  const [favPlansNameList, setFavPlansNameList] = useState(null);
+  const [favPlansIdList, setFavPlanIdList] = useState(null);
+  const [showFavPlans, setShowFavPlans] = useState(false);
+  const [dropDownOption, setDropDownOption] = useState(
+    props.favFolderNames || []
+  );
+  const [selectedPlanId, setSelectedPlanId] = useState('');
+
+  async function getFavPlan(folderName) {
+    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+    const planQuery = query(favRef, where('infolder', '==', folderName));
+    const plansList = await getDocs(planQuery);
+
+    console.log(plansList.docs.map((e) => e.data().fav_plan_title));
+    const list = plansList.docs.map((e) => e.data());
+
+    if (list.length === 0) {
+      console.log('No fav plans yet!');
+      setFavPlansNameList('');
+    } else {
+      setFavPlansNameList(list);
+      console.log(5555, favPlansNameList);
+    }
+  }
+
+  async function importTimeBlock(selectedPlanId) {
+    console.log(selectedPlanId);
+    const blocksListRef = collection(
+      db,
+      selectedPlanId,
+      selectedPlanId,
+      'time_blocks'
+    );
+
+    const docSnap = await getDocs(blocksListRef);
+
+    if (docSnap) {
+      console.log(docSnap.docs.map((e) => e.data()));
+      // console.log(docSnap.map((e) => e.data()));
+    }
+  }
+
+  /*=====  End of import on edit plan  ======*/
+
   useEffect(() => {
     console.log(console.log('location state is', location.state));
   }, []);
+
+  useEffect(() => {
+    setDropDownOption(props.favFolderNames);
+  }, [props.favFolderNames]);
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -233,7 +276,7 @@ function EditPlanDetail(props) {
     });
   }, []);
 
-  console.log(myEvents);
+  // console.log(myEvents);
 
   return (
     <Wrapper>
@@ -243,7 +286,7 @@ function EditPlanDetail(props) {
           showPopUp={showPopUp}
           collectionID={collectionID}
           planDocRef={planDocRef}
-          //  setAddedTimeBlock={setAddedTimeBlock}
+          // setAddedTimeBlock={setAddedTimeBlock}
           startDateValue={startDateValue}
           endDateValue={endDateValue}
         />
@@ -327,9 +370,55 @@ function EditPlanDetail(props) {
             onClick={() => setShowFavContainer(!showFavContainer)}>
             Import Favourite
           </Button>
-          {/* {showFavContainer && (
-            <FavCollections favPlansIdList={favPlansIdList} />
-          )} */}
+
+          {showFavContainer && (
+            <div>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={dropDownOption}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Favourite Folders" />
+                )}
+                onChange={(e) => {
+                  setShowFavPlans(true);
+                  console.log(e.target.textContent);
+                  getFavPlan(e.target.textContent);
+                }}
+              />
+              {showFavPlans && favPlansNameList && (
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel id="demo-simple-select-standard-label">
+                      Plan
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={selectedPlanId}
+                      onChange={(e) => setSelectedPlanId(e.target.value)}
+                      label="Plans">
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      {favPlansNameList.map((e, index) => (
+                        <MenuItem value={e.fav_collection_id || ''} key={index}>
+                          {e.fav_plan_title}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <Button
+                    variant="outlined"
+                    onClick={() => importTimeBlock(selectedPlanId)}>
+                    Import
+                  </Button>
+                </Stack>
+              )}
+            </div>
+          )}
+
           <Button
             variant="contained"
             onClick={() => {

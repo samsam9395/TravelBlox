@@ -133,6 +133,8 @@ function AddNewTimeBlock(props) {
         place_international_phone_number:
           location.international_phone_number || '',
         place_url: location.url,
+        place_rating: location.rating,
+        place_types: location.types,
       });
 
       props.setShowPopUp(false);
@@ -141,7 +143,9 @@ function AddNewTimeBlock(props) {
       console.log(error);
     }
 
-    props.setAddedTimeBlock(true);
+    {
+      props.setAddedTimeBlock && props.setAddedTimeBlock(true);
+    }
   }
 
   return (

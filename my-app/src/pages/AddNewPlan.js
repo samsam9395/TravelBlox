@@ -14,7 +14,7 @@ import {
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
@@ -299,7 +299,7 @@ function AddNewPlan() {
   =            import            =
   =============================================*/
   const [favPlansNameList, setFavPlansNameList] = useState(null);
-  const [favPlansIdList, setFavlansNameList] = useState(null);
+  const [favPlansIdList, setFavPlanIdList] = useState(null);
   const [showFavPlans, setShowFavPlans] = useState(false);
   const [dropDownOption, setDropDownOption] = useState(
     location.state.favFolderNames || []

@@ -66,21 +66,18 @@ export default function LocationCard(props) {
   const [locationTypes, setLocationTypes] = useState([]);
   const location = props.location;
 
-  if (location) {
-    console.log(location.address_components.map((e) => e.long_name));
-    console.log(location.address_components);
-  }
-
   useEffect(() => {
-    if (location) {
+    console.log(location);
+    if (location.mainImg) {
+      setMainImg(location.mainImg);
+    } else if (location.photos) {
       setMainImg(location.photos[0].getUrl());
+    }
+
+    if (location) {
       setLocationTypes(location.types);
     }
   }, [location]);
-
-  useEffect(() => {
-    let integer = Math.trunc(location.rating);
-  }, [location.rating]);
 
   return (
     <CardWrapper>
@@ -107,10 +104,12 @@ export default function LocationCard(props) {
           {location.international_phone_number}
         </InfoContainer>
 
-        <InfoContainer>
-          <InfoTitle>Status: </InfoTitle>
-          {location.business_status}
-        </InfoContainer>
+        {location.business_status && (
+          <InfoContainer>
+            <InfoTitle>Status: </InfoTitle>
+            {location.business_status}
+          </InfoContainer>
+        )}
 
         <InfoContainer>
           <InfoTitle>See on: </InfoTitle>
@@ -134,9 +133,8 @@ export default function LocationCard(props) {
         </InfoContainer>
 
         <InfoContainer>
-          {locationTypes.map((tag) => (
-            <Tag>{tag}</Tag>
-          ))}
+          {locationTypes &&
+            locationTypes.map((tag, i) => <Tag key={i}>{tag}</Tag>)}
         </InfoContainer>
       </InfoWrapper>
     </CardWrapper>
