@@ -8,7 +8,7 @@ import OwnPlanCard from '../components/OwnPlanCard';
 const db = firebaseDB();
 
 const SingleFolderContainer = styled.div`
-  width: 300px;
+  min-width: 300px;
   height: 300px;
   margin: 0 30px;
   background-color: #8ecae6;
@@ -28,6 +28,15 @@ const FavFolderContainer = styled.div`
   width: 100%;
 `;
 
+const SinglePlanContainer = styled.div`
+  width: 450px;
+  height: 450px;
+  margin: 0 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 // favFolderName={favFolderName} currentUserId={currentUserId}
 export default function FavFolder(props) {
   const [favPlansIdList, setFavlansIdList] = useState(null);
@@ -40,13 +49,10 @@ export default function FavFolder(props) {
       where('infolder', '==', props.favFolderName)
     );
     const favPlansIdList = await getDocs(planQuery);
-    console.log('folder comp is running', favPlansIdList);
 
     if (favPlansIdList.docs.length === 0) {
       console.log('No fav plans yet!');
     } else {
-      const favList = favPlansIdList.docs.map((e) => e.data());
-      console.log(favList);
       setFavlansIdList(favPlansIdList.docs.map((e) => e.data()));
     }
   }, []);
@@ -54,7 +60,7 @@ export default function FavFolder(props) {
   return (
     <>
       {showFavPlans ? (
-        <>
+        <SinglePlanContainer>
           <ArrowBackIosIcon
             onClick={() => setShowFavPlans(false)}></ArrowBackIosIcon>
           {favPlansIdList &&
@@ -65,7 +71,7 @@ export default function FavFolder(props) {
                 key={favPlanId.fav_collection_id}
               />
             ))}
-        </>
+        </SinglePlanContainer>
       ) : (
         <SingleFolderContainer onClick={() => setShowFavPlans(true)}>
           <FavFolderContainer>

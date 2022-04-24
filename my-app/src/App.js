@@ -1,4 +1,7 @@
 import './App.scss';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import GlobalStyle from './globalStyles';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Routes, Route, Link } from 'react-router-dom';
@@ -14,8 +17,7 @@ import AutoCompleteInput from './components/AutoCompleteInput';
 import Dashboard from './pages/Dashboard';
 import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import firebaseDB from './utils/firebaseConfig';
 import { getDocs, collection } from 'firebase/firestore';
 
@@ -55,6 +57,7 @@ function App() {
 
   return (
     <>
+      <GlobalStyle />
       <Header />
       <BodyWrapper>
         <Routes>

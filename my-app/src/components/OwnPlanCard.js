@@ -1,39 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-// import {
-//   InputLabel,
-//   TextField,
-//   Button,
-//   FormControl,
-//   MenuItem,
-//   Select,
-//   IconButton,
-//   Box,
-//   Card,
-//   CardMedia,
-//   CircularProgress,
-//   Typography,
-//   Avatar,
-//   Stack,
-// } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getDocs, getDoc, collection } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import EditPlanDetail from '../pages/EditPlanDetail';
 import CountrySelector from '../components/CountrySelector';
-import { Dashboard } from '@mui/icons-material';
 
 const db = firebaseDB();
 
 const SinglePlanContainer = styled.div`
-  width: 400px;
-  height: 400px;
-  margin: 0 30px;
+  width: 500px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const SinglePlanText = styled.div`
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
 `;
 
 const PlanMainImageContainer = styled.div`
@@ -41,13 +27,14 @@ const PlanMainImageContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  width: 300px;
-  max-width: 100%;
+  display: flex;
+  align-items: center;
+  height: 300px;
+  width: 100%;
 `;
 
 const MainImage = styled.img`
-  /* max-height: 100%; */
-  max-width: 100%;
+  width: 100%;
 `;
 
 // props.ownPlanId
@@ -123,13 +110,7 @@ function OwnPlanCard(props) {
 
   return (
     docData && (
-      <SinglePlanContainer
-        onClick={
-          () => renderSwitch(props.userIdentity)
-          // props.userIdentity === 'author'
-          //   ? redirectToEdit()
-          //   : redirectToStatic()
-        }>
+      <SinglePlanContainer onClick={() => renderSwitch(props.userIdentity)}>
         <PlanMainImageContainer>
           <SinglePlanText>{docData.title}</SinglePlanText>
           <ImageContainer>

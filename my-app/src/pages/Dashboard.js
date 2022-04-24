@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Avatar, Stack } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
-import { getDocs, getDoc, collection } from 'firebase/firestore';
+import { getDocs, getDoc, collection, setDoc, doc } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
@@ -12,6 +13,16 @@ import FavFolder from '../components/FavFolder';
 const db = firebaseDB();
 const TopSectionWrapper = styled.div`
   display: flex;
+`;
+
+const AddPlanBtn = styled.button`
+  height: 25px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  border: none;
+  border-radius: 15px;
+  background-color: aliceblue;
 `;
 
 const PlanCollectionWrapper = styled.div`
@@ -27,22 +38,23 @@ const PlanCollectionWrapper = styled.div`
 `;
 
 const SinglePlanContainer = styled.div`
-  width: 300px;
-  height: 300px;
-  margin: 0 30px;
+  width: 450px;
+  height: 450px;
+  margin: 0 15px;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const AddPlanBtn = styled.button`
-  height: 25px;
-  width: 100%;
-  padding: 20px;
-  text-align: center;
-  border: none;
-  border-radius: 15px;
-  background-color: aliceblue;
+const SingleFolderContainerEmpty = styled.div`
+  min-width: 300px;
+  height: 300px;
+  margin: 0 30px;
+  border: 2px solid #8ecae6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 function signOutFirebase() {
@@ -63,16 +75,31 @@ function signOutFirebase() {
     });
 }
 
+function addNewFavFolder(currentUserId, newFolder) {
+  console.log(newFolder);
+  console.log(3334);
+
+  try {
+    setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
+      folder_name: newFolder,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
-
   const [favFolderNames, setFavFolderNames] = useState(null);
+  const [showAddNewFolder, setShowAddNewFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [currentPlanRef, setCurrentPlanRef] = useState([]);
   const [showFavFolderEdit, setShowFavFolderEdit] = useState(false);
   const navigate = useNavigate();
+  const ref = useRef();
 
   useEffect(async () => {
     const user = localStorage.getItem('userEmail');
@@ -109,7 +136,24 @@ function Dashboard(props) {
 
       setFavFolderNames(list);
     }
-  }, [currentUserId]);
+  }, [currentUserId, favFolderNames]);
+
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      // If the menu is open and the clicked target is not within the menu,
+      // then close the menu
+      if (showAddNewFolder && ref.current && !ref.current.contains(e.target)) {
+        setShowAddNewFolder(false);
+      }
+    };
+
+    document.addEventListener('mousedown', checkIfClickedOutside);
+
+    return () => {
+      // Cleanup the event listener
+      document.removeEventListener('mousedown', checkIfClickedOutside);
+    };
+  }, [showAddNewFolder]);
 
   return (
     <>
@@ -147,17 +191,6 @@ function Dashboard(props) {
           Edit Favourtie Folder
         </AddPlanBtn>
       </Stack>
-      {/* {showFavFolderEdit && (
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={favFolderNames}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Favourite Folders" />
-          )}
-        />
-      )} */}
 
       {showAddPlanPopUp &&
         navigate('/add-new-plan', {
@@ -167,7 +200,7 @@ function Dashboard(props) {
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => (
-            <SinglePlanContainer>
+            <SinglePlanContainer key={ownPlanId}>
               <OwnPlanCard
                 userIdentity="author"
                 ownPlanId={ownPlanId}
@@ -181,14 +214,40 @@ function Dashboard(props) {
 
       <PlanCollectionWrapper>
         {favFolderNames &&
-          favFolderNames.map((favFolderName) => {
+          favFolderNames.map((favFolderName, index) => {
             return (
               <FavFolder
+                onClick={() => console.log('cicked index of this: ', index)}
+                key={index}
                 favFolderName={favFolderName}
                 currentUserId={currentUserId}
               />
             );
           })}
+
+        <SingleFolderContainerEmpty>
+          {!showAddNewFolder && (
+            <AddIcon
+              style={{ fontSize: 50 }}
+              onClick={() => setShowAddNewFolder(!showAddNewFolder)}></AddIcon>
+          )}
+
+          {showAddNewFolder && (
+            <div ref={ref}>
+              <input
+                onChange={(e) => {
+                  setNewFolderName(e.target.value);
+                }}></input>
+              <button
+                onClick={(e) => {
+                  addNewFavFolder(currentUserId, newFolderName);
+                  setShowAddNewFolder(false);
+                }}>
+                Create
+              </button>
+            </div>
+          )}
+        </SingleFolderContainerEmpty>
       </PlanCollectionWrapper>
     </>
   );
