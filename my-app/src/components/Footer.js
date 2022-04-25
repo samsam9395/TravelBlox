@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   bottom: 0;
   background-color: black;
   color: white;
-  height: 120px;
+  height: 60px;
   padding: 15px 15px;
 `;
 
@@ -18,7 +18,7 @@ const Title = styled.div`
   font-weight: 800;
   font-size: 16px;
   letter-spacing: 2px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
 const SubTitle = styled.div`

@@ -10,14 +10,21 @@ import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 const db = firebaseDB();
+
 const UpperContainer = styled.div`
   display: flex;
   padding: 0 30px;
+  justify-content: space-between;
 `;
 
 const PlanInfoWrapper = styled.div`
   padding: 0 30px;
   width: 100%;
+`;
+
+const LeftSideWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const UserRightSideWrapper = styled.div`
@@ -137,10 +144,10 @@ function StaticPlanDetail(props) {
 
   useEffect(() => {
     if (loopThroughDays(startDate.seconds * 1000, numberofDays).length === 0) {
-      console.log(1111);
+      // console.log(1111);
       setTimestampList(loopThroughDays(startDate.seconds * 1000, 1));
     } else {
-      console.log(2222);
+      // console.log(2222);
       setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
     }
   }, [numberofDays]);
@@ -148,12 +155,43 @@ function StaticPlanDetail(props) {
   return (
     <>
       <UpperContainer>
-        <Card sx={{ width: 400 }}>
-          <CardMedia component="img" image={mainImage} height="200" />
-          <Typography gutterBottom variant="h5" component="div">
-            {planTitle}
-          </Typography>
-        </Card>
+        <LeftSideWrapper>
+          <Card sx={{ width: 400 }}>
+            <CardMedia component="img" image={mainImage} height="200" />
+            <Typography gutterBottom variant="h5" component="div">
+              {planTitle}
+            </Typography>
+          </Card>
+          <PlanInfoWrapper>
+            <Typography variant="h5" component="div">
+              Location: {country.label}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => setShowFavDropDown(!showfavDropDown)}>
+              Favourite this plan
+            </Button>
+            {showfavDropDown && (
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={props.favFolderNames}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Favourite Folders" />
+                )}
+                onChange={(e) => {
+                  handleFavAction(
+                    collectionID,
+                    author,
+                    e.target.textContent,
+                    planTitle
+                  );
+                }}
+              />
+            )}
+          </PlanInfoWrapper>
+        </LeftSideWrapper>
 
         <UserRightSideWrapper>
           <UserInfoWrapper>
@@ -166,37 +204,10 @@ function StaticPlanDetail(props) {
           </UserInfoWrapper>
         </UserRightSideWrapper>
       </UpperContainer>
-      <PlanInfoWrapper>
-        <Typography variant="h5" component="div">
-          Location: {country.label}
-        </Typography>
-        <Button
-          variant="contained"
-          onClick={() => setShowFavDropDown(!showfavDropDown)}>
-          Favourite this plan
-        </Button>
-        {showfavDropDown && (
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={props.favFolderNames}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Favourite Folders" />
-            )}
-            onChange={(e) => {
-              handleFavAction(
-                collectionID,
-                author,
-                e.target.textContent,
-                planTitle
-              );
-            }}
-          />
-        )}
-      </PlanInfoWrapper>
+
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {
+          // console.log(day);
           return (
             <DayBlockCard
               currentDayDate={day}

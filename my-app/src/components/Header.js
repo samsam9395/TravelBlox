@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   top: 0;
   background-color: white;
   padding: 0 24px;
+  z-index: 100;
 `;
 
 const NavLink = styled.div`
