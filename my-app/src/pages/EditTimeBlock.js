@@ -215,21 +215,25 @@ function EditTimeBlock(props) {
         )
       );
       // retreiveFromDataBase(timeBlockRef, setInitBlockData);
+    } else if (props.status === 'origin') {
+      setTimeBlockRef(
+        doc(
+          db,
+          props.collectionID,
+          props.planDocRef,
+          'time_blocks',
+          props.currentSelectTimeId
+        )
+      );
     }
-  }, [props.importData.status]);
+  }, [props.importData.status, props.status]);
 
   useEffect(() => {
-    if (props.importData.status === 'origin' && initBlockData) {
+    if (props.status === 'origin' && initBlockData) {
       setDescription(initBlockData.text);
       setBlockTitle(initBlockData.title);
       setPlaceId(initBlockData.place_id);
       setLocationName(initBlockData.place_name);
-
-      // const initFirebaseLocationData = {
-      //   place_id: initBlockData.place_id,
-      //   name: initBlockData.place_name,
-      //   formatted_address: initBlockData.place_format_address,
-      // };
 
       setTimeBlockImage(initBlockData.timeblock_img);
 

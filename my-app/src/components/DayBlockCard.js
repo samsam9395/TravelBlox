@@ -91,6 +91,8 @@ function DayBlockCard(props) {
   );
 
   useEffect(() => {
+    console.log(props.currentDayDate);
+    console.log('day block rendered?');
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
         setDayEvents(eventList);

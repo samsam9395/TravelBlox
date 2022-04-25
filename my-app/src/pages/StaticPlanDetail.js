@@ -136,7 +136,13 @@ function StaticPlanDetail(props) {
   }, [endDate, startDate]);
 
   useEffect(() => {
-    setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
+    if (loopThroughDays(startDate.seconds * 1000, numberofDays).length === 0) {
+      console.log(1111);
+      setTimestampList(loopThroughDays(startDate.seconds * 1000, 1));
+    } else {
+      console.log(2222);
+      setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
+    }
   }, [numberofDays]);
 
   return (

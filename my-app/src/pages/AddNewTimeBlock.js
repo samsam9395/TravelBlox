@@ -105,14 +105,13 @@ function AddNewTimeBlock(props) {
     endTimeValue,
     location,
     collectionID,
-    planDocRef,
     timeBlockImage
   ) {
-    console.log('db', collectionID, planDocRef, 'time_blocks');
+    console.log('db', collectionID, collectionID, 'time_blocks');
     console.log(location);
 
     const timeBlockRef = doc(
-      collection(db, collectionID, planDocRef, 'time_blocks')
+      collection(db, collectionID, collectionID, 'time_blocks')
     );
     const location_img = location.photos[0].getUrl();
 
@@ -133,8 +132,9 @@ function AddNewTimeBlock(props) {
         place_international_phone_number:
           location.international_phone_number || '',
         place_url: location.url,
-        place_rating: location.rating,
-        place_types: location.types,
+        place_rating: location.rating || '',
+        place_types: location.types || '',
+        status: 'origin',
       });
 
       props.setShowPopUp(false);
@@ -228,7 +228,6 @@ function AddNewTimeBlock(props) {
                   endTimeValue,
                   location,
                   props.collectionID,
-                  props.planDocRef,
                   timeBlockImage
                 );
               } else {

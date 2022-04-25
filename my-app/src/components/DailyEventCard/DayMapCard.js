@@ -159,6 +159,7 @@ const Map = (props) => {
   );
 };
 
+// dayEvents={dayEvents}
 function DayMapCard(props) {
   console.log('this is rendered');
   const [hasMarker, setHasMarker] = useState(false);

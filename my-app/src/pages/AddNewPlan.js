@@ -460,12 +460,13 @@ function AddNewPlan() {
   useEffect(async () => {
     if (addedTimeBlock) {
       try {
-        const blocksListRef = collection(
-          db,
-          collectionID,
-          collectionID,
-          'time_blocks'
-        );
+        // const blocksListRef = collection(
+        //   db,
+        //   collectionID,
+        //   collectionID,
+        //   'time_blocks'
+        // );
+
         setFirebaseReady(true);
         setCollectionRef(collectionID);
         console.log('setFirebaseReady' + firebaseReady);
@@ -473,8 +474,14 @@ function AddNewPlan() {
         console.log(error);
       }
       if (firebaseReady) {
+        const blocksListRef = collection(
+          db,
+          collectionID,
+          collectionID,
+          'time_blocks'
+        );
         console.log('onsnap open');
-        onSnapshot(collectionRef, (doc) => {
+        onSnapshot(blocksListRef, (doc) => {
           doc.docChanges().forEach((change) => {
             if (change.type === 'added') {
               // console.log(myEvents);
@@ -486,6 +493,7 @@ function AddNewPlan() {
                   end: new Date(change.doc.data().end.seconds * 1000),
                   title: change.doc.data().title,
                   id: change.doc.data().id,
+                  status: 'origin',
                 },
               ]);
             }
@@ -499,6 +507,7 @@ function AddNewPlan() {
                   end: new Date(change.doc.data().end.seconds * 1000),
                   title: change.doc.data().title,
                   id: change.doc.data().id,
+                  status: 'origin',
                 },
               ]);
             }
@@ -533,6 +542,7 @@ function AddNewPlan() {
           currentSelectTimeId={currentSelectTimeId}
           collectionID={collectionID}
           planDocRef={planDocRef}
+          status={'origin'}
         />
       ) : null}
       <>
