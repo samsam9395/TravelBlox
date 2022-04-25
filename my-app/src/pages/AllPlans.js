@@ -38,12 +38,14 @@ const PlanCollectionWrapper = styled.div`
   padding: 15px;
   width: 100%;
   box-sizing: content-box;
-  overflow: auto;
+  /* overflow: auto; */
+  flex-wrap: wrap;
   border: 1px solid black;
   margin: 30px 0;
 `;
 
-function Allplans() {
+// defaultImg={defaultImg}
+function Allplans(props) {
   const [allPlansList, setAllPlansList] = useState([]);
 
   useEffect(async () => {
@@ -61,7 +63,11 @@ function Allplans() {
     <>
       <PlanCollectionWrapper>
         {allPlansList.map((planInfo, index) => (
-          <PublicPlanCard planInfo={planInfo} key={index} />
+          <PublicPlanCard
+            planInfo={planInfo}
+            key={index}
+            defaultImg={props.defaultImg}
+          />
         ))}
       </PlanCollectionWrapper>
     </>

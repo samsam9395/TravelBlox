@@ -19,7 +19,7 @@ import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
 
 import firebaseDB from './utils/firebaseConfig';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 
 const db = firebaseDB();
 
@@ -30,6 +30,7 @@ const BodyWrapper = styled.div`
 function App() {
   const [user, setUser] = useState('');
   const [favFolderNames, setFavFolderNames] = useState(null);
+  const [defaultImg, setDefaultImg] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +55,15 @@ function App() {
       setFavFolderNames(list);
     }
   }, [user]);
+
+  useEffect(async () => {
+    const docSnap = await getDoc(
+      doc(db, 'main-components', 'default_plan_img')
+    );
+    // querySnapshot.forEach((doc) => {
+    setDefaultImg(docSnap.data().default_plan_img);
+    // });
+  }, []);
 
   return (
     <>
@@ -83,7 +93,10 @@ function App() {
           {/* <Route path="/test-map" element={<TestMap />} /> */}
           <Route path="/autocomplete" element={<AutoCompleteInput />} />
           <Route path="/dashboard" element={<Dashboard user={user} />} />
-          <Route path="/discover" element={<Allplans />} />
+          <Route
+            path="/discover"
+            element={<Allplans defaultImg={defaultImg} />}
+          />
         </Routes>
       </BodyWrapper>
       <Footer />

@@ -6,12 +6,23 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 const SinglePlanContainer = styled.div`
   width: 350px;
-  height: 350px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  margin: 20px 30px;
+  justify-content: baseline;
 `;
 
 const SinglePlanText = styled.div`
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+`;
+
+const PlanInfoText = styled.div`
+  font-size: 16px;
+  margin: 15px 0;
 `;
 
 const PlanMainImageContainer = styled.div`
@@ -28,7 +39,7 @@ const MainImage = styled.img`
 `;
 
 //planInfo={planInfo}
-
+// defaultImg={props.defaultImg }
 function PublicPlanCard(props) {
   const navigate = useNavigate();
 
@@ -46,19 +57,35 @@ function PublicPlanCard(props) {
     });
   };
 
+  console.log(props.planInfo);
+  if (props.planInfo.country) {
+    console.log(props.planInfo.country['label']);
+  }
+
   return (
     <SinglePlanContainer onClick={() => redirectToStatic()}>
-      <PlanMainImageContainer>
-        <SinglePlanText>{props.planInfo.title}</SinglePlanText>
-        <ImageContainer>
-          <MainImage
-            src={props.planInfo.main_image}
-            alt="main image"></MainImage>
-        </ImageContainer>
-        <Typography variant="h5" component="div">
-          Author: {props.planInfo.author}
-        </Typography>
-      </PlanMainImageContainer>
+      {/* <PlanMainImageContainer> */}
+      <SinglePlanText>{props.planInfo.title}</SinglePlanText>
+      <ImageContainer>
+        <MainImage
+          src={props.planInfo.main_image || props.defaultImg}
+          alt="main image"></MainImage>
+      </ImageContainer>
+      <Stack direction="column" spacing={2}>
+        <PlanInfoText> Author: {props.planInfo.author}</PlanInfoText>
+
+        {props.planInfo.country && (
+          <PlanInfoText>
+            Country: {props.planInfo.country['label']}
+          </PlanInfoText>
+        )}
+      </Stack>
+      {/* {props.planInfo.country.label && (
+          <Typography variant="h5" component="div">
+            Country: {props.planInfo.country.label}
+          </Typography>
+        )} */}
+      {/* </PlanMainImageContainer> */}
     </SinglePlanContainer>
   );
 }
