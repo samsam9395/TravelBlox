@@ -36,6 +36,7 @@ const ImageContainer = styled.div`
 
 const MainImage = styled.img`
   max-height: 100%;
+  max-width: 350px;
 `;
 
 //planInfo={planInfo}
@@ -68,7 +69,7 @@ function PublicPlanCard(props) {
       <SinglePlanText>{props.planInfo.title}</SinglePlanText>
       <ImageContainer>
         <MainImage
-          src={props.planInfo.main_image || props.defaultImg}
+          src={props.planInfo.mainImage || props.defaultImg}
           alt="main image"></MainImage>
       </ImageContainer>
       <Stack direction="column" spacing={2}>

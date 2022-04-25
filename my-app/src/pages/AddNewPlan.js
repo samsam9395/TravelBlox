@@ -285,7 +285,6 @@ function AddNewPlan() {
   =            import            =
   =============================================*/
   const [favPlansNameList, setFavPlansNameList] = useState(null);
-  const [favPlansIdList, setFavPlanIdList] = useState(null);
   const [showFavPlans, setShowFavPlans] = useState(false);
   const [dropDownOption, setDropDownOption] = useState(
     location.state.favFolderNames || []
@@ -305,11 +304,11 @@ function AddNewPlan() {
       setFavPlansNameList('');
     } else {
       setFavPlansNameList(list);
-      console.log(5555, favPlansNameList);
     }
+    console.log(5555, favPlansNameList);
   }
 
-  async function importTimeBlock(selectedPlanId) {
+  async function importTimeBlock(selectedPlanId, collectionID) {
     console.log(selectedPlanId);
     const blocksListRef = collection(
       db,
@@ -319,10 +318,47 @@ function AddNewPlan() {
     );
 
     const docSnap = await getDocs(blocksListRef);
-
-    if (docSnap) {
-      console.log(docSnap.docs.map((e) => e.data()));
+    const data = docSnap.docs.map((e) => e.data());
+    if (data) {
+      console.log(333, data);
+      console.log(data.map((e) => e));
       // console.log(docSnap.map((e) => e.data()));
+
+      const importEvents = data.map((e) => ({
+        status: 'imported',
+        start: new Date(e.start.seconds * 1000),
+        end: new Date(e.end.seconds * 1000),
+        title: e.title,
+        id: e.id,
+        blockData: {
+          place_id: e.place_id,
+          place_format_address: e.place_format_address,
+          place_name: e.place_name,
+          place_formatted_phone_number:
+            location.international_phone_number || '',
+          place_url: e.place_url,
+          place_types: e.place_types,
+          place_img: e.place_img,
+        },
+      }));
+
+      try {
+        const blocksListRef = collection(
+          db,
+          collectionID,
+          collectionID,
+          'time_blocks'
+        );
+        setFirebaseReady(true);
+
+        await setDoc(blocksListRef, { importEvents }, { merge: true });
+        setAddedTimeBlock(true);
+      } catch (error) {
+        console.log(error);
+      }
+
+      console.log(importEvents);
+      // return importEvents;
     }
   }
 
@@ -545,7 +581,9 @@ function AddNewPlan() {
                       </FormControl>
                       <Button
                         variant="outlined"
-                        onClick={() => importTimeBlock(selectedPlanId)}>
+                        onClick={() =>
+                          importTimeBlock(selectedPlanId, collectionID)
+                        }>
                         Import
                       </Button>
                     </Stack>

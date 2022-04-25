@@ -270,7 +270,6 @@ function EditPlanDetail(props) {
       },
     }));
     console.log(importEvents);
-    // }
     return importEvents; //for updating local event
   }
 
