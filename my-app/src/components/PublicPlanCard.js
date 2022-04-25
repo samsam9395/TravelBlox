@@ -58,10 +58,10 @@ function PublicPlanCard(props) {
     });
   };
 
-  console.log(props.planInfo);
-  if (props.planInfo.country) {
-    console.log(props.planInfo.country['label']);
-  }
+  // console.log(props.planInfo);
+  // if (props.planInfo.country) {
+  //   console.log(props.planInfo.country['label']);
+  // }
 
   return (
     <SinglePlanContainer onClick={() => redirectToStatic()}>
