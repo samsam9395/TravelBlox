@@ -32,6 +32,7 @@ import {
   query,
   where,
   getDocs,
+  ref,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
@@ -310,55 +311,147 @@ function AddNewPlan() {
 
   async function importTimeBlock(selectedPlanId, collectionID) {
     console.log(selectedPlanId);
-    const blocksListRef = collection(
+    const importBlocksListRef = collection(
       db,
       selectedPlanId,
       selectedPlanId,
       'time_blocks'
     );
 
-    const docSnap = await getDocs(blocksListRef);
+    const docSnap = await getDocs(importBlocksListRef);
     const data = docSnap.docs.map((e) => e.data());
+    console.log(data);
     if (data) {
-      console.log(333, data);
-      console.log(data.map((e) => e));
-      // console.log(docSnap.map((e) => e.data()));
+      console.log('runs 5555');
+      // console.log(333, data);
+      // console.log(data.map((e) => e));
+      // // console.log(docSnap.map((e) => e.data()));
+      // const importEvents = data.map((e) => ({
+      //   status: 'imported',
+      //   start: new Date(e.start.seconds * 1000),
+      //   end: new Date(e.end.seconds * 1000),
+      //   title: e.title,
+      //   id: e.id,
+      //   blockData: {
+      //     place_id: e.place_id,
+      //     place_format_address: e.place_format_address,
+      //     place_name: e.place_name,
+      //     place_formatted_phone_number:
+      //       location.international_phone_number || '',
+      //     place_url: e.place_url,
+      //     place_types: e.place_types,
+      //     place_img: e.place_img,
+      //   },
+      // }));
+      const batch = writeBatch(db);
+      // console.log(data);
+      // data.forEach((e) => {
+      //   console.log(4444, e);
+      // });
+      // data.forEach((e) => {
+      //   console.log(e);
+      const blocksListRef = doc(
+        collection(db, collectionID, collectionID, 'time_blocks')
+      );
 
-      const importEvents = data.map((e) => ({
-        status: 'imported',
-        start: new Date(e.start.seconds * 1000),
-        end: new Date(e.end.seconds * 1000),
-        title: e.title,
-        id: e.id,
-        blockData: {
-          place_id: e.place_id,
-          place_format_address: e.place_format_address,
-          place_name: e.place_name,
-          place_formatted_phone_number:
-            location.international_phone_number || '',
-          place_url: e.place_url,
-          place_types: e.place_types,
-          place_img: e.place_img,
-        },
-      }));
+      // const blocksListRef = collection(
+      //   db,
+      //   collectionID,
+      //   collectionID,
+      //   'time_blocks'
+      // );
+      data.forEach(async (e) => {
+        try {
+          await setDoc(
+            blocksListRef,
+            {
+              status: 'imported',
+              start: new Date(e.start.seconds * 1000),
+              end: new Date(e.end.seconds * 1000),
+              title: e.title,
+              id: e.id,
+              blockData: {
+                place_id: e.place_id,
+                place_format_address: e.place_format_address,
+                place_name: e.place_name,
+                place_formatted_phone_number:
+                  location.international_phone_number || '',
+                place_url: e.place_url,
+                place_types: e.place_types,
+                place_img: e.place_img,
+              },
+            },
+            { merge: true }
+          );
+          setFirebaseReady(true);
+          setAddedTimeBlock(true);
+          alert('Imported!');
+        } catch (error) {
+          console.log(error);
+        }
+      });
+      //   console.log({
+      //     status: 'imported',
+      //     start: new Date(e.start.seconds * 1000),
+      //     end: new Date(e.end.seconds * 1000),
+      //     title: e.title,
+      //     id: e.id,
+      //     blockData: {
+      //       place_id: e.place_id,
+      //       place_format_address: e.place_format_address,
+      //       place_name: e.place_name,
+      //       place_formatted_phone_number:
+      //         location.international_phone_number || '',
+      //       place_url: e.place_url,
+      //       place_types: e.place_types,
+      //       place_img: e.place_img,
+      //     },
+      //   });
+      //   batch.set(
+      //     blocksListRef,
+      //     {
+      //       status: 'imported',
+      //       start: new Date(e.start.seconds * 1000),
+      //       end: new Date(e.end.seconds * 1000),
+      //       title: e.title,
+      //       id: e.id,
+      //       blockData: {
+      //         place_id: e.place_id,
+      //         place_format_address: e.place_format_address,
+      //         place_name: e.place_name,
+      //         place_formatted_phone_number:
+      //           location.international_phone_number || '',
+      //         place_url: e.place_url,
+      //         place_types: e.place_types,
+      //         place_img: e.place_img,
+      //       },
+      //     }
+      //   );
+      // });
 
-      try {
-        const blocksListRef = collection(
-          db,
-          collectionID,
-          collectionID,
-          'time_blocks'
-        );
-        setFirebaseReady(true);
-
-        await setDoc(blocksListRef, { importEvents }, { merge: true });
-        setAddedTimeBlock(true);
-      } catch (error) {
-        console.log(error);
-      }
-
-      console.log(importEvents);
+      // try {
+      //   await batch.commit();
+      //   alert('Successfully created new plan!');
+      // } catch (error) {
+      //   console.log(error.message);
+      // }
+      // STOP HERE
+      // try {
+      //   const blocksListRef = collection(
+      //     db,
+      //     collectionID,
+      //     collectionID,
+      //     'time_blocks'
+      //   );
+      //   setFirebaseReady(true);
+      //   await setDoc(blocksListRef, data, { merge: true });
+      //   setAddedTimeBlock(true);
+      // } catch (error) {
+      //   console.log(error);
+      // }
       // return importEvents;
+
+      // });
     }
   }
 
@@ -374,7 +467,7 @@ function AddNewPlan() {
           'time_blocks'
         );
         setFirebaseReady(true);
-        setCollectionRef(blocksListRef);
+        setCollectionRef(collectionID);
         console.log('setFirebaseReady' + firebaseReady);
       } catch (error) {
         console.log(error);
