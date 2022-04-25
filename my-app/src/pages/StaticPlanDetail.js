@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
 
+import GoogleAPI from '../utils/GoogleAPI';
+import { Wrapper } from '@googlemaps/react-wrapper';
+
 import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 const db = firebaseDB();
+const ApiKey = GoogleAPI();
 
 const UpperContainer = styled.div`
   display: flex;
@@ -209,13 +212,15 @@ function StaticPlanDetail(props) {
         {timestampList.map((day, index) => {
           // console.log(day);
           return (
-            <DayBlockCard
-              currentDayDate={day}
-              collectionID={collectionID}
-              planDocRef={planDocRef}
-              index={index}
-              key={index}
-            />
+            <Wrapper apiKey={ApiKey}>
+              <DayBlockCard
+                currentDayDate={day}
+                collectionID={collectionID}
+                planDocRef={planDocRef}
+                index={index}
+                key={index}
+              />
+            </Wrapper>
           );
         })}
       </PlanCardsWrapper>

@@ -4,7 +4,6 @@ import {
   TextField,
   Button,
   IconButton,
-  Autocomplete,
   CardMedia,
   Card,
   Box,
@@ -161,13 +160,19 @@ async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
 // collectionID={collectionID}
 //planDocRef={planDocRef}
 
+// importData={importData}
+// showEditPopUp={showEditPopUp}
+// setShowEditPopUp={setShowEditPopUp}
+// currentSelectTimeData={currentSelectTimeData}
+// currentSelectTimeId={currentSelectTimeId}
+// collectionID={collectionID}
+// planDocRef={planDocRef}
 function EditTimeBlock(props) {
   const [initBlockData, setInitBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [locationName, setLocationName] = useState('');
   const [location, setLocation] = useState('');
   const [placeId, setPlaceId] = useState('');
-  // const [helperInitAddress, setHelperInitAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
     props.currentSelectTimeData.start || null
@@ -176,8 +181,8 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.end || null
   );
   const [timeBlockImage, setTimeBlockImage] = useState('');
-  const [isImported, setIsImported] = useState(false);
-  const [importPlaceData, setImportPlaceData] = useState({});
+  // const [isImported, setIsImported] = useState(false);
+  // const [importPlaceData, setImportPlaceData] = useState({});
   const [timeBlockRef, setTimeBlockRef] = useState('');
 
   // might need to be assigned outside???
@@ -192,65 +197,68 @@ function EditTimeBlock(props) {
   console.log(props.importData);
 
   useEffect(() => {
-    if (props.importData.status === 'imported') {
-      const data = props.importData.blockData;
-      setBlockTitle(props.importData.title);
-      console.log(6666, 'imported yes');
+    if (props.currentSelectTimeData.status === 'imported') {
+      const data = props.currentSelectTimeData;
+
+      setBlockTitle(data.title);
+      console.log(111, 'imported yes');
       console.log(data);
-      setIsImported(true);
+      // setIsImported(true);
       setLocationName(data.place_name);
       setPlaceId(data.place_id);
-      setImportPlaceData(data);
-      setStartTimeValue(new Date(props.importData.start));
-      setEndTimeValue(new Date(props.importData.end));
-    } else if (props.importData.status === 'origin') {
-      console.log('wrong origin');
-      setTimeBlockRef(
-        doc(
-          db,
-          props.collectionID,
-          props.planDocRef,
-          'time_blocks',
-          props.currentSelectTimeId
-        )
-      );
-      // retreiveFromDataBase(timeBlockRef, setInitBlockData);
-    } else if (props.status === 'origin') {
-      setTimeBlockRef(
-        doc(
-          db,
-          props.collectionID,
-          props.planDocRef,
-          'time_blocks',
-          props.currentSelectTimeId
-        )
-      );
-    }
-  }, [props.importData.status, props.status]);
-
-  useEffect(() => {
-    if (props.status === 'origin' && initBlockData) {
-      setDescription(initBlockData.text);
-      setBlockTitle(initBlockData.title);
-      setPlaceId(initBlockData.place_id);
-      setLocationName(initBlockData.place_name);
-
-      setTimeBlockImage(initBlockData.timeblock_img);
-
+      // setImportPlaceData(data);
+      setStartTimeValue(data.start);
+      setEndTimeValue(data.end);
       setLocation({
-        name: initBlockData.place_name,
-        formatted_address: initBlockData.place_format_address,
-        formatted_phone_number: initBlockData.place_formatted_phone_number,
-        international_phone_number:
-          initBlockData.place_international_phone_number,
-        url: initBlockData.place_url,
-        types: initBlockData.types,
-        mainImg: initBlockData.place_img,
-        rating: initBlockData.place_rating,
+        name: data.place_name,
+        formatted_address: data.place_format_address,
+        formatted_phone_number: data.place_formatted_phone_number || '',
+        international_phone_number: data.place_international_phone_number || '',
+        url: data.place_url,
+        types: data.types || '',
+        mainImg: data.place_img || '',
+        rating: data.place_rating || '',
         // from: 'editMode',
       });
-    }
-  }, [initBlockData]);
+    } else if (props.currentSelectTimeData.status === 'origin') {
+      console.log('origin');
+      setTimeBlockRef(
+        doc(
+          db,
+          props.collectionID,
+          props.planDocRef,
+          'time_blocks',
+          props.currentSelectTimeData.id
+        )
+      );
+      console.log(timeBlockRef);
+      retreiveFromDataBase(timeBlockRef, setInitBlockData);
+    } else console.log('something wrong with edit-time-block');
+  }, [props.currentSelectTimeData.status]);
+
+  // useEffect(() => {
+  //   if (props.status === 'origin' && initBlockData) {
+  //     setDescription(initBlockData.text);
+  //     setBlockTitle(initBlockData.title);
+  //     setPlaceId(initBlockData.place_id);
+  //     setLocationName(initBlockData.place_name);
+
+  //     setTimeBlockImage(initBlockData.timeblock_img);
+
+  //     setLocation({
+  //       name: initBlockData.place_name,
+  //       formatted_address: initBlockData.place_format_address,
+  //       formatted_phone_number: initBlockData.place_formatted_phone_number,
+  //       international_phone_number:
+  //         initBlockData.place_international_phone_number,
+  //       url: initBlockData.place_url,
+  //       types: initBlockData.types,
+  //       mainImg: initBlockData.place_img,
+  //       rating: initBlockData.place_rating,
+  //       // from: 'editMode',
+  //     });
+  //   }
+  // }, [initBlockData]);
 
   return (
     <>
@@ -303,7 +311,7 @@ function EditTimeBlock(props) {
             />
             <LocationCard
               location={location}
-              importPlaceData={importPlaceData}
+              // importPlaceData={importPlaceData}
             />
 
             <TextField

@@ -18,7 +18,7 @@ import Select from '@mui/material/Select';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
-import PlanCalendar from './Calendar';
+import PlanCalendar from './PlanCalendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import {

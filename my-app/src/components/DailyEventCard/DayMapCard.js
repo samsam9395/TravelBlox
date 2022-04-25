@@ -175,18 +175,18 @@ function DayMapCard(props) {
 
   return (
     <DayMapContainer>
-      <Wrapper apiKey={ApiKey}>
-        {props.dayEvents && (
-          <Map
-            center={center}
-            zoom={zoom}
-            dayEvents={props.dayEvents}
-            setHasMarker={setHasMarker}
-            setMarkerPosition={setMarkerPosition}
-          />
-        )}
-        {hasMarker && <Marker position={markerPosition} />}
-      </Wrapper>
+      {/* <Wrapper apiKey={ApiKey}> */}
+      {props.dayEvents && (
+        <Map
+          center={center}
+          zoom={zoom}
+          dayEvents={props.dayEvents}
+          setHasMarker={setHasMarker}
+          setMarkerPosition={setMarkerPosition}
+        />
+      )}
+      {hasMarker && <Marker position={markerPosition} />}
+      {/* </Wrapper> */}
     </DayMapContainer>
   );
 }

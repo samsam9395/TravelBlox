@@ -17,7 +17,7 @@ import Select from '@mui/material/Select';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
-import PlanCalendar from './Calendar';
+import PlanCalendar from './PlanCalendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import OnlyDatePicker from '../components/Input/onlyDatePicker';
@@ -202,7 +202,7 @@ function EditPlanDetail(props) {
       state: {
         fromPage: 'editPlans',
         collectionID: collectionID,
-        planDocRef: planDocRef,
+        planDocRef: collectionID,
       },
     });
   };
@@ -298,7 +298,7 @@ function EditPlanDetail(props) {
             place_formatted_phone_number:
               timeblock.blockData.place_formatted_phone_number || '',
             place_url: timeblock.blockData.place_url,
-            place_types: timeblock.blockData.place_types,
+            place_types: timeblock.blockData.place_types || '',
             status: 'imported',
           },
           { merge: true }
@@ -346,6 +346,13 @@ function EditPlanDetail(props) {
               title: change.doc.data().title,
               id: change.doc.data().id,
               status: change.doc.data().status || '',
+              place_format_address: change.doc.data().place_format_address,
+              place_name: change.doc.data().place_id,
+              place_img: change.doc.data().place_img || '',
+              place_url: change.doc.data().place_url,
+              place_types: change.doc.data().place_types || '',
+              place_formatted_phone_number:
+                change.doc.data().place_formatted_phone_number || '',
             },
           ]);
         }
@@ -359,6 +366,14 @@ function EditPlanDetail(props) {
               end: new Date(change.doc.data().end.seconds * 1000),
               title: change.doc.data().title,
               id: change.doc.data().id,
+              status: change.doc.data().status || '',
+              place_format_address: change.doc.data().place_format_address,
+              place_name: change.doc.data().place_id,
+              place_img: change.doc.data().place_img || '',
+              place_url: change.doc.data().place_url,
+              place_types: change.doc.data().place_types || '',
+              place_formatted_phone_number:
+                change.doc.data().place_formatted_phone_number || '',
             },
           ]);
         }

@@ -9,6 +9,13 @@ import PropTypes from 'prop-types';
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
 
+// setImportData={setImportData}
+// setMyEvents={setMyEvents}
+// myEvents={myEvents}
+// setShowEditPopUp={setShowEditPopUp}
+// setCurrentSelectTimeData={setCurrentSelectTimeData}
+// setCurrentSelectTimeId={setCurrentSelectTimeId}
+// startDateValue={startDateValue}
 function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
   //resize and dragable
   const { defaultDate, scrollToTime } = useMemo(
@@ -32,18 +39,18 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     if (event.status === 'imported') {
       console.log(event.status);
       console.log('okies');
-      console.log(event.blockData);
       console.log(event);
-      props.setImportData(event);
-      props.setShowEditPopUp(true);
-      // props.setCurrentSelectTimeData(event);
-    } else {
-      console.log(event);
+      console.log(event.id);
+      // props.setImportData(event);
       props.setCurrentSelectTimeData(event);
       props.setShowEditPopUp(true);
+    } else {
+      console.log(event.status);
+      console.log(event);
+      props.setCurrentSelectTimeData(event);
+      console.log(event.id); //this is timeBlockId
       props.setCurrentSelectTimeId(event.id);
-      console.log(event.id);
-      console.log(props.currentSelectTimeId);
+      props.setShowEditPopUp(true);
     }
   });
 
