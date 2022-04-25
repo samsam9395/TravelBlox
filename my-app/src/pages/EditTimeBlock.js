@@ -91,72 +91,6 @@ function handleImageUpload(e, setTimeBlockImage) {
   };
 }
 
-async function UpdateToDataBase(
-  timeBlockRef,
-  blockTitle,
-  description,
-  startTimeValue,
-  endTimeValue,
-  location,
-  timeBlockImage
-) {
-  // const location_img = location.photos[0].getUrl();
-
-  try {
-    await setDoc(
-      timeBlockRef,
-      {
-        title: blockTitle,
-        text: description,
-        start: startTimeValue,
-        end: endTimeValue,
-        place_id: location.place_id,
-        place_name: location.name,
-        place_format_address: location.formatted_address,
-        timeblock_img: timeBlockImage,
-        place_img: location.photos[0].getUrl() || '',
-        place_formatted_phone_number: location.formatted_phone_number || '',
-        place_international_phone_number:
-          location.international_phone_number || '',
-        place_url: location.url,
-        place_rating: location.rating,
-        place_types: location.types,
-      },
-      {
-        merge: true,
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-
-  console.log('successfully post to firebase!');
-}
-
-async function retreiveFromDataBase(timeBlockRef, setInitBlockData) {
-  const timeBlockSnap = await getDoc(timeBlockRef);
-
-  if (timeBlockSnap.exists()) {
-    console.log('retreived');
-    const initialData = timeBlockSnap.data();
-    console.log(initialData);
-
-    if (setInitBlockData) {
-      setInitBlockData(initialData);
-    }
-
-    return initialData;
-  } else {
-    console.log('No such document!');
-  }
-}
-
-async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
-  await deleteDoc(timeBlockRef);
-  alert(blockTitle + 'is deleted!');
-  setShowEditPopUp(false);
-}
-
 // collectionID={collectionID}
 //planDocRef={planDocRef}
 
@@ -183,30 +117,109 @@ function EditTimeBlock(props) {
   const [timeBlockImage, setTimeBlockImage] = useState('');
   // const [isImported, setIsImported] = useState(false);
   // const [importPlaceData, setImportPlaceData] = useState({});
-  const [timeBlockRef, setTimeBlockRef] = useState('');
+  // const [timeBlockRef, setTimeBlockRef] = useState('');
 
   // might need to be assigned outside???
-  // const timeBlockRef = doc(
-  //   db,
-  //   props.collectionID,
-  //   props.planDocRef,
-  //   'time_blocks',
-  //   props.currentSelectTimeId
-  // );
+  const timeBlockRef = doc(
+    db,
+    props.collectionID,
+    props.planDocRef,
+    'time_blocks',
+    props.currentSelectTimeData.id
+  );
 
-  console.log(props.importData);
+  async function UpdateToDataBase(
+    timeBlockRef,
+    blockTitle,
+    description,
+    startTimeValue,
+    endTimeValue,
+    location,
+    timeBlockImage
+  ) {
+    // const location_img = location.photos[0].getUrl();
+    console.log('start', startTimeValue);
+    console.log(
+      777,
+      'timeBlockRef',
+      blockTitle,
+      description,
+      startTimeValue,
+      endTimeValue,
+      location,
+      timeBlockImage
+    );
+    try {
+      await setDoc(
+        timeBlockRef,
+        {
+          title: blockTitle,
+          text: description,
+          start: startTimeValue,
+          end: endTimeValue,
+          place_id: placeId || location.place_id,
+          place_name: location.name,
+          place_format_address: location.formatted_address,
+          timeblock_img: timeBlockImage,
+          place_img: location.mainImg || location.photos[0].getUrl() || '',
+          place_formatted_phone_number: location.formatted_phone_number || '',
+          place_international_phone_number:
+            location.international_phone_number || '',
+          place_url: location.url,
+          place_rating: location.rating,
+          place_types: location.types,
+        },
+        {
+          merge: true,
+        }
+      );
+      props.setShowEditPopUp(false);
+      alert('Successfully updated!');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function retreiveFromDataBase(timeBlockRef, setInitBlockData) {
+    const timeBlockSnap = await getDoc(timeBlockRef);
+    console.log(55, 'retreving');
+    if (timeBlockSnap.exists()) {
+      console.log('retreived');
+      const initialData = timeBlockSnap.data();
+      console.log(initialData);
+
+      if (setInitBlockData) {
+        setInitBlockData(initialData);
+      }
+
+      return initialData;
+    } else {
+      console.log('No such document!');
+    }
+  }
+
+  async function deleteFromDataBase(
+    timeBlockRef,
+    blockTitle,
+    setShowEditPopUp
+  ) {
+    await deleteDoc(timeBlockRef);
+    alert(blockTitle + 'is deleted!');
+    setShowEditPopUp(false);
+  }
+
+  // console.log(props.importData);
 
   useEffect(() => {
     if (props.currentSelectTimeData.status === 'imported') {
       const data = props.currentSelectTimeData;
-
-      setBlockTitle(data.title);
       console.log(111, 'imported yes');
-      console.log(data);
-      // setIsImported(true);
+
+      // setImportPlaceData(data);
+      setBlockTitle(data.title);
       setLocationName(data.place_name);
       setPlaceId(data.place_id);
-      // setImportPlaceData(data);
+
       setStartTimeValue(data.start);
       setEndTimeValue(data.end);
       setLocation({
@@ -218,47 +231,48 @@ function EditTimeBlock(props) {
         types: data.types || '',
         mainImg: data.place_img || '',
         rating: data.place_rating || '',
+        place_id: data.place_id,
         // from: 'editMode',
       });
     } else if (props.currentSelectTimeData.status === 'origin') {
       console.log('origin');
-      setTimeBlockRef(
-        doc(
-          db,
-          props.collectionID,
-          props.planDocRef,
-          'time_blocks',
-          props.currentSelectTimeData.id
-        )
+      console.log(
+        'db',
+        props.collectionID,
+        props.planDocRef,
+        'time_blocks',
+        props.currentSelectTimeData.id
       );
-      console.log(timeBlockRef);
       retreiveFromDataBase(timeBlockRef, setInitBlockData);
     } else console.log('something wrong with edit-time-block');
   }, [props.currentSelectTimeData.status]);
 
-  // useEffect(() => {
-  //   if (props.status === 'origin' && initBlockData) {
-  //     setDescription(initBlockData.text);
-  //     setBlockTitle(initBlockData.title);
-  //     setPlaceId(initBlockData.place_id);
-  //     setLocationName(initBlockData.place_name);
+  useEffect(() => {
+    const data = initBlockData;
 
-  //     setTimeBlockImage(initBlockData.timeblock_img);
-
-  //     setLocation({
-  //       name: initBlockData.place_name,
-  //       formatted_address: initBlockData.place_format_address,
-  //       formatted_phone_number: initBlockData.place_formatted_phone_number,
-  //       international_phone_number:
-  //         initBlockData.place_international_phone_number,
-  //       url: initBlockData.place_url,
-  //       types: initBlockData.types,
-  //       mainImg: initBlockData.place_img,
-  //       rating: initBlockData.place_rating,
-  //       // from: 'editMode',
-  //     });
-  //   }
-  // }, [initBlockData]);
+    if (initBlockData) {
+      console.log(333, initBlockData);
+      setBlockTitle(data.title);
+      setLocationName(data.place_name);
+      setPlaceId(data.place_id);
+      // setStartTimeValue(new Date(data.start.seconds * 1000));
+      // setEndTimeValue(new Date(data.end.seconds * 1000));
+      setLocation({
+        name: data.place_name,
+        formatted_address: data.place_format_address,
+        formatted_phone_number: data.place_formatted_phone_number || '',
+        international_phone_number: data.place_international_phone_number || '',
+        url: data.place_url,
+        types: data.types || '',
+        mainImg: data.place_img || '',
+        rating: data.place_rating || '',
+        place_id: data.place_id,
+        // from: 'editMode',
+      });
+      setDescription(data.text);
+      setTimeBlockImage(data.timeblock_img);
+    }
+  }, [initBlockData]);
 
   return (
     <>
@@ -305,14 +319,9 @@ function EditTimeBlock(props) {
             <AutoCompleteInput
               setLocation={setLocation}
               locationName={locationName}
-              // helperInitAddress={helperInitAddress}
-              // setHelperInitAddress={setHelperInitAddress}
               placeId={placeId}
             />
-            <LocationCard
-              location={location}
-              // importPlaceData={importPlaceData}
-            />
+            <LocationCard location={location} />
 
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
@@ -370,8 +379,6 @@ function EditTimeBlock(props) {
                     location,
                     timeBlockImage
                   );
-                  props.setShowEditPopUp(false);
-                  alert('Successfully updated!');
                 } catch (error) {
                   alert('Something went wrong, please try again!');
                   console.log(error);

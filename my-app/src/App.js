@@ -81,7 +81,7 @@ function App() {
               />
             }
           />
-          <Route path="/add-new-plan" element={<AddNewPlan />} />
+          <Route path="/add-new-plan" element={<AddNewPlan user={user} />} />
           <Route
             path="/static-plan-detail"
             element={<StaticPlanDetail favFolderNames={favFolderNames} />}

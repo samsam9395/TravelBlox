@@ -253,35 +253,11 @@ function EditPlanDetail(props) {
     // console.log(docSnap.docs.map((e) => e.data()));
     const data = docSnap.docs.map((e) => e.data());
     console.log(data);
-    const importEvents = data.map((e) => ({
-      status: 'imported',
-      start: new Date(e.start.seconds * 1000),
-      end: new Date(e.end.seconds * 1000),
-      title: e.title,
-      id: e.id,
-      blockData: {
-        place_id: e.place_id,
-        place_format_address: e.place_format_address,
-        place_name: e.place_name,
-        place_formatted_phone_number: location.international_phone_number || '',
-        place_url: e.place_url,
-        place_types: e.place_types,
-        place_img: e.place_img,
-      },
-    }));
-    console.log(importEvents);
-    return importEvents; //for updating local event
-  }
-
-  function addToDataBase(collectionID, importResult) {
-    console.log('adding to dataBase', importResult);
-    console.log('db', collectionID, collectionID, 'time_blocks');
 
     const timeBlockRef = doc(
       collection(db, collectionID, collectionID, 'time_blocks')
     );
-
-    importResult.map(async (timeblock) => {
+    data.forEach(async (timeblock) => {
       console.log(timeblock);
       try {
         await setDoc(
@@ -290,15 +266,15 @@ function EditPlanDetail(props) {
             title: timeblock.title,
             start: timeblock.start,
             end: timeblock.end,
-            place_id: timeblock.blockData.place_id,
-            place_name: timeblock.blockData.place_name,
-            place_format_address: timeblock.blockData.place_format_address,
+            place_id: timeblock.place_id,
+            place_name: timeblock.place_name,
+            place_format_address: timeblock.place_format_address,
             id: timeblock.id,
-            place_img: timeblock.blockData.place_img || '',
+            place_img: timeblock.place_img || '',
             place_formatted_phone_number:
-              timeblock.blockData.place_formatted_phone_number || '',
-            place_url: timeblock.blockData.place_url,
-            place_types: timeblock.blockData.place_types || '',
+              timeblock.place_formatted_phone_number || '',
+            place_url: timeblock.place_url,
+            place_types: timeblock.place_types || '',
             status: 'imported',
           },
           { merge: true }
@@ -309,6 +285,65 @@ function EditPlanDetail(props) {
         console.log(error);
       }
     });
+    // const importEvents = data.map((e) => ({
+    //   status: 'imported',
+    //   start: new Date(e.start.seconds * 1000),
+    //   end: new Date(e.end.seconds * 1000),
+    //   title: e.title,
+    //   id: e.id,
+    //   blockData: {
+    //     place_id: e.place_id,
+    //     place_format_address: e.place_format_address,
+    //     place_name: e.place_name,
+    //     place_formatted_phone_number: location.international_phone_number || '',
+    //     place_url: e.place_url,
+    //     place_types: e.place_types,
+    //     place_img: e.place_img,
+    //   },
+    // }));
+    // console.log(importEvents);
+    // return importEvents; //for updating local event
+  }
+
+  function addToDataBase(collectionID, importResult) {
+    console.log('adding to dataBase', importResult);
+    console.log('db', collectionID, collectionID, 'time_blocks');
+
+    const timeBlockRef = doc(
+      collection(db, collectionID, collectionID, 'time_blocks')
+    );
+
+    console.log(importResult);
+    if (importResult) {
+      importResult.map(async (timeblock) => {
+        console.log(timeblock);
+        try {
+          await setDoc(
+            timeBlockRef,
+            {
+              title: timeblock.title,
+              start: timeblock.start,
+              end: timeblock.end,
+              place_id: timeblock.place_id,
+              place_name: timeblock.place_name,
+              place_format_address: timeblock.place_format_address,
+              id: timeblock.id,
+              place_img: timeblock.place_img || '',
+              place_formatted_phone_number:
+                timeblock.place_formatted_phone_number || '',
+              place_url: timeblock.place_url,
+              place_types: timeblock.place_types || '',
+              status: 'imported',
+            },
+            { merge: true }
+          );
+          console.log(collectionID);
+          alert('Successfully imported!');
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    }
   }
 
   /*=====  End of import on edit plan  ======*/
@@ -537,24 +572,15 @@ function EditPlanDetail(props) {
                       const importResult = await importTimeBlock(
                         selectedPlanId
                       );
-                      console.log(importResult);
+                      // console.log(importResult);
                       addToDataBase(collectionID, importResult);
-                      let list = [];
-                      importResult.forEach((e) => {
-                        list = myEvents.push(e);
-                      });
-
-                      // let list = importResult.map((e) => {
-                      //   [...myEvents, e];
-                      // });
-                      console.log(list);
-                      // importResult.map((e) => {
-                      //   console.log(e);
-                      //   setMyEvents((prev) => [...prev, e]);
-                      // });
-
-                      setMyEvents(myEvents);
                       console.log(myEvents);
+                      // let list = [];
+                      // importResult.forEach((e) => {
+                      //   list = myEvents.push(e);
+                      // });
+                      // setMyEvents(myEvents);
+                      // console.log(myEvents);
                     }}>
                     Import
                   </Button>

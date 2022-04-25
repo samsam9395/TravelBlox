@@ -167,9 +167,9 @@ async function addPlanToAllPlans(
   }
 }
 
-function AddNewPlan() {
+// user={user} accessToken, email
+function AddNewPlan(props) {
   const location = useLocation();
-  const [currentUserId, setCurrentUserId] = useState(location.state.user.email);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [mainImage, setMainImage] = useState('');
@@ -223,10 +223,10 @@ function AddNewPlan() {
       setPlanDocRef(createCollectionId);
       setCollectionRef(createCollectionId);
 
-      addPlanToUserInfo(currentUserId, createCollectionId);
+      addPlanToUserInfo(props.user.email, createCollectionId);
 
       addPlanToAllPlans(
-        currentUserId,
+        props.user.email,
         createCollectionId,
         planTitle,
         mainImage,
@@ -269,7 +269,7 @@ function AddNewPlan() {
       main_image: mainImage,
       start_date: startDateValue,
       end_date: endDateValue,
-      origin_author: currentUserId,
+      origin_author: props.user.email,
       published: isPublished,
     });
 
@@ -293,7 +293,7 @@ function AddNewPlan() {
   const [selectedPlanId, setSelectedPlanId] = useState('');
 
   async function getFavPlan(folderName) {
-    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+    const favRef = collection(db, 'userId', props.user.email, 'fav_plans');
     const planQuery = query(favRef, where('infolder', '==', folderName));
     const plansList = await getDocs(planQuery);
 
@@ -704,7 +704,7 @@ function AddNewPlan() {
                   alert('Please create at least one event!');
                 } else {
                   saveToDataBase(
-                    currentUserId,
+                    props.user.email,
                     myEvents,
                     planTitle,
                     country,

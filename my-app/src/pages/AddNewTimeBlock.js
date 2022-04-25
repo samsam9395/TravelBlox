@@ -62,6 +62,12 @@ const FormsContainer = styled.div`
   overflow: auto;
 `;
 
+const ImageUploader = styled.div`
+  min-height: 50px;
+  padding-bottom: 30px;
+  margin-bottom: 10px;
+`;
+
 const Input = styled('input')({
   display: 'none',
 });
@@ -195,27 +201,33 @@ function AddNewTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
-            <Card sx={{ width: 400 }}>
-              <CardMedia component="img" image={timeBlockImage} height="200" />
-              <label htmlFor="icon-button-file">
-                <Input
-                  accept="image/*"
-                  id="icon-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    handleImageUpload(e, setTimeBlockImage);
-                  }}
+            <ImageUploader>
+              <Card sx={{ width: 400 }}>
+                <CardMedia
+                  component="img"
+                  image={timeBlockImage}
+                  height="200"
                 />
-                <Box textAlign="center">
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="div">
-                    <PhotoCamera />
-                  </IconButton>
-                </Box>
-              </label>
-            </Card>
+                <label htmlFor="icon-button-file">
+                  <Input
+                    accept="image/*"
+                    id="icon-button-file"
+                    type="file"
+                    onChange={(e) => {
+                      handleImageUpload(e, setTimeBlockImage);
+                    }}
+                  />
+                  <Box textAlign="center">
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="div">
+                      <PhotoCamera />
+                    </IconButton>
+                  </Box>
+                </label>
+              </Card>
+            </ImageUploader>
           </FormsContainer>
           <Button
             variant="contained"
