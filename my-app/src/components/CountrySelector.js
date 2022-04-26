@@ -7,7 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 export default function CountrySelector(props) {
   // const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([{ label: '' }]);
-  const [initValue, setInitValue] = useState({});
+  const [displayValue, setDisplayValue] = useState({});
 
   useEffect(async () => {
     const list = await (
@@ -30,15 +30,15 @@ export default function CountrySelector(props) {
 
   useEffect(() => {
     if (props.country) {
-      setInitValue(props.country);
+      setDisplayValue(props.country);
     }
-  }, [props.country]);
+  }, [props.planTitle]);
 
   return (
     <Autocomplete
       id="country-select"
       sx={{ m: 1, width: 300 }}
-      value={initValue}
+      value={displayValue}
       options={countryList}
       autoHighlight
       isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -47,8 +47,8 @@ export default function CountrySelector(props) {
         for (let country of countryList) {
           if (country.label === e.target.textContent) {
             console.log(country);
+            setDisplayValue(country);
             props.setCountry(country);
-            setInitValue(country);
           }
         }
         // console.log(e.target);

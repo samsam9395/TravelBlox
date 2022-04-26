@@ -107,7 +107,23 @@ async function saveToDataBase(
     published: isPublished,
   });
 
-  await batch.commit();
+  const allPlanRef = doc(db, 'allPlans', collectionID);
+  batch.update(
+    allPlanRef,
+    {
+      title: planTitle,
+      country: country,
+      main_image: mainImage,
+      published: isPublished,
+    },
+    { merge: true }
+  );
+
+  try {
+    await batch.commit();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function deleteBlockInMylist(prev, id) {
@@ -211,7 +227,6 @@ function EditPlanDetail(props) {
 =            import on edit plan            =
 =============================================*/
   const [favPlansNameList, setFavPlansNameList] = useState(null);
-  const [favPlansIdList, setFavPlanIdList] = useState(null);
   const [showFavPlans, setShowFavPlans] = useState(false);
   const [dropDownOption, setDropDownOption] = useState(
     props.favFolderNames || []
@@ -236,8 +251,6 @@ function EditPlanDetail(props) {
       console.log(5555, favPlansNameList);
     }
   }
-
-  console.log(importData);
 
   async function importTimeBlock(selectedPlanId) {
     console.log(selectedPlanId);
@@ -398,7 +411,7 @@ function EditPlanDetail(props) {
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
-    console.log(docSnap.data().country);
+    console.log(7777, docSnap.data().country);
     setCountry(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
 
@@ -465,8 +478,6 @@ function EditPlanDetail(props) {
     });
   }, []);
 
-  console.log(myEvents);
-
   return (
     <Wrapper>
       {showPopUp && (
@@ -502,7 +513,11 @@ function EditPlanDetail(props) {
               setPlanTitle(e.target.value);
             }}
           />
-          <CountrySelector setCountry={setCountry} country={country} />
+          <CountrySelector
+            setCountry={setCountry}
+            country={country}
+            planTitle={planTitle}
+          />
           <OnlyDatePicker
             setStartDateValue={setStartDateValue}
             startDateValue={startDateValue}

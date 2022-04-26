@@ -11,9 +11,6 @@ const DateTitle = styled.div`
 export default function DayCalendar(props) {
   const localizer = momentLocalizer(moment);
 
-  console.log(props.currentDayDate);
-  console.log(77777, props.dayTimeBlocks);
-
   return (
     <>
       <DateTitle>{props.currentDayDate.toDateString()}</DateTitle>

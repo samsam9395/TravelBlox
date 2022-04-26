@@ -206,18 +206,14 @@ function AddNewPlan(props) {
     setCollectionId(createCollectionId);
 
     try {
-      const docRef = await setDoc(
-        doc(db, createCollectionId, createCollectionId),
-        {
-          author: author,
-          start_date: startDateValue,
-          end_date: endDateValue,
-          title: planTitle,
-          main_image: mainImage,
-          published: false,
-        }
-      );
-      console.log('Document written with ID: ', docRef.id);
+      await setDoc(doc(db, createCollectionId, createCollectionId), {
+        author: author,
+        start_date: startDateValue,
+        end_date: endDateValue,
+        title: planTitle,
+        main_image: mainImage,
+        published: false,
+      });
 
       setHasCreatedCollection(true);
       setPlanDocRef(createCollectionId);

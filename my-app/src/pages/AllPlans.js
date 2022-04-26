@@ -5,18 +5,9 @@ import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
-import EditPlanDetail from './EditPlanDetail';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
-import {
-  getDocs,
-  getDoc,
-  collection,
-  query,
-  where,
-  orderBy,
-  doc,
-} from 'firebase/firestore';
+import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
 import PublicPlanCard from '../components/PublicPlanCard';
@@ -56,7 +47,7 @@ function Allplans(props) {
     let list = [];
 
     allPlansList.map((e) => {
-      console.log(222, e);
+      console.log(222, e.country.label);
       if (e.author === inputValue.toLowerCase()) {
         console.log('its equal!!! ', e);
         list.push(e);

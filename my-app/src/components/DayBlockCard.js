@@ -72,7 +72,6 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
     querySnapshot.forEach((doc) => {
       eventByDayList.push(doc.data());
     });
-    console.log(7878, eventByDayList);
   } catch (error) {
     console.log(error);
   }

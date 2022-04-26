@@ -88,6 +88,7 @@ function addNewFavFolder(currentUserId, newFolder) {
   }
 }
 
+// user={user}
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
@@ -96,20 +97,18 @@ function Dashboard(props) {
   const [showAddNewFolder, setShowAddNewFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
-  const [currentPlanRef, setCurrentPlanRef] = useState([]);
   const [hideOtherCards, setHideOtherCards] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
 
   useEffect(async () => {
-    const user = localStorage.getItem('userEmail');
-    if (!user) {
+    if (!props.user) {
       alert('Please login first!');
       navigate('/landing');
     }
-    setCurrentUserId(localStorage.getItem('userEmail'));
+    setCurrentUserId(props.user.email);
 
-    const ref = collection(db, 'userId', user, 'own_plans');
+    const ref = collection(db, 'userId', props.user.email, 'own_plans');
     const plansList = await getDocs(ref);
 
     if (plansList.docs.length === 0) {
@@ -179,7 +178,7 @@ function Dashboard(props) {
 
         <AddPlanBtn
           onClick={() => {
-            setShowAddPlanPopup(!showAddPlanPopUp);
+            setShowAddPlanPopup(true);
           }}>
           Add New Plan
         </AddPlanBtn>
