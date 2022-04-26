@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-  Box,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Typography,
-  Avatar,
-  Stack,
-} from '@mui/material';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { getDocs, getDoc, collection } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import EditPlanDetail from '../pages/EditPlanDetail';
 import CountrySelector from '../components/CountrySelector';
@@ -25,13 +9,17 @@ import CountrySelector from '../components/CountrySelector';
 const db = firebaseDB();
 
 const SinglePlanContainer = styled.div`
-  width: 350px;
-  height: 350px;
+  width: 500px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const SinglePlanText = styled.div`
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
 `;
 
 const PlanMainImageContainer = styled.div`
@@ -39,63 +27,112 @@ const PlanMainImageContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
+  display: flex;
+  align-items: center;
   height: 300px;
-  width: 300px;
+  width: 100%;
 `;
 
 const MainImage = styled.img`
-  max-height: 100%;
+  width: 100%;
 `;
 
+// props.ownPlanId
+// props.userIdentity
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
-  const [testCurrentPlanRef, setTestCurrentPlanRef] = useState(null);
-  const [planDocRef, setPlanDocRef] = useState('');
+  const [currentPlanRef, setCurrentPlanRef] = useState(null);
+  const [doImport, setDoimport] = useState(false);
   const planId = props.ownPlanId;
 
   const navigate = useNavigate();
 
-  console.log(props.userIdentity);
+  console.log(props.ownPlanId);
 
   const redirectToEdit = () => {
-    navigate('/edit-plan-detail', { state: testCurrentPlanRef });
+    navigate('/edit-plan-detail', {
+      state: {
+        from: 'dashboard',
+        // collectionID: currentPlanRef.collectionID,
+        planDocRef: planId,
+      },
+    });
   };
 
   const redirectToStatic = () => {
-    navigate('/static-plan-detail', { state: testCurrentPlanRef });
+    navigate('/static-plan-detail', { state: { currentPlanRef: planId } });
   };
 
   useEffect(async () => {
-    const ref = collection(db, planId);
-    const ownPlanData = await getDocs(ref);
+    // if (planId) {
+    console.log(props.planId);
+    const docSnap = await getDoc(doc(db, 'plans', planId));
 
-    ownPlanData.forEach((doc) => {
-      setTestCurrentPlanRef({
-        collectionID: planId,
-        planDocRef: doc.id,
-      });
-      setPlanDocRef();
+    console.log(docSnap.data());
+    setDocData(docSnap.data());
+    // }
 
-      setDocData(doc.data());
-      return doc.data();
-    });
+    // console.log('helloooooooooo');
+    // const ownPlanData = await getDoc(doc(db, 'plans', planId));
+    // console.log(ownPlanData);
+    // console.log(111, ownPlanData.data().title);
+    // console.log(ownPlanData.data());
+
+    // console.log(
+    //   ownPlanData.forEach((e) => {
+    //     console.log(e);
+    //     console.log(e.data());
+    //   })
+    // );
+    // console.log(ownPlanData.data());
+    // setDocData(ownPlanData.data());
+
+    // ownPlanData.forEach((doc) => {
+    //   setCurrentPlanRef({
+    //     // collectionID: planId,
+    //     planDocRef: planId,
+    //   });
+
+    //   setDocData(doc.data());
+    //   return doc.data();
+    // });
   }, [planId]);
+
+  useEffect(async () => {
+    if (doImport) {
+      const ref = collection(db, 'plans', planId, 'time_blocks');
+      const importTimeBlocks = await getDocs(ref);
+
+      importTimeBlocks.forEach((doc) => {
+        console.log(doc.data());
+        return doc.data();
+      });
+    }
+  }, [doImport]);
+
+  function renderSwitch(identity) {
+    console.log(identity);
+    switch (identity) {
+      case 'author':
+        redirectToEdit();
+        break;
+      case 'importer':
+        setDoimport(true);
+        break;
+      case 'public':
+        redirectToStatic();
+        break;
+    }
+  }
 
   return (
     docData && (
-      <SinglePlanContainer
-        onClick={() =>
-          props.userIdentity === 'author'
-            ? redirectToEdit()
-            : redirectToStatic()
-        }>
+      <SinglePlanContainer onClick={() => renderSwitch(props.userIdentity)}>
         <PlanMainImageContainer>
           <SinglePlanText>{docData.title}</SinglePlanText>
           <ImageContainer>
             <MainImage src={docData.main_image} alt="main image"></MainImage>
           </ImageContainer>
-
-          {/* <ImageContainer src={docData.main_image} alt="main image" /> */}
         </PlanMainImageContainer>
       </SinglePlanContainer>
     )

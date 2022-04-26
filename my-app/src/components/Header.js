@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   top: 0;
   background-color: white;
   padding: 0 24px;
+  z-index: 100;
 `;
 
 const NavLink = styled.div`
@@ -50,9 +51,11 @@ function Header() {
     <Wrapper>
       <Logo></Logo>
       <NavLinkWrapper>
-        <NavLink>Home{/* <TestLink to="/">Home</TestLink> */}</NavLink>
         <NavLink>
-          <TestLink to="/all-plans">Discover</TestLink>
+          <TestLink to="/landing">Home</TestLink>
+        </NavLink>
+        <NavLink>
+          <TestLink to="/discover">Discover</TestLink>
         </NavLink>
         <NavLink>
           <TestLink to="/dashboard">Dashboard</TestLink>

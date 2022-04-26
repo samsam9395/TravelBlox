@@ -51,6 +51,8 @@ const Map = (props) => {
 
   // console.log(props.dayEvents);
 
+  console.log('Map is rendered', props.dayEvents);
+
   useEffect(() => {
     props.dayEvents.forEach((eventBlock) => {
       placeIdList.push(eventBlock.place_id);
@@ -65,86 +67,90 @@ const Map = (props) => {
         new window.google.maps.Map(ref.current, {
           center: { lat: 40.76, lng: -73.983 },
           zoom: 15,
+          maxZoom: 18,
           mapTypeId: 'roadmap',
         })
       );
     }
   }, [ref, map]);
 
-  if (ref.current) {
-    const directionsService = new window.google.maps.DirectionsService();
-    const directionsRenderer = new window.google.maps.DirectionsRenderer();
+  useEffect(() => {
+    if (ref.current) {
+      const directionsService = new window.google.maps.DirectionsService();
+      const directionsRenderer = new window.google.maps.DirectionsRenderer();
 
-    if (placeIdList && placeIdList.length === 1) {
-      props.setMarkerPosition({ placeId: placeIdList });
-      // const marker = new google.maps.Marker({
-      //   position: { placeId: placeIdList },
-      //   map: map,
-      // });
+      if (placeIdList && placeIdList.length === 1) {
+        props.setMarkerPosition({ placeId: placeIdList });
+        map.setZoom(5);
+        // const marker = new google.maps.Marker({
+        //   position: { placeId: placeIdList },
+        //   map: map,
+        // });
 
-      const directionsRequest = {
-        origin: { placeId: placeIdList[0] },
-        destination: { placeId: placeIdList.at(-1) },
-        provideRouteAlternatives: false,
-        travelMode: 'WALKING',
-      };
-      directionsRenderer.setMap(map);
+        const directionsRequest = {
+          origin: { placeId: placeIdList[0] },
+          destination: { placeId: placeIdList.at(-1) },
+          provideRouteAlternatives: false,
+          travelMode: 'WALKING',
+        };
+        directionsRenderer.setMap(map);
 
-      directionsService.route(directionsRequest).then((result) => {
-        if (result.status === 'OK') {
-          directionsRenderer.setDirections(result);
-        } else console.log('something wrong');
-      });
-
-      props.setHasMarker(true);
-    }
-
-    if (placeIdList && placeIdList.length === 2) {
-      const directionsRequest = {
-        origin: { placeId: placeIdList[0] },
-        destination: { placeId: placeIdList.at(-1) },
-        provideRouteAlternatives: false,
-        travelMode: 'WALKING',
-      };
-      directionsRenderer.setMap(map);
-
-      directionsService.route(directionsRequest).then((result) => {
-        if (result.status === 'OK') {
-          directionsRenderer.setDirections(result);
-        } else console.log('something wrong');
-      });
-    }
-
-    if (placeIdList && placeIdList.length > 2) {
-      const waypointsList = placeIdList.slice(1).slice(0, -1);
-      const waypoints = [];
-
-      waypointsList.forEach((singleRoute) => {
-        waypoints.push({
-          location: { placeId: singleRoute },
-          stopover: true,
+        directionsService.route(directionsRequest).then((result) => {
+          if (result.status === 'OK') {
+            directionsRenderer.setDirections(result);
+          } else console.log('something wrong');
         });
-      });
 
-      const directionsRequest = {
-        origin: { placeId: placeIdList[0] },
-        destination: { placeId: placeIdList.at(-1) },
+        props.setHasMarker(true);
+      }
 
-        waypoints: waypoints,
-        provideRouteAlternatives: false,
-        travelMode: 'WALKING',
-      };
-      directionsRenderer.setMap(map);
+      if (placeIdList && placeIdList.length === 2) {
+        const directionsRequest = {
+          origin: { placeId: placeIdList[0] },
+          destination: { placeId: placeIdList.at(-1) },
+          provideRouteAlternatives: false,
+          travelMode: 'WALKING',
+        };
+        directionsRenderer.setMap(map);
 
-      //   renderDirections(directionsService, directionsRenderer, map);
-      directionsService.route(directionsRequest).then((result) => {
-        if (result.status === 'OK') {
-          directionsRenderer.setDirections(result);
-          console.log(result);
-        } else console.log('something wrong');
-      });
+        directionsService.route(directionsRequest).then((result) => {
+          if (result.status === 'OK') {
+            directionsRenderer.setDirections(result);
+          } else console.log('something wrong');
+        });
+      }
+
+      if (placeIdList && placeIdList.length > 2) {
+        const waypointsList = placeIdList.slice(1).slice(0, -1);
+        const waypoints = [];
+
+        waypointsList.forEach((singleRoute) => {
+          waypoints.push({
+            location: { placeId: singleRoute },
+            stopover: true,
+          });
+        });
+
+        const directionsRequest = {
+          origin: { placeId: placeIdList[0] },
+          destination: { placeId: placeIdList.at(-1) },
+
+          waypoints: waypoints,
+          provideRouteAlternatives: false,
+          travelMode: 'WALKING',
+        };
+        directionsRenderer.setMap(map);
+
+        //   renderDirections(directionsService, directionsRenderer, map);
+        directionsService.route(directionsRequest).then((result) => {
+          if (result.status === 'OK') {
+            directionsRenderer.setDirections(result);
+            console.log(result);
+          } else console.log('something wrong');
+        });
+      }
     }
-  }
+  }, [ref.current, props.dayEvents]);
 
   return (
     <>
@@ -159,14 +165,18 @@ const Map = (props) => {
   );
 };
 
+// dayEvents={dayEvents}
 function DayMapCard(props) {
-  console.log('this is rendered');
+  console.log('DayMapCard is rendered');
   const [hasMarker, setHasMarker] = useState(false);
   const [markerPosition, setMarkerPosition] = useState('');
 
+  console.log('Day Map111', props.dayEvents);
+
   return (
     <DayMapContainer>
-      <Wrapper apiKey={ApiKey}>
+      {/* <Wrapper apiKey={ApiKey}> */}
+      {props.dayEvents && (
         <Map
           center={center}
           zoom={zoom}
@@ -174,10 +184,11 @@ function DayMapCard(props) {
           setHasMarker={setHasMarker}
           setMarkerPosition={setMarkerPosition}
         />
-        {hasMarker && <Marker position={markerPosition} />}
-      </Wrapper>
+      )}
+      {hasMarker && <Marker position={markerPosition} />}
+      {/* </Wrapper> */}
     </DayMapContainer>
   );
 }
 
-export default DayMapCard;
+export default memo(DayMapCard);

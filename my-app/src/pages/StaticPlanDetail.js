@@ -1,43 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  IconButton,
-  Box,
-  Card,
-  CardMedia,
-  CircularProgress,
-  Typography,
-  Avatar,
-} from '@mui/material';
-import {
-  doc,
-  getDoc,
-  collection,
-  setDoc,
-  addDoc,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
+import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
+
+import GoogleAPI from '../utils/GoogleAPI';
+import { Wrapper } from '@googlemaps/react-wrapper';
+
+import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
-
+import firebaseDB from '../utils/firebaseConfig';
 const db = firebaseDB();
+const ApiKey = GoogleAPI();
+
 const UpperContainer = styled.div`
   display: flex;
   padding: 0 30px;
+  justify-content: space-between;
 `;
 
 const PlanInfoWrapper = styled.div`
   padding: 0 30px;
   width: 100%;
+`;
+
+const LeftSideWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const UserRightSideWrapper = styled.div`
@@ -77,36 +67,34 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
-async function handleFavAction(collectionID, author) {
+// handleFavAction(collectionID, author)
+async function handleFavAction(planDocRef, author, selectFavFolder, planTitle) {
   const currentUserEmail = localStorage.getItem('userEmail');
-  console.log(currentUserEmail);
-  console.log(collectionID);
 
   if (currentUserEmail === author) {
     alert('Do not favourite your own plan!');
-  } else {
-    const favRef = doc(collection(db, 'userId', currentUserEmail, 'fav_plans'));
-    const q = query(favRef, where('fav_collection_id' === collectionID));
-    try {
-      const docSnap = await getDocs(q);
+  } else if (selectFavFolder !== '') {
+    console.log(selectFavFolder);
+    const favRef = doc(db, 'userId', currentUserEmail, 'fav_plans', planDocRef);
 
-      if (docSnap.exists()) {
-        console.log(docSnap.exists());
-        console.log('Document data:', docSnap.data());
-      } else {
-        await setDoc(favRef, {
-          fav_collection_id: collectionID,
-          fav_plan_doc_ref: favRef.id,
-        });
-        alert('Successfully favourite this plan!');
-      }
+    try {
+      await setDoc(favRef, {
+        // fav_collection_id: planDocRef,
+        // fav_plan_doc_ref: favRef.id,
+        fav_plan_doc_ref: planDocRef,
+        infolder: selectFavFolder,
+        fav_plan_title: planTitle,
+      });
+      alert('Successfully favourite this plan!');
     } catch (error) {
       console.log(error);
     }
+  } else {
+    alert('Please select a folder!');
   }
 }
 
-function StaticPlanDetail() {
+function StaticPlanDetail(props) {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -116,12 +104,14 @@ function StaticPlanDetail() {
   const [endDate, setEndDate] = useState('');
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
+  const [showfavDropDown, setShowFavDropDown] = useState(false);
+  // const [selectFavFolder, setSelectFavFolder] = useState('default');
 
   const location = useLocation();
-  const collectionID = location.state.collectionID;
+  // const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
-  const planCollectionRef = doc(db, collectionID, planDocRef);
+  const planCollectionRef = doc(db, 'plans', planDocRef);
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -145,18 +135,55 @@ function StaticPlanDetail() {
   }, [endDate, startDate]);
 
   useEffect(() => {
-    setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
+    if (loopThroughDays(startDate.seconds * 1000, numberofDays).length === 0) {
+      // console.log(1111);
+      setTimestampList(loopThroughDays(startDate.seconds * 1000, 1));
+    } else {
+      // console.log(2222);
+      setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
+    }
   }, [numberofDays]);
 
   return (
     <>
       <UpperContainer>
-        <Card sx={{ width: 400 }}>
-          <CardMedia component="img" image={mainImage} height="200" />
-          <Typography gutterBottom variant="h5" component="div">
-            {planTitle}
-          </Typography>
-        </Card>
+        <LeftSideWrapper>
+          <Card sx={{ width: 400 }}>
+            <CardMedia component="img" image={mainImage} height="200" />
+            <Typography gutterBottom variant="h5" component="div">
+              {planTitle}
+            </Typography>
+          </Card>
+          <PlanInfoWrapper>
+            <Typography variant="h5" component="div">
+              Location: {country.label}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => setShowFavDropDown(!showfavDropDown)}>
+              Favourite this plan
+            </Button>
+            {showfavDropDown && (
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={props.favFolderNames}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Favourite Folders" />
+                )}
+                onChange={(e) => {
+                  handleFavAction(
+                    planDocRef,
+                    author,
+                    e.target.textContent,
+                    planTitle
+                  );
+                }}
+              />
+            )}
+          </PlanInfoWrapper>
+        </LeftSideWrapper>
 
         <UserRightSideWrapper>
           <UserInfoWrapper>
@@ -169,26 +196,20 @@ function StaticPlanDetail() {
           </UserInfoWrapper>
         </UserRightSideWrapper>
       </UpperContainer>
-      <PlanInfoWrapper>
-        <Typography variant="h5" component="div">
-          Location: {country}
-        </Typography>
-        <Button
-          variant="contained"
-          onClick={() => handleFavAction(collectionID, author)}>
-          Favourite this plan
-        </Button>
-      </PlanInfoWrapper>
+
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {
+          // console.log(day);
           return (
-            <DayBlockCard
-              currentDayDate={day}
-              collectionID={collectionID}
-              planDocRef={planDocRef}
-              index={index}
-              key={index}
-            />
+            <Wrapper apiKey={ApiKey}>
+              <DayBlockCard
+                currentDayDate={day}
+                // collectionID={collectionID}
+                planDocRef={planDocRef}
+                index={index}
+                key={index}
+              />
+            </Wrapper>
           );
         })}
       </PlanCardsWrapper>

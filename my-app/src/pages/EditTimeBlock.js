@@ -4,7 +4,6 @@ import {
   TextField,
   Button,
   IconButton,
-  Autocomplete,
   CardMedia,
   Card,
   Box,
@@ -12,8 +11,9 @@ import {
 import { Delete, Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
-import DateTimeSelector from '../components/DateTimeSelector';
+import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
+import LocationCard from '../components/LocationCard';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -27,7 +27,7 @@ const BlackWrapper = styled.div`
 
 const PopBox = styled.div`
   position: relative;
-  width: 40vw;
+  width: 80vw;
   height: 70%;
   margin: 0 auto;
   background-color: white;
@@ -91,106 +91,190 @@ function handleImageUpload(e, setTimeBlockImage) {
   };
 }
 
-async function UpdateToDataBase(
-  timeBlockRef,
-  blockTitle,
-  description,
-  startTimeValue,
-  endTimeValue,
-  location,
-  timeBlockImage
-) {
-  await setDoc(
-    timeBlockRef,
-    {
-      title: blockTitle,
-      text: description,
-      start: startTimeValue,
-      end: endTimeValue,
-      place_id: location.place_id,
-      place_name: location.name,
-      place_format_address: location.formatted_address,
-      timeblock_img: timeBlockImage,
-    },
-    {
-      merge: true,
-    }
-  );
-
-  console.log('successfully post to firebase!');
-}
-
-async function retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData) {
-  const timeBlockSnap = await getDoc(timeBlockRef);
-
-  if (timeBlockSnap.exists()) {
-    console.log('retreived');
-    const initialData = timeBlockSnap.data();
-    console.log(initialData);
-
-    if (setInitialTimeBlockData) {
-      setInitialTimeBlockData(initialData);
-    }
-
-    return initialData;
-  } else {
-    console.log('No such document!');
-  }
-}
-
-async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
-  await deleteDoc(timeBlockRef);
-  alert(blockTitle + 'is deleted!');
-  setShowEditPopUp(false);
-}
-
 // collectionID={collectionID}
 //planDocRef={planDocRef}
 
+// importData={importData}
+// showEditPopUp={showEditPopUp}
+// setShowEditPopUp={setShowEditPopUp}
+// currentSelectTimeData={currentSelectTimeData}
+// currentSelectTimeId={currentSelectTimeId}
+// collectionID={collectionID} <<< get rid of this
+// planDocRef={planDocRef}
 function EditTimeBlock(props) {
-  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  const [initBlockData, setInitBlockData] = useState({});
+  const [importBlockData, setImportBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [locationName, setLocationName] = useState('');
   const [location, setLocation] = useState('');
   const [placeId, setPlaceId] = useState('');
-  const [helperInitAddress, setHelperInitAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
-    props.currentSelectTimeData.start || null
+    props.currentSelectTimeData.start || ''
   );
   const [endTimeValue, setEndTimeValue] = useState(
-    props.currentSelectTimeData.end || null
+    props.currentSelectTimeData.end || ''
   );
   const [timeBlockImage, setTimeBlockImage] = useState('');
+  // const [isImported, setIsImported] = useState(false);
+  // const [importPlaceData, setImportPlaceData] = useState({});
+  // const [timeBlockRef, setTimeBlockRef] = useState('');
 
+  // might need to be assigned outside???
   const timeBlockRef = doc(
     db,
-    props.collectionID,
+    'plans',
     props.planDocRef,
     'time_blocks',
-    props.currentSelectTimeId
+    props.currentSelectTimeData.id
   );
 
-  useEffect(() => {
-    retreiveFromDataBase(timeBlockRef, setInitialTimeBlockData);
-  }, []);
+  async function UpdateToDataBase(
+    timeBlockRef,
+    blockTitle,
+    description,
+    startTimeValue,
+    endTimeValue,
+    location,
+    timeBlockImage
+  ) {
+    // const location_img = location.photos[0].getUrl();
+    console.log(location.name);
+    try {
+      await setDoc(
+        timeBlockRef,
+        {
+          title: blockTitle,
+          text: description,
+          start: startTimeValue,
+          end: endTimeValue,
+          place_id: location.place_id || placeId,
+          place_name: location.name,
+          place_format_address: location.formatted_address,
+          timeblock_img: timeBlockImage || '',
+          place_img: location.mainImg || location.photos[0].getUrl() || '',
+          place_formatted_phone_number: location.formatted_phone_number || '',
+          place_international_phone_number:
+            location.international_phone_number || '',
+          place_url: location.url,
+          rating: location.rating || '',
+          place_types: location.types || '',
+          status: 'origin',
+          id: props.currentSelectTimeId,
+        },
+        {
+          merge: true,
+        }
+      );
+      props.setShowEditPopUp(false);
+      alert('Successfully updated!');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function retreiveFromDataBase(timeBlockRef, setInitBlockData) {
+    const timeBlockSnap = await getDoc(timeBlockRef);
+
+    if (timeBlockSnap.exists()) {
+      console.log('retreived');
+      const initialData = timeBlockSnap.data();
+      console.log(initialData);
+
+      if (setInitBlockData) {
+        setInitBlockData(initialData);
+      }
+
+      return initialData;
+    } else {
+      console.log('No such document!');
+    }
+  }
+
+  async function deleteFromDataBase(
+    timeBlockRef,
+    blockTitle,
+    setShowEditPopUp
+  ) {
+    try {
+      await deleteDoc(timeBlockRef);
+      alert(blockTitle, props.currentSelectTimeId, 'is deleted!');
+      setShowEditPopUp(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // console.log(props.importData);
 
   useEffect(() => {
-    setDescription(initialTimeBlockData.text);
-    setBlockTitle(initialTimeBlockData.title);
-    setPlaceId(initialTimeBlockData.place_id);
-    setHelperInitAddress(initialTimeBlockData.place_format_address);
-    setLocationName(initialTimeBlockData.place_name);
+    if (props.currentSelectTimeData.status === 'imported') {
+      setImportBlockData(props.currentSelectTimeData);
+      console.log(111, 'imported yes');
+      // setImportPlaceData(data);
+    } else if (props.currentSelectTimeData.status === 'origin') {
+      console.log('origin');
+      console.log(props.currentSelectTimeData.id);
 
-    const initFirebaseLocationData = {
-      place_id: initialTimeBlockData.place_id,
-      name: initialTimeBlockData.place_name,
-      formatted_address: initialTimeBlockData.place_format_address,
-    };
-    setLocation(initFirebaseLocationData);
+      retreiveFromDataBase(timeBlockRef, setInitBlockData);
+    } else console.log('something wrong with edit-time-block');
 
-    setTimeBlockImage(initialTimeBlockData.timeblock_img);
-  }, [initialTimeBlockData]);
+    console.log(344, blockTitle);
+  }, [props.currentSelectTimeData]);
+
+  useEffect(() => {
+    const data = importBlockData;
+    console.log('formatted_address', data.place_format_address);
+
+    setBlockTitle(data.title);
+    setLocationName(data.place_name);
+    // setPlaceId(data.place_id);
+    setStartTimeValue(data.start);
+    setEndTimeValue(data.end);
+    setLocation({
+      name: data.place_name,
+      formatted_address: data.place_format_address,
+      formatted_phone_number: data.place_formatted_phone_number || '',
+      international_phone_number: data.place_international_phone_number || '',
+      url: data.place_url,
+      types: data.types || '',
+      mainImg: data.place_img || '',
+      rating: data.rating || '',
+      place_id: data.place_id,
+    });
+  }, [importBlockData]);
+
+  useEffect(() => {
+    const data = initBlockData;
+
+    if (initBlockData) {
+      console.log(333, initBlockData);
+      setBlockTitle(data.title);
+      setLocationName(data.place_name);
+      setPlaceId(data.place_id);
+      setLocation({
+        name: data.place_name,
+        formatted_address: data.place_format_address,
+        formatted_phone_number: data.place_formatted_phone_number || '',
+        international_phone_number: data.place_international_phone_number || '',
+        url: data.place_url,
+        types: data.types || '',
+        mainImg: data.place_img || '',
+        rating: data.rating || '',
+        place_id: data.place_id,
+      });
+      setDescription(data.text);
+      setTimeBlockImage(data.timeblock_img);
+      if (data.start) {
+        setStartTimeValue(new Date(data.start.seconds * 1000));
+        console.log(data.start.seconds);
+      }
+      if (data.end) {
+        setEndTimeValue(new Date(data.end.seconds * 1000));
+      }
+    }
+  }, [initBlockData]);
+  // console.log('8888 current timeblock ref is ', timeBlockRef);
 
   return (
     <>
@@ -237,13 +321,14 @@ function EditTimeBlock(props) {
             <AutoCompleteInput
               setLocation={setLocation}
               locationName={locationName}
-              helperInitAddress={helperInitAddress}
-              setHelperInitAddress={setHelperInitAddress}
               placeId={placeId}
             />
+            <LocationCard location={location} />
+
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
+              required
               size="small"
               label="Description"
               variant="outlined"
@@ -286,8 +371,26 @@ function EditTimeBlock(props) {
           <Button
             variant="contained"
             onClick={(e) => {
-              if (location && blockTitle && startTimeValue && endTimeValue) {
+              if (
+                location &&
+                blockTitle &&
+                description &&
+                startTimeValue &&
+                endTimeValue
+              ) {
                 try {
+                  console.log(
+                    'clicked submit 777',
+                    timeBlockRef.path,
+                    blockTitle,
+                    description,
+                    startTimeValue,
+                    endTimeValue,
+                    location,
+                    timeBlockImage
+                  );
+                  console.log(888, props.currentSelectTimeId);
+                  console.log(999, timeBlockRef);
                   UpdateToDataBase(
                     timeBlockRef,
                     blockTitle,
@@ -297,8 +400,6 @@ function EditTimeBlock(props) {
                     location,
                     timeBlockImage
                   );
-                  props.setShowEditPopUp(false);
-                  alert('Successfully updated!');
                 } catch (error) {
                   alert('Something went wrong, please try again!');
                   console.log(error);

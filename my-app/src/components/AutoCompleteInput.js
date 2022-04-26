@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TextField } from '@mui/material';
 import GoogleAPI from '../utils/GoogleAPI';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import { Wrapper } from '@googlemaps/react-wrapper';
 
 const ApiKey = GoogleAPI();
 
 function SearchInput(props) {
-  const [inputLocationValue, setInputLocationValue] = useState();
-  const [helperInputAddress, setHelperInputAddress] = useState();
+  const [inputLocationValue, setInputLocationValue] = useState('');
+
   const ref = useRef(null);
   // const [location, setLocation] = useState('');
 
@@ -19,7 +19,6 @@ function SearchInput(props) {
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
         props.setLocation(place);
-        setHelperInputAddress(place.formatted_address);
         setInputLocationValue(place.name);
       });
     }
@@ -27,43 +26,35 @@ function SearchInput(props) {
 
   useEffect(() => {
     setInputLocationValue(props.locationName);
-    setHelperInputAddress(props.helperInitAddress);
-  }, [props.locationName, props.helperInitAddress]);
+  }, [props.locationName]);
 
   return (
-    <>
-      <TextField
-        // ref={ref}
-        inputRef={ref}
-        required
-        autoComplete="off"
-        sx={{ m: 1, minWidth: 80 }}
-        size="small"
-        label="Address"
-        variant="outlined"
-        value={inputLocationValue}
-        onChange={(e) => {
-          setInputLocationValue(e.target.value);
-        }}
-        helperText={helperInputAddress}
-      />
-    </>
+    <TextField
+      // ref={ref}
+      inputRef={ref}
+      required
+      autoComplete="off"
+      sx={{ m: 1, minWidth: 80 }}
+      size="small"
+      label="Address"
+      variant="outlined"
+      value={inputLocationValue}
+      onChange={(e) => {
+        setInputLocationValue(e.target.value);
+      }}
+    />
   );
 }
 
 function AutoCompleteInput(props) {
   return (
-    <>
-      <Wrapper apiKey={ApiKey} libraries={['places']}>
-        <SearchInput
-          setLocation={props.setLocation}
-          locationName={props.locationName || ''}
-          helperInitAddress={props.helperInitAddress || ''}
-          setHelperInitAddress={props.setHelperInitAddress}
-          placeId={props.placeId}
-        />
-      </Wrapper>
-    </>
+    <Wrapper apiKey={ApiKey} libraries={['places']}>
+      <SearchInput
+        setLocation={props.setLocation}
+        locationName={props.locationName || ''}
+        placeId={props.placeId}
+      />
+    </Wrapper>
   );
 }
 

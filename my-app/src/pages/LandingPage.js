@@ -8,7 +8,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import Login from './Login';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 
 const db = firebaseDB();
@@ -18,12 +18,11 @@ const MainImage = styled.img`
   width: 100%;
 `;
 
-function LandingPage() {
+function LandingPage(props) {
   const [mainImage, setMainImage] = useState(null);
   const [hasSignedIn, setHasSignedIn] = useState(false);
   // const [isNewUser, setIsNewUser] = useState(false);
   const [canRedirect, setCanRedirect] = useState(false);
-  const [userId, setUserId] = useState('');
 
   useEffect(async () => {
     const querySnapshot = await getDocs(collection(db, 'main-components'));
@@ -33,20 +32,14 @@ function LandingPage() {
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setCanRedirect(true);
-      console.log('accessToken is  ', localStorage.getItem('accessToken'));
+    if (props.user) {
+      console.log(props.user);
     }
-  }, []);
-
-  // useEffect(async () => {
-  //   if (isNewUser && userId) {
-  //     await setDoc(doc(db, 'userId', userId), {
-  //       id: userId,
-  //     });
-  //     await setDoc(collection(db, 'userId', userId, 'time_blocks'));
-  //   }
-  // }, [isNewUser]);
+    // if (localStorage.getItem('accessToken')) {
+    //   setCanRedirect(true);
+    //   console.log('accessToken is  ', localStorage.getItem('accessToken'));
+    // }
+  }, [props.user]);
 
   return (
     <>
@@ -55,9 +48,9 @@ function LandingPage() {
         setHasSignedIn={setHasSignedIn}
         hasSignedIn={hasSignedIn}
         // setIsNewUser={setIsNewUser}
-        setUserId={setUserId}
+        setUser={props.setUser}
       />
-      {canRedirect && <Navigate to="/dashboard"></Navigate>}
+      {/* {canRedirect && <Navigate to="/discover"></Navigate>} */}
     </>
   );
 }

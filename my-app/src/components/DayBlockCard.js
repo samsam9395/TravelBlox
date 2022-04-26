@@ -65,11 +65,18 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
     where('start', '<=', addOneDay(currentDayDate)),
     orderBy('start', 'asc')
   );
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    eventByDayList.push(doc.data());
-  });
 
+  try {
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      eventByDayList.push(doc.data());
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  console.log(888, eventByDayList);
   return eventByDayList;
 }
 
@@ -85,14 +92,16 @@ function DayBlockCard(props) {
 
   const blocksListRef = collection(
     db,
-    props.collectionID,
+    'plans',
     props.planDocRef,
     'time_blocks'
   );
 
   useEffect(() => {
+    console.log('crrentDay', props.currentDayDate);
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
+        console.log('inside dayblock', eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         return eventList;
@@ -100,10 +109,12 @@ function DayBlockCard(props) {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [props.currentDayDate]);
 
   useEffect(() => {
+    console.log(dayEvents);
     dayEvents.forEach((block) => {
+      console.log(block);
       setDayTimeBlocks((prev) => [
         ...prev,
         {
@@ -159,9 +170,7 @@ function DayBlockCard(props) {
             )}
             )
           </DayScheduleContainer>
-          {/* <Wrapper apiKey={googleAPIKey} > */}
           <DayMapCard dayEvents={dayEvents} />
-          {/* </Wrapper> */}
         </TimeMapContainer>
       </SingleDayWrapper>
     </>

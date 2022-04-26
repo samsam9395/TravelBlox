@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -6,7 +7,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { doc, getDoc, addDoc, setDoc, collection } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
@@ -117,7 +118,16 @@ async function signUP(email, password, setIsNewUser) {
         setDoc(doc(db, 'userId', emailId), {
           id: emailId,
         });
-        // setDoc(collection(db, 'userId', emailId, 'time_blocks'));
+        return emailId;
+      })
+      .then((emailId) => {
+        setDoc(doc(db, 'userId', emailId, 'fav_folders', 'default'), {
+          folder_name: 'default',
+        });
+        // // const q = query(favRef, where('fav_collection_id' === collectionID));
+
+        // // setDoc(collection(db, 'userId', emailId, 'time_blocks'));
+        //   })
       })
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {
@@ -136,6 +146,7 @@ function Login(props) {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const setIsNewUser = props.setIsNewUser;
+  const navigate = useNavigate();
 
   function logOn(email, password) {
     const auth = getAuth();
@@ -158,18 +169,16 @@ function Login(props) {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // console.log(user.accessToken);
-        const uid = user.email;
         console.log(user);
-        props.setUserId(uid);
-        // alert(`Welcome! ${uid}`);
+        // props.setUserId(uid);
+        alert(`Welcome! ${user.email}`);
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
-        props.setHasSignedIn(true);
+        navigate('/discover');
       } else {
         console.log('not logged in');
       }
     });
-    console.log(props.hasSignedIn);
   }, []);
 
   return (

@@ -4,20 +4,21 @@ import {
   InputLabel,
   TextField,
   Button,
-  FormControl,
-  MenuItem,
-  Select,
   IconButton,
   CardMedia,
   Card,
   Box,
 } from '@mui/material';
-import { Close, PhotoCamera } from '@mui/icons-material';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Close from '@mui/icons-material/Close';
+import AddLocationIcon from '@mui/icons-material/AddLocation';
 import firebaseDB from '../utils/firebaseConfig';
-import { Timestamp } from 'firebase/firestore';
 import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
-import DateTimeSelector from '../components/DateTimeSelector';
+import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
+import LocationCard from '../components/LocationCard';
+
+const db = firebaseDB();
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -31,7 +32,7 @@ const BlackWrapper = styled.div`
 
 const PopBox = styled.div`
   position: relative;
-  width: 40vw;
+  width: 80vw;
   height: 70%;
   margin: 0 auto;
   background-color: white;
@@ -53,13 +54,17 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const db = firebaseDB();
-
 const FormsContainer = styled.div`
   flex-direction: column;
   display: flex;
   margin: 20px 0 40px 0;
   overflow: auto;
+`;
+
+const ImageUploader = styled.div`
+  min-height: 50px;
+  padding-bottom: 30px;
+  margin-bottom: 10px;
 `;
 
 const Input = styled('input')({
@@ -82,42 +87,76 @@ function handleImageUpload(e, setTimeBlockImage) {
   };
 }
 
+// planDocRef={planDocRef}
 function AddNewTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
-  //   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(props.startDateValue);
   const [endTimeValue, setEndTimeValue] = useState(props.startDateValue);
-  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  // const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [location, setLocation] = useState('');
   const [timeBlockImage, setTimeBlockImage] = useState('');
 
+  console.log(props.planDocRef);
+
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
+
   async function addToDataBase(
+    planDocRef,
     blockTitle,
     description,
     startTimeValue,
     endTimeValue,
     location,
-    collectionID,
-    planDocRef
+    timeBlockImage
   ) {
+    console.log('db', 'plans', planDocRef, 'time_blocks');
+    console.log(location);
+
     const timeBlockRef = doc(
-      collection(db, collectionID, planDocRef, 'time_blocks')
+      collection(db, 'plans', planDocRef, 'time_blocks')
     );
+    console.log(location);
+    console.log(location.photos);
 
-    await setDoc(timeBlockRef, {
-      title: blockTitle,
-      text: description,
-      start: startTimeValue,
-      end: endTimeValue,
-      // location: location,
-      place_id: location.place_id,
-      place_name: location.name,
-      place_format_address: location.formatted_address,
-      id: timeBlockRef.id,
-    });
+    if (location) {
+      console.log(location.photos[0].getUrl());
+    }
+    const location_img = location.photos[0].getUrl();
 
-    props.setAddedTimeBlock(true);
+    try {
+      await setDoc(timeBlockRef, {
+        title: blockTitle,
+        text: description,
+        start: startTimeValue,
+        end: endTimeValue,
+        // location: location,
+        place_id: location.place_id,
+        place_name: location.name,
+        place_format_address: location.formatted_address,
+        id: timeBlockRef.id,
+        timeblock_img: timeBlockImage,
+        place_img: location_img || '',
+        place_formatted_phone_number: location.formatted_phone_number || '',
+        place_international_phone_number:
+          location.international_phone_number || '',
+        place_url: location.url,
+        place_rating: location.rating || '',
+        place_types: location.types || '',
+        status: 'origin',
+      });
+
+      props.setShowPopUp(false);
+      alert('Successfully added!');
+    } catch (error) {
+      console.log(error);
+    }
+
+    {
+      props.setAddedTimeBlock && props.setAddedTimeBlock(true);
+    }
   }
 
   return (
@@ -140,7 +179,7 @@ function AddNewTimeBlock(props) {
               size="small"
               label="Title"
               variant="outlined"
-              value={initialTimeBlockData.title}
+              // value={initialTimeBlockData.title}
               onChange={(e) => {
                 setBlockTitle(e.target.value);
               }}
@@ -152,6 +191,7 @@ function AddNewTimeBlock(props) {
               endTimeValue={endTimeValue}
             />
             <AutoCompleteInput setLocation={setLocation} />
+            <LocationCard location={location} />
             <TextField
               required
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
@@ -166,43 +206,47 @@ function AddNewTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
-            <Card sx={{ width: 400 }}>
-              <CardMedia component="img" image={timeBlockImage} height="200" />
-              <label htmlFor="icon-button-file">
-                <Input
-                  accept="image/*"
-                  id="icon-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    handleImageUpload(e, setTimeBlockImage);
-                  }}
+            <ImageUploader>
+              <Card sx={{ width: 400 }}>
+                <CardMedia
+                  component="img"
+                  image={timeBlockImage}
+                  height="200"
                 />
-                <Box textAlign="center">
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="div">
-                    <PhotoCamera />
-                  </IconButton>
-                </Box>
-              </label>
-            </Card>
+                <label htmlFor="icon-button-file">
+                  <Input
+                    accept="image/*"
+                    id="icon-button-file"
+                    type="file"
+                    onChange={(e) => {
+                      handleImageUpload(e, setTimeBlockImage);
+                    }}
+                  />
+                  <Box textAlign="center">
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="div">
+                      <PhotoCamera />
+                    </IconButton>
+                  </Box>
+                </label>
+              </Card>
+            </ImageUploader>
           </FormsContainer>
           <Button
             variant="contained"
             onClick={(e) => {
               if (blockTitle && location && startTimeValue && endTimeValue) {
                 addToDataBase(
+                  props.planDocRef,
                   blockTitle,
                   description,
                   startTimeValue,
                   endTimeValue,
                   location,
-                  props.collectionID,
-                  props.planDocRef
+                  timeBlockImage
                 );
-                props.setShowPopUp(false);
-                alert('Successfully added!');
               } else {
                 alert('Please fill in all the requirements!');
               }
