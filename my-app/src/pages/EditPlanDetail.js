@@ -422,12 +422,14 @@ function EditPlanDetail(props) {
               id: change.doc.data().id,
               status: change.doc.data().status || '',
               place_format_address: change.doc.data().place_format_address,
-              place_name: change.doc.data().place_id,
+              place_name: change.doc.data().place_name,
+              place_id: change.doc.data().place_id,
               place_img: change.doc.data().place_img || '',
               place_url: change.doc.data().place_url,
               place_types: change.doc.data().place_types || '',
               place_formatted_phone_number:
                 change.doc.data().place_formatted_phone_number || '',
+              rating: change.doc.data().rating || '',
             },
           ]);
         }
@@ -443,12 +445,14 @@ function EditPlanDetail(props) {
               id: change.doc.data().id,
               status: change.doc.data().status || '',
               place_format_address: change.doc.data().place_format_address,
-              place_name: change.doc.data().place_id,
+              place_name: change.doc.data().place_name,
+              place_id: change.doc.data().place_id,
               place_img: change.doc.data().place_img || '',
               place_url: change.doc.data().place_url,
               place_types: change.doc.data().place_types || '',
               place_formatted_phone_number:
                 change.doc.data().place_formatted_phone_number || '',
+              rating: change.doc.data().rating || '',
             },
           ]);
         }

@@ -148,7 +148,7 @@ function EditTimeBlock(props) {
           text: description,
           start: startTimeValue,
           end: endTimeValue,
-          place_id: placeId || location.place_id,
+          place_id: location.place_id || placeId,
           place_name: location.name,
           place_format_address: location.formatted_address,
           timeblock_img: timeBlockImage || '',
@@ -157,7 +157,7 @@ function EditTimeBlock(props) {
           place_international_phone_number:
             location.international_phone_number || '',
           place_url: location.url,
-          place_rating: location.rating || '',
+          rating: location.rating || '',
           place_types: location.types || '',
           status: 'origin',
           id: props.currentSelectTimeId,
@@ -196,9 +196,13 @@ function EditTimeBlock(props) {
     blockTitle,
     setShowEditPopUp
   ) {
-    await deleteDoc(timeBlockRef);
-    alert(blockTitle, props.currentSelectTimeId, 'is deleted!');
-    setShowEditPopUp(false);
+    try {
+      await deleteDoc(timeBlockRef);
+      alert(blockTitle, props.currentSelectTimeId, 'is deleted!');
+      setShowEditPopUp(false);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // console.log(props.importData);
@@ -210,13 +214,8 @@ function EditTimeBlock(props) {
       // setImportPlaceData(data);
     } else if (props.currentSelectTimeData.status === 'origin') {
       console.log('origin');
-      console.log(
-        'db',
-        props.collectionID,
-        props.planDocRef,
-        'time_blocks',
-        props.currentSelectTimeData.id
-      );
+      console.log(props.currentSelectTimeData.id);
+
       retreiveFromDataBase(timeBlockRef, setInitBlockData);
     } else console.log('something wrong with edit-time-block');
 
@@ -240,9 +239,8 @@ function EditTimeBlock(props) {
       url: data.place_url,
       types: data.types || '',
       mainImg: data.place_img || '',
-      rating: data.place_rating || '',
+      rating: data.rating || '',
       place_id: data.place_id,
-      // from: 'editMode',
     });
   }, [importBlockData]);
 
@@ -254,8 +252,6 @@ function EditTimeBlock(props) {
       setBlockTitle(data.title);
       setLocationName(data.place_name);
       setPlaceId(data.place_id);
-      // setStartTimeValue(new Date(data.start.seconds * 1000));
-      // setEndTimeValue(new Date(data.end.seconds * 1000));
       setLocation({
         name: data.place_name,
         formatted_address: data.place_format_address,
@@ -264,9 +260,8 @@ function EditTimeBlock(props) {
         url: data.place_url,
         types: data.types || '',
         mainImg: data.place_img || '',
-        rating: data.place_rating || '',
+        rating: data.rating || '',
         place_id: data.place_id,
-        // from: 'editMode',
       });
       setDescription(data.text);
       setTimeBlockImage(data.timeblock_img);
