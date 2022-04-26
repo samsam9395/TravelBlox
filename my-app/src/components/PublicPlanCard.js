@@ -52,7 +52,7 @@ function PublicPlanCard(props) {
     navigate('/static-plan-detail', {
       state: {
         fromPage: 'allPlans',
-        collectionID: props.planInfo.collection_id,
+        // collectionID: props.planInfo.collection_id,
         planDocRef: props.planInfo.plan_doc_ref,
       },
     });
@@ -69,7 +69,7 @@ function PublicPlanCard(props) {
       <SinglePlanText>{props.planInfo.title}</SinglePlanText>
       <ImageContainer>
         <MainImage
-          src={props.planInfo.mainImage || props.defaultImg}
+          src={props.planInfo.main_image || props.defaultImg}
           alt="main image"></MainImage>
       </ImageContainer>
       <Stack direction="column" spacing={2}>

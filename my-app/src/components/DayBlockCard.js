@@ -92,7 +92,7 @@ function DayBlockCard(props) {
 
   const blocksListRef = collection(
     db,
-    props.collectionID,
+    'plans',
     props.planDocRef,
     'time_blocks'
   );
@@ -170,9 +170,7 @@ function DayBlockCard(props) {
             )}
             )
           </DayScheduleContainer>
-          {/* <Wrapper apiKey={googleAPIKey} > */}
           <DayMapCard dayEvents={dayEvents} />
-          {/* </Wrapper> */}
         </TimeMapContainer>
       </SingleDayWrapper>
     </>

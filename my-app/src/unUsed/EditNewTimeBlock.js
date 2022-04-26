@@ -65,10 +65,9 @@ async function UpdateToDataBase(
   locationId,
   locationName,
   id,
-  collectionID,
   planDocRef
 ) {
-  const timeBlockRef = doc(db, collectionID, planDocRef, 'time_blocks', id);
+  const timeBlockRef = doc(db, 'plans', planDocRef, 'time_blocks', id);
 
   if (location) {
     await setDoc(
@@ -109,10 +108,9 @@ async function retreiveFromDataBase(
   id,
   setDataReady,
   setInitialTimeBlockData,
-  collectionID,
   planDocRef
 ) {
-  const timeBlockRef = doc(db, collectionID, planDocRef, 'time_blocks', id);
+  const timeBlockRef = doc(db, 'plans', planDocRef, 'time_blocks', id);
   const timeBlockSnap = await getDoc(timeBlockRef);
 
   if (timeBlockSnap.exists()) {
@@ -158,7 +156,7 @@ function EditNewTimeBlock(props) {
 
   const timeBlockRef = doc(
     db,
-    props.collectionID,
+    'plans',
     props.planDocRef,
     'time_blocks',
     props.currentSelectTimeId
@@ -169,7 +167,6 @@ function EditNewTimeBlock(props) {
       props.currentSelectTimeId,
       setDataReady,
       setInitialTimeBlockData,
-      props.collectionID,
       props.planDocRef
     );
   }, []);
@@ -261,7 +258,6 @@ function EditNewTimeBlock(props) {
                     locationId,
                     locationName,
                     props.currentSelectTimeId,
-                    props.collectionID,
                     props.planDocRef
                   );
                   props.setShowEditPopUp(false);

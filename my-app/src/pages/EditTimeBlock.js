@@ -99,7 +99,7 @@ function handleImageUpload(e, setTimeBlockImage) {
 // setShowEditPopUp={setShowEditPopUp}
 // currentSelectTimeData={currentSelectTimeData}
 // currentSelectTimeId={currentSelectTimeId}
-// collectionID={collectionID}
+// collectionID={collectionID} <<< get rid of this
 // planDocRef={planDocRef}
 function EditTimeBlock(props) {
   const [initBlockData, setInitBlockData] = useState({});
@@ -123,7 +123,7 @@ function EditTimeBlock(props) {
   // might need to be assigned outside???
   const timeBlockRef = doc(
     db,
-    props.collectionID,
+    'plans',
     props.planDocRef,
     'time_blocks',
     props.currentSelectTimeData.id

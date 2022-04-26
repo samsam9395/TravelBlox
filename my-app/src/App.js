@@ -44,7 +44,7 @@ function App() {
       console.log('User has not signed in to app yet!');
       navigate('/landing');
     }
-  }, []);
+  }, [localStorage.getItem('accessToken')]);
 
   useEffect(async () => {
     if (user) {

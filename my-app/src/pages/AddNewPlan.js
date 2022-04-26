@@ -8,7 +8,6 @@ import {
   Box,
   Card,
   CardMedia,
-  CircularProgress,
   Stack,
 } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
@@ -35,7 +34,7 @@ import {
   ref,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import OnlyDatePicker from '../components/Input/onlyDatePicker';
 import OwnPlanCard from '../components/OwnPlanCard';
 import CountrySelector from '../components/CountrySelector';
@@ -119,7 +118,8 @@ const FavCollectionContainer = styled.div`
   border: 1px solid black;
 `;
 
-async function addPlanToUserInfo(currentUserId, createCollectionId) {
+async function addPlanToUserInfo(currentUserId, createPlanDocId) {
+  console.log('saving this docRef to firebase', createPlanDocId);
   try {
     const userInfoRef = doc(
       collection(db, 'userId', currentUserId, 'own_plans')
@@ -128,7 +128,7 @@ async function addPlanToUserInfo(currentUserId, createCollectionId) {
     await setDoc(
       userInfoRef,
       {
-        collection_id: createCollectionId,
+        collection_id: createPlanDocId,
       },
       { merge: true }
     );
@@ -139,24 +139,24 @@ async function addPlanToUserInfo(currentUserId, createCollectionId) {
 
 async function addPlanToAllPlans(
   currentUserId,
-  createCollectionId,
+  createPlanDocId,
   planTitle,
   mainImage,
   country,
   isPublished
 ) {
   try {
-    const allPlansRef = doc(db, 'allPlans', createCollectionId);
+    const allPlansRef = doc(db, 'allPlans', createPlanDocId);
 
     await setDoc(
       allPlansRef,
       {
         author: currentUserId,
-        collection_id: createCollectionId,
+        // collection_id: createPlanDocId,
         // plan_doc_ref: planDocRef,
-        plan_doc_ref: createCollectionId,
+        plan_doc_ref: createPlanDocId,
         title: planTitle,
-        mainImage: mainImage,
+        main_image: mainImage,
         country: country,
         published: isPublished,
       },
@@ -178,21 +178,19 @@ function AddNewPlan(props) {
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
-  // const [isLoading, setIsLoading] = useState(true);
   const [hasCreatedCollection, setHasCreatedCollection] = useState(false);
   const [firebaseReady, setFirebaseReady] = useState(false);
   const [collectionRef, setCollectionRef] = useState(null);
   const [startDateValue, setStartDateValue] = useState(new Date());
   const [endDateValue, setEndDateValue] = useState(new Date());
   const [planDocRef, setPlanDocRef] = useState('');
-  const [collectionID, setCollectionId] = useState('');
+  // const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
 
   const [showFavContainer, setShowFavContainer] = useState(false);
+  const currentUserId = props.user.email;
   const navigate = useNavigate();
-
-  const favFolderNames = location.state.favFolderNames;
 
   const createNewCollection = async (
     startDateValue,
@@ -201,29 +199,28 @@ function AddNewPlan(props) {
     mainImage
   ) => {
     const currentTimeMilli = new Date().getTime();
-    const author = localStorage.getItem('userEmail');
-    const createCollectionId = `plan${currentTimeMilli}`;
-    setCollectionId(createCollectionId);
-
+    const createPlanDocId = `plan${currentTimeMilli}`;
+    // setCollectionId(createCollectionId);
+    setPlanDocRef(createPlanDocId);
     try {
-      await setDoc(doc(db, createCollectionId, createCollectionId), {
-        author: author,
+      await setDoc(doc(db, 'plans', createPlanDocId), {
+        author: currentUserId,
         start_date: startDateValue,
         end_date: endDateValue,
         title: planTitle,
         main_image: mainImage,
         published: false,
+        planDocRef: planDocRef,
       });
 
       setHasCreatedCollection(true);
-      setPlanDocRef(createCollectionId);
-      setCollectionRef(createCollectionId);
+      setCollectionRef('plans');
 
-      addPlanToUserInfo(props.user.email, createCollectionId);
+      addPlanToUserInfo(props.user.email, createPlanDocId);
 
       addPlanToAllPlans(
         props.user.email,
-        createCollectionId,
+        createPlanDocId,
         planTitle,
         mainImage,
         country,
@@ -240,33 +237,33 @@ function AddNewPlan(props) {
     planTitle,
     country,
     mainImage,
-    collectionID,
+    planDocRef,
     startDateValue,
     endDateValue,
     isPublished
   ) {
     console.log(100, collectionRef);
-    console.log(200, collectionID);
+    console.log(200, planDocRef);
 
     const batch = writeBatch(db);
 
     myEvents.forEach((singleEvent) => {
       const id = singleEvent.id;
-      let updateRef = doc(db, collectionID, collectionID, 'time_blocks', id);
+      let updateRef = doc(db, 'plans', planDocRef, 'time_blocks', id);
       batch.update(updateRef, {
         end: singleEvent.end,
         start: singleEvent.start,
       });
     });
 
-    const upperLevelUpdateRef = doc(db, collectionID, collectionID);
+    const upperLevelUpdateRef = doc(db, 'plans', planDocRef);
     batch.update(upperLevelUpdateRef, {
       title: planTitle,
       country: country,
       main_image: mainImage,
       start_date: startDateValue,
       end_date: endDateValue,
-      origin_author: props.user.email,
+      // origin_author: props.user.email,
       published: isPublished,
     });
 
@@ -306,11 +303,11 @@ function AddNewPlan(props) {
     console.log(5555, favPlansNameList);
   }
 
-  async function importTimeBlock(selectedPlanId, collectionID) {
+  async function importTimeBlock(selectedPlanId, planDocRef) {
     console.log(selectedPlanId);
     const importBlocksListRef = collection(
       db,
-      selectedPlanId,
+      'plans',
       selectedPlanId,
       'time_blocks'
     );
@@ -320,43 +317,13 @@ function AddNewPlan(props) {
     console.log(data);
     if (data) {
       console.log('runs 5555');
-      // console.log(333, data);
-      // console.log(data.map((e) => e));
-      // // console.log(docSnap.map((e) => e.data()));
-      // const importEvents = data.map((e) => ({
-      //   status: 'imported',
-      //   start: new Date(e.start.seconds * 1000),
-      //   end: new Date(e.end.seconds * 1000),
-      //   title: e.title,
-      //   id: e.id,
-      //   blockData: {
-      //     place_id: e.place_id,
-      //     place_format_address: e.place_format_address,
-      //     place_name: e.place_name,
-      //     place_formatted_phone_number:
-      //       location.international_phone_number || '',
-      //     place_url: e.place_url,
-      //     place_types: e.place_types,
-      //     place_img: e.place_img,
-      //   },
-      // }));
+
       const batch = writeBatch(db);
-      // console.log(data);
-      // data.forEach((e) => {
-      //   console.log(4444, e);
-      // });
-      // data.forEach((e) => {
-      //   console.log(e);
+
       const blocksListRef = doc(
-        collection(db, collectionID, collectionID, 'time_blocks')
+        collection(db, 'plans', planDocRef, 'time_blocks')
       );
 
-      // const blocksListRef = collection(
-      //   db,
-      //   collectionID,
-      //   collectionID,
-      //   'time_blocks'
-      // );
       data.forEach(async (e) => {
         try {
           await setDoc(
@@ -387,68 +354,6 @@ function AddNewPlan(props) {
           console.log(error);
         }
       });
-      //   console.log({
-      //     status: 'imported',
-      //     start: new Date(e.start.seconds * 1000),
-      //     end: new Date(e.end.seconds * 1000),
-      //     title: e.title,
-      //     id: e.id,
-      //     blockData: {
-      //       place_id: e.place_id,
-      //       place_format_address: e.place_format_address,
-      //       place_name: e.place_name,
-      //       place_formatted_phone_number:
-      //         location.international_phone_number || '',
-      //       place_url: e.place_url,
-      //       place_types: e.place_types,
-      //       place_img: e.place_img,
-      //     },
-      //   });
-      //   batch.set(
-      //     blocksListRef,
-      //     {
-      //       status: 'imported',
-      //       start: new Date(e.start.seconds * 1000),
-      //       end: new Date(e.end.seconds * 1000),
-      //       title: e.title,
-      //       id: e.id,
-      //       blockData: {
-      //         place_id: e.place_id,
-      //         place_format_address: e.place_format_address,
-      //         place_name: e.place_name,
-      //         place_formatted_phone_number:
-      //           location.international_phone_number || '',
-      //         place_url: e.place_url,
-      //         place_types: e.place_types,
-      //         place_img: e.place_img,
-      //       },
-      //     }
-      //   );
-      // });
-
-      // try {
-      //   await batch.commit();
-      //   alert('Successfully created new plan!');
-      // } catch (error) {
-      //   console.log(error.message);
-      // }
-      // STOP HERE
-      // try {
-      //   const blocksListRef = collection(
-      //     db,
-      //     collectionID,
-      //     collectionID,
-      //     'time_blocks'
-      //   );
-      //   setFirebaseReady(true);
-      //   await setDoc(blocksListRef, data, { merge: true });
-      //   setAddedTimeBlock(true);
-      // } catch (error) {
-      //   console.log(error);
-      // }
-      // return importEvents;
-
-      // });
     }
   }
 
@@ -463,9 +368,7 @@ function AddNewPlan(props) {
         //   collectionID,
         //   'time_blocks'
         // );
-
         setFirebaseReady(true);
-        setCollectionRef(collectionID);
         console.log('setFirebaseReady' + firebaseReady);
       } catch (error) {
         console.log(error);
@@ -473,11 +376,12 @@ function AddNewPlan(props) {
       if (firebaseReady) {
         const blocksListRef = collection(
           db,
-          collectionID,
-          collectionID,
+          'plans',
+          planDocRef,
           'time_blocks'
         );
         console.log('onsnap open');
+
         onSnapshot(blocksListRef, (doc) => {
           doc.docChanges().forEach((change) => {
             if (change.type === 'added') {
@@ -525,7 +429,7 @@ function AddNewPlan(props) {
         <AddNewTimeBlock
           setShowPopUp={setShowPopUp}
           showPopUp={showPopUp}
-          collectionID={collectionID}
+          collectionID={'plans'}
           planDocRef={planDocRef}
           setAddedTimeBlock={setAddedTimeBlock}
           startDateValue={startDateValue}
@@ -537,7 +441,7 @@ function AddNewPlan(props) {
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
-          collectionID={collectionID}
+          collectionID={'plans'}
           planDocRef={planDocRef}
           status={'origin'}
         />
@@ -601,7 +505,7 @@ function AddNewPlan(props) {
             </label>
           </Card>
         </TopContainer>
-        {/* hasCreatedCollection */}
+
         {hasCreatedCollection ? (
           <>
             <CalendarContainer>
@@ -660,20 +564,14 @@ function AddNewPlan(props) {
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
                           value={selectedPlanId}
-                          onChange={
-                            (e) => setSelectedPlanId(e.target.value)
-                            // setSelectedPlan({
-                            //   planId: e.target.value,
-                            //   planRef: e.target.data,
-                            // })
-                          }
+                          onChange={(e) => setSelectedPlanId(e.target.value)}
                           label="Plans">
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
                           {favPlansNameList.map((e, index) => (
                             <MenuItem
-                              value={e.fav_collection_id || ''}
+                              value={e.fav_plan_doc_ref || ''}
                               key={index}>
                               {e.fav_plan_title}
                             </MenuItem>
@@ -683,7 +581,7 @@ function AddNewPlan(props) {
                       <Button
                         variant="outlined"
                         onClick={() =>
-                          importTimeBlock(selectedPlanId, collectionID)
+                          importTimeBlock(selectedPlanId, planDocRef)
                         }>
                         Import
                       </Button>
@@ -707,7 +605,7 @@ function AddNewPlan(props) {
                     planTitle,
                     country,
                     mainImage,
-                    collectionID,
+                    planDocRef,
                     startDateValue,
                     endDateValue,
                     isPublished

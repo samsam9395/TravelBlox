@@ -9,7 +9,6 @@ import {
   Card,
   Box,
 } from '@mui/material';
-// import { Close, PhotoCamera } from '@mui/icons-material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Close from '@mui/icons-material/Close';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
@@ -88,37 +87,43 @@ function handleImageUpload(e, setTimeBlockImage) {
   };
 }
 
+// planDocRef={planDocRef}
 function AddNewTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
-  //   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(props.startDateValue);
   const [endTimeValue, setEndTimeValue] = useState(props.startDateValue);
-  const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
+  // const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [location, setLocation] = useState('');
   const [timeBlockImage, setTimeBlockImage] = useState('');
 
-  console.log(props.collectionID);
+  console.log(props.planDocRef);
 
   useEffect(() => {
     console.log(location);
   }, [location]);
 
   async function addToDataBase(
+    planDocRef,
     blockTitle,
     description,
     startTimeValue,
     endTimeValue,
     location,
-    collectionID,
     timeBlockImage
   ) {
-    console.log('db', collectionID, collectionID, 'time_blocks');
+    console.log('db', 'plans', planDocRef, 'time_blocks');
     console.log(location);
 
     const timeBlockRef = doc(
-      collection(db, collectionID, collectionID, 'time_blocks')
+      collection(db, 'plans', planDocRef, 'time_blocks')
     );
+    console.log(location);
+    console.log(location.photos);
+
+    if (location) {
+      console.log(location.photos[0].getUrl());
+    }
     const location_img = location.photos[0].getUrl();
 
     try {
@@ -174,7 +179,7 @@ function AddNewTimeBlock(props) {
               size="small"
               label="Title"
               variant="outlined"
-              value={initialTimeBlockData.title}
+              // value={initialTimeBlockData.title}
               onChange={(e) => {
                 setBlockTitle(e.target.value);
               }}
@@ -234,12 +239,12 @@ function AddNewTimeBlock(props) {
             onClick={(e) => {
               if (blockTitle && location && startTimeValue && endTimeValue) {
                 addToDataBase(
+                  props.planDocRef,
                   blockTitle,
                   description,
                   startTimeValue,
                   endTimeValue,
                   location,
-                  props.collectionID,
                   timeBlockImage
                 );
               } else {

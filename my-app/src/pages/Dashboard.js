@@ -118,6 +118,8 @@ function Dashboard(props) {
       plansList.forEach((plan) => {
         list.push(plan.data().collection_id);
       });
+
+      console.log(333, list);
       setOwnPlansIdList(list);
     }
   }, []);
@@ -191,18 +193,21 @@ function Dashboard(props) {
         })}
       <PlanCollectionWrapper>
         {ownPlansIdList &&
-          ownPlansIdList.map((ownPlanId) => (
-            <SinglePlanContainer key={ownPlanId}>
-              <OwnPlanCard
-                setHideOtherCards={setHideOtherCards}
-                userIdentity="author"
-                ownPlanId={ownPlanId}
-                key={ownPlanId}
-                setOpenEditPopUp={setOpenEditPopUp}
-                openEditPopUp={openEditPopUp}
-              />
-            </SinglePlanContainer>
-          ))}
+          ownPlansIdList.map((ownPlanId) => {
+            console.log('map is here', ownPlanId);
+            return (
+              <SinglePlanContainer key={ownPlanId}>
+                <OwnPlanCard
+                  setHideOtherCards={setHideOtherCards}
+                  userIdentity="author"
+                  ownPlanId={ownPlanId}
+                  key={ownPlanId}
+                  setOpenEditPopUp={setOpenEditPopUp}
+                  openEditPopUp={openEditPopUp}
+                />
+              </SinglePlanContainer>
+            );
+          })}
       </PlanCollectionWrapper>
 
       <PlanCollectionWrapper>

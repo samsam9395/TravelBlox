@@ -76,7 +76,6 @@ const FavCollectionContainer = styled.div`
 
 async function saveToDataBase(
   planCollectionRef,
-  collectionID,
   planDocRef,
   myEvents,
   planTitle,
@@ -91,7 +90,7 @@ async function saveToDataBase(
 
   myEvents.forEach((singleEvent) => {
     const id = singleEvent.id;
-    let updateRef = doc(db, collectionID, planDocRef, 'time_blocks', id);
+    let updateRef = doc(db, 'plans', planDocRef, 'time_blocks', id);
     batch.update(updateRef, {
       end: singleEvent.end,
       start: singleEvent.start,
@@ -107,7 +106,7 @@ async function saveToDataBase(
     published: isPublished,
   });
 
-  const allPlanRef = doc(db, 'allPlans', collectionID);
+  const allPlanRef = doc(db, 'allPlans', planDocRef);
   batch.update(
     allPlanRef,
     {
@@ -155,24 +154,24 @@ function handleImageUpload(e, setMainImage) {
 
 async function addPlanToAllPlans(
   currentUserId,
-  collectionID,
+  planDocRef,
   planTitle,
   mainImage,
   country,
   isPublished
 ) {
   try {
-    const allPlansRef = doc(db, 'allPlans', collectionID);
+    const allPlansRef = doc(db, 'allPlans', planDocRef);
 
     await setDoc(
       allPlansRef,
       {
         author: currentUserId,
-        collection_id: collectionID,
+        // collection_id: collectionID,
         // plan_doc_ref: planDocRef,
-        plan_doc_ref: collectionID,
+        plan_doc_ref: planDocRef,
         title: planTitle,
-        mainImage: mainImage,
+        main_image: mainImage,
         country: country,
         published: isPublished,
       },
@@ -204,21 +203,21 @@ function EditPlanDetail(props) {
 
   //React Route
   const location = useLocation();
-  const collectionID = location.state.collectionID;
+  // const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
   const currentUserId = props.userId;
 
-  const planCollectionRef = doc(db, collectionID, planDocRef);
-  const blocksListRef = collection(db, collectionID, planDocRef, 'time_blocks');
+  const planCollectionRef = doc(db, 'plans', planDocRef);
+  const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
   const navigate = useNavigate();
   const redirectToStatic = () => {
     navigate('/static-plan-detail', {
       state: {
         fromPage: 'editPlans',
-        collectionID: collectionID,
-        planDocRef: collectionID,
+        // collectionID: collectionID,
+        planDocRef: planDocRef,
       },
     });
   };
@@ -262,7 +261,7 @@ function EditPlanDetail(props) {
     );
 
     const importBlocks = await getDocs(blocksListRef);
-    // console.log(docSnap.docs.map((e) => e.data()));
+
     const data = importBlocks.docs.map((e) => e.data());
     console.log(data);
 
@@ -271,13 +270,11 @@ function EditPlanDetail(props) {
 
     data.forEach(async (timeblock) => {
       console.log(timeblock);
-      const createRef = doc(
-        collection(db, collectionID, collectionID, 'time_blocks')
-      );
+      const createRef = doc(collection(db, 'plans', planDocRef, 'time_blocks'));
       const importActionRef = doc(
         db,
-        collectionID,
-        collectionID,
+        'plans',
+        planDocRef,
         'time_blocks',
         createRef.id
       );
@@ -304,66 +301,14 @@ function EditPlanDetail(props) {
     } catch (error) {
       console.log(error);
     }
-
-    // const timeBlockRef = doc(
-    //   collection(db, collectionID, collectionID, 'time_blocks')
-    // );
-    // data.forEach(async (timeblock) => {
-    //   console.log(timeblock);
-    //   try {
-    //     await setDoc(
-    //       timeBlockRef,
-    //       {
-    //         title: timeblock.title,
-    //         start: timeblock.start,
-    //         end: timeblock.end,
-    //         place_id: timeblock.place_id,
-    //         place_name: timeblock.place_name,
-    //         place_format_address: timeblock.place_format_address,
-    //         id: timeblock.id,
-    //         place_img: timeblock.place_img || '',
-    //         place_formatted_phone_number:
-    //           timeblock.place_formatted_phone_number || '',
-    //         place_url: timeblock.place_url,
-    //         place_types: timeblock.place_types || '',
-    //         status: 'imported',
-    //       },
-    //       { merge: true }
-    //     );
-    //     console.log(collectionID);
-    //     alert('Successfully imported!');
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // });
-    // origin setDoc worked code stops here
-
-    // const importEvents = data.map((e) => ({
-    //   status: 'imported',
-    //   start: new Date(e.start.seconds * 1000),
-    //   end: new Date(e.end.seconds * 1000),
-    //   title: e.title,
-    //   id: e.id,
-    //   blockData: {
-    //     place_id: e.place_id,
-    //     place_format_address: e.place_format_address,
-    //     place_name: e.place_name,
-    //     place_formatted_phone_number: location.international_phone_number || '',
-    //     place_url: e.place_url,
-    //     place_types: e.place_types,
-    //     place_img: e.place_img,
-    //   },
-    // }));
-    // console.log(importEvents);
-    // return importEvents; //for updating local event
   }
 
-  function addToDataBase(collectionID, importResult) {
+  function addToDataBase(planDocRef, importResult) {
     console.log('adding to dataBase', importResult);
-    console.log('db', collectionID, collectionID, 'time_blocks');
+    console.log('db', 'plans', planDocRef, 'time_blocks');
 
     const timeBlockRef = doc(
-      collection(db, collectionID, collectionID, 'time_blocks')
+      collection(db, 'plans', planDocRef, 'time_blocks')
     );
 
     console.log(importResult);
@@ -390,7 +335,7 @@ function EditPlanDetail(props) {
             },
             { merge: true }
           );
-          console.log(collectionID);
+
           alert('Successfully imported!');
         } catch (error) {
           console.log(error);
@@ -411,7 +356,7 @@ function EditPlanDetail(props) {
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
-    console.log(7777, docSnap.data().country);
+
     setCountry(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
 
@@ -484,7 +429,7 @@ function EditPlanDetail(props) {
         <AddNewTimeBlock
           setShowPopUp={setShowPopUp}
           showPopUp={showPopUp}
-          collectionID={collectionID}
+          // collectionID={collectionID}
           planDocRef={planDocRef}
           // setAddedTimeBlock={setAddedTimeBlock}
           startDateValue={startDateValue}
@@ -498,7 +443,7 @@ function EditPlanDetail(props) {
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
-          collectionID={collectionID}
+          // collectionID={collectionID}
           planDocRef={planDocRef}
         />
       ) : null}
@@ -618,7 +563,7 @@ function EditPlanDetail(props) {
                         <em>None</em>
                       </MenuItem>
                       {favPlansNameList.map((e, index) => (
-                        <MenuItem value={e.fav_collection_id || ''} key={index}>
+                        <MenuItem value={e.fav_plan_doc_ref || ''} key={index}>
                           {e.fav_plan_title}
                         </MenuItem>
                       ))}
@@ -642,7 +587,6 @@ function EditPlanDetail(props) {
               try {
                 saveToDataBase(
                   planCollectionRef,
-                  collectionID,
                   planDocRef,
                   myEvents,
                   planTitle,
@@ -665,7 +609,7 @@ function EditPlanDetail(props) {
             onClick={() => {
               addPlanToAllPlans(
                 currentUserId,
-                collectionID,
+                planDocRef,
                 planTitle,
                 mainImage,
                 country,

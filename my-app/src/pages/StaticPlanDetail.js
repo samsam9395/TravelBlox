@@ -68,31 +68,20 @@ function loopThroughDays(startday, days) {
 }
 
 // handleFavAction(collectionID, author)
-async function handleFavAction(
-  collectionID,
-  author,
-  selectFavFolder,
-  planTitle
-) {
+async function handleFavAction(planDocRef, author, selectFavFolder, planTitle) {
   const currentUserEmail = localStorage.getItem('userEmail');
 
   if (currentUserEmail === author) {
     alert('Do not favourite your own plan!');
   } else if (selectFavFolder !== '') {
     console.log(selectFavFolder);
-    const favRef = doc(
-      db,
-      'userId',
-      currentUserEmail,
-      'fav_plans',
-      collectionID
-    );
-    // const q = query(favRef, where('fav_collection_id' === collectionID));
+    const favRef = doc(db, 'userId', currentUserEmail, 'fav_plans', planDocRef);
 
     try {
       await setDoc(favRef, {
-        fav_collection_id: collectionID,
-        fav_plan_doc_ref: favRef.id,
+        // fav_collection_id: planDocRef,
+        // fav_plan_doc_ref: favRef.id,
+        fav_plan_doc_ref: planDocRef,
         infolder: selectFavFolder,
         fav_plan_title: planTitle,
       });
@@ -119,10 +108,10 @@ function StaticPlanDetail(props) {
   // const [selectFavFolder, setSelectFavFolder] = useState('default');
 
   const location = useLocation();
-  const collectionID = location.state.collectionID;
+  // const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
-  const planCollectionRef = doc(db, collectionID, planDocRef);
+  const planCollectionRef = doc(db, 'plans', planDocRef);
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -185,7 +174,7 @@ function StaticPlanDetail(props) {
                 )}
                 onChange={(e) => {
                   handleFavAction(
-                    collectionID,
+                    planDocRef,
                     author,
                     e.target.textContent,
                     planTitle
@@ -215,7 +204,7 @@ function StaticPlanDetail(props) {
             <Wrapper apiKey={ApiKey}>
               <DayBlockCard
                 currentDayDate={day}
-                collectionID={collectionID}
+                // collectionID={collectionID}
                 planDocRef={planDocRef}
                 index={index}
                 key={index}

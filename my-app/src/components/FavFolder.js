@@ -67,8 +67,8 @@ export default function FavFolder(props) {
             favPlansIdList.map((favPlanId) => (
               <OwnPlanCard
                 userIdentity="public"
-                ownPlanId={favPlanId.fav_collection_id}
-                key={favPlanId.fav_collection_id}
+                ownPlanId={favPlanId.fav_plan_doc_ref}
+                key={favPlanId.fav_plan_doc_ref}
               />
             ))}
         </SinglePlanContainer>

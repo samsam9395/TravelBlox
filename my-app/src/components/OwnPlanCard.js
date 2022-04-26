@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { getDocs, getDoc, collection } from 'firebase/firestore';
+import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import EditPlanDetail from '../pages/EditPlanDetail';
 import CountrySelector from '../components/CountrySelector';
@@ -47,43 +47,60 @@ function OwnPlanCard(props) {
 
   const navigate = useNavigate();
 
+  console.log(props.ownPlanId);
+
   const redirectToEdit = () => {
     navigate('/edit-plan-detail', {
       state: {
         from: 'dashboard',
-        collectionID: currentPlanRef.collectionID,
-        planDocRef: currentPlanRef.planDocRef,
+        // collectionID: currentPlanRef.collectionID,
+        planDocRef: planId,
       },
     });
   };
 
   const redirectToStatic = () => {
-    navigate('/static-plan-detail', { state: currentPlanRef });
+    navigate('/static-plan-detail', { state: { currentPlanRef: planId } });
   };
 
   useEffect(async () => {
-    const ref = collection(db, planId);
-    const ownPlanData = await getDocs(ref);
+    // if (planId) {
+    console.log(props.planId);
+    const docSnap = await getDoc(doc(db, 'plans', planId));
 
-    ownPlanData.forEach((doc) => {
-      setCurrentPlanRef({
-        collectionID: planId,
-        planDocRef: doc.id,
-      });
+    console.log(docSnap.data());
+    setDocData(docSnap.data());
+    // }
 
-      setDocData(doc.data());
-      return doc.data();
-    });
+    // console.log('helloooooooooo');
+    // const ownPlanData = await getDoc(doc(db, 'plans', planId));
+    // console.log(ownPlanData);
+    // console.log(111, ownPlanData.data().title);
+    // console.log(ownPlanData.data());
+
+    // console.log(
+    //   ownPlanData.forEach((e) => {
+    //     console.log(e);
+    //     console.log(e.data());
+    //   })
+    // );
+    // console.log(ownPlanData.data());
+    // setDocData(ownPlanData.data());
+
+    // ownPlanData.forEach((doc) => {
+    //   setCurrentPlanRef({
+    //     // collectionID: planId,
+    //     planDocRef: planId,
+    //   });
+
+    //   setDocData(doc.data());
+    //   return doc.data();
+    // });
   }, [planId]);
 
   useEffect(async () => {
     if (doImport) {
-      const ref = collection(
-        db,
-        planId,
-        currentPlanRef.planDocRef,
-        'time_blocks'
-      );
+      const ref = collection(db, 'plans', planId, 'time_blocks');
       const importTimeBlocks = await getDocs(ref);
 
       importTimeBlocks.forEach((doc) => {
