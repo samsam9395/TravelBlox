@@ -217,7 +217,7 @@ function AddNewPlan(props) {
           published: false,
         }
       );
-      console.log('Document written with ID: ', docRef);
+      console.log('Document written with ID: ', docRef.id);
 
       setHasCreatedCollection(true);
       setPlanDocRef(createCollectionId);
@@ -237,6 +237,7 @@ function AddNewPlan(props) {
       console.error('Error adding document: ', e);
     }
   };
+
   async function saveToDataBase(
     currentUserId,
     myEvents,
@@ -562,6 +563,7 @@ function AddNewPlan(props) {
             />
             <CountrySelector
               setCountry={setCountry}
+              country={country}
               // setIsLoading={setIsLoading}
             />
             <OnlyDatePicker

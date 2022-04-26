@@ -248,43 +248,83 @@ function EditPlanDetail(props) {
       'time_blocks'
     );
 
-    const docSnap = await getDocs(blocksListRef);
-
+    const importBlocks = await getDocs(blocksListRef);
     // console.log(docSnap.docs.map((e) => e.data()));
-    const data = docSnap.docs.map((e) => e.data());
+    const data = importBlocks.docs.map((e) => e.data());
     console.log(data);
 
-    const timeBlockRef = doc(
-      collection(db, collectionID, collectionID, 'time_blocks')
-    );
+    // try batch
+    const batch = writeBatch(db);
+
     data.forEach(async (timeblock) => {
       console.log(timeblock);
-      try {
-        await setDoc(
-          timeBlockRef,
-          {
-            title: timeblock.title,
-            start: timeblock.start,
-            end: timeblock.end,
-            place_id: timeblock.place_id,
-            place_name: timeblock.place_name,
-            place_format_address: timeblock.place_format_address,
-            id: timeblock.id,
-            place_img: timeblock.place_img || '',
-            place_formatted_phone_number:
-              timeblock.place_formatted_phone_number || '',
-            place_url: timeblock.place_url,
-            place_types: timeblock.place_types || '',
-            status: 'imported',
-          },
-          { merge: true }
-        );
-        console.log(collectionID);
-        alert('Successfully imported!');
-      } catch (error) {
-        console.log(error);
-      }
+      const createRef = doc(
+        collection(db, collectionID, collectionID, 'time_blocks')
+      );
+      const timeBlockRef = doc(
+        db,
+        collectionID,
+        collectionID,
+        'time_blocks',
+        createRef.id
+      );
+
+      batch.set(timeBlockRef, {
+        title: timeblock.title,
+        start: timeblock.start,
+        end: timeblock.end,
+        place_id: timeblock.place_id,
+        place_name: timeblock.place_name,
+        place_format_address: timeblock.place_format_address,
+        id: timeblock.id,
+        place_img: timeblock.place_img || '',
+        place_formatted_phone_number:
+          timeblock.place_formatted_phone_number || '',
+        place_url: timeblock.place_url,
+        place_types: timeblock.place_types || '',
+        status: 'imported',
+      });
     });
+
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.log(error);
+    }
+
+    // const timeBlockRef = doc(
+    //   collection(db, collectionID, collectionID, 'time_blocks')
+    // );
+    // data.forEach(async (timeblock) => {
+    //   console.log(timeblock);
+    //   try {
+    //     await setDoc(
+    //       timeBlockRef,
+    //       {
+    //         title: timeblock.title,
+    //         start: timeblock.start,
+    //         end: timeblock.end,
+    //         place_id: timeblock.place_id,
+    //         place_name: timeblock.place_name,
+    //         place_format_address: timeblock.place_format_address,
+    //         id: timeblock.id,
+    //         place_img: timeblock.place_img || '',
+    //         place_formatted_phone_number:
+    //           timeblock.place_formatted_phone_number || '',
+    //         place_url: timeblock.place_url,
+    //         place_types: timeblock.place_types || '',
+    //         status: 'imported',
+    //       },
+    //       { merge: true }
+    //     );
+    //     console.log(collectionID);
+    //     alert('Successfully imported!');
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // });
+    // origin setDoc worked code stops here
+
     // const importEvents = data.map((e) => ({
     //   status: 'imported',
     //   start: new Date(e.start.seconds * 1000),
@@ -568,13 +608,14 @@ function EditPlanDetail(props) {
                   <Button
                     variant="outlined"
                     onClick={async () => {
-                      // importTimeBlock(selectedPlanId)
-                      const importResult = await importTimeBlock(
-                        selectedPlanId
-                      );
-                      // console.log(importResult);
-                      addToDataBase(collectionID, importResult);
-                      console.log(myEvents);
+                      importTimeBlock(selectedPlanId);
+                      // const importResult = await importTimeBlock(
+                      //   selectedPlanId
+                      // );
+
+                      // addToDataBase(collectionID, importResult);
+                      // console.log(myEvents);
+
                       // let list = [];
                       // importResult.forEach((e) => {
                       //   list = myEvents.push(e);

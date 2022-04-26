@@ -38,7 +38,7 @@ export default function CountrySelector(props) {
     <Autocomplete
       id="country-select"
       sx={{ m: 1, width: 300 }}
-      value={initValue || {}}
+      value={initValue}
       options={countryList}
       autoHighlight
       isOptionEqualToValue={(option, value) => option.id === value.id}
