@@ -103,16 +103,17 @@ function handleImageUpload(e, setTimeBlockImage) {
 // planDocRef={planDocRef}
 function EditTimeBlock(props) {
   const [initBlockData, setInitBlockData] = useState({});
+  const [importBlockData, setImportBlockData] = useState({});
   const [blockTitle, setBlockTitle] = useState('');
   const [locationName, setLocationName] = useState('');
   const [location, setLocation] = useState('');
   const [placeId, setPlaceId] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(
-    props.currentSelectTimeData.start || null
+    props.currentSelectTimeData.start || ''
   );
   const [endTimeValue, setEndTimeValue] = useState(
-    props.currentSelectTimeData.end || null
+    props.currentSelectTimeData.end || ''
   );
   const [timeBlockImage, setTimeBlockImage] = useState('');
   // const [isImported, setIsImported] = useState(false);
@@ -138,17 +139,7 @@ function EditTimeBlock(props) {
     timeBlockImage
   ) {
     // const location_img = location.photos[0].getUrl();
-    console.log('start', startTimeValue);
-    console.log(
-      777,
-      'timeBlockRef',
-      blockTitle,
-      description,
-      startTimeValue,
-      endTimeValue,
-      location,
-      timeBlockImage
-    );
+    console.log(location.name);
     try {
       await setDoc(
         timeBlockRef,
@@ -160,14 +151,16 @@ function EditTimeBlock(props) {
           place_id: placeId || location.place_id,
           place_name: location.name,
           place_format_address: location.formatted_address,
-          timeblock_img: timeBlockImage,
+          timeblock_img: timeBlockImage || '',
           place_img: location.mainImg || location.photos[0].getUrl() || '',
           place_formatted_phone_number: location.formatted_phone_number || '',
           place_international_phone_number:
             location.international_phone_number || '',
           place_url: location.url,
-          place_rating: location.rating,
-          place_types: location.types,
+          place_rating: location.rating || '',
+          place_types: location.types || '',
+          status: 'origin',
+          id: props.currentSelectTimeId,
         },
         {
           merge: true,
@@ -182,7 +175,7 @@ function EditTimeBlock(props) {
 
   async function retreiveFromDataBase(timeBlockRef, setInitBlockData) {
     const timeBlockSnap = await getDoc(timeBlockRef);
-    console.log(55, 'retreving');
+
     if (timeBlockSnap.exists()) {
       console.log('retreived');
       const initialData = timeBlockSnap.data();
@@ -204,7 +197,7 @@ function EditTimeBlock(props) {
     setShowEditPopUp
   ) {
     await deleteDoc(timeBlockRef);
-    alert(blockTitle + 'is deleted!');
+    alert(blockTitle, props.currentSelectTimeId, 'is deleted!');
     setShowEditPopUp(false);
   }
 
@@ -212,28 +205,9 @@ function EditTimeBlock(props) {
 
   useEffect(() => {
     if (props.currentSelectTimeData.status === 'imported') {
-      const data = props.currentSelectTimeData;
+      setImportBlockData(props.currentSelectTimeData);
       console.log(111, 'imported yes');
-
       // setImportPlaceData(data);
-      setBlockTitle(data.title);
-      setLocationName(data.place_name);
-      setPlaceId(data.place_id);
-
-      setStartTimeValue(data.start);
-      setEndTimeValue(data.end);
-      setLocation({
-        name: data.place_name,
-        formatted_address: data.place_format_address,
-        formatted_phone_number: data.place_formatted_phone_number || '',
-        international_phone_number: data.place_international_phone_number || '',
-        url: data.place_url,
-        types: data.types || '',
-        mainImg: data.place_img || '',
-        rating: data.place_rating || '',
-        place_id: data.place_id,
-        // from: 'editMode',
-      });
     } else if (props.currentSelectTimeData.status === 'origin') {
       console.log('origin');
       console.log(
@@ -245,7 +219,32 @@ function EditTimeBlock(props) {
       );
       retreiveFromDataBase(timeBlockRef, setInitBlockData);
     } else console.log('something wrong with edit-time-block');
-  }, [props.currentSelectTimeData.status]);
+
+    console.log(344, blockTitle);
+  }, [props.currentSelectTimeData]);
+
+  useEffect(() => {
+    const data = importBlockData;
+    console.log('formatted_address', data.place_format_address);
+
+    setBlockTitle(data.title);
+    setLocationName(data.place_name);
+    // setPlaceId(data.place_id);
+    setStartTimeValue(data.start);
+    setEndTimeValue(data.end);
+    setLocation({
+      name: data.place_name,
+      formatted_address: data.place_format_address,
+      formatted_phone_number: data.place_formatted_phone_number || '',
+      international_phone_number: data.place_international_phone_number || '',
+      url: data.place_url,
+      types: data.types || '',
+      mainImg: data.place_img || '',
+      rating: data.place_rating || '',
+      place_id: data.place_id,
+      // from: 'editMode',
+    });
+  }, [importBlockData]);
 
   useEffect(() => {
     const data = initBlockData;
@@ -271,8 +270,16 @@ function EditTimeBlock(props) {
       });
       setDescription(data.text);
       setTimeBlockImage(data.timeblock_img);
+      if (data.start) {
+        setStartTimeValue(new Date(data.start.seconds * 1000));
+        console.log(data.start.seconds);
+      }
+      if (data.end) {
+        setEndTimeValue(new Date(data.end.seconds * 1000));
+      }
     }
   }, [initBlockData]);
+  console.log('8888 current timeblock ref is ', timeBlockRef);
 
   return (
     <>
@@ -326,6 +333,7 @@ function EditTimeBlock(props) {
             <TextField
               sx={{ m: 1, minWidth: 8, minHeight: 120 }}
               multiline
+              required
               size="small"
               label="Description"
               variant="outlined"
@@ -368,7 +376,13 @@ function EditTimeBlock(props) {
           <Button
             variant="contained"
             onClick={(e) => {
-              if (location && blockTitle && startTimeValue && endTimeValue) {
+              if (
+                location &&
+                blockTitle &&
+                description &&
+                startTimeValue &&
+                endTimeValue
+              ) {
                 try {
                   UpdateToDataBase(
                     timeBlockRef,
