@@ -274,7 +274,7 @@ function EditTimeBlock(props) {
       }
     }
   }, [initBlockData]);
-  console.log('8888 current timeblock ref is ', timeBlockRef);
+  // console.log('8888 current timeblock ref is ', timeBlockRef);
 
   return (
     <>
@@ -379,6 +379,18 @@ function EditTimeBlock(props) {
                 endTimeValue
               ) {
                 try {
+                  console.log(
+                    'clicked submit 777',
+                    timeBlockRef.path,
+                    blockTitle,
+                    description,
+                    startTimeValue,
+                    endTimeValue,
+                    location,
+                    timeBlockImage
+                  );
+                  console.log(888, props.currentSelectTimeId);
+                  console.log(999, timeBlockRef);
                   UpdateToDataBase(
                     timeBlockRef,
                     blockTitle,

@@ -68,11 +68,10 @@ export default function LocationCard(props) {
 
   useEffect(() => {
     if (props.location) {
-      console.log(props.location);
       setLocation(props.location);
-    } else if (props.importPlaceData) {
-      console.log('has importPlaceData', 10000);
-      setLocation(props.importPlaceData);
+      // } else if (props.importPlaceData) {
+      //   console.log('has importPlaceData', 10000);
+      //   setLocation(props.importPlaceData);
     }
   }, [props]);
 

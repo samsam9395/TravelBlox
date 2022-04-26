@@ -42,7 +42,6 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       console.log(event);
       console.log(event.id);
       props.setCurrentSelectTimeId(event.id);
-      // props.setImportData(event);
       props.setCurrentSelectTimeData(event);
       props.setShowEditPopUp(true);
     } else {

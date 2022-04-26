@@ -261,7 +261,7 @@ function EditPlanDetail(props) {
       const createRef = doc(
         collection(db, collectionID, collectionID, 'time_blocks')
       );
-      const timeBlockRef = doc(
+      const importActionRef = doc(
         db,
         collectionID,
         collectionID,
@@ -269,14 +269,14 @@ function EditPlanDetail(props) {
         createRef.id
       );
 
-      batch.set(timeBlockRef, {
+      batch.set(importActionRef, {
         title: timeblock.title,
         start: timeblock.start,
         end: timeblock.end,
         place_id: timeblock.place_id,
         place_name: timeblock.place_name,
         place_format_address: timeblock.place_format_address,
-        id: timeblock.id,
+        id: createRef.id,
         place_img: timeblock.place_img || '',
         place_formatted_phone_number:
           timeblock.place_formatted_phone_number || '',
@@ -613,19 +613,6 @@ function EditPlanDetail(props) {
                     variant="outlined"
                     onClick={async () => {
                       importTimeBlock(selectedPlanId);
-                      // const importResult = await importTimeBlock(
-                      //   selectedPlanId
-                      // );
-
-                      // addToDataBase(collectionID, importResult);
-                      // console.log(myEvents);
-
-                      // let list = [];
-                      // importResult.forEach((e) => {
-                      //   list = myEvents.push(e);
-                      // });
-                      // setMyEvents(myEvents);
-                      // console.log(myEvents);
                     }}>
                     Import
                   </Button>
