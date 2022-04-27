@@ -34,9 +34,25 @@ function ExportGCalendarBtn() {
             resource: calendar,
           });
 
-          request.execute((calendar) => {
+          request.execute(function (calendar) {
             console.log(calendar);
           });
+
+          function foo(calendar) {
+            request.execute(function (calendar) {
+              return console.log(calendar);
+            });
+          }
+
+          console.log(foo(calendar));
+
+          //   createCalendar().then(
+          //     function (v) {
+          //       console.log(v);
+          //     }.catch(function (v) {
+          //       console.log(v);
+          //     })
+          //   );
 
           //   const newCalendar = createCalendar();
           //   console.log(newCalendar);
