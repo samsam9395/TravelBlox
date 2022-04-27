@@ -223,7 +223,7 @@ function EditPlanDetail(props) {
   };
 
   /*=============================================
-=            import on edit plan            =
+=            import section on edit plan            =
 =============================================*/
   const [favPlansNameList, setFavPlansNameList] = useState(null);
   const [showFavPlans, setShowFavPlans] = useState(false);
@@ -255,66 +255,49 @@ function EditPlanDetail(props) {
     console.log(selectedPlanId);
     const blocksListRef = collection(
       db,
-      selectedPlanId,
+      'plans',
       selectedPlanId,
       'time_blocks'
     );
 
-    const importBlocks = await getDocs(blocksListRef);
+    const docSnap = await getDocs(blocksListRef);
 
-    const data = importBlocks.docs.map((e) => e.data());
+    // console.log(docSnap.docs.map((e) => e.data()));
+    const data = docSnap.docs.map((e) => e.data());
     console.log(data);
+    const importEvents = data.map((e) => ({
+      status: 'imported',
+      start: new Date(e.start.seconds * 1000),
+      end: new Date(e.end.seconds * 1000),
+      title: e.title,
+      id: e.id,
+      place_id: e.place_id,
+      place_format_address: e.place_format_address,
+      place_name: e.place_name,
+      place_formatted_phone_number: location.international_phone_number || '',
+      place_url: e.place_url,
+      place_types: e.place_types,
+      place_img: e.place_img,
+      // blockData: {
 
-    // try batch
-    const batch = writeBatch(db);
-
-    data.forEach(async (timeblock) => {
-      console.log(timeblock);
-      const createRef = doc(collection(db, 'plans', planDocRef, 'time_blocks'));
-      const importActionRef = doc(
-        db,
-        'plans',
-        planDocRef,
-        'time_blocks',
-        createRef.id
-      );
-
-      batch.set(importActionRef, {
-        title: timeblock.title,
-        start: timeblock.start,
-        end: timeblock.end,
-        place_id: timeblock.place_id,
-        place_name: timeblock.place_name,
-        place_format_address: timeblock.place_format_address,
-        id: createRef.id,
-        place_img: timeblock.place_img || '',
-        place_formatted_phone_number:
-          timeblock.place_formatted_phone_number || '',
-        place_url: timeblock.place_url,
-        place_types: timeblock.place_types || '',
-        status: 'imported',
-      });
-    });
-
-    try {
-      await batch.commit();
-    } catch (error) {
-      console.log(error);
-    }
+      // },
+    }));
+    console.log(importEvents);
+    return importEvents; //for updating local event
   }
 
   function addToDataBase(planDocRef, importResult) {
     console.log('adding to dataBase', importResult);
     console.log('db', 'plans', planDocRef, 'time_blocks');
 
-    const timeBlockRef = doc(
-      collection(db, 'plans', planDocRef, 'time_blocks')
-    );
-
-    console.log(importResult);
+    console.log(11, importResult);
     if (importResult) {
-      importResult.map(async (timeblock) => {
-        console.log(timeblock);
+      importResult.forEach(async (timeblock) => {
+        const timeBlockRef = doc(
+          collection(db, 'plans', planDocRef, 'time_blocks')
+        );
+
+        console.log(22, timeblock);
         try {
           await setDoc(
             timeBlockRef,
@@ -336,7 +319,7 @@ function EditPlanDetail(props) {
             { merge: true }
           );
 
-          alert('Successfully imported!');
+          console.log('Successfully imported!, for: ', timeblock.title);
         } catch (error) {
           console.log(error);
         }
@@ -572,7 +555,21 @@ function EditPlanDetail(props) {
                   <Button
                     variant="outlined"
                     onClick={async () => {
-                      importTimeBlock(selectedPlanId);
+                      // importTimeBlock(selectedPlanId, planDocRef);
+                      const importResult = await importTimeBlock(
+                        selectedPlanId
+                      );
+                      console.log(importResult);
+                      addToDataBase(planDocRef, importResult);
+
+                      // let list = [];
+
+                      // importResult.forEach((e) => {
+                      //   list = myEvents.push(e);
+                      // });
+
+                      // setMyEvents(myEvents);
+                      console.log(myEvents);
                     }}>
                     Import
                   </Button>
