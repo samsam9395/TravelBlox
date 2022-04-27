@@ -286,44 +286,55 @@ function EditPlanDetail(props) {
     return importEvents; //for updating local event
   }
 
-  function addToDataBase(planDocRef, importResult) {
+  async function addToDataBase(planDocRef, importResult) {
     console.log('adding to dataBase', importResult);
     console.log('db', 'plans', planDocRef, 'time_blocks');
 
     console.log(11, importResult);
     if (importResult) {
+      // try batch
+      const batch = writeBatch(db);
+
       importResult.forEach(async (timeblock) => {
-        const timeBlockRef = doc(
+        console.log(22, timeblock);
+
+        const createRef = doc(
           collection(db, 'plans', planDocRef, 'time_blocks')
         );
+        const importActionRef = doc(
+          db,
+          'plans',
+          planDocRef,
+          'time_blocks',
+          createRef.id
+        );
 
-        console.log(22, timeblock);
-        try {
-          await setDoc(
-            timeBlockRef,
-            {
-              title: timeblock.title,
-              start: timeblock.start,
-              end: timeblock.end,
-              place_id: timeblock.place_id,
-              place_name: timeblock.place_name,
-              place_format_address: timeblock.place_format_address,
-              id: timeblock.id,
-              place_img: timeblock.place_img || '',
-              place_formatted_phone_number:
-                timeblock.place_formatted_phone_number || '',
-              place_url: timeblock.place_url,
-              place_types: timeblock.place_types || '',
-              status: 'imported',
-            },
-            { merge: true }
-          );
-
-          console.log('Successfully imported!, for: ', timeblock.title);
-        } catch (error) {
-          console.log(error);
-        }
+        batch.set(
+          importActionRef,
+          {
+            title: timeblock.title,
+            start: timeblock.start,
+            end: timeblock.end,
+            place_id: timeblock.place_id,
+            place_name: timeblock.place_name,
+            place_format_address: timeblock.place_format_address,
+            id: createRef.id,
+            place_img: timeblock.place_img || '',
+            place_formatted_phone_number:
+              timeblock.place_formatted_phone_number || '',
+            place_url: timeblock.place_url,
+            place_types: timeblock.place_types || '',
+            status: 'imported',
+          },
+          { merge: true }
+        );
       });
+      try {
+        await batch.commit();
+        console.log('Successfully imported!');
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
