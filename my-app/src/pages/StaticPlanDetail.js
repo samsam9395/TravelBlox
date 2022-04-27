@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
-
-import GoogleAPI from '../utils/GoogleAPI';
+import { googleAPI } from '../utils/credent';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -11,7 +10,7 @@ import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 const db = firebaseDB();
-const ApiKey = GoogleAPI();
+const ApiKey = googleAPI();
 
 const UpperContainer = styled.div`
   display: flex;

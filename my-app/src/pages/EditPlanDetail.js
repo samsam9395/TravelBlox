@@ -44,6 +44,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import { async } from '@firebase/util';
+import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
 
 const db = firebaseDB();
 
@@ -688,6 +689,7 @@ function EditPlanDetail(props) {
             }}>
             Publish
           </Button>
+          <ExportGCalendarBtn />
         </Stack>
         <Button
           variant="contained"

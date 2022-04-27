@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
 
-import GoogleAPI from '../utils/GoogleAPI';
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayMapCard from './DailyEventCard/DayMapCard';

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import GoogleAPI from '../utils/GoogleAPI';
+
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import { GoogleMap, LoadScript, useJsApiLoader } from '@react-google-maps/api';
+import { googleAPI } from '../utils/credent';
+const ApiKey = googleAPI();
 
-const ApiKey = GoogleAPI();
 const center = { lat: -33.8666, lng: 151.1958 };
 const zoom = 15;
 

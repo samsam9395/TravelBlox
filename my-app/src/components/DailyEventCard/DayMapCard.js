@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import styled from 'styled-components';
-import GoogleAPI from '../../utils/GoogleAPI';
+import { googleAPI } from '../../utils/credent';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
-const ApiKey = GoogleAPI();
+const ApiKey = googleAPI();
 const center = { lat: -33.8666, lng: 151.1958 };
 const zoom = 15;
 
