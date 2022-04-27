@@ -36,10 +36,14 @@ import {
   collection,
   setDoc,
   writeBatch,
+  deleteDoc,
   // updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { async } from '@firebase/util';
 
 const db = firebaseDB();
 
@@ -136,6 +140,36 @@ function deleteBlockInMylist(prev, id) {
   return prev;
 }
 
+function DeleteEntirePlan(props) {
+  const [canDelete, setCanDelete] = useState(false);
+
+  // confirmAlert({
+  //   title: 'Confirm to delete',
+  //   message: 'Are you sure to do this? This action cannot be undone!',
+  //   buttons: [
+  //     {
+  //       label: 'Yes',
+  //       onClick: () => setCanDelete(true),
+  //     },
+  //     {
+  //       label: 'No',
+  //       onClick: () => setCanDelete(false),
+  //     },
+  //   ],
+  // });
+
+  useEffect(async () => {
+    if (canDelete) {
+      try {
+        await deleteDoc(doc(db, 'plans', props.planDocRef));
+        console.log('Plan has been deleted!');
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [canDelete]);
+}
+
 function handleImageUpload(e, setMainImage) {
   console.log(e.target.files[0]);
   const reader = new FileReader();
@@ -195,11 +229,11 @@ function EditPlanDetail(props) {
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   const [startDateValue, setStartDateValue] = useState(0);
   const [endDateValue, setEndDateValue] = useState(0);
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+  const [showDeletePopUp, setShowDeletePopUp] = useState(false);
 
   //React Route
   const location = useLocation();
@@ -284,6 +318,33 @@ function EditPlanDetail(props) {
     }));
     console.log(importEvents);
     return importEvents; //for updating local event
+  }
+
+  async function deletePlan(planDocRef, currentUserId) {
+    const batch = writeBatch(db);
+    const plansRef = doc(db, 'plans', planDocRef);
+    // const plansTimeblockRef = doc(db, 'plans', planDocRef, 'time_blocks');
+    const userInfoRef = doc(
+      db,
+      'userId',
+      currentUserId,
+      'own_plans',
+      planDocRef
+    );
+    const allPlansRef = doc(db, 'allPlans', planDocRef);
+
+    batch.delete(allPlansRef);
+    batch.delete(plansRef);
+    // batch.delete(plansTimeblockRef);
+    batch.delete(userInfoRef);
+
+    try {
+      await batch.commit();
+      console.log('Successfully deleted!');
+      navigate('/dashboard');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function addToDataBase(planDocRef, importResult) {
@@ -628,7 +689,21 @@ function EditPlanDetail(props) {
             Publish
           </Button>
         </Stack>
-        <Button variant="contained">Delete</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            deletePlan(planDocRef, currentUserId);
+            // try {
+            //   await deleteDoc(doc(db, 'plans', planDocRef));
+
+            //   console.log('Plan has been deleted!');
+            //   navigate('/dashboard');
+            // } catch (error) {
+            //   console.log(error);
+            // }
+          }}>
+          Delete
+        </Button>
       </Stack>
     </Wrapper>
   );

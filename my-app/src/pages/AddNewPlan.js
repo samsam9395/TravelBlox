@@ -121,10 +121,17 @@ const FavCollectionContainer = styled.div`
 async function addPlanToUserInfo(currentUserId, createPlanDocId) {
   console.log('saving this docRef to firebase', createPlanDocId);
   try {
-    const userInfoRef = doc(
-      collection(db, 'userId', currentUserId, 'own_plans')
-    );
+    // const userInfoRef = doc(
+    //   collection(db, 'userId', currentUserId, 'own_plans')
+    // );
 
+    const userInfoRef = doc(
+      db,
+      'userId',
+      currentUserId,
+      'own_plans',
+      createPlanDocId
+    );
     await setDoc(
       userInfoRef,
       {
