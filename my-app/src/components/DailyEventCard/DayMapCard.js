@@ -80,7 +80,7 @@ const Map = (props) => {
       const directionsRenderer = new window.google.maps.DirectionsRenderer();
 
       if (placeIdList && placeIdList.length === 1) {
-        props.setMarkerPosition({ placeId: placeIdList });
+        props.setMarkerPosition({ placeId: placeIdList[0] });
         map.setZoom(5);
         // const marker = new google.maps.Marker({
         //   position: { placeId: placeIdList },

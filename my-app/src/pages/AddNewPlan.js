@@ -121,10 +121,17 @@ const FavCollectionContainer = styled.div`
 async function addPlanToUserInfo(currentUserId, createPlanDocId) {
   console.log('saving this docRef to firebase', createPlanDocId);
   try {
-    const userInfoRef = doc(
-      collection(db, 'userId', currentUserId, 'own_plans')
-    );
+    // const userInfoRef = doc(
+    //   collection(db, 'userId', currentUserId, 'own_plans')
+    // );
 
+    const userInfoRef = doc(
+      db,
+      'userId',
+      currentUserId,
+      'own_plans',
+      createPlanDocId
+    );
     await setDoc(
       userInfoRef,
       {
@@ -210,7 +217,7 @@ function AddNewPlan(props) {
         title: planTitle,
         main_image: mainImage,
         published: false,
-        planDocRef: planDocRef,
+        planDocRef: createPlanDocId,
       });
 
       setHasCreatedCollection(true);
@@ -295,7 +302,7 @@ function AddNewPlan(props) {
     const list = plansList.docs.map((e) => e.data());
 
     if (list.length === 0) {
-      console.log('No fav plans yet!');
+      alert('No fav plans yet!');
       setFavPlansNameList('');
     } else {
       setFavPlansNameList(list);

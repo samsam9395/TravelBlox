@@ -4,7 +4,6 @@ import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
 
 import GoogleAPI from '../utils/GoogleAPI';
 import { Wrapper } from '@googlemaps/react-wrapper';
-
 import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -145,7 +144,7 @@ function StaticPlanDetail(props) {
   }, [numberofDays]);
 
   return (
-    <>
+    <Wrapper apiKey={ApiKey}>
       <UpperContainer>
         <LeftSideWrapper>
           <Card sx={{ width: 400 }}>
@@ -201,19 +200,17 @@ function StaticPlanDetail(props) {
         {timestampList.map((day, index) => {
           // console.log(day);
           return (
-            <Wrapper apiKey={ApiKey}>
-              <DayBlockCard
-                currentDayDate={day}
-                // collectionID={collectionID}
-                planDocRef={planDocRef}
-                index={index}
-                key={index}
-              />
-            </Wrapper>
+            <DayBlockCard
+              currentDayDate={day}
+              // collectionID={collectionID}
+              planDocRef={planDocRef}
+              index={index}
+              key={index}
+            />
           );
         })}
       </PlanCardsWrapper>
-    </>
+    </Wrapper>
   );
 }
 export default StaticPlanDetail;

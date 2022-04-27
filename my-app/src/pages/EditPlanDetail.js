@@ -36,10 +36,14 @@ import {
   collection,
   setDoc,
   writeBatch,
+  deleteDoc,
   // updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { async } from '@firebase/util';
 
 const db = firebaseDB();
 
@@ -136,6 +140,36 @@ function deleteBlockInMylist(prev, id) {
   return prev;
 }
 
+function DeleteEntirePlan(props) {
+  const [canDelete, setCanDelete] = useState(false);
+
+  // confirmAlert({
+  //   title: 'Confirm to delete',
+  //   message: 'Are you sure to do this? This action cannot be undone!',
+  //   buttons: [
+  //     {
+  //       label: 'Yes',
+  //       onClick: () => setCanDelete(true),
+  //     },
+  //     {
+  //       label: 'No',
+  //       onClick: () => setCanDelete(false),
+  //     },
+  //   ],
+  // });
+
+  useEffect(async () => {
+    if (canDelete) {
+      try {
+        await deleteDoc(doc(db, 'plans', props.planDocRef));
+        console.log('Plan has been deleted!');
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [canDelete]);
+}
+
 function handleImageUpload(e, setMainImage) {
   console.log(e.target.files[0]);
   const reader = new FileReader();
@@ -195,11 +229,11 @@ function EditPlanDetail(props) {
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   const [startDateValue, setStartDateValue] = useState(0);
   const [endDateValue, setEndDateValue] = useState(0);
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+  const [showDeletePopUp, setShowDeletePopUp] = useState(false);
 
   //React Route
   const location = useLocation();
@@ -223,7 +257,7 @@ function EditPlanDetail(props) {
   };
 
   /*=============================================
-=            import on edit plan            =
+=            import section on edit plan            =
 =============================================*/
   const [favPlansNameList, setFavPlansNameList] = useState(null);
   const [showFavPlans, setShowFavPlans] = useState(false);
@@ -255,92 +289,113 @@ function EditPlanDetail(props) {
     console.log(selectedPlanId);
     const blocksListRef = collection(
       db,
-      selectedPlanId,
+      'plans',
       selectedPlanId,
       'time_blocks'
     );
 
-    const importBlocks = await getDocs(blocksListRef);
+    const docSnap = await getDocs(blocksListRef);
 
-    const data = importBlocks.docs.map((e) => e.data());
+    // console.log(docSnap.docs.map((e) => e.data()));
+    const data = docSnap.docs.map((e) => e.data());
     console.log(data);
+    const importEvents = data.map((e) => ({
+      status: 'imported',
+      start: new Date(e.start.seconds * 1000),
+      end: new Date(e.end.seconds * 1000),
+      title: e.title,
+      id: e.id,
+      place_id: e.place_id,
+      place_format_address: e.place_format_address,
+      place_name: e.place_name,
+      place_formatted_phone_number: location.international_phone_number || '',
+      place_url: e.place_url,
+      place_types: e.place_types,
+      place_img: e.place_img,
+      // blockData: {
 
-    // try batch
+      // },
+    }));
+    console.log(importEvents);
+    return importEvents; //for updating local event
+  }
+
+  async function deletePlan(planDocRef, currentUserId) {
     const batch = writeBatch(db);
+    const plansRef = doc(db, 'plans', planDocRef);
+    // const plansTimeblockRef = doc(db, 'plans', planDocRef, 'time_blocks');
+    const userInfoRef = doc(
+      db,
+      'userId',
+      currentUserId,
+      'own_plans',
+      planDocRef
+    );
+    const allPlansRef = doc(db, 'allPlans', planDocRef);
 
-    data.forEach(async (timeblock) => {
-      console.log(timeblock);
-      const createRef = doc(collection(db, 'plans', planDocRef, 'time_blocks'));
-      const importActionRef = doc(
-        db,
-        'plans',
-        planDocRef,
-        'time_blocks',
-        createRef.id
-      );
-
-      batch.set(importActionRef, {
-        title: timeblock.title,
-        start: timeblock.start,
-        end: timeblock.end,
-        place_id: timeblock.place_id,
-        place_name: timeblock.place_name,
-        place_format_address: timeblock.place_format_address,
-        id: createRef.id,
-        place_img: timeblock.place_img || '',
-        place_formatted_phone_number:
-          timeblock.place_formatted_phone_number || '',
-        place_url: timeblock.place_url,
-        place_types: timeblock.place_types || '',
-        status: 'imported',
-      });
-    });
+    batch.delete(allPlansRef);
+    batch.delete(plansRef);
+    // batch.delete(plansTimeblockRef);
+    batch.delete(userInfoRef);
 
     try {
       await batch.commit();
+      console.log('Successfully deleted!');
+      navigate('/dashboard');
     } catch (error) {
       console.log(error);
     }
   }
 
-  function addToDataBase(planDocRef, importResult) {
+  async function addToDataBase(planDocRef, importResult) {
     console.log('adding to dataBase', importResult);
     console.log('db', 'plans', planDocRef, 'time_blocks');
 
-    const timeBlockRef = doc(
-      collection(db, 'plans', planDocRef, 'time_blocks')
-    );
-
-    console.log(importResult);
+    console.log(11, importResult);
     if (importResult) {
-      importResult.map(async (timeblock) => {
-        console.log(timeblock);
-        try {
-          await setDoc(
-            timeBlockRef,
-            {
-              title: timeblock.title,
-              start: timeblock.start,
-              end: timeblock.end,
-              place_id: timeblock.place_id,
-              place_name: timeblock.place_name,
-              place_format_address: timeblock.place_format_address,
-              id: timeblock.id,
-              place_img: timeblock.place_img || '',
-              place_formatted_phone_number:
-                timeblock.place_formatted_phone_number || '',
-              place_url: timeblock.place_url,
-              place_types: timeblock.place_types || '',
-              status: 'imported',
-            },
-            { merge: true }
-          );
+      // try batch
+      const batch = writeBatch(db);
 
-          alert('Successfully imported!');
-        } catch (error) {
-          console.log(error);
-        }
+      importResult.forEach(async (timeblock) => {
+        console.log(22, timeblock);
+
+        const createRef = doc(
+          collection(db, 'plans', planDocRef, 'time_blocks')
+        );
+        const importActionRef = doc(
+          db,
+          'plans',
+          planDocRef,
+          'time_blocks',
+          createRef.id
+        );
+
+        batch.set(
+          importActionRef,
+          {
+            title: timeblock.title,
+            start: timeblock.start,
+            end: timeblock.end,
+            place_id: timeblock.place_id,
+            place_name: timeblock.place_name,
+            place_format_address: timeblock.place_format_address,
+            id: createRef.id,
+            place_img: timeblock.place_img || '',
+            place_formatted_phone_number:
+              timeblock.place_formatted_phone_number || '',
+            place_url: timeblock.place_url,
+            place_types: timeblock.place_types || '',
+            status: 'imported',
+          },
+          { merge: true }
+        );
       });
+      try {
+        await batch.commit();
+        console.log('Successfully imported!');
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -572,7 +627,21 @@ function EditPlanDetail(props) {
                   <Button
                     variant="outlined"
                     onClick={async () => {
-                      importTimeBlock(selectedPlanId);
+                      // importTimeBlock(selectedPlanId, planDocRef);
+                      const importResult = await importTimeBlock(
+                        selectedPlanId
+                      );
+                      console.log(importResult);
+                      addToDataBase(planDocRef, importResult);
+
+                      // let list = [];
+
+                      // importResult.forEach((e) => {
+                      //   list = myEvents.push(e);
+                      // });
+
+                      // setMyEvents(myEvents);
+                      console.log(myEvents);
                     }}>
                     Import
                   </Button>
@@ -620,7 +689,21 @@ function EditPlanDetail(props) {
             Publish
           </Button>
         </Stack>
-        <Button variant="contained">Delete</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            deletePlan(planDocRef, currentUserId);
+            // try {
+            //   await deleteDoc(doc(db, 'plans', planDocRef));
+
+            //   console.log('Plan has been deleted!');
+            //   navigate('/dashboard');
+            // } catch (error) {
+            //   console.log(error);
+            // }
+          }}>
+          Delete
+        </Button>
       </Stack>
     </Wrapper>
   );
