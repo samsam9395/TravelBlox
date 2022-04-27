@@ -78,8 +78,6 @@ async function handleFavAction(planDocRef, author, selectFavFolder, planTitle) {
 
     try {
       await setDoc(favRef, {
-        // fav_collection_id: planDocRef,
-        // fav_plan_doc_ref: favRef.id,
         fav_plan_doc_ref: planDocRef,
         infolder: selectFavFolder,
         fav_plan_title: planTitle,
@@ -203,7 +201,6 @@ function StaticPlanDetail(props) {
           return (
             <DayBlockCard
               currentDayDate={day}
-              // collectionID={collectionID}
               planDocRef={planDocRef}
               index={index}
               key={index}

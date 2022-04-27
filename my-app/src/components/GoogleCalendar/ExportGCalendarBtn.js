@@ -47,6 +47,8 @@ function ExportGCalendarBtn(props) {
 
   function handleExport() {
     const gapi = window.gapi;
+    const batch = gapi.client.newBatch();
+
     console.log(gapi);
 
     gapi.load('client:auth2', () => {
@@ -76,14 +78,18 @@ function ExportGCalendarBtn(props) {
           request.execute((calendar) => {
             console.log(calendar);
 
-            var request = gapi.client.calendar.events.insert({
-              calendarId: calendar.id,
-              resource: eventsToExport[0],
+            // adding events
+            eventsToExport.forEach((event) => {
+              const request = gapi.client.calendar.events.insert({
+                calendarId: calendar.id,
+                resource: event,
+              });
+
+              batch.add(request);
             });
 
-            request.execute((event) => {
-              console.log(event);
-              window.open(event.htmlLink);
+            batch.execute((newCalendar, res) => {
+              window.open(newCalendar.htmlLink);
             });
           });
         });
@@ -92,7 +98,7 @@ function ExportGCalendarBtn(props) {
 
   return (
     <Button variant="outlined" onClick={() => handleExport()}>
-      Export to Google Calendar
+      Add to your Google Calendar!
     </Button>
   );
 }

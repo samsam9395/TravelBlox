@@ -7,7 +7,6 @@ import {
   Box,
   Card,
   CardMedia,
-  // CircularProgress,
   Stack,
 } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
@@ -29,7 +28,6 @@ import {
   doc,
   getDoc,
   getDocs,
-  // collectionGroup,
   query,
   where,
   onSnapshot,
@@ -41,7 +39,6 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { async } from '@firebase/util';
 
 const db = firebaseDB();
 
@@ -69,12 +66,6 @@ const CalendarContainer = styled.div`
 const Input = styled('input')({
   display: 'none',
 });
-
-const FavCollectionContainer = styled.div`
-  width: 100%;
-  padding: 20px;
-  border: 1px solid black;
-`;
 
 async function saveToDataBase(
   planCollectionRef,
