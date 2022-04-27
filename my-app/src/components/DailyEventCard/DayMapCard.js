@@ -57,7 +57,7 @@ const Map = (props) => {
     props.dayEvents.forEach((eventBlock) => {
       placeIdList.push(eventBlock.place_id);
       setPlaceIdList(placeIdList);
-      console.log(placeIdList);
+      // console.log(placeIdList);
     });
   }, [props.dayEvents, ref.current]);
 
@@ -167,11 +167,8 @@ const Map = (props) => {
 
 // dayEvents={dayEvents}
 function DayMapCard(props) {
-  console.log('DayMapCard is rendered');
   const [hasMarker, setHasMarker] = useState(false);
   const [markerPosition, setMarkerPosition] = useState('');
-
-  console.log('Day Map111', props.dayEvents);
 
   return (
     <DayMapContainer>

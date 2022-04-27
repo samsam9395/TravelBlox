@@ -2,9 +2,48 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button } from '@mui/material';
 import { googleCalendarConfig } from '../../utils/credent';
+import { getDocs, collection } from 'firebase/firestore';
+import firebaseDB from '../../utils/firebaseConfig';
 
-function ExportGCalendarBtn() {
+const db = firebaseDB();
+
+// planDocRef={planDocRef} planTitle={planTitle}
+function ExportGCalendarBtn(props) {
   const googleConfig = googleCalendarConfig();
+  const [eventsToExport, setEventsToExport] = useState([]);
+
+  useEffect(async () => {
+    const blocksListRef = collection(
+      db,
+      'plans',
+      props.planDocRef,
+      'time_blocks'
+    );
+    const docSnap = await getDocs(blocksListRef);
+    const data = docSnap.docs.map((e) => e.data());
+
+    const events = data.map((e) => ({
+      summary: e.title,
+      location: e.place_format_address,
+      description: `Place link is: ${e.place_url}`,
+      start: {
+        dateTime: new Date(e.start.seconds * 1000).toISOString(),
+      },
+      end: {
+        dateTime: new Date(e.end.seconds * 1000).toISOString(),
+      },
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 },
+          { method: 'popup', minutes: 30 },
+        ],
+      },
+    }));
+
+    setEventsToExport(events);
+    console.log(events);
+  }, []);
 
   function handleExport() {
     const gapi = window.gapi;
@@ -27,78 +66,27 @@ function ExportGCalendarBtn() {
         .signIn()
         .then(() => {
           const calendar = {
-            summary: 'testCalendar',
+            summary: `TravelBlox: ${props.planTitle}`,
           };
 
           const request = gapi.client.calendar.calendars.insert({
             resource: calendar,
           });
 
-          request.execute(function (calendar) {
+          request.execute((calendar) => {
             console.log(calendar);
-          });
 
-          function foo(calendar) {
-            request.execute(function (calendar) {
-              return console.log(calendar);
+            var request = gapi.client.calendar.events.insert({
+              calendarId: calendar.id,
+              resource: eventsToExport[0],
             });
-          }
 
-          console.log(foo(calendar));
-
-          //   createCalendar().then(
-          //     function (v) {
-          //       console.log(v);
-          //     }.catch(function (v) {
-          //       console.log(v);
-          //     })
-          //   );
-
-          //   const newCalendar = createCalendar();
-          //   console.log(newCalendar);
-          //   return newCalendar;
+            request.execute((event) => {
+              console.log(event);
+              window.open(event.htmlLink);
+            });
+          });
         });
-      // .then((newCalendarId) => {
-      //   console.log(333, newCalendarId);
-      //   const event = {
-      //     summary: 'Google I/O 2015',
-      //     location: '800 Howard St., San Francisco, CA 94103',
-      //     description:
-      //       "A chance to hear more about Google's developer products.",
-      //     start: {
-      //       dateTime: '2022-04-28T09:00:00-07:00',
-      //       timeZone: 'America/Los_Angeles',
-      //     },
-      //     end: {
-      //       dateTime: '2022-04-28T17:00:00-07:00',
-      //       timeZone: 'America/Los_Angeles',
-      //     },
-      //     // 'recurrence': [
-      //     //   'RRULE:FREQ=DAILY;COUNT=2'
-      //     // ],
-      //     attendees: [
-      //       { email: 'lpage@example.com' },
-      //       { email: 'sbrin@example.com' },
-      //     ],
-      //     reminders: {
-      //       useDefault: false,
-      //       overrides: [
-      //         { method: 'email', minutes: 24 * 60 },
-      //         { method: 'popup', minutes: 10 },
-      //       ],
-      //     },
-      //   };
-
-      //   var request = gapi.client.calendar.events.insert({
-      //     calendarId: 'primary',
-      //     resource: event,
-      //   });
-
-      //   request.execute((event) => {
-      //     console.log(event);
-      //     window.open(event.htmlLink);
-      //   });
-      // });
     });
   }
 

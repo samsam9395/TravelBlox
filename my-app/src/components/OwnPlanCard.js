@@ -111,7 +111,7 @@ function OwnPlanCard(props) {
   }, [doImport]);
 
   function renderSwitch(identity) {
-    console.log(identity);
+    // console.log(identity);
     switch (identity) {
       case 'author':
         redirectToEdit();

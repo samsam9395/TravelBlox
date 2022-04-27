@@ -56,7 +56,6 @@ function addOneDay(date) {
 
 async function CalendarByDay(blocksListRef, currentDayDate) {
   const eventByDayList = [];
-  console.log('calendar by day is rendered');
 
   const q = query(
     blocksListRef,
@@ -75,7 +74,6 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
     console.log(error);
   }
 
-  console.log(888, eventByDayList);
   return eventByDayList;
 }
 
@@ -97,10 +95,8 @@ function DayBlockCard(props) {
   );
 
   useEffect(() => {
-    console.log('crrentDay', props.currentDayDate);
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
-        console.log('inside dayblock', eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         return eventList;
@@ -111,9 +107,8 @@ function DayBlockCard(props) {
   }, [props.currentDayDate]);
 
   useEffect(() => {
-    console.log(dayEvents);
     dayEvents.forEach((block) => {
-      console.log(block);
+      // console.log(block);
       setDayTimeBlocks((prev) => [
         ...prev,
         {
@@ -128,10 +123,6 @@ function DayBlockCard(props) {
     });
   }, [hasReturned]);
 
-  // useEffect(() => {
-  //   console.log(dayEvents);
-  // }, [dayEvents]);
-
   return (
     <>
       <h2>
@@ -141,7 +132,6 @@ function DayBlockCard(props) {
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
             // console.log('here', singleEvent.end.secodns); //single event end time
-            // console.log('here', singleEvent.start.seconds);
 
             return (
               <ContentContainer key={index}>

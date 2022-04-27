@@ -41,10 +41,7 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import { async } from '@firebase/util';
-import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
 
 const db = firebaseDB();
 
@@ -143,21 +140,6 @@ function deleteBlockInMylist(prev, id) {
 
 function DeleteEntirePlan(props) {
   const [canDelete, setCanDelete] = useState(false);
-
-  // confirmAlert({
-  //   title: 'Confirm to delete',
-  //   message: 'Are you sure to do this? This action cannot be undone!',
-  //   buttons: [
-  //     {
-  //       label: 'Yes',
-  //       onClick: () => setCanDelete(true),
-  //     },
-  //     {
-  //       label: 'No',
-  //       onClick: () => setCanDelete(false),
-  //     },
-  //   ],
-  // });
 
   useEffect(async () => {
     if (canDelete) {
@@ -299,7 +281,6 @@ function EditPlanDetail(props) {
 
     // console.log(docSnap.docs.map((e) => e.data()));
     const data = docSnap.docs.map((e) => e.data());
-    console.log(data);
     const importEvents = data.map((e) => ({
       status: 'imported',
       start: new Date(e.start.seconds * 1000),
@@ -313,9 +294,6 @@ function EditPlanDetail(props) {
       place_url: e.place_url,
       place_types: e.place_types,
       place_img: e.place_img,
-      // blockData: {
-
-      // },
     }));
     console.log(importEvents);
     return importEvents; //for updating local event
@@ -499,7 +477,6 @@ function EditPlanDetail(props) {
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
-          // collectionID={collectionID}
           planDocRef={planDocRef}
         />
       ) : null}
@@ -634,14 +611,6 @@ function EditPlanDetail(props) {
                       );
                       console.log(importResult);
                       addToDataBase(planDocRef, importResult);
-
-                      // let list = [];
-
-                      // importResult.forEach((e) => {
-                      //   list = myEvents.push(e);
-                      // });
-
-                      // setMyEvents(myEvents);
                       console.log(myEvents);
                     }}>
                     Import
@@ -689,20 +658,11 @@ function EditPlanDetail(props) {
             }}>
             Publish
           </Button>
-          <ExportGCalendarBtn />
         </Stack>
         <Button
           variant="contained"
           onClick={() => {
             deletePlan(planDocRef, currentUserId);
-            // try {
-            //   await deleteDoc(doc(db, 'plans', planDocRef));
-
-            //   console.log('Plan has been deleted!');
-            //   navigate('/dashboard');
-            // } catch (error) {
-            //   console.log(error);
-            // }
           }}>
           Delete
         </Button>

@@ -9,6 +9,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
+import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
 const db = firebaseDB();
 const ApiKey = googleAPI();
 
@@ -103,7 +104,6 @@ function StaticPlanDetail(props) {
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
   const [showfavDropDown, setShowFavDropDown] = useState(false);
-  // const [selectFavFolder, setSelectFavFolder] = useState('default');
 
   const location = useLocation();
   // const collectionID = location.state.collectionID;
@@ -192,6 +192,8 @@ function StaticPlanDetail(props) {
             />
             <span>Made by: {author}</span>
           </UserInfoWrapper>
+
+          <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
         </UserRightSideWrapper>
       </UpperContainer>
 

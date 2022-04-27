@@ -389,8 +389,7 @@ function EditTimeBlock(props) {
                     location,
                     timeBlockImage
                   );
-                  console.log(888, props.currentSelectTimeId);
-                  console.log(999, timeBlockRef);
+
                   UpdateToDataBase(
                     timeBlockRef,
                     blockTitle,
