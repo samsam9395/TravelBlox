@@ -48,6 +48,7 @@ const Map = (props) => {
   const ref = useRef(null);
   const [map, setMap] = useState();
   const [placeIdList, setPlaceIdList] = useState([]);
+  const [duration, setDuration] = useState(null);
 
   // console.log(props.dayEvents);
 
@@ -74,7 +75,7 @@ const Map = (props) => {
     }
   }, [ref, map]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (ref.current) {
       const directionsService = new window.google.maps.DirectionsService();
       const directionsRenderer = new window.google.maps.DirectionsRenderer();
@@ -137,20 +138,40 @@ const Map = (props) => {
 
           waypoints: waypoints,
           provideRouteAlternatives: false,
-          travelMode: 'WALKING',
+          travelMode: 'DRIVING',
         };
         directionsRenderer.setMap(map);
 
         //   renderDirections(directionsService, directionsRenderer, map);
-        directionsService.route(directionsRequest).then((result) => {
-          if (result.status === 'OK') {
-            directionsRenderer.setDirections(result);
+        directionsService
+          .route(directionsRequest)
+          .then((result) => {
             console.log(result);
-          } else console.log('something wrong');
-        });
+            if (result.status === 'OK') {
+              directionsRenderer.setDirections(result);
+              console.log('1010 direction ', result);
+              console.log('222 direction ', result.request);
+              const travelDuration = result.routes.map((e) => {
+                console.log('333 legs', e.legs);
+                e.legs.map((leg) => {
+                  console.log(444, leg);
+                  console.log(555, leg.duration.text);
+                  console.log(666, leg.steps);
+                });
+              });
+              setDuration(travelDuration);
+
+              directionsRenderer.setPanel(document.getElementById('sidebar'));
+            } else console.log('something wrong');
+          })
+          .then((e) => {
+            console.log(e);
+          });
       }
     }
   }, [ref.current, props.dayEvents]);
+
+  console.log(duration);
 
   return (
     <>
@@ -161,6 +182,7 @@ const Map = (props) => {
         }}
         ref={ref}
       />
+      <div id="sidebar"></div>
     </>
   );
 };

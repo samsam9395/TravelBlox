@@ -100,10 +100,6 @@ function DayBlockCard(props) {
     'time_blocks'
   );
 
-  console.log('wtf is going on', props.currentDayDate);
-  console.log('srsly 111', props.day);
-  console.log('weird', props.currentDayDate);
-
   useEffect(() => {
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {

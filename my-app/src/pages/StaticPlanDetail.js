@@ -48,20 +48,20 @@ const PlanCardsWrapper = styled.div`
 function addDays(date, days) {
   var result = new Date(date);
   result.setDate(result.getDate() + days);
-  console.log('777, nextday is ', result);
+  // console.log('777, nextday is ', result);
   return result;
 }
 
 function loopThroughDays(startday, days) {
   const scheduleTimestampList = [];
   const lastDay = addDays(startday, days);
-  console.log(111, startday);
-  console.log(222, lastDay);
+  // console.log(111, startday);
+  // console.log(222, lastDay);
 
   for (let i = 0; i <= days; i++) {
     const nextday = addDays(startday, i);
     scheduleTimestampList.push(nextday);
-    console.log(scheduleTimestampList);
+    // console.log(scheduleTimestampList);
 
     if (nextday === lastDay) {
       console.log('reached last day');
@@ -78,7 +78,7 @@ async function handleFavAction(planDocRef, author, selectFavFolder, planTitle) {
   if (currentUserEmail === author) {
     alert('Do not favourite your own plan!');
   } else if (selectFavFolder !== '') {
-    console.log(selectFavFolder);
+    // console.log(selectFavFolder);
     const favRef = doc(db, 'userId', currentUserEmail, 'fav_plans', planDocRef);
 
     try {
@@ -135,10 +135,10 @@ function StaticPlanDetail(props) {
     setNumberofDays(nofDays);
   }, [endDate, startDate]);
 
-  console.log('numberofDays should not change', numberofDays);
+  // console.log('numberofDays should not change', numberofDays);
 
   useEffect(() => {
-    console.log('looping resart');
+    // console.log('looping resart');
     if (loopThroughDays(startDate.seconds * 1000, numberofDays).length === 0) {
       // console.log(1111);
       setTimestampList(loopThroughDays(startDate.seconds * 1000, 0));
@@ -148,7 +148,7 @@ function StaticPlanDetail(props) {
     }
   }, [numberofDays]);
 
-  console.log(10111, 'timestampList is ', timestampList);
+  console.log(111, 'timestampList is ', timestampList);
 
   return (
     <Wrapper apiKey={ApiKey}>
@@ -207,7 +207,7 @@ function StaticPlanDetail(props) {
 
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {
-          console.log(111, day);
+          // console.log(111, day);
 
           return (
             <DayBlockCard
