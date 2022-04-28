@@ -139,6 +139,7 @@ function StaticPlanDetail(props) {
       setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
     }
   }, [numberofDays]);
+  console.log(10111, 'timestampList is ', timestampList);
 
   return (
     <Wrapper apiKey={ApiKey}>
@@ -197,7 +198,11 @@ function StaticPlanDetail(props) {
 
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {
-          // console.log(day);
+          console.log(111, day);
+          // console.log(222, new Date(day.setUTCHours(-8, 0, 0, 0)));
+          // console.log(33, new Date(day.setHours(0, 0, 0)));
+          const resetDayHour = new Date(day.setUTCHours(-8, 0, 0, 0));
+          // console.log(44, new Date(resetDayHour));
           return (
             <DayBlockCard
               currentDayDate={day}

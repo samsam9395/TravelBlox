@@ -40,6 +40,7 @@ import OwnPlanCard from '../components/OwnPlanCard';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import DatePicker from '../components/Input/DatePicker';
 
 const db = firebaseDB();
 
@@ -473,11 +474,15 @@ function AddNewPlan(props) {
               country={country}
               // setIsLoading={setIsLoading}
             />
-            <OnlyDatePicker
+            {/* <OnlyDatePicker
               setStartDateValue={setStartDateValue}
               startDateValue={startDateValue}
               setEndDateValue={setEndDateValue}
               endDateValue={endDateValue}
+            /> */}
+            <DatePicker
+              setStartDateValue={setStartDateValue}
+              setEndDateValue={setEndDateValue}
             />
 
             <FormControlLabel

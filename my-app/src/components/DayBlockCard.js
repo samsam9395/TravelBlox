@@ -57,8 +57,8 @@ function addOneDay(date) {
 async function CalendarByDay(blocksListRef, currentDayDate) {
   const eventByDayList = [];
 
-  console.log('111 currentDayDate is', currentDayDate); //111 currentDayDate is Tue Apr 26 2022 17:40:59 GMT+0800 (Taipei Standard Time)
-  console.log('222 Next of CurrentDayDate is', addOneDay(currentDayDate)); //222 Next of CurrentDayDate is Wed Apr 27 2022 17:40:59 GMT+0800 (Taipei Standard Time)
+  console.log('10 is', currentDayDate); //111 currentDayDate is Tue Apr 26 2022 17:40:59 GMT+0800 (Taipei Standard Time)
+  console.log('20 Next of CurrentDayDate is', addOneDay(currentDayDate)); //222 Next of CurrentDayDate is Wed Apr 27 2022 17:40:59 GMT+0800 (Taipei Standard Time)
 
   const q = query(
     blocksListRef,
@@ -97,6 +97,8 @@ function DayBlockCard(props) {
     props.planDocRef,
     'time_blocks'
   );
+
+  console.log('weird', props.currentDayDate);
 
   useEffect(() => {
     CalendarByDay(blocksListRef, props.currentDayDate)
