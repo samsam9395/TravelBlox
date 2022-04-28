@@ -54,9 +54,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     }
   });
 
-  console.log(props.myEvents);
-
-  console.log(props.startDateValue);
+  // console.log(props.myEvents);
 
   return (
     <DnDCalendar

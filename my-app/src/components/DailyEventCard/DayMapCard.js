@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import styled from 'styled-components';
-import GoogleAPI from '../../utils/GoogleAPI';
+import { googleAPI } from '../../utils/credent';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
-const ApiKey = GoogleAPI();
+const ApiKey = googleAPI();
 const center = { lat: -33.8666, lng: 151.1958 };
 const zoom = 15;
 
@@ -57,7 +57,7 @@ const Map = (props) => {
     props.dayEvents.forEach((eventBlock) => {
       placeIdList.push(eventBlock.place_id);
       setPlaceIdList(placeIdList);
-      console.log(placeIdList);
+      // console.log(placeIdList);
     });
   }, [props.dayEvents, ref.current]);
 
@@ -167,11 +167,8 @@ const Map = (props) => {
 
 // dayEvents={dayEvents}
 function DayMapCard(props) {
-  console.log('DayMapCard is rendered');
   const [hasMarker, setHasMarker] = useState(false);
   const [markerPosition, setMarkerPosition] = useState('');
-
-  console.log('Day Map111', props.dayEvents);
 
   return (
     <DayMapContainer>

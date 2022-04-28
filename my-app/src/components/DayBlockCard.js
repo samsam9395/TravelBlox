@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
 
-import GoogleAPI from '../utils/GoogleAPI';
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayMapCard from './DailyEventCard/DayMapCard';
@@ -57,7 +56,9 @@ function addOneDay(date) {
 
 async function CalendarByDay(blocksListRef, currentDayDate) {
   const eventByDayList = [];
-  console.log('calendar by day is rendered');
+
+  console.log('111 currentDayDate is', currentDayDate); //111 currentDayDate is Tue Apr 26 2022 17:40:59 GMT+0800 (Taipei Standard Time)
+  console.log('222 Next of CurrentDayDate is', addOneDay(currentDayDate)); //222 Next of CurrentDayDate is Wed Apr 27 2022 17:40:59 GMT+0800 (Taipei Standard Time)
 
   const q = query(
     blocksListRef,
@@ -70,13 +71,13 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
+      console.log(333, doc);
       eventByDayList.push(doc.data());
     });
   } catch (error) {
     console.log(error);
   }
 
-  console.log(888, eventByDayList);
   return eventByDayList;
 }
 
@@ -98,10 +99,9 @@ function DayBlockCard(props) {
   );
 
   useEffect(() => {
-    console.log('crrentDay', props.currentDayDate);
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
-        console.log('inside dayblock', eventList);
+        console.log(eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         return eventList;
@@ -112,9 +112,8 @@ function DayBlockCard(props) {
   }, [props.currentDayDate]);
 
   useEffect(() => {
-    console.log(dayEvents);
     dayEvents.forEach((block) => {
-      console.log(block);
+      // console.log(block);
       setDayTimeBlocks((prev) => [
         ...prev,
         {
@@ -129,10 +128,6 @@ function DayBlockCard(props) {
     });
   }, [hasReturned]);
 
-  // useEffect(() => {
-  //   console.log(dayEvents);
-  // }, [dayEvents]);
-
   return (
     <>
       <h2>
@@ -142,7 +137,6 @@ function DayBlockCard(props) {
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
             // console.log('here', singleEvent.end.secodns); //single event end time
-            // console.log('here', singleEvent.start.seconds);
 
             return (
               <ContentContainer key={index}>

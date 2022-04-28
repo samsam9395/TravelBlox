@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TextField } from '@mui/material';
-import GoogleAPI from '../utils/GoogleAPI';
 import { Wrapper } from '@googlemaps/react-wrapper';
-
-const ApiKey = GoogleAPI();
+import { googleAPI } from '../utils/credent';
+const ApiKey = googleAPI();
 
 function SearchInput(props) {
   const [inputLocationValue, setInputLocationValue] = useState('');

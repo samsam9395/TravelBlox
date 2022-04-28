@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
-
-import GoogleAPI from '../utils/GoogleAPI';
+import { googleAPI } from '../utils/credent';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -10,8 +9,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
+import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
 const db = firebaseDB();
-const ApiKey = GoogleAPI();
+const ApiKey = googleAPI();
 
 const UpperContainer = styled.div`
   display: flex;
@@ -78,8 +78,6 @@ async function handleFavAction(planDocRef, author, selectFavFolder, planTitle) {
 
     try {
       await setDoc(favRef, {
-        // fav_collection_id: planDocRef,
-        // fav_plan_doc_ref: favRef.id,
         fav_plan_doc_ref: planDocRef,
         infolder: selectFavFolder,
         fav_plan_title: planTitle,
@@ -104,7 +102,6 @@ function StaticPlanDetail(props) {
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
   const [showfavDropDown, setShowFavDropDown] = useState(false);
-  // const [selectFavFolder, setSelectFavFolder] = useState('default');
 
   const location = useLocation();
   // const collectionID = location.state.collectionID;
@@ -193,6 +190,8 @@ function StaticPlanDetail(props) {
             />
             <span>Made by: {author}</span>
           </UserInfoWrapper>
+
+          <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
         </UserRightSideWrapper>
       </UpperContainer>
 
@@ -202,7 +201,6 @@ function StaticPlanDetail(props) {
           return (
             <DayBlockCard
               currentDayDate={day}
-              // collectionID={collectionID}
               planDocRef={planDocRef}
               index={index}
               key={index}

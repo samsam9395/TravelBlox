@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
 
-import GoogleAPI from '../utils/GoogleAPI';
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayMapCard from './DailyEventCard/DayMapCard';
@@ -76,7 +75,6 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
     console.log(error);
   }
 
-  console.log(888, eventByDayList);
   return eventByDayList;
 }
 
@@ -101,7 +99,6 @@ function DayBlockCard(props) {
     console.log('crrentDay', props.currentDayDate);
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
-        console.log('inside dayblock', eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         return eventList;
