@@ -51,14 +51,15 @@ const CalendarWrapper = styled.div`
 function addOneDay(date) {
   var result = new Date(date);
   result.setDate(result.getDate() + 1);
+  console.log('next day is ', result);
   return result;
 }
 
 async function CalendarByDay(blocksListRef, currentDayDate) {
   const eventByDayList = [];
 
-  console.log('111 currentDayDate is', currentDayDate); //111 currentDayDate is Tue Apr 26 2022 17:40:59 GMT+0800 (Taipei Standard Time)
-  console.log('222 Next of CurrentDayDate is', addOneDay(currentDayDate)); //222 Next of CurrentDayDate is Wed Apr 27 2022 17:40:59 GMT+0800 (Taipei Standard Time)
+  // console.log('10 is', currentDayDate); //111 currentDayDate is Tue Apr 26 2022 17:40:59 GMT+0800 (Taipei Standard Time)
+  // console.log('20 Next of CurrentDayDate is', addOneDay(currentDayDate)); //222 Next of CurrentDayDate is Wed Apr 27 2022 17:40:59 GMT+0800 (Taipei Standard Time)
 
   const q = query(
     blocksListRef,
@@ -71,7 +72,7 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
-      console.log(333, doc);
+      // console.log(333, doc);
       eventByDayList.push(doc.data());
     });
   } catch (error) {
@@ -84,13 +85,14 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
 // function calculateTimeBlockDUration(startTime, endTime) {
 //   endTime.seconds - startTime.seconds;
 // }
-
+// currentDayDate={day}
+// planDocRef={planDocRef}
+// index={index}
 function DayBlockCard(props) {
   const [dayEvents, setDayEvents] = useState([]);
   const [hasReturned, setHasReturned] = useState(false);
   const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
   const [timeBlockImage, setTimeBlockImage] = useState('');
-
   const blocksListRef = collection(
     db,
     'plans',
@@ -98,10 +100,14 @@ function DayBlockCard(props) {
     'time_blocks'
   );
 
+  console.log('wtf is going on', props.currentDayDate);
+  console.log('srsly 111', props.day);
+  console.log('weird', props.currentDayDate);
+
   useEffect(() => {
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
-        console.log(eventList);
+        // console.log(eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         return eventList;

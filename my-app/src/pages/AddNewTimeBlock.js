@@ -237,7 +237,13 @@ function AddNewTimeBlock(props) {
           <Button
             variant="contained"
             onClick={(e) => {
-              if (blockTitle && location && startTimeValue && endTimeValue) {
+              if (
+                blockTitle &&
+                description &&
+                location &&
+                startTimeValue &&
+                endTimeValue
+              ) {
                 addToDataBase(
                   props.planDocRef,
                   blockTitle,

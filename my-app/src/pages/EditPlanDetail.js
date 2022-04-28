@@ -19,7 +19,7 @@ import './planDetail.scss';
 import PlanCalendar from './PlanCalendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
-import OnlyDatePicker from '../components/Input/onlyDatePicker';
+import DatePicker from '../components/Input/DatePicker';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -35,7 +35,6 @@ import {
   setDoc,
   writeBatch,
   deleteDoc,
-  // updateDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -205,6 +204,8 @@ function EditPlanDetail(props) {
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [startDateValue, setStartDateValue] = useState(0);
   const [endDateValue, setEndDateValue] = useState(0);
+  const [startInitDateValue, setStartInitDateValue] = useState(0);
+  const [endInitDateValue, setEndInitDateValue] = useState(0);
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [showDeletePopUp, setShowDeletePopUp] = useState(false);
@@ -384,10 +385,13 @@ function EditPlanDetail(props) {
 
     setCountry(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
-
     setMainImage(docSnap.data().main_image);
+
     setStartDateValue(new Date(docSnap.data().start_date.seconds * 1000));
     setEndDateValue(new Date(docSnap.data().end_date.seconds * 1000));
+
+    setStartInitDateValue(new Date(docSnap.data().start_date.seconds * 1000));
+    setEndInitDateValue(new Date(docSnap.data().end_date.seconds * 1000));
   }, []);
 
   useEffect(async () => {
@@ -487,12 +491,16 @@ function EditPlanDetail(props) {
             country={country}
             planTitle={planTitle}
           />
-          <OnlyDatePicker
+
+          <DatePicker
             setStartDateValue={setStartDateValue}
-            startDateValue={startDateValue}
             setEndDateValue={setEndDateValue}
+            startDateValue={startDateValue}
             endDateValue={endDateValue}
+            startInitDateValue={startInitDateValue}
+            endInitDateValue={endInitDateValue}
           />
+
           <FormControlLabel
             control={
               <Switch
