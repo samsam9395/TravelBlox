@@ -10,18 +10,22 @@ import DayCalendar from './DailyEventCard/DayCalendar';
 
 const db = firebaseDB();
 
-const SampleDiv = styled.div`
-  border: 1px solid grey;
+const MainWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const SingleDayWrapper = styled.div`
   display: flex;
   width: 100%;
+  margin-bottom: 60px;
+  /* height: 2000px; */
 `;
 
 const TimeMapContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 700px;
 `;
 
 const ContentContainer = styled.div`
@@ -46,12 +50,13 @@ const DayScheduleContainer = styled.div`
 const CalendarWrapper = styled.div`
   width: 300px;
   height: 300px;
+  margin-bottom: 30px;
 `;
 
 function addOneDay(date) {
   var result = new Date(date);
   result.setDate(result.getDate() + 1);
-  console.log('next day is ', result);
+  // console.log('next day is ', result);
   return result;
 }
 
@@ -93,16 +98,13 @@ function DayBlockCard(props) {
   const [hasReturned, setHasReturned] = useState(false);
   const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
   const [timeBlockImage, setTimeBlockImage] = useState('');
+  const [result, setResult] = useState(null);
   const blocksListRef = collection(
     db,
     'plans',
     props.planDocRef,
     'time_blocks'
   );
-
-  console.log('wtf is going on', props.currentDayDate);
-  console.log('srsly 111', props.day);
-  console.log('weird', props.currentDayDate);
 
   useEffect(() => {
     CalendarByDay(blocksListRef, props.currentDayDate)
@@ -133,9 +135,10 @@ function DayBlockCard(props) {
       ]);
     });
   }, [hasReturned]);
+  // console.log(11, result);
 
   return (
-    <>
+    <MainWrapper>
       <h2>
         Day{props.index + 1}, {props.currentDayDate.toDateString()}
       </h2>
@@ -143,7 +146,6 @@ function DayBlockCard(props) {
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
             // console.log('here', singleEvent.end.secodns); //single event end time
-
             return (
               <ContentContainer key={index}>
                 <h2>{singleEvent.title}</h2>
@@ -154,6 +156,16 @@ function DayBlockCard(props) {
               </ContentContainer>
             );
           })}
+          {/* this renders duration text, but position need to be fixed
+          {result &&
+            result.map((res) => {
+              return res.map((e) => {
+                console.log(e);
+                console.log(33, e.duration.text);
+
+                return <h2>Duration is: {e.duration.text}</h2>;
+              });
+            })} */}
         </DailyContentWrapper>
 
         <TimeMapContainer>
@@ -170,10 +182,11 @@ function DayBlockCard(props) {
             )}
             )
           </DayScheduleContainer>
-          <DayMapCard dayEvents={dayEvents} />
+
+          <DayMapCard dayEvents={dayEvents} setResult={setResult} />
         </TimeMapContainer>
       </SingleDayWrapper>
-    </>
+    </MainWrapper>
   );
 }
 
