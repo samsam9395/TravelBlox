@@ -10,8 +10,8 @@ import DayCalendar from './DailyEventCard/DayCalendar';
 
 const db = firebaseDB();
 
-const SampleDiv = styled.div`
-  border: 1px solid grey;
+const Wrapper = styled.div`
+  display: flex;
 `;
 
 const SingleDayWrapper = styled.div`
@@ -22,6 +22,13 @@ const SingleDayWrapper = styled.div`
 const TimeMapContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 800px;
+`;
+
+const RightSideContainer = styled.div`
+  width: 800px;
+  background-color: red;
+  height: 400px;
 `;
 
 const ContentContainer = styled.div`
@@ -131,46 +138,44 @@ function DayBlockCard(props) {
   // }, [dayEvents]);
 
   return (
-    <>
+    <SingleDayWrapper>
+      <RightSideContainer>WTFFFFF</RightSideContainer>
+      <h1>OMG WHAT THE FK WHYYYYYY!</h1>
       <h2>
-        Day{props.index + 1}, {props.currentDayDate.toDateString()}
+        Day {props.index + 1}, {props.currentDayDate.toDateString()}
       </h2>
-      <SingleDayWrapper>
-        <DailyContentWrapper>
-          {dayEvents.map((singleEvent, index) => {
-            // console.log('here', singleEvent.end.secodns); //single event end time
-            // console.log('here', singleEvent.start.seconds);
+      <DailyContentWrapper>
+        {dayEvents.map((singleEvent, index) => {
+          return (
+            <ContentContainer key={index}>
+              <h2>{singleEvent.title}</h2>
+              <div>Place: {singleEvent.place_name}</div>
+              <div>Name: {singleEvent.place_format_address}</div>
+              <img src={singleEvent.timeblock_img} alt="" />
+              <h3 className="content">Context: {singleEvent.text}</h3>
+            </ContentContainer>
+          );
+        })}
+      </DailyContentWrapper>
 
-            return (
-              <ContentContainer key={index}>
-                <h2>{singleEvent.title}</h2>
-                <div>Place: {singleEvent.place_name}</div>
-                <div>Name: {singleEvent.place_format_address}</div>
-                <img src={singleEvent.timeblock_img} alt="" />
-                <h3 className="content">Context: {singleEvent.text}</h3>
-              </ContentContainer>
-            );
-          })}
-        </DailyContentWrapper>
+      <TimeMapContainer>
+        <DayScheduleContainer>
+          {hasReturned ? (
+            <DayCalendar
+              currentDayDate={props.currentDayDate}
+              dayTimeBlocks={dayTimeBlocks}
+            />
+          ) : (
+            <Box sx={{ display: 'flex' }} align="center" justify="center">
+              <CircularProgress size={14} sx={{ py: 2 }} />
+            </Box>
+          )}
+          )
+        </DayScheduleContainer>
 
-        <TimeMapContainer>
-          <DayScheduleContainer>
-            {hasReturned ? (
-              <DayCalendar
-                currentDayDate={props.currentDayDate}
-                dayTimeBlocks={dayTimeBlocks}
-              />
-            ) : (
-              <Box sx={{ display: 'flex' }} align="center" justify="center">
-                <CircularProgress size={14} sx={{ py: 2 }} />
-              </Box>
-            )}
-            )
-          </DayScheduleContainer>
-          <DayMapCard dayEvents={dayEvents} />
-        </TimeMapContainer>
-      </SingleDayWrapper>
-    </>
+        <DayMapCard dayEvents={dayEvents} />
+      </TimeMapContainer>
+    </SingleDayWrapper>
   );
 }
 

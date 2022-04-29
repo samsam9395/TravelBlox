@@ -10,18 +10,22 @@ import DayCalendar from './DailyEventCard/DayCalendar';
 
 const db = firebaseDB();
 
-const SampleDiv = styled.div`
-  border: 1px solid grey;
+const MainWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const SingleDayWrapper = styled.div`
   display: flex;
   width: 100%;
+  margin-bottom: 60px;
+  /* height: 2000px; */
 `;
 
 const TimeMapContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 700px;
 `;
 
 const ContentContainer = styled.div`
@@ -46,12 +50,13 @@ const DayScheduleContainer = styled.div`
 const CalendarWrapper = styled.div`
   width: 300px;
   height: 300px;
+  margin-bottom: 30px;
 `;
 
 function addOneDay(date) {
   var result = new Date(date);
   result.setDate(result.getDate() + 1);
-  console.log('next day is ', result);
+  // console.log('next day is ', result);
   return result;
 }
 
@@ -131,7 +136,7 @@ function DayBlockCard(props) {
   }, [hasReturned]);
 
   return (
-    <>
+    <MainWrapper>
       <h2>
         Day{props.index + 1}, {props.currentDayDate.toDateString()}
       </h2>
@@ -166,10 +171,11 @@ function DayBlockCard(props) {
             )}
             )
           </DayScheduleContainer>
+
           <DayMapCard dayEvents={dayEvents} />
         </TimeMapContainer>
       </SingleDayWrapper>
-    </>
+    </MainWrapper>
   );
 }
 

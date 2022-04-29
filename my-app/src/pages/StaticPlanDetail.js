@@ -148,10 +148,11 @@ function StaticPlanDetail(props) {
     }
   }, [numberofDays]);
 
-  console.log(111, 'timestampList is ', timestampList);
+  // console.log(111, 'timestampList is ', timestampList);
 
   return (
     <Wrapper apiKey={ApiKey}>
+      <div>SRSLy the fucl is going on</div>
       <UpperContainer>
         <LeftSideWrapper>
           <Card sx={{ width: 400 }}>
