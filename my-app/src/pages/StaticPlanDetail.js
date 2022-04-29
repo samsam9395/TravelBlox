@@ -138,12 +138,9 @@ function StaticPlanDetail(props) {
   // console.log('numberofDays should not change', numberofDays);
 
   useEffect(() => {
-    // console.log('looping resart');
     if (loopThroughDays(startDate.seconds * 1000, numberofDays).length === 0) {
-      // console.log(1111);
       setTimestampList(loopThroughDays(startDate.seconds * 1000, 0));
     } else {
-      // console.log(2222);
       setTimestampList(loopThroughDays(startDate.seconds * 1000, numberofDays));
     }
   }, [numberofDays]);
@@ -152,7 +149,6 @@ function StaticPlanDetail(props) {
 
   return (
     <Wrapper apiKey={ApiKey}>
-      <div>SRSLy the fucl is going on</div>
       <UpperContainer>
         <LeftSideWrapper>
           <Card sx={{ width: 400 }}>
@@ -208,8 +204,6 @@ function StaticPlanDetail(props) {
 
       <PlanCardsWrapper>
         {timestampList.map((day, index) => {
-          // console.log(111, day);
-
           return (
             <DayBlockCard
               currentDayDate={day}

@@ -91,7 +91,8 @@ const Map = (props) => {
           origin: { placeId: placeIdList[0] },
           destination: { placeId: placeIdList.at(-1) },
           provideRouteAlternatives: false,
-          travelMode: 'WALKING',
+          travelMode: 'DRIVING',
+          unitSystem: window.google.maps.UnitSystem.METRIC,
         };
         directionsRenderer.setMap(map);
 
@@ -110,6 +111,7 @@ const Map = (props) => {
           destination: { placeId: placeIdList.at(-1) },
           provideRouteAlternatives: false,
           travelMode: 'DRIVING',
+          unitSystem: window.google.maps.UnitSystem.METRIC,
         };
         directionsRenderer.setMap(map);
 
@@ -140,10 +142,10 @@ const Map = (props) => {
         const directionsRequest = {
           origin: { placeId: placeIdList[0] },
           destination: { placeId: placeIdList.at(-1) },
-
           waypoints: waypoints,
           provideRouteAlternatives: false,
           travelMode: 'DRIVING',
+          unitSystem: window.google.maps.UnitSystem.METRIC,
         };
         directionsRenderer.setMap(map);
 

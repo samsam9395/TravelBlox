@@ -156,6 +156,7 @@ function DayBlockCard(props) {
               </ContentContainer>
             );
           })}
+          {/* this renders duration text, but position need to be fixed
           {result &&
             result.map((res) => {
               return res.map((e) => {
@@ -164,7 +165,7 @@ function DayBlockCard(props) {
 
                 return <h2>Duration is: {e.duration.text}</h2>;
               });
-            })}
+            })} */}
         </DailyContentWrapper>
 
         <TimeMapContainer>
