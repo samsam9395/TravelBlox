@@ -50,7 +50,7 @@ const Map = (props) => {
   const ref = useRef(null);
   const [map, setMap] = useState();
   const [placeIdList, setPlaceIdList] = useState([]);
-  const [result, setResult] = useState(null);
+  // const [result, setResult] = useState(null);
 
   // console.log('Map is rendered', props.dayEvents);
 
@@ -117,15 +117,10 @@ const Map = (props) => {
           if (result.status === 'OK') {
             directionsRenderer.setDirections(result);
             const travelDuration = result.routes.map((e) => {
-              console.log('333 legs', e.legs);
-              // e.legs.map((leg) => {
-              //   console.log(444, leg);
-              //   console.log(555, leg.duration.text);
-              //   console.log(666, leg.steps);
-              // });
               return e.legs;
             });
 
+            props.setResult(travelDuration);
             directionsRenderer.setPanel(document.getElementById('sidebar'));
           } else console.log('something wrong');
         });
@@ -155,8 +150,6 @@ const Map = (props) => {
         directionsService
           .route(directionsRequest)
           .then((result) => {
-            // setResult(result);
-
             if (result.status === 'OK') {
               directionsRenderer.setDirections(result);
 
@@ -171,6 +164,7 @@ const Map = (props) => {
               });
 
               // directionsRenderer.getDirections();
+              props.setResult(travelDuration);
               directionsRenderer.setPanel(document.getElementById('sidebar'));
             } else console.log('something wrong');
           })
@@ -210,6 +204,7 @@ function DayMapCard(props) {
           dayEvents={props.dayEvents}
           setHasMarker={setHasMarker}
           setMarkerPosition={setMarkerPosition}
+          setResult={props.setResult}
         />
       )}
       {hasMarker && <Marker position={markerPosition} />}

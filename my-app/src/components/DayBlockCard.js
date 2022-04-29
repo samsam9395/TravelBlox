@@ -98,6 +98,7 @@ function DayBlockCard(props) {
   const [hasReturned, setHasReturned] = useState(false);
   const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
   const [timeBlockImage, setTimeBlockImage] = useState('');
+  const [result, setResult] = useState(null);
   const blocksListRef = collection(
     db,
     'plans',
@@ -134,6 +135,7 @@ function DayBlockCard(props) {
       ]);
     });
   }, [hasReturned]);
+  // console.log(11, result);
 
   return (
     <MainWrapper>
@@ -144,7 +146,6 @@ function DayBlockCard(props) {
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
             // console.log('here', singleEvent.end.secodns); //single event end time
-
             return (
               <ContentContainer key={index}>
                 <h2>{singleEvent.title}</h2>
@@ -155,6 +156,15 @@ function DayBlockCard(props) {
               </ContentContainer>
             );
           })}
+          {result &&
+            result.map((res) => {
+              return res.map((e) => {
+                console.log(e);
+                console.log(33, e.duration.text);
+
+                return <h2>Duration is: {e.duration.text}</h2>;
+              });
+            })}
         </DailyContentWrapper>
 
         <TimeMapContainer>
@@ -172,7 +182,7 @@ function DayBlockCard(props) {
             )
           </DayScheduleContainer>
 
-          <DayMapCard dayEvents={dayEvents} />
+          <DayMapCard dayEvents={dayEvents} setResult={setResult} />
         </TimeMapContainer>
       </SingleDayWrapper>
     </MainWrapper>
