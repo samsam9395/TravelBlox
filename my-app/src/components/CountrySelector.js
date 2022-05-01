@@ -15,7 +15,6 @@ export default function CountrySelector(props) {
     ).json();
 
     const countries = list.map((e) => {
-      console.log(e);
       return {
         label: e.name.common,
         region: e.region,

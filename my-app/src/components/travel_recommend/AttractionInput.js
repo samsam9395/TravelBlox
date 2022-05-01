@@ -32,18 +32,22 @@ const Input = styled.input`
   padding-left: 15px;
   margin-right: 10px;
   font-size: 14px;
+  min-width: 250px;
   &:focus {
     border: 2px solid ${themeColours.blue};
   }
 `;
+const AttractionCardWrapper = styled.div`
+  display: flex;
+  overflow: auto;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const AttractionCardContainer = styled.div`
-  display: flex;
-  overflow-x: scroll;
-  /* flex-wrap: wrap; */
-  border: 1px solid grey;
   margin-bottom: 20px;
-  height: 510px;
+  /* height: 510px; */
   width: 100%;
   position: relative;
   display: flex;
@@ -64,7 +68,15 @@ const SearchBtn = styled.button`
   }
 `;
 
-function AttractionInput() {
+const RecommendInfo = styled.div`
+  font-size: 30px;
+  font-weight: 600;
+  color: ${themeColours.light_orange};
+  margin-bottom: 10px;
+  display: flex;
+`;
+
+function AttractionInput({ showRecommends, setShowRecommends }) {
   const [autoInput, setAutoInput] = useState('');
   const [attractionList, setAttractionList] = useState([]);
   const [restaurantList, setRestaurantList] = useState([]);
@@ -83,6 +95,7 @@ function AttractionInput() {
           onClick={async () => {
             console.log('clicked', autoInput);
             setLoading(true);
+            setShowRecommends(true);
             const geoId = await GetTravelLocation(autoInput);
             const attractionList = await GetAttraction(geoId);
             const resList = await GetRestaurant(geoId);
@@ -97,29 +110,37 @@ function AttractionInput() {
             console.log(333, resList);
             setRestaurantList(resList);
           }}>
-          Search by City
+          Search Attraction and Restaurants by City
         </SearchBtn>
       </InputWrapper>
-      {loading ? (
+      {loading && (
         <HashLoader
           color={themeColours.light_orange}
           loading={loading}
-          // css={override}
           size={100}
         />
-      ) : (
-        <>
+      )}
+
+      {showRecommends && !loading && (
+        <AttractionCardWrapper>
+          <RecommendInfo>Top 10 Attractions {'\u2192'}</RecommendInfo>
           <AttractionCardContainer>
             {attractionList?.map((place, index) => (
               <AttractionCards place={place} key={index} />
             ))}
           </AttractionCardContainer>
+        </AttractionCardWrapper>
+      )}
+
+      {showRecommends && !loading && (
+        <AttractionCardWrapper>
+          <RecommendInfo>Top 10 Restaurants {'\u2192'}</RecommendInfo>
           <AttractionCardContainer>
             {restaurantList?.map((place, index) => (
               <RestaurantCard place={place} key={index} />
             ))}
           </AttractionCardContainer>
-        </>
+        </AttractionCardWrapper>
       )}
     </MainWrapper>
   );

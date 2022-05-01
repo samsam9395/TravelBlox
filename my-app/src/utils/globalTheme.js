@@ -1,3 +1,5 @@
+import styled from 'styled-components';
+
 export const themeColours = {
   orange: '#f1651d',
   light_orange: '#fea360',
@@ -9,3 +11,14 @@ export const themeColours = {
 
 // ref url: https://colorpalettes.net/color-palette-2368/
 // dark blue here: https://colorpalettes.net/color-palette-3901/
+
+export const LightOrangeBtn = styled.button`
+  padding: 10px 20px;
+  border-radius: 15px;
+  border: none;
+  background-color: ${themeColours.light_orange};
+  margin: 5px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
