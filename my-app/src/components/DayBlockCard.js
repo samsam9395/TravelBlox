@@ -157,8 +157,8 @@ function DayBlockCard(props) {
             );
           })}
           {/* this renders duration text, but position need to be fixed
-          {result &&
-            result.map((res) => {
+          {
+            result?.map((res) => {
               return res.map((e) => {
                 console.log(e);
                 console.log(33, e.duration.text);

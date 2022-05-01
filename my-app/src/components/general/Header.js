@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import logo from '../images/main-logo.png';
+import logo from '../../images/main-logo.png';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
