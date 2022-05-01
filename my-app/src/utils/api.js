@@ -19,11 +19,6 @@ export const GetTravelLocation = async (autoInput) => {
     } = await axios.get(URL, options);
 
     return data.Typeahead_autocomplete.results[0].detailsV2.locationId;
-
-    // const attrations = GetAttraction(geoId);
-    // return attrations;
-    // GetRestaurant(geoId);
-    // console.log(geoId);
   } catch (error) {
     console.log(error);
   }
@@ -37,6 +32,7 @@ export const GetAttraction = async (geoId) => {
       currency: 'USD',
       lang: 'en_US',
       lunit: 'km',
+      limit: '15',
       sort: 'ranking',
     },
     headers: {
@@ -62,11 +58,11 @@ export const GetRestaurant = async (geoId) => {
   const options = {
     params: {
       location_id: geoId,
-      restaurant_tagcategory: '10591',
-      restaurant_tagcategory_standalone: '10591',
+      restaurant_tagcategory: geoId,
+      restaurant_tagcategory_standalone: geoId,
       currency: 'USD',
       lunit: 'km',
-      limit: '30',
+      limit: '15',
       lang: 'en_US',
     },
     headers: {
