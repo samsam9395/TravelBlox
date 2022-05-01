@@ -17,9 +17,9 @@ function RestaurantCard({ place }) {
         descriptionTen.push(`${descriptonSplit[i]}.`);
       }
     }
-    {
-      place.cuisine && console.log(44, place.cuisine);
-    }
+    // {
+    //   place.cuisine && console.log(44, place.cuisine);
+    // }
     // {
     //   place.awards && console.log(55, place.awards);
     // }
@@ -37,16 +37,22 @@ function RestaurantCard({ place }) {
             <h3>More Info</h3>
 
             <p>{descriptionTen}</p>
+
+            <div
+              style={{
+                display: 'flex',
+                marginBottom: '3px',
+                flexWrap: 'wrap',
+                width: '100%',
+              }}>
+              {place.cuisine?.map((type) => {
+                return <div className="res-cuisine-type">#{type.name}</div>;
+              })}
+            </div>
+
             <div className="sub-info">
               <div className="sub-title">Status:</div> {place.open_now_text}
             </div>
-
-            {place.cuisine?.map((type) => {
-              <>
-                <div>hello</div>
-                <div className="res-cuisine-type">{type.name}</div>;
-              </>;
-            })}
 
             <div className="sub-info">
               <div className="sub-title">Phone:</div> {place.phone}
