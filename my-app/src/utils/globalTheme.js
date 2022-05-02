@@ -71,3 +71,24 @@ export const PaleBtn = styled.button`
     cursor: pointer;
   }
 `;
+
+export const FlexColumnWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const EditableMainImageContainer = styled.div`
+  height: 400px;
+  width: auto;
+  object-fit: contain;
+`;
+export const EditableMainImage = styled.img`
+  min-width: 150px;
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
+`;

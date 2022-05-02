@@ -1,7 +1,7 @@
 /* SUNNY */
 .sunny {
   animation: sunny 15s linear infinite;
-  background: linear-gradient(
+  background: -webkit-linear-gradient(
     top,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0.8) 50%,
@@ -10,12 +10,12 @@
   height: 140px;
   width: 20px;
   margin-left: -15px;
-  // position: absolute;
+  position: absolute;
   // left: 90px;
   // top: 20px;
 }
 .sunny:before {
-  background: linear-gradient(
+  background: -webkit-linear-gradient(
     top,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0.8) 50%,
@@ -25,7 +25,7 @@
   height: 140px;
   width: 20px;
   opacity: 1;
-  // position: absolute;
+  position: absolute;
   bottom: 0px;
   left: 0px;
   transform: rotate(90deg);
@@ -37,7 +37,7 @@
   content: '';
   height: 80px;
   width: 80px;
-  // position: absolute;
+  position: absolute;
   left: -30px;
   top: 30px;
 }

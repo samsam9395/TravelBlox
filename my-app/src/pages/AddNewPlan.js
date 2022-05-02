@@ -31,6 +31,11 @@ import {
   getFavPlan,
 } from '../utils/functionList';
 import FavFolderDropdown from '../components/FavFolderDropdown';
+import {
+  EditableMainImageContainer,
+  EditableMainImage,
+  FlexColumnWrapper,
+} from '../utils/globalTheme';
 
 const db = firebaseDB();
 
@@ -41,6 +46,7 @@ const Wrapper = styled.div`
 
 const TopContainer = styled.div`
   display: flex;
+  justify-content: center;
 `;
 
 const TitleSection = styled.div`
@@ -227,8 +233,12 @@ function AddNewPlan(props) {
               label="Published"
             />
           </TitleSection>
-          <Card sx={{ width: 400 }}>
-            <CardMedia component="img" image={mainImage} height="200" />
+
+          <FlexColumnWrapper>
+            <EditableMainImageContainer>
+              <EditableMainImage src={mainImage}></EditableMainImage>
+            </EditableMainImageContainer>
+
             <label htmlFor="icon-button-file">
               <Input
                 accept="image/*"
@@ -247,7 +257,7 @@ function AddNewPlan(props) {
                 </IconButton>
               </Box>
             </label>
-          </Card>
+          </FlexColumnWrapper>
         </TopContainer>
 
         {hasCreatedCollection ? (

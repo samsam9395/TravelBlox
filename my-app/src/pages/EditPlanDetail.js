@@ -31,6 +31,11 @@ import {
   getFavPlan,
 } from '../utils/functionList';
 import FavFolderDropdown from '../components/FavFolderDropdown';
+import {
+  EditableMainImageContainer,
+  EditableMainImage,
+  FlexColumnWrapper,
+} from '../utils/globalTheme';
 
 const db = firebaseDB();
 
@@ -41,11 +46,13 @@ const Wrapper = styled.div`
 
 const TopContainer = styled.div`
   display: flex;
+  justify-content: center;
 `;
 
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
+  margin-right: 30px;
 `;
 
 const CalendarContainer = styled.div`
@@ -53,6 +60,7 @@ const CalendarContainer = styled.div`
   height: 60vh;
   border: 1px solid black;
   margin-top: 40px;
+  margin-bottom: 40px;
 `;
 
 const Input = styled('input')({
@@ -209,8 +217,12 @@ function EditPlanDetail(props) {
             label="Published"
           />
         </TitleSection>
-        <Card sx={{ width: 400 }}>
-          <CardMedia component="img" image={mainImage} height="200" />
+
+        <FlexColumnWrapper>
+          <EditableMainImageContainer>
+            <EditableMainImage src={mainImage}></EditableMainImage>
+          </EditableMainImageContainer>
+
           <label htmlFor="icon-button-file">
             <Input
               accept="image/*"
@@ -229,7 +241,7 @@ function EditPlanDetail(props) {
               </IconButton>
             </Box>
           </label>
-        </Card>
+        </FlexColumnWrapper>
       </TopContainer>
 
       <ToggleAttractionSearch />
@@ -318,7 +330,7 @@ function EditPlanDetail(props) {
             }}>
             Save
           </Button>
-          <Button
+          {/* <Button
             variant="contained"
             onClick={() => {
               addPlanToAllPlans(
@@ -332,7 +344,7 @@ function EditPlanDetail(props) {
               redirectToStatic();
             }}>
             Publish
-          </Button>
+          </Button> */}
         </Stack>
         <Button
           variant="contained"
