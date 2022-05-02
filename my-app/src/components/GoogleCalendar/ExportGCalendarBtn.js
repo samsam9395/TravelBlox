@@ -4,6 +4,11 @@ import { Button } from '@mui/material';
 import { googleCalendarConfig } from '../../utils/credent';
 import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
+import {
+  themeColours,
+  LightOrangeBtn,
+  LightBlueBtn,
+} from '../../utils/globalTheme';
 
 const db = firebaseDB();
 
@@ -97,9 +102,12 @@ function ExportGCalendarBtn(props) {
   }
 
   return (
-    <Button variant="outlined" onClick={() => handleExport()}>
-      Add to your Google Calendar!
-    </Button>
+    <LightBlueBtn
+      style={{ width: 210 }}
+      variant="outlined"
+      onClick={() => handleExport()}>
+      Export to Google Calendar
+    </LightBlueBtn>
   );
 }
 

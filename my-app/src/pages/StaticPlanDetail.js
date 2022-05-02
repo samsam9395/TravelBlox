@@ -10,39 +10,87 @@ import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
+import {
+  themeColours,
+  LightOrangeBtn,
+  LightBlueBtn,
+} from '../utils/globalTheme';
 const db = firebaseDB();
 const ApiKey = googleAPI();
 
 const UpperContainer = styled.div`
   display: flex;
-  padding: 0 30px;
   justify-content: space-between;
-`;
-
-const PlanInfoWrapper = styled.div`
-  padding: 0 30px;
+  box-sizing: content-box;
   width: 100%;
 `;
 
-const LeftSideWrapper = styled.div`
+const FavFolderWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 30px;
 `;
 
 const UserRightSideWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: 30px;
+  align-items: center;
+  padding: 0 20px;
 `;
 
 const UserInfoWrapper = styled.div`
+  padding-top: 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  .avatar_image {
+    margin-bottom: 20px;
+  }
+  margin-bottom: 40px;
 `;
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
   padding: 0 30px;
+`;
+
+const PlanMainImageContainer = styled.div`
+  /* width: 600px; */
+  width: auto;
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  &:hover {
+    div {
+      color: ${themeColours.dark_blue};
+      text-shadow: 1px 1px ${themeColours.pale};
+      transition: 0.5s;
+    }
+  }
+`;
+
+const PlanMainImage = styled.img`
+  width: auto;
+  min-height: 100%;
+  &:hover {
+    opacity: 60%;
+    transition: 0.35s;
+  }
+`;
+
+const PlanTitleText = styled.div`
+  position: absolute;
+  font-weight: 800;
+  top: 100px;
+  left: 50px;
+  font-size: 60px;
+  letter-spacing: 5px;
+  color: ${themeColours.pale};
+  text-shadow: 2px 2px ${themeColours.dark_blue};
+  .location_text {
+    letter-spacing: 1px;
+    font-size: 25px;
+  }
 `;
 
 function addDays(date, days) {
@@ -150,28 +198,39 @@ function StaticPlanDetail(props) {
   return (
     <Wrapper apiKey={ApiKey}>
       <UpperContainer>
-        <LeftSideWrapper>
-          <Card sx={{ width: 400 }}>
-            <CardMedia component="img" image={mainImage} height="200" />
-            <Typography gutterBottom variant="h5" component="div">
-              {planTitle}
-            </Typography>
-          </Card>
-          <PlanInfoWrapper>
-            <Typography variant="h5" component="div">
-              Location: {country.label}
-            </Typography>
-            <Button
+        {/* <LeftSideWrapper> */}
+        <PlanMainImageContainer>
+          <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
+          <PlanTitleText>
+            {planTitle}
+            <div className="location_text">Location: {country.label}</div>
+          </PlanTitleText>
+        </PlanMainImageContainer>
+        {/* </LeftSideWrapper> */}
+
+        <UserRightSideWrapper>
+          <UserInfoWrapper>
+            <Avatar
+              className="avatar_image"
+              alt="Remy Sharp"
+              src="/static/images/avatar/1.jpg"
+              sx={{ width: 100, height: 100 }}
+            />
+            <span>Planned by: {author}</span>
+          </UserInfoWrapper>
+          <FavFolderWrapper>
+            <LightOrangeBtn
+              style={{ width: 210 }}
               variant="contained"
               onClick={() => setShowFavDropDown(!showfavDropDown)}>
               Favourite this plan
-            </Button>
+            </LightOrangeBtn>
             {showfavDropDown && (
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={props.favFolderNames}
-                sx={{ width: 300 }}
+                sx={{ width: 210 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Favourite Folders" />
                 )}
@@ -185,19 +244,7 @@ function StaticPlanDetail(props) {
                 }}
               />
             )}
-          </PlanInfoWrapper>
-        </LeftSideWrapper>
-
-        <UserRightSideWrapper>
-          <UserInfoWrapper>
-            <Avatar
-              alt="Remy Sharp"
-              src="/static/images/avatar/1.jpg"
-              sx={{ width: 56, height: 56 }}
-            />
-            <span>Made by: {author}</span>
-          </UserInfoWrapper>
-
+          </FavFolderWrapper>
           <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
         </UserRightSideWrapper>
       </UpperContainer>

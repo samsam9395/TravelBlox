@@ -22,3 +22,14 @@ export const LightOrangeBtn = styled.button`
     cursor: pointer;
   }
 `;
+
+export const LightBlueBtn = styled.button`
+  padding: 10px 20px;
+  border-radius: 15px;
+  border: none;
+  background-color: ${themeColours.light_blue};
+  margin: 5px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
