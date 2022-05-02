@@ -44,6 +44,7 @@ import {
   addPlanToAllPlans,
   saveToDataBase,
   deleteBlockInMylist,
+  listenToSnapShot,
 } from '../utils/functionList';
 
 const db = firebaseDB();
@@ -274,61 +275,7 @@ function EditPlanDetail(props) {
   }, []);
 
   useEffect(async () => {
-    onSnapshot(blocksListRef, (doc) => {
-      doc.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          // console.log(myEvents);
-          // console.log(change.doc.data());
-          setMyEvents((prev) => [
-            ...prev,
-            {
-              start: new Date(change.doc.data().start.seconds * 1000),
-              end: new Date(change.doc.data().end.seconds * 1000),
-              title: change.doc.data().title,
-              id: change.doc.data().id,
-              status: change.doc.data().status || '',
-              place_format_address: change.doc.data().place_format_address,
-              place_name: change.doc.data().place_name,
-              place_id: change.doc.data().place_id,
-              place_img: change.doc.data().place_img || '',
-              place_url: change.doc.data().place_url,
-              place_types: change.doc.data().place_types || '',
-              place_formatted_phone_number:
-                change.doc.data().place_formatted_phone_number || '',
-              rating: change.doc.data().rating || '',
-            },
-          ]);
-        }
-        if (change.type === 'modified') {
-          console.log('Modified time: ', change.doc.data());
-          const id = change.doc.data().id;
-          setMyEvents((prev) => [
-            ...deleteBlockInMylist(prev, id),
-            {
-              start: new Date(change.doc.data().start.seconds * 1000),
-              end: new Date(change.doc.data().end.seconds * 1000),
-              title: change.doc.data().title,
-              id: change.doc.data().id,
-              status: change.doc.data().status || '',
-              place_format_address: change.doc.data().place_format_address,
-              place_name: change.doc.data().place_name,
-              place_id: change.doc.data().place_id,
-              place_img: change.doc.data().place_img || '',
-              place_url: change.doc.data().place_url,
-              place_types: change.doc.data().place_types || '',
-              place_formatted_phone_number:
-                change.doc.data().place_formatted_phone_number || '',
-              rating: change.doc.data().rating || '',
-            },
-          ]);
-        }
-        if (change.type === 'removed') {
-          console.log('Removed time: ', change.doc.data());
-          const id = change.doc.data().id;
-          setMyEvents((prev) => [...deleteBlockInMylist(prev, id)]);
-        }
-      });
-    });
+    listenToSnapShot(setMyEvents, planDocRef);
   }, []);
 
   return (
