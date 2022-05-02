@@ -21,7 +21,7 @@ const PlanCollectionWrapper = styled.div`
   box-sizing: content-box;
   /* overflow: auto; */
   flex-wrap: wrap;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   margin: 30px 0;
 `;
 
