@@ -23,7 +23,6 @@ function LandingPage(props) {
   const [mainImage, setMainImage] = useState(null);
   const [hasSignedIn, setHasSignedIn] = useState(false);
   // const [isNewUser, setIsNewUser] = useState(false);
-  const [canRedirect, setCanRedirect] = useState(false);
 
   useEffect(async () => {
     const querySnapshot = await getDocs(collection(db, 'main-components'));

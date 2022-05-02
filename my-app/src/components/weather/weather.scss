@@ -10,9 +10,9 @@
   height: 140px;
   width: 20px;
   margin-left: -15px;
-  position: absolute;
-  left: 90px;
-  top: 20px;
+  // position: absolute;
+  // left: 90px;
+  // top: 20px;
 }
 .sunny:before {
   background: linear-gradient(
@@ -25,7 +25,7 @@
   height: 140px;
   width: 20px;
   opacity: 1;
-  position: absolute;
+  // position: absolute;
   bottom: 0px;
   left: 0px;
   transform: rotate(90deg);
@@ -37,7 +37,7 @@
   content: '';
   height: 80px;
   width: 80px;
-  position: absolute;
+  // position: absolute;
   left: -30px;
   top: 30px;
 }
@@ -191,10 +191,10 @@
     #60b1f5 -12px -12px 0 11px, #a3459b -14px -14px 0 13px;
   height: 70px;
   width: 70px;
-  margin-left: -40px;
-  position: absolute;
-  left: 610px;
-  top: 71px;
+  margin-left: -55px;
+  // position: absolute;
+  // left: 610px;
+  // top: 71px;
   transform: rotate(40deg);
 }
 .rainbow:after {
@@ -205,7 +205,7 @@
   opacity: 0.2;
   height: 15px;
   width: 120px;
-  position: absolute;
+  // position: absolute;
   bottom: -23px;
   left: 17px;
   transform: rotate(-40deg);
@@ -240,7 +240,7 @@
   width: 4px;
   margin-left: -10px;
   opacity: 1;
-  position: absolute;
+  // position: absolute;
   left: 777px;
   top: 150px;
 }
@@ -251,8 +251,8 @@
   content: '';
   height: 100px;
   width: 100px;
-  position: absolute;
-  top: -106px;
+  // position: absolute;
+  // top: -106px;
   transform: rotate(-5deg);
   transform-origin: 0 50%;
 }
@@ -284,10 +284,10 @@
     #222222 60px 15px 0 -10px, #222222 85px 5px 0 -5px;
   height: 50px;
   width: 50px;
-  margin-left: -60px;
-  position: absolute;
-  left: 947px;
-  top: 70px;
+  margin-left: -77px;
+  // position: absolute;
+  // left: 947px;
+  // top: 70px;
 }
 .stormy:after {
   animation: stormy_shadow 5s ease-in-out infinite;
@@ -297,7 +297,7 @@
   height: 15px;
   width: 120px;
   opacity: 0.2;
-  position: absolute;
+  // position: absolute;
   left: 5px;
   bottom: -60px;
   transform: scale(0.7);
@@ -312,7 +312,7 @@
   display: block;
   height: 0;
   width: 0;
-  position: absolute;
+  // position: absolute;
   left: 57px;
   top: 70px;
   transform: rotate(14deg);
@@ -358,10 +358,10 @@
   display: block;
   height: 50px;
   width: 50px;
-  margin-left: -60px;
-  position: absolute;
-  left: 1112px;
-  top: 70px;
+  margin-left: -77px;
+  // position: absolute;
+  // left: 1112px;
+  // top: 70px;
 }
 .snowy:after {
   animation: snowy_shadow 5s ease-in-out infinite 1s;
@@ -371,7 +371,7 @@
   height: 15px;
   width: 120px;
   opacity: 0.2;
-  position: absolute;
+  // position: absolute;
   left: 8px;
   bottom: -60px;
   transform: scale(0.7);
@@ -459,12 +459,12 @@
 //   letter-spacing: 6px;
 // }
 
-.container {
-  transform: scale(0.9);
-  width: 210px;
-  position: absolute;
-  height: 210px;
-  left: 50%;
-  top: 50%;
-  margin: -65px -360px;
-}
+// .container {
+//   transform: scale(0.9);
+//   width: 210px;
+//   position: absolute;
+//   height: 210px;
+//   left: 50%;
+//   top: 50%;
+//   margin: -65px -360px;
+// }

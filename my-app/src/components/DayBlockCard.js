@@ -8,6 +8,7 @@ import firebaseDB from '../utils/firebaseConfig';
 import DayMapCard from './DailyEventCard/DayMapCard';
 import DayCalendar from './DailyEventCard/DayCalendar';
 import { GetWeather } from '../utils/api';
+import Weather from '../components/weather/Weather';
 
 const db = firebaseDB();
 
@@ -48,12 +49,6 @@ const DayScheduleContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const CalendarWrapper = styled.div`
-  width: 300px;
-  height: 300px;
-  margin-bottom: 30px;
-`;
-
 function addOneDay(date) {
   var result = new Date(date);
   result.setDate(result.getDate() + 1);
@@ -88,9 +83,6 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
   return eventByDayList;
 }
 
-// function calculateTimeBlockDUration(startTime, endTime) {
-//   endTime.seconds - startTime.seconds;
-// }
 // currentDayDate={day}
 // planDocRef={planDocRef}
 // index={index}
@@ -100,6 +92,8 @@ function DayBlockCard(props) {
   const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
   const [timeBlockImage, setTimeBlockImage] = useState('');
   const [result, setResult] = useState(null);
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
   const blocksListRef = collection(
     db,
     'plans',
@@ -113,6 +107,11 @@ function DayBlockCard(props) {
         // console.log(eventList);
         setDayEvents(eventList);
         setHasReturned(true);
+        if (eventList[0].place_lat) {
+          setLat(eventList[0].place_lat);
+          setLng(eventList[0].place_lng);
+        }
+
         return eventList;
       })
       .catch((error) => {
@@ -173,7 +172,7 @@ function DayBlockCard(props) {
               });
             })} */}
         </DailyContentWrapper>
-
+        {lat && lng && <Weather lat={lat} lng={lng} />}
         <TimeMapContainer>
           <DayScheduleContainer>
             {hasReturned ? (
