@@ -30,7 +30,6 @@ import {
   getDocs,
   query,
   where,
-  onSnapshot,
   collection,
   setDoc,
   writeBatch,
@@ -43,7 +42,7 @@ import {
   handleMainImageUpload,
   addPlanToAllPlans,
   saveToDataBase,
-  deleteBlockInMylist,
+  // deleteBlockInMylist,
   listenToSnapShot,
 } from '../utils/functionList';
 

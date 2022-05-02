@@ -41,7 +41,8 @@ import {
   handleMainImageUpload,
   addPlanToAllPlans,
   saveToDataBase,
-  deleteBlockInMylist,
+  // deleteBlockInMylist,
+  listenToSnapShot,
 } from '../utils/functionList';
 
 const db = firebaseDB();
@@ -263,51 +264,8 @@ function AddNewPlan(props) {
         console.log(error);
       }
       if (firebaseReady) {
-        const blocksListRef = collection(
-          db,
-          'plans',
-          planDocRef,
-          'time_blocks'
-        );
         console.log('onsnap open');
-
-        onSnapshot(blocksListRef, (doc) => {
-          doc.docChanges().forEach((change) => {
-            if (change.type === 'added') {
-              // console.log(myEvents);
-              // console.log(change.doc.data());
-              setMyEvents((prev) => [
-                ...prev,
-                {
-                  start: new Date(change.doc.data().start.seconds * 1000),
-                  end: new Date(change.doc.data().end.seconds * 1000),
-                  title: change.doc.data().title,
-                  id: change.doc.data().id,
-                  status: 'origin',
-                },
-              ]);
-            }
-            if (change.type === 'modified') {
-              console.log('Modified time: ', change.doc.data());
-              const id = change.doc.data().id;
-              setMyEvents((prev) => [
-                ...deleteBlockInMylist(prev, id),
-                {
-                  start: new Date(change.doc.data().start.seconds * 1000),
-                  end: new Date(change.doc.data().end.seconds * 1000),
-                  title: change.doc.data().title,
-                  id: change.doc.data().id,
-                  status: 'origin',
-                },
-              ]);
-            }
-            if (change.type === 'removed') {
-              console.log('Removed time: ', change.doc.data());
-              const id = change.doc.data().id;
-              setMyEvents((prev) => [...deleteBlockInMylist(prev, id)]);
-            }
-          });
-        });
+        listenToSnapShot(setMyEvents, planDocRef);
       }
     }
   }, [addedTimeBlock, firebaseReady]);
