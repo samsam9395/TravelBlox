@@ -10,6 +10,7 @@ import {
 import Login from './Login';
 import { Navigate } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
+import { GetWeather } from '../utils/api';
 
 const db = firebaseDB();
 
@@ -22,7 +23,6 @@ function LandingPage(props) {
   const [mainImage, setMainImage] = useState(null);
   const [hasSignedIn, setHasSignedIn] = useState(false);
   // const [isNewUser, setIsNewUser] = useState(false);
-  const [canRedirect, setCanRedirect] = useState(false);
 
   useEffect(async () => {
     const querySnapshot = await getDocs(collection(db, 'main-components'));
@@ -35,10 +35,7 @@ function LandingPage(props) {
     if (props.user) {
       console.log(props.user);
     }
-    // if (localStorage.getItem('accessToken')) {
-    //   setCanRedirect(true);
-    //   console.log('accessToken is  ', localStorage.getItem('accessToken'));
-    // }
+    GetWeather('47.6205063', '-122.3492774');
   }, [props.user]);
 
   return (

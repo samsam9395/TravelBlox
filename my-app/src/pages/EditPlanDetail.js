@@ -38,6 +38,7 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
+import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
 
 const db = firebaseDB();
 
@@ -128,20 +129,20 @@ function deleteBlockInMylist(prev, id) {
   return prev;
 }
 
-function DeleteEntirePlan(props) {
-  const [canDelete, setCanDelete] = useState(false);
+// function DeleteEntirePlan(props) {
+//   const [canDelete, setCanDelete] = useState(false);
 
-  useEffect(async () => {
-    if (canDelete) {
-      try {
-        await deleteDoc(doc(db, 'plans', props.planDocRef));
-        console.log('Plan has been deleted!');
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }, [canDelete]);
-}
+//   useEffect(async () => {
+//     if (canDelete) {
+//       try {
+//         await deleteDoc(doc(db, 'plans', props.planDocRef));
+//         console.log('Plan has been deleted!');
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     }
+//   }, [canDelete]);
+// }
 
 function handleImageUpload(e, setMainImage) {
   console.log(e.target.files[0]);
@@ -209,6 +210,7 @@ function EditPlanDetail(props) {
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [showDeletePopUp, setShowDeletePopUp] = useState(false);
+  // const [showRecommends, setShowRecommends] = useState(false);
 
   //React Route
   const location = useLocation();
@@ -533,6 +535,9 @@ function EditPlanDetail(props) {
           </label>
         </Card>
       </TopContainer>
+
+      <ToggleAttractionSearch />
+
       <CalendarContainer>
         <PlanCalendar
           setImportData={setImportData}

@@ -1,9 +1,9 @@
 import './App.scss';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import GlobalStyle from './globalStyles';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import GlobalStyle from './utils/globalStyles';
+import Header from './components/general/Header';
+import Footer from './components/general/Footer';
 import { Routes, Route, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import LandingPage from './pages/LandingPage';
@@ -20,6 +20,7 @@ import Allplans from './pages/AllPlans';
 
 import firebaseDB from './utils/firebaseConfig';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
+import Weather from './components/weather/Weather';
 
 const db = firebaseDB();
 
@@ -60,9 +61,8 @@ function App() {
     const docSnap = await getDoc(
       doc(db, 'main-components', 'default_plan_img')
     );
-    // querySnapshot.forEach((doc) => {
+
     setDefaultImg(docSnap.data().default_plan_img);
-    // });
   }, []);
 
   return (
@@ -71,7 +71,7 @@ function App() {
       <Header />
       <BodyWrapper>
         <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
+          <Route path="/" element={<Weather />} />
           <Route
             path="/edit-plan-detail"
             element={

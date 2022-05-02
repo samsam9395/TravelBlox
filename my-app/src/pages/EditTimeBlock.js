@@ -159,6 +159,8 @@ function EditTimeBlock(props) {
           place_url: location.url,
           rating: location.rating || '',
           place_types: location.types || '',
+          place_lat: location.geometry.location.lat(),
+          place_lnt: location.geometry.location.lng(),
           status: 'origin',
           id: props.currentSelectTimeId,
         },
@@ -241,6 +243,8 @@ function EditTimeBlock(props) {
       mainImg: data.place_img || '',
       rating: data.rating || '',
       place_id: data.place_id,
+      // place_lat: data.place_lat || '',
+      // place_lnt: data.place_lnt || '',
     });
   }, [importBlockData]);
 
@@ -262,6 +266,8 @@ function EditTimeBlock(props) {
         mainImg: data.place_img || '',
         rating: data.rating || '',
         place_id: data.place_id,
+        // place_lat: data.place_lat || '',
+        // place_lnt: data.place_lnt || '',
       });
       setDescription(data.text);
       setTimeBlockImage(data.timeblock_img);

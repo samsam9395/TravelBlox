@@ -77,6 +77,7 @@ export default function LocationCard(props) {
 
   useEffect(() => {
     console.log(location);
+
     if (location.mainImg) {
       setMainImg(location.mainImg);
     } else if (location.photos) {
