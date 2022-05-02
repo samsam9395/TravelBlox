@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import logo from '../../images/main-logo.png';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { themeColours } from '../../utils/globalTheme';
 
 const Wrapper = styled.div`
   display: flex;
@@ -11,6 +12,7 @@ const Wrapper = styled.div`
   position: fixed;
   top: 0;
   background-color: white;
+  border-bottom: 2px solid ${themeColours.pale};
   padding: 0 24px;
   z-index: 100;
 `;
@@ -25,12 +27,17 @@ const NavLink = styled.div`
 
 const TestLink = styled(Link)`
   text-decoration: none;
-  &:active,
+  &:active {
+    text-decoration: none;
+    color: ${themeColours.orange};
+  }
   &:visited {
     text-decoration: none;
+    color: inherit;
   }
   &:hover {
     cursor: pointer;
+    color: ${themeColours.orange};
   }
 `;
 

@@ -10,11 +10,7 @@ import DayBlockCard from '../components/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
-import {
-  themeColours,
-  LightOrangeBtn,
-  LightBlueBtn,
-} from '../utils/globalTheme';
+import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
 const db = firebaseDB();
 const ApiKey = googleAPI();
 
@@ -47,6 +43,9 @@ const UserInfoWrapper = styled.div`
     margin-bottom: 20px;
   }
   margin-bottom: 40px;
+  div {
+    text-align: center;
+  }
 `;
 
 const PlanCardsWrapper = styled.div`
@@ -198,7 +197,6 @@ function StaticPlanDetail(props) {
   return (
     <Wrapper apiKey={ApiKey}>
       <UpperContainer>
-        {/* <LeftSideWrapper> */}
         <PlanMainImageContainer>
           <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
           <PlanTitleText>
@@ -206,7 +204,6 @@ function StaticPlanDetail(props) {
             <div className="location_text">Location: {country.label}</div>
           </PlanTitleText>
         </PlanMainImageContainer>
-        {/* </LeftSideWrapper> */}
 
         <UserRightSideWrapper>
           <UserInfoWrapper>
@@ -216,7 +213,7 @@ function StaticPlanDetail(props) {
               src="/static/images/avatar/1.jpg"
               sx={{ width: 100, height: 100 }}
             />
-            <span>Planned by: {author}</span>
+            <div>Planned by: {author}</div>
           </UserInfoWrapper>
           <FavFolderWrapper>
             <LightOrangeBtn
