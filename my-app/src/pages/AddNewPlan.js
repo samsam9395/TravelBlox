@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -10,27 +10,13 @@ import {
   CardMedia,
   Stack,
 } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
 import PlanCalendar from './PlanCalendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
-import {
-  doc,
-  onSnapshot,
-  collection,
-  setDoc,
-  writeBatch,
-  query,
-  where,
-  getDocs,
-  ref,
-} from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
@@ -41,9 +27,10 @@ import {
   handleMainImageUpload,
   addPlanToAllPlans,
   saveToDataBase,
-  // deleteBlockInMylist,
   listenToSnapShot,
+  getFavPlan,
 } from '../utils/functionList';
+import FavFolderDropdown from '../components/FavFolderDropdown';
 
 const db = firebaseDB();
 
@@ -122,13 +109,18 @@ function AddNewPlan(props) {
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [hasCreatedCollection, setHasCreatedCollection] = useState(false);
-  const [firebaseReady, setFirebaseReady] = useState(false);
-  const [collectionRef, setCollectionRef] = useState(null);
+  // const [collectionRef, setCollectionRef] = useState(null);
   const [startDateValue, setStartDateValue] = useState(new Date());
   const [endDateValue, setEndDateValue] = useState(new Date());
   const [planDocRef, setPlanDocRef] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+  const [favPlansNameList, setFavPlansNameList] = useState(null);
+  const [showFavPlans, setShowFavPlans] = useState(false);
+  const [dropDownOption, setDropDownOption] = useState(
+    location.state.favFolderNames || []
+  );
+  const [selectedPlanId, setSelectedPlanId] = useState('');
 
   const [showFavContainer, setShowFavContainer] = useState(false);
   const currentUserId = props.user.email;
@@ -155,7 +147,7 @@ function AddNewPlan(props) {
       });
 
       setHasCreatedCollection(true);
-      setCollectionRef('plans');
+      // setCollectionRef('plans');
 
       addPlanToUserInfo(props.user.email, createPlanDocId);
 
@@ -172,103 +164,13 @@ function AddNewPlan(props) {
     }
   };
 
-  /*=============================================
-  =            import            =
-  =============================================*/
-  const [favPlansNameList, setFavPlansNameList] = useState(null);
-  const [showFavPlans, setShowFavPlans] = useState(false);
-  const [dropDownOption, setDropDownOption] = useState(
-    location.state.favFolderNames || []
-  );
-  const [selectedPlanId, setSelectedPlanId] = useState('');
-
-  async function getFavPlan(folderName) {
-    const favRef = collection(db, 'userId', props.user.email, 'fav_plans');
-    const planQuery = query(favRef, where('infolder', '==', folderName));
-    const plansList = await getDocs(planQuery);
-
-    console.log(plansList.docs.map((e) => e.data().fav_plan_title));
-    const list = plansList.docs.map((e) => e.data());
-
-    if (list.length === 0) {
-      alert('No fav plans yet!');
-      setFavPlansNameList('');
-    } else {
-      setFavPlansNameList(list);
-    }
-    console.log(5555, favPlansNameList);
-  }
-
-  async function importTimeBlock(selectedPlanId, planDocRef) {
-    console.log(selectedPlanId);
-    const importBlocksListRef = collection(
-      db,
-      'plans',
-      selectedPlanId,
-      'time_blocks'
-    );
-
-    const docSnap = await getDocs(importBlocksListRef);
-    const data = docSnap.docs.map((e) => e.data());
-    console.log(data);
-    if (data) {
-      console.log('runs 5555');
-
-      const batch = writeBatch(db);
-
-      const blocksListRef = doc(
-        collection(db, 'plans', planDocRef, 'time_blocks')
-      );
-
-      data.forEach(async (e) => {
-        try {
-          await setDoc(
-            blocksListRef,
-            {
-              status: 'imported',
-              start: new Date(e.start.seconds * 1000),
-              end: new Date(e.end.seconds * 1000),
-              title: e.title,
-              id: e.id,
-              blockData: {
-                place_id: e.place_id,
-                place_format_address: e.place_format_address,
-                place_name: e.place_name,
-                place_formatted_phone_number:
-                  location.international_phone_number || '',
-                place_url: e.place_url,
-                place_types: e.place_types,
-                place_img: e.place_img,
-              },
-            },
-            { merge: true }
-          );
-          setFirebaseReady(true);
-          setAddedTimeBlock(true);
-          alert('Imported!');
-        } catch (error) {
-          console.log(error);
-        }
-      });
-    }
-  }
-
-  /*=====  End of import  ======*/
-
-  useEffect(async () => {
+  useEffect(() => {
     if (addedTimeBlock) {
-      try {
-        setFirebaseReady(true);
-        console.log('setFirebaseReady' + firebaseReady);
-      } catch (error) {
-        console.log(error);
-      }
-      if (firebaseReady) {
-        console.log('onsnap open');
-        listenToSnapShot(setMyEvents, planDocRef);
-      }
+      console.log('addedTimeBlock is', addedTimeBlock);
+      console.log('onsnap open');
+      listenToSnapShot(setMyEvents, planDocRef);
     }
-  }, [addedTimeBlock, firebaseReady]);
+  }, [addedTimeBlock]);
 
   return (
     <Wrapper>
@@ -391,43 +293,22 @@ function AddNewPlan(props) {
                     onChange={(e) => {
                       setShowFavPlans(true);
                       console.log(e.target.textContent);
-                      getFavPlan(e.target.textContent);
+                      getFavPlan(
+                        e.target.textContent,
+                        currentUserId,
+                        setFavPlansNameList
+                      );
                     }}
                   />
                   {showFavPlans && favPlansNameList && (
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <FormControl
-                        variant="standard"
-                        sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id="demo-simple-select-standard-label">
-                          Plan
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-standard-label"
-                          id="demo-simple-select-standard"
-                          value={selectedPlanId}
-                          onChange={(e) => setSelectedPlanId(e.target.value)}
-                          label="Plans">
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          {favPlansNameList.map((e, index) => (
-                            <MenuItem
-                              value={e.fav_plan_doc_ref || ''}
-                              key={index}>
-                              {e.fav_plan_title}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <Button
-                        variant="outlined"
-                        onClick={() =>
-                          importTimeBlock(selectedPlanId, planDocRef)
-                        }>
-                        Import
-                      </Button>
-                    </Stack>
+                    <FavFolderDropdown
+                      showFavPlans={showFavPlans}
+                      favPlansNameList={favPlansNameList}
+                      setSelectedPlanId={setSelectedPlanId}
+                      selectedPlanId={selectedPlanId}
+                      planDocRef={planDocRef}
+                      setAddedTimeBlock={setAddedTimeBlock}
+                    />
                   )}
                 </div>
               )}

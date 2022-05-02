@@ -181,3 +181,30 @@ export async function listenToSnapShot(setMyEvents, planDocRef) {
     });
   });
 }
+
+/*=============================================
+=            import section            =
+=============================================*/
+
+export async function getFavPlan(
+  folderName,
+  currentUserId,
+  setFavPlansNameList
+) {
+  const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+  const planQuery = query(favRef, where('infolder', '==', folderName));
+  const plansList = await getDocs(planQuery);
+
+  console.log(plansList.docs.map((e) => e.data().fav_plan_title));
+  const list = plansList.docs.map((e) => e.data());
+
+  if (list.length === 0) {
+    console.log('No fav plans yet!');
+    setFavPlansNameList('');
+  } else {
+    console.log(list);
+    setFavPlansNameList(list);
+  }
+}
+
+/*=====  End of import section  ======*/

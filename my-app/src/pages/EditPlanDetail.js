@@ -9,10 +9,6 @@ import {
   CardMedia,
   Stack,
 } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
@@ -23,18 +19,7 @@ import DatePicker from '../components/Input/DatePicker';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-
-import {
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  collection,
-  setDoc,
-  writeBatch,
-  deleteDoc,
-} from 'firebase/firestore';
+import { doc, getDoc, writeBatch } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
@@ -42,9 +27,10 @@ import {
   handleMainImageUpload,
   addPlanToAllPlans,
   saveToDataBase,
-  // deleteBlockInMylist,
   listenToSnapShot,
+  getFavPlan,
 } from '../utils/functionList';
+import FavFolderDropdown from '../components/FavFolderDropdown';
 
 const db = firebaseDB();
 
@@ -91,13 +77,20 @@ function EditPlanDetail(props) {
   const [endInitDateValue, setEndInitDateValue] = useState(0);
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
-  const [showDeletePopUp, setShowDeletePopUp] = useState(false);
+  // import
+  const [favPlansNameList, setFavPlansNameList] = useState(null);
+  const [showFavPlans, setShowFavPlans] = useState(false);
+  const [dropDownOption, setDropDownOption] = useState(
+    props.favFolderNames || []
+  );
+  const [selectedPlanId, setSelectedPlanId] = useState('');
+  const [importData, setImportData] = useState({});
 
   //React Route
   const location = useLocation();
   const planDocRef = location.state.planDocRef;
   const currentUserId = props.userId;
-  const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
+  // const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
   const navigate = useNavigate();
 
@@ -109,66 +102,6 @@ function EditPlanDetail(props) {
       },
     });
   };
-
-  /*=============================================
-=            import section on edit plan            =
-=============================================*/
-  const [favPlansNameList, setFavPlansNameList] = useState(null);
-  const [showFavPlans, setShowFavPlans] = useState(false);
-  const [dropDownOption, setDropDownOption] = useState(
-    props.favFolderNames || []
-  );
-  const [selectedPlanId, setSelectedPlanId] = useState('');
-  const [importData, setImportData] = useState({});
-
-  async function getFavPlan(folderName) {
-    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
-    const planQuery = query(favRef, where('infolder', '==', folderName));
-    const plansList = await getDocs(planQuery);
-
-    console.log(plansList.docs.map((e) => e.data().fav_plan_title));
-    const list = plansList.docs.map((e) => e.data());
-
-    if (list.length === 0) {
-      console.log('No fav plans yet!');
-      setFavPlansNameList('');
-    } else {
-      console.log(list);
-      setFavPlansNameList(list);
-      console.log(5555, favPlansNameList);
-    }
-  }
-
-  async function importTimeBlock(selectedPlanId) {
-    console.log(selectedPlanId);
-    const blocksListRef = collection(
-      db,
-      'plans',
-      selectedPlanId,
-      'time_blocks'
-    );
-
-    const docSnap = await getDocs(blocksListRef);
-
-    // console.log(docSnap.docs.map((e) => e.data()));
-    const data = docSnap.docs.map((e) => e.data());
-    const importEvents = data.map((e) => ({
-      status: 'imported',
-      start: new Date(e.start.seconds * 1000),
-      end: new Date(e.end.seconds * 1000),
-      title: e.title,
-      id: e.id,
-      place_id: e.place_id,
-      place_format_address: e.place_format_address,
-      place_name: e.place_name,
-      place_formatted_phone_number: location.international_phone_number || '',
-      place_url: e.place_url,
-      place_types: e.place_types,
-      place_img: e.place_img,
-    }));
-    console.log(importEvents);
-    return importEvents; //for updating local event
-  }
 
   async function deletePlan(planDocRef, currentUserId) {
     const batch = writeBatch(db);
@@ -190,70 +123,12 @@ function EditPlanDetail(props) {
 
     try {
       await batch.commit();
-      console.log('Successfully deleted!');
+      alert('Successfully deleted!');
       navigate('/dashboard');
     } catch (error) {
       console.log(error);
     }
   }
-
-  async function addImportToDataBase(planDocRef, importResult) {
-    console.log('adding to dataBase', importResult);
-    console.log('db', 'plans', planDocRef, 'time_blocks');
-
-    console.log(11, importResult);
-    if (importResult) {
-      // try batch
-      const batch = writeBatch(db);
-
-      importResult.forEach(async (timeblock) => {
-        console.log(22, timeblock);
-
-        const createRef = doc(
-          collection(db, 'plans', planDocRef, 'time_blocks')
-        );
-        const importActionRef = doc(
-          db,
-          'plans',
-          planDocRef,
-          'time_blocks',
-          createRef.id
-        );
-
-        batch.set(
-          importActionRef,
-          {
-            title: timeblock.title,
-            start: timeblock.start,
-            end: timeblock.end,
-            place_id: timeblock.place_id,
-            place_name: timeblock.place_name,
-            place_format_address: timeblock.place_format_address,
-            id: createRef.id,
-            place_img: timeblock.place_img || '',
-            place_formatted_phone_number:
-              timeblock.place_formatted_phone_number || '',
-            place_url: timeblock.place_url,
-            place_types: timeblock.place_types || '',
-            status: 'imported',
-          },
-          { merge: true }
-        );
-      });
-      try {
-        await batch.commit();
-        console.log('Successfully imported!');
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
-
-  /*=====  End of import on edit plan  ======*/
-
-  useEffect(() => {
-    console.log(console.log('location state is', location.state));
-  }, []);
 
   useEffect(() => {
     setDropDownOption(props.favFolderNames);
@@ -283,9 +158,7 @@ function EditPlanDetail(props) {
         <AddNewTimeBlock
           setShowPopUp={setShowPopUp}
           showPopUp={showPopUp}
-          // collectionID={collectionID}
           planDocRef={planDocRef}
-          // setAddedTimeBlock={setAddedTimeBlock}
           startDateValue={startDateValue}
           endDateValue={endDateValue}
         />
@@ -404,45 +277,21 @@ function EditPlanDetail(props) {
                 onChange={(e) => {
                   setShowFavPlans(true);
                   console.log(e.target.textContent);
-                  getFavPlan(e.target.textContent);
+                  getFavPlan(
+                    e.target.textContent,
+                    currentUserId,
+                    setFavPlansNameList
+                  );
                 }}
               />
               {showFavPlans && favPlansNameList && (
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="demo-simple-select-standard-label">
-                      Plan
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      value={selectedPlanId}
-                      onChange={(e) => setSelectedPlanId(e.target.value)}
-                      label="Plans">
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {favPlansNameList.map((e, index) => (
-                        <MenuItem value={e.fav_plan_doc_ref || ''} key={index}>
-                          {e.fav_plan_title}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <Button
-                    variant="outlined"
-                    onClick={async () => {
-                      // importTimeBlock(selectedPlanId, planDocRef);
-                      const importResult = await importTimeBlock(
-                        selectedPlanId
-                      );
-                      console.log(importResult);
-                      addImportToDataBase(planDocRef, importResult);
-                      console.log(myEvents);
-                    }}>
-                    Import
-                  </Button>
-                </Stack>
+                <FavFolderDropdown
+                  showFavPlans={showFavPlans}
+                  favPlansNameList={favPlansNameList}
+                  setSelectedPlanId={setSelectedPlanId}
+                  selectedPlanId={selectedPlanId}
+                  planDocRef={planDocRef}
+                />
               )}
             </div>
           )}
