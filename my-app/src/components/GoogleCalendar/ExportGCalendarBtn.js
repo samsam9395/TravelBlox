@@ -42,14 +42,14 @@ function ExportGCalendarBtn(props) {
     }));
 
     setEventsToExport(events);
-    console.log(events);
+    // console.log(events);
   }, []);
 
   function handleExport() {
     const gapi = window.gapi;
     const batch = gapi.client.newBatch();
 
-    console.log(gapi);
+    // console.log(gapi);
 
     gapi.load('client:auth2', () => {
       console.log('loaded client');
@@ -76,7 +76,7 @@ function ExportGCalendarBtn(props) {
           });
 
           request.execute((calendar) => {
-            console.log(calendar);
+            // console.log(calendar);
 
             // adding events
             eventsToExport.forEach((event) => {

@@ -145,6 +145,8 @@ function AddNewTimeBlock(props) {
         place_url: location.url,
         place_rating: location.rating || '',
         place_types: location.types || '',
+        place_lat: location.geometry.location.lat(),
+        place_lnt: location.geometry.location.lng(),
         status: 'origin',
       });
 

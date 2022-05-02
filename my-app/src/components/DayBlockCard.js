@@ -7,6 +7,7 @@ import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import DayMapCard from './DailyEventCard/DayMapCard';
 import DayCalendar from './DailyEventCard/DayCalendar';
+import { GetWeather } from '../utils/api';
 
 const db = firebaseDB();
 
@@ -135,7 +136,12 @@ function DayBlockCard(props) {
       ]);
     });
   }, [hasReturned]);
-  // console.log(11, result);
+  //  console.log(11, result);
+  // console.log(dayEvents);
+  console.log(111, dayEvents[1]);
+  // if (dayEvents[1].place_lat) {
+  //   GetWeather('47.6205063', '-122.3492774');
+  // }
 
   return (
     <MainWrapper>

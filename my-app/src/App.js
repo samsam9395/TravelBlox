@@ -20,7 +20,8 @@ import Allplans from './pages/AllPlans';
 
 import firebaseDB from './utils/firebaseConfig';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
-import AttractionInput from './components/travel_recommend/AttractionInput';
+import Weather from './components/weather/Weather';
+import WeatherCom from './components/weather/WeatherCom';
 
 const db = firebaseDB();
 
@@ -71,7 +72,7 @@ function App() {
       <Header />
       <BodyWrapper>
         <Routes>
-          <Route path="/" element={<AttractionInput />} />
+          <Route path="/" element={<WeatherCom />} />
           <Route
             path="/edit-plan-detail"
             element={

@@ -82,3 +82,16 @@ export const GetRestaurant = async (geoId) => {
     console.log(error);
   }
 };
+
+export const GetWeather = async (lat, lon) => {
+  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude={minutely,alerts,hourly}&units=metric&appid=6060e464dec17a57b82e0889afbad877`;
+
+  try {
+    const data = await axios.get(URL);
+    console.log(22, data);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
