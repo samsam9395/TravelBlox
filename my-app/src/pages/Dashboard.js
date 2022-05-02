@@ -104,7 +104,7 @@ function Dashboard(props) {
   useEffect(async () => {
     if (!props.user) {
       alert('Please login first!');
-      navigate('/landing');
+      navigate('/');
     }
     setCurrentUserId(props.user.email);
 
@@ -173,7 +173,7 @@ function Dashboard(props) {
         <AddPlanBtn
           onClick={() => {
             signOutFirebase();
-            navigate('/landing');
+            navigate('/');
           }}>
           Logout
         </AddPlanBtn>

@@ -116,11 +116,6 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.end || ''
   );
   const [timeBlockImage, setTimeBlockImage] = useState('');
-  // const [isImported, setIsImported] = useState(false);
-  // const [importPlaceData, setImportPlaceData] = useState({});
-  // const [timeBlockRef, setTimeBlockRef] = useState('');
-
-  // might need to be assigned outside???
   const timeBlockRef = doc(
     db,
     'plans',

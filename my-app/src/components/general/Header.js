@@ -52,7 +52,7 @@ function Header() {
       <Logo></Logo>
       <NavLinkWrapper>
         <NavLink>
-          <TestLink to="/landing">Home</TestLink>
+          <TestLink to="/">Home</TestLink>
         </NavLink>
         <NavLink>
           <TestLink to="/discover">Discover</TestLink>

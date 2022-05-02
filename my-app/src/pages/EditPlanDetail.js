@@ -39,6 +39,12 @@ import {
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
+import {
+  handleMainImageUpload,
+  addPlanToAllPlans,
+  saveToDataBase,
+  deleteBlockInMylist,
+} from '../utils/functionList';
 
 const db = firebaseDB();
 
@@ -67,132 +73,8 @@ const Input = styled('input')({
   display: 'none',
 });
 
-async function saveToDataBase(
-  planCollectionRef,
-  planDocRef,
-  myEvents,
-  planTitle,
-  country,
-  mainImage,
-  startDateValue,
-  endDateValue,
-  isPublished
-) {
-  const batch = writeBatch(db);
-  console.log(9999, country);
-
-  myEvents.forEach((singleEvent) => {
-    const id = singleEvent.id;
-    let updateRef = doc(db, 'plans', planDocRef, 'time_blocks', id);
-    batch.update(updateRef, {
-      end: singleEvent.end,
-      start: singleEvent.start,
-    });
-  });
-
-  batch.update(planCollectionRef, {
-    title: planTitle,
-    country: country,
-    main_image: mainImage,
-    start_date: startDateValue,
-    end_date: endDateValue,
-    published: isPublished,
-  });
-
-  const allPlanRef = doc(db, 'allPlans', planDocRef);
-  batch.update(
-    allPlanRef,
-    {
-      title: planTitle,
-      country: country,
-      main_image: mainImage,
-      published: isPublished,
-    },
-    { merge: true }
-  );
-
-  try {
-    await batch.commit();
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function deleteBlockInMylist(prev, id) {
-  const indexOfObject = prev.findIndex((timeblock) => {
-    return timeblock.id === id;
-  });
-
-  // let updateList = [...prev].slice(indexOfObject, 1);
-  let updateList = prev.splice(indexOfObject, 1);
-
-  return prev;
-}
-
-// function DeleteEntirePlan(props) {
-//   const [canDelete, setCanDelete] = useState(false);
-
-//   useEffect(async () => {
-//     if (canDelete) {
-//       try {
-//         await deleteDoc(doc(db, 'plans', props.planDocRef));
-//         console.log('Plan has been deleted!');
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     }
-//   }, [canDelete]);
-// }
-
-function handleImageUpload(e, setMainImage) {
-  console.log(e.target.files[0]);
-  const reader = new FileReader();
-  if (e) {
-    reader.readAsDataURL(e.target.files[0]);
-  }
-
-  reader.onload = function () {
-    // console.log(reader.result); //base64encoded string
-    setMainImage(reader.result);
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-  };
-}
-
-async function addPlanToAllPlans(
-  currentUserId,
-  planDocRef,
-  planTitle,
-  mainImage,
-  country,
-  isPublished
-) {
-  try {
-    const allPlansRef = doc(db, 'allPlans', planDocRef);
-
-    await setDoc(
-      allPlansRef,
-      {
-        author: currentUserId,
-        // collection_id: collectionID,
-        // plan_doc_ref: planDocRef,
-        plan_doc_ref: planDocRef,
-        title: planTitle,
-        main_image: mainImage,
-        country: country,
-        published: isPublished,
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 // props
 // userId={user.email} favFolderNames={favFolderNames}
-
 //currentPlanRef
 function EditPlanDetail(props) {
   const [planTitle, setPlanTitle] = useState('');
@@ -210,24 +92,19 @@ function EditPlanDetail(props) {
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [showDeletePopUp, setShowDeletePopUp] = useState(false);
-  // const [showRecommends, setShowRecommends] = useState(false);
 
   //React Route
   const location = useLocation();
-  // const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
-
   const currentUserId = props.userId;
-
-  const planCollectionRef = doc(db, 'plans', planDocRef);
   const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
   const navigate = useNavigate();
+
   const redirectToStatic = () => {
     navigate('/static-plan-detail', {
       state: {
         fromPage: 'editPlans',
-        // collectionID: collectionID,
         planDocRef: planDocRef,
       },
     });
@@ -320,7 +197,7 @@ function EditPlanDetail(props) {
     }
   }
 
-  async function addToDataBase(planDocRef, importResult) {
+  async function addImportToDataBase(planDocRef, importResult) {
     console.log('adding to dataBase', importResult);
     console.log('db', 'plans', planDocRef, 'time_blocks');
 
@@ -383,7 +260,7 @@ function EditPlanDetail(props) {
   }, [props.favFolderNames]);
 
   useEffect(async () => {
-    const docSnap = await getDoc(planCollectionRef);
+    const docSnap = await getDoc(doc(db, 'plans', planDocRef));
 
     setCountry(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
@@ -521,7 +398,7 @@ function EditPlanDetail(props) {
               id="icon-button-file"
               type="file"
               onChange={(e) => {
-                handleImageUpload(e, setMainImage);
+                handleMainImageUpload(e, setMainImage);
               }}
             />
             <Box textAlign="center">
@@ -614,7 +491,7 @@ function EditPlanDetail(props) {
                         selectedPlanId
                       );
                       console.log(importResult);
-                      addToDataBase(planDocRef, importResult);
+                      addImportToDataBase(planDocRef, importResult);
                       console.log(myEvents);
                     }}>
                     Import
@@ -629,12 +506,11 @@ function EditPlanDetail(props) {
             onClick={() => {
               try {
                 saveToDataBase(
-                  planCollectionRef,
-                  planDocRef,
                   myEvents,
                   planTitle,
                   country,
                   mainImage,
+                  planDocRef,
                   startDateValue,
                   endDateValue,
                   isPublished

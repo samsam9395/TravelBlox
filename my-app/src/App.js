@@ -43,7 +43,7 @@ function App() {
       });
     } else {
       console.log('User has not signed in to app yet!');
-      navigate('/landing');
+      navigate('/');
     }
   }, [localStorage.getItem('accessToken')]);
 
@@ -71,7 +71,10 @@ function App() {
       <Header />
       <BodyWrapper>
         <Routes>
-          <Route path="/" element={<Weather />} />
+          <Route
+            path="/"
+            element={<LandingPage user={user} setUser={setUser} />}
+          />
           <Route
             path="/edit-plan-detail"
             element={
@@ -86,11 +89,7 @@ function App() {
             path="/static-plan-detail"
             element={<StaticPlanDetail favFolderNames={favFolderNames} />}
           />
-          <Route
-            path="/landing"
-            element={<LandingPage user={user} setUser={setUser} />}
-          />
-          {/* <Route path="/test-map" element={<TestMap />} /> */}
+
           <Route path="/autocomplete" element={<AutoCompleteInput />} />
           <Route path="/dashboard" element={<Dashboard user={user} />} />
           <Route

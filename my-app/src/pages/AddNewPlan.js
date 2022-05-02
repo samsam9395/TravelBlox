@@ -26,8 +26,6 @@ import {
   collection,
   setDoc,
   writeBatch,
-  updateDoc,
-  addDoc,
   query,
   where,
   getDocs,
@@ -35,12 +33,16 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
-import OnlyDatePicker from '../components/Input/onlyDatePicker';
-import OwnPlanCard from '../components/OwnPlanCard';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DatePicker from '../components/Input/DatePicker';
+import {
+  handleMainImageUpload,
+  addPlanToAllPlans,
+  saveToDataBase,
+  deleteBlockInMylist,
+} from '../utils/functionList';
 
 const db = firebaseDB();
 
@@ -69,34 +71,6 @@ const Input = styled('input')({
   display: 'none',
 });
 
-function deleteBlockInMylist(prev, id) {
-  const indexOfObject = prev.findIndex((timeblock) => {
-    return timeblock.id === id;
-  });
-  console.log(prev);
-  console.log(indexOfObject);
-  // let updateList = [...prev].slice(indexOfObject, 1);
-  let updateList = prev.splice(indexOfObject, 1);
-  console.log(prev);
-  return prev;
-}
-
-function handleImageUpload(e, setMainImage) {
-  console.log(e.target.files[0]);
-  const reader = new FileReader();
-  if (e) {
-    reader.readAsDataURL(e.target.files[0]);
-  }
-
-  reader.onload = function () {
-    // console.log(reader.result); //base64encoded string
-    setMainImage(reader.result);
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-  };
-}
-
 const InstructionText = styled.div`
   font-size: 12px;
   font-weight: 600;
@@ -113,19 +87,9 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const FavCollectionContainer = styled.div`
-  width: 100%;
-  padding: 20px;
-  border: 1px solid black;
-`;
-
 async function addPlanToUserInfo(currentUserId, createPlanDocId) {
   console.log('saving this docRef to firebase', createPlanDocId);
   try {
-    // const userInfoRef = doc(
-    //   collection(db, 'userId', currentUserId, 'own_plans')
-    // );
-
     const userInfoRef = doc(
       db,
       'userId',
@@ -137,36 +101,6 @@ async function addPlanToUserInfo(currentUserId, createPlanDocId) {
       userInfoRef,
       {
         collection_id: createPlanDocId,
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function addPlanToAllPlans(
-  currentUserId,
-  createPlanDocId,
-  planTitle,
-  mainImage,
-  country,
-  isPublished
-) {
-  try {
-    const allPlansRef = doc(db, 'allPlans', createPlanDocId);
-
-    await setDoc(
-      allPlansRef,
-      {
-        author: currentUserId,
-        // collection_id: createPlanDocId,
-        // plan_doc_ref: planDocRef,
-        plan_doc_ref: createPlanDocId,
-        title: planTitle,
-        main_image: mainImage,
-        country: country,
-        published: isPublished,
       },
       { merge: true }
     );
@@ -192,7 +126,6 @@ function AddNewPlan(props) {
   const [startDateValue, setStartDateValue] = useState(new Date());
   const [endDateValue, setEndDateValue] = useState(new Date());
   const [planDocRef, setPlanDocRef] = useState('');
-  // const [collectionID, setCollectionId] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
 
@@ -208,7 +141,6 @@ function AddNewPlan(props) {
   ) => {
     const currentTimeMilli = new Date().getTime();
     const createPlanDocId = `plan${currentTimeMilli}`;
-    // setCollectionId(createCollectionId);
     setPlanDocRef(createPlanDocId);
     try {
       await setDoc(doc(db, 'plans', createPlanDocId), {
@@ -238,51 +170,6 @@ function AddNewPlan(props) {
       console.error('Error adding document: ', e);
     }
   };
-
-  async function saveToDataBase(
-    currentUserId,
-    myEvents,
-    planTitle,
-    country,
-    mainImage,
-    planDocRef,
-    startDateValue,
-    endDateValue,
-    isPublished
-  ) {
-    console.log(100, collectionRef);
-    console.log(200, planDocRef);
-
-    const batch = writeBatch(db);
-
-    myEvents.forEach((singleEvent) => {
-      const id = singleEvent.id;
-      let updateRef = doc(db, 'plans', planDocRef, 'time_blocks', id);
-      batch.update(updateRef, {
-        end: singleEvent.end,
-        start: singleEvent.start,
-      });
-    });
-
-    const upperLevelUpdateRef = doc(db, 'plans', planDocRef);
-    batch.update(upperLevelUpdateRef, {
-      title: planTitle,
-      country: country,
-      main_image: mainImage,
-      start_date: startDateValue,
-      end_date: endDateValue,
-      // origin_author: props.user.email,
-      published: isPublished,
-    });
-
-    try {
-      await batch.commit();
-      alert('Successfully created new plan!');
-      navigate('/dashboard');
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
 
   /*=============================================
   =            import            =
@@ -370,12 +257,6 @@ function AddNewPlan(props) {
   useEffect(async () => {
     if (addedTimeBlock) {
       try {
-        // const blocksListRef = collection(
-        //   db,
-        //   collectionID,
-        //   collectionID,
-        //   'time_blocks'
-        // );
         setFirebaseReady(true);
         console.log('setFirebaseReady' + firebaseReady);
       } catch (error) {
@@ -469,17 +350,8 @@ function AddNewPlan(props) {
               }}
               autoComplete="off"
             />
-            <CountrySelector
-              setCountry={setCountry}
-              country={country}
-              // setIsLoading={setIsLoading}
-            />
-            {/* <OnlyDatePicker
-              setStartDateValue={setStartDateValue}
-              startDateValue={startDateValue}
-              setEndDateValue={setEndDateValue}
-              endDateValue={endDateValue}
-            /> */}
+            <CountrySelector setCountry={setCountry} country={country} />
+
             <DatePicker
               setStartDateValue={setStartDateValue}
               setEndDateValue={setEndDateValue}
@@ -503,7 +375,7 @@ function AddNewPlan(props) {
                 id="icon-button-file"
                 type="file"
                 onChange={(e) => {
-                  handleImageUpload(e, setMainImage);
+                  handleMainImageUpload(e, setMainImage);
                 }}
               />
               <Box textAlign="center">
@@ -611,17 +483,20 @@ function AddNewPlan(props) {
                 if (myEvents.length === 0) {
                   alert('Please create at least one event!');
                 } else {
-                  saveToDataBase(
-                    props.user.email,
-                    myEvents,
-                    planTitle,
-                    country,
-                    mainImage,
-                    planDocRef,
-                    startDateValue,
-                    endDateValue,
-                    isPublished
-                  );
+                  if (
+                    saveToDataBase(
+                      myEvents,
+                      planTitle,
+                      country,
+                      mainImage,
+                      planDocRef,
+                      startDateValue,
+                      endDateValue,
+                      isPublished
+                    )
+                  ) {
+                    navigate('/dashboard');
+                  }
                 }
               }}>
               Save
