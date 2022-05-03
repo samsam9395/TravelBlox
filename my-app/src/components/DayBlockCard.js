@@ -156,7 +156,11 @@ function DayBlockCard(props) {
                 <h2>{singleEvent.title}</h2>
                 <div>Place: {singleEvent.place_name}</div>
                 <div>Name: {singleEvent.place_format_address}</div>
-                <img src={singleEvent.timeblock_img} alt="" />
+                <img
+                  src={singleEvent.timeblock_img}
+                  alt=""
+                  style={{ maxWidth: 1000 }}
+                />
                 <h3 className="content">Context: {singleEvent.text}</h3>
               </ContentContainer>
             );
