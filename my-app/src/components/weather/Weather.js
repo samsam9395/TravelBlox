@@ -15,11 +15,12 @@ const CurrentSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #00bbff;
+  background: rgba(0, 187, 255, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   height: 300px;
   border-radius: 15px 15px 0 0;
   margin: 0;
-  padding-top: 55px;
+  /* padding-top: 55px; */
 
   .todayDate {
     font-size: 20px;
@@ -95,6 +96,15 @@ const DailyDate = styled.div`
   font-weight: 200;
 `;
 
+const AnimationContainer = styled.div`
+  width: 100%;
+  height: 110px;
+  /* position: absolute; */
+  /* left: 50%;
+  top: 50%;
+  margin: -65px -360px; */
+`;
+
 function Weather({ lat, lng }) {
   const [weatherData, setWeatherData] = useState(null);
 
@@ -139,8 +149,10 @@ function Weather({ lat, lng }) {
     weatherData && (
       <WeatherCard>
         <CurrentSection>
-          {currentWeather(weatherData.current.weather[0].main)}
-
+          <AnimationContainer>
+            <div class="cloudy"></div>
+            {/* {currentWeather(weatherData.current.weather[0].main)} */}
+          </AnimationContainer>
           <div className="todayDate">
             {new Date(weatherData.current.dt * 1000).toLocaleString(undefined, {
               month: 'short',
