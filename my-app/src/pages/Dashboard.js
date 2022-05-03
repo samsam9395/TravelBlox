@@ -208,7 +208,6 @@ function Dashboard(props) {
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => {
-            console.log('map is here', ownPlanId);
             return (
               <SinglePlanContainer key={ownPlanId}>
                 <OwnPlanCard

@@ -132,7 +132,8 @@ async function retreiveFromDataBase(
 
 async function deleteFromDataBase(timeBlockRef, blockTitle, setShowEditPopUp) {
   await deleteDoc(timeBlockRef);
-  alert(blockTitle + 'is deleted!');
+  alert(blockTitle, 'is deleted!');
+  console.log(blockTitle, 'is deleted!');
   setShowEditPopUp(false);
 }
 

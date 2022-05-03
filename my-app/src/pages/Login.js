@@ -99,7 +99,7 @@ function signOutFirebase() {
     });
 }
 
-async function signUP(email, password, setIsNewUser) {
+async function signUP(email, password) {
   const docRef = doc(db, 'userId', email);
   const docSnap = await getDoc(docRef);
 
@@ -111,7 +111,6 @@ async function signUP(email, password, setIsNewUser) {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        // setIsNewUser(true);
         return user.email;
       })
       .then((emailId) => {
@@ -167,11 +166,12 @@ function Login(props) {
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
+      console.log(user);
       if (user) {
         // console.log(user.accessToken);
         console.log(user);
-        // props.setUserId(uid);
-        alert(`Welcome! ${user.email}`);
+        console.log('run this page once');
+        // alert(`Welcome! ${user.email}`);
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
         navigate('/discover');
@@ -240,6 +240,7 @@ function Login(props) {
                 <SignUpSwitcher>
                   Sign up
                   <ClickTag
+                    className="hoverCursor"
                     onClick={() => {
                       setShowSignUp(!showSignUp);
                     }}>
@@ -302,13 +303,14 @@ function Login(props) {
                 <SignUpSwitcher>
                   Sign in
                   <ClickTag
+                    className="hoverCursor"
                     onClick={() => {
                       setShowSignUp(!showSignUp);
                     }}>
                     here!
                   </ClickTag>
                 </SignUpSwitcher>
-                <SignUpSwitcher>
+                {/* <SignUpSwitcher>
                   Sign out
                   <ClickTag
                     onClick={() => {
@@ -316,7 +318,7 @@ function Login(props) {
                     }}>
                     here!
                   </ClickTag>
-                </SignUpSwitcher>
+                </SignUpSwitcher> */}
               </>
             )}
           </InputContainer>

@@ -99,9 +99,9 @@ function AddNewTimeBlock(props) {
 
   console.log(props.planDocRef);
 
-  useEffect(() => {
-    console.log(location);
-  }, [location]);
+  // useEffect(() => {
+  //   console.log(location);
+  // }, [location]);
 
   async function addToDataBase(
     planDocRef,
@@ -112,14 +112,11 @@ function AddNewTimeBlock(props) {
     location,
     timeBlockImage
   ) {
-    console.log('db', 'plans', planDocRef, 'time_blocks');
-    console.log(location);
+    // console.log('db', 'plans', planDocRef, 'time_blocks');
 
     const timeBlockRef = doc(
       collection(db, 'plans', planDocRef, 'time_blocks')
     );
-    console.log(location);
-    console.log(location.photos);
 
     if (location) {
       console.log(location.photos[0].getUrl());

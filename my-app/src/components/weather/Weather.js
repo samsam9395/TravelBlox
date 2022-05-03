@@ -115,20 +115,20 @@ function Weather({ lat, lng }) {
   function currentWeather(status) {
     switch (status) {
       case 'Clouds':
-        return <div class="cloudy"></div>;
+        return <div className="cloudy"></div>;
         break;
       case 'Rain':
-        return <div class="rainy"></div>;
+        return <div className="rainy"></div>;
       case 'Thunderstorm':
-        return <div class="stormy"></div>;
+        return <div className="stormy"></div>;
       case 'Drizzle':
-        return <div class="rainy"></div>;
+        return <div className="rainy"></div>;
       case 'Clear':
-        return <div class="sunny"></div>;
+        return <div className="sunny"></div>;
       case 'Snow':
-        return <div class="snowy"></div>;
+        return <div className="snowy"></div>;
       default:
-        return <div class="rainbow"></div>;
+        return <div className="rainbow"></div>;
         break;
     }
   }
@@ -150,8 +150,7 @@ function Weather({ lat, lng }) {
       <WeatherCard>
         <CurrentSection>
           <AnimationContainer>
-            <div class="cloudy"></div>
-            {/* {currentWeather(weatherData.current.weather[0].main)} */}
+            {currentWeather(weatherData.current.weather[0].main)}
           </AnimationContainer>
           <div className="todayDate">
             {new Date(weatherData.current.dt * 1000).toLocaleString(undefined, {
@@ -186,7 +185,7 @@ function Weather({ lat, lng }) {
         </CurrentSection>
 
         <DailyWrapper>
-          {weatherData.daily.map((e) => {
+          {weatherData.daily.map((e, index) => {
             // console.log('a', new Date(e.dt * 1000).getDay());
             // console.log('b', new Date(weatherData.current.dt * 1000).getDay());
             if (
@@ -194,7 +193,7 @@ function Weather({ lat, lng }) {
               new Date(weatherData.current.dt * 1000).getDay()
             ) {
               return (
-                <DailyContainer>
+                <DailyContainer key={index}>
                   <DailyDate>
                     {new Date(e.dt * 1000).toLocaleString(undefined, {
                       day: 'numeric',

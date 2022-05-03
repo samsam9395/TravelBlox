@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Button } from '@mui/material';
 import { googleCalendarConfig } from '../../utils/credent';
 import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
-import {
-  themeColours,
-  LightOrangeBtn,
-  LightBlueBtn,
-} from '../../utils/globalTheme';
+import { LightBlueBtn } from '../../utils/globalTheme';
 
 const db = firebaseDB();
 
@@ -52,12 +47,13 @@ function ExportGCalendarBtn(props) {
 
   function handleExport() {
     const gapi = window.gapi;
-    const batch = gapi.client.newBatch();
+    console.log(window.gapi);
 
-    // console.log(gapi);
+    console.log(gapi);
 
     gapi.load('client:auth2', () => {
       console.log('loaded client');
+      const batch = gapi.client.newBatch();
 
       gapi.client.init({
         apikey: googleConfig.API_KEY,
@@ -85,6 +81,7 @@ function ExportGCalendarBtn(props) {
 
             // adding events
             eventsToExport.forEach((event) => {
+              // console.log(event);
               const request = gapi.client.calendar.events.insert({
                 calendarId: calendar.id,
                 resource: event,
@@ -92,10 +89,14 @@ function ExportGCalendarBtn(props) {
 
               batch.add(request);
             });
-
-            batch.execute((newCalendar, res) => {
-              window.open(newCalendar.htmlLink);
-            });
+            try {
+              batch.execute((newCalendar, res) => {
+                // console.log(Object.values(newCalendar)[0]);
+                window.open(Object.values(newCalendar)[0].result.htmlLink);
+              });
+            } catch (error) {
+              console.log(error);
+            }
           });
         });
     });

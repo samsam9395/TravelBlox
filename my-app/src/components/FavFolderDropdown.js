@@ -106,6 +106,7 @@ function FavFolderDropdown({
           setAddedTimeBlock(true);
         }
         console.log('Successfully imported!');
+        alert('Successfully imported!');
       } catch (error) {
         console.log(error);
       }

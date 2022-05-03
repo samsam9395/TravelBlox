@@ -45,7 +45,7 @@ const DailyContentWrapper = styled.div`
 
 const DayScheduleContainer = styled.div`
   min-height: 400px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   margin-bottom: 20px;
 `;
 

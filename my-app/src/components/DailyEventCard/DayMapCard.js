@@ -12,7 +12,7 @@ const DayMapContainer = styled.div`
 `;
 
 const MapContainer = styled.div`
-  border: 1px black solid;
+  /* border: 1px black solid; */
   height: 650px;
   width: 100%;
 `;
