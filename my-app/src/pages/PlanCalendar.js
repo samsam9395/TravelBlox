@@ -55,6 +55,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
   });
 
   // console.log(props.myEvents);
+  console.log('calendar start value', typeof props.startDateValue);
 
   return (
     <DnDCalendar
@@ -62,7 +63,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       endAccessor="end"
       dayLayoutAlgorithm={dayLayoutAlgorithm}
       // defaultDate={moment().toDate()}
-      defaultDate={props.startDateValue}
+      defaultDate={props.startDateValue || new Date()}
       defaultView={Views.WEEK}
       localizer={localizer}
       events={props.myEvents}

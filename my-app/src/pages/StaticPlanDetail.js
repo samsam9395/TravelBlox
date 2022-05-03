@@ -195,7 +195,8 @@ function StaticPlanDetail(props) {
   // console.log(111, 'timestampList is ', timestampList);
 
   return (
-    <Wrapper apiKey={ApiKey}>
+    <>
+      {/* <Wrapper apiKey={ApiKey}> */}
       <UpperContainer>
         <PlanMainImageContainer>
           <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
@@ -259,7 +260,8 @@ function StaticPlanDetail(props) {
           );
         })}
       </PlanCardsWrapper>
-    </Wrapper>
+      {/* </Wrapper> */}
+    </>
   );
 }
 export default StaticPlanDetail;

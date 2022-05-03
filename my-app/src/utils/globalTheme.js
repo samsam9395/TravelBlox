@@ -76,6 +76,14 @@ export const FlexColumnWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .upload_icon {
+    margin: auto;
+    height: 150px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 `;
 
 export const EditableMainImageContainer = styled.div`

@@ -20,7 +20,9 @@ import Allplans from './pages/AllPlans';
 
 import firebaseDB from './utils/firebaseConfig';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
-import Weather from './components/weather/Weather';
+import { Wrapper } from '@googlemaps/react-wrapper';
+import { googleAPI } from './utils/credent';
+const ApiKey = googleAPI();
 
 const db = firebaseDB();
 
@@ -69,35 +71,35 @@ function App() {
     <>
       <GlobalStyle />
       <Header />
-      {/* <BodyWrapper> */}
-      <Routes>
-        <Route
-          path="/"
-          element={<LandingPage user={user} setUser={setUser} />}
-        />
-        <Route
-          path="/edit-plan-detail"
-          element={
-            <EditPlanDetail
-              userId={user.email}
-              favFolderNames={favFolderNames}
-            />
-          }
-        />
-        <Route path="/add-new-plan" element={<AddNewPlan user={user} />} />
-        <Route
-          path="/static-plan-detail"
-          element={<StaticPlanDetail favFolderNames={favFolderNames} />}
-        />
+      <Wrapper apiKey={ApiKey} libraries={['places']}>
+        <Routes>
+          <Route
+            path="/"
+            element={<LandingPage user={user} setUser={setUser} />}
+          />
+          <Route
+            path="/edit-plan-detail"
+            element={
+              <EditPlanDetail
+                userId={user.email}
+                favFolderNames={favFolderNames}
+              />
+            }
+          />
+          <Route path="/add-new-plan" element={<AddNewPlan user={user} />} />
+          <Route
+            path="/static-plan-detail"
+            element={<StaticPlanDetail favFolderNames={favFolderNames} />}
+          />
 
-        <Route path="/autocomplete" element={<AutoCompleteInput />} />
-        <Route path="/dashboard" element={<Dashboard user={user} />} />
-        <Route
-          path="/discover"
-          element={<Allplans defaultImg={defaultImg} />}
-        />
-      </Routes>
-      {/* </BodyWrapper> */}
+          <Route path="/autocomplete" element={<AutoCompleteInput />} />
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
+          <Route
+            path="/discover"
+            element={<Allplans defaultImg={defaultImg} />}
+          />
+        </Routes>
+      </Wrapper>
       <Footer />
     </>
   );

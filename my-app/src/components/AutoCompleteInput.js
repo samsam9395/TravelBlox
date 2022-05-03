@@ -47,13 +47,13 @@ function SearchInput(props) {
 
 function AutoCompleteInput(props) {
   return (
-    <Wrapper apiKey={ApiKey} libraries={['places']}>
-      <SearchInput
-        setLocation={props.setLocation}
-        locationName={props.locationName || ''}
-        placeId={props.placeId}
-      />
-    </Wrapper>
+    // <Wrapper apiKey={ApiKey} libraries={['places']}>
+    <SearchInput
+      setLocation={props.setLocation}
+      locationName={props.locationName || ''}
+      placeId={props.placeId}
+    />
+    // </Wrapper>
   );
 }
 

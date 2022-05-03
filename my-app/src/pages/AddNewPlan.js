@@ -46,7 +46,8 @@ const Wrapper = styled.div`
 
 const TopContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
+  align-items: center;
 `;
 
 const TitleSection = styled.div`
@@ -108,7 +109,7 @@ function AddNewPlan(props) {
   const location = useLocation();
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  const [mainImage, setMainImage] = useState('');
+  const [mainImage, setMainImage] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);
   const [myEvents, setMyEvents] = useState([]);
   const [showEditPopUp, setShowEditPopUp] = useState(false);
@@ -235,11 +236,13 @@ function AddNewPlan(props) {
           </TitleSection>
 
           <FlexColumnWrapper>
-            <EditableMainImageContainer>
-              <EditableMainImage src={mainImage}></EditableMainImage>
-            </EditableMainImageContainer>
+            {mainImage && (
+              <EditableMainImageContainer>
+                <EditableMainImage src={mainImage}></EditableMainImage>
+              </EditableMainImageContainer>
+            )}
 
-            <label htmlFor="icon-button-file">
+            <label htmlFor="icon-button-file" className="upload_icon">
               <Input
                 accept="image/*"
                 id="icon-button-file"
