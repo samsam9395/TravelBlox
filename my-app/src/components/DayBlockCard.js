@@ -27,11 +27,10 @@ const SingleDayWrapper = styled.div`
 const TimeMapContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 700px;
+  max-width: 300px;
 `;
 
 const ContentContainer = styled.div`
-  padding-right: 15px;
   display: flex;
   flex-direction: column;
   margin: 20px 0;
@@ -40,13 +39,18 @@ const DailyContentWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
-  padding-right: 15px;
+  margin-right: 35px;
 `;
 
 const DayScheduleContainer = styled.div`
   min-height: 400px;
   /* border: 1px solid black; */
-  margin-bottom: 20px;
+  margin-bottom: 60px;
+`;
+
+const TimeBlockImg = styled.img`
+  margin-bottom: 15px;
+  max-width: 100%;
 `;
 
 function addOneDay(date) {
@@ -156,11 +160,9 @@ function DayBlockCard(props) {
                 <h2>{singleEvent.title}</h2>
                 <div>Place: {singleEvent.place_name}</div>
                 <div>Name: {singleEvent.place_format_address}</div>
-                <img
+                <TimeBlockImg
                   src={singleEvent.timeblock_img}
-                  alt=""
-                  style={{ maxWidth: 1000 }}
-                />
+                  alt="evernt_main_image"></TimeBlockImg>
                 <h3 className="content">Context: {singleEvent.text}</h3>
               </ContentContainer>
             );
@@ -176,8 +178,9 @@ function DayBlockCard(props) {
               });
             })} */}
         </DailyContentWrapper>
-        {lat && lng && <Weather lat={lat} lng={lng} />}
+
         <TimeMapContainer>
+          {lat && lng && <Weather lat={lat} lng={lng} />}
           <DayScheduleContainer>
             {hasReturned ? (
               <DayCalendar
@@ -189,7 +192,6 @@ function DayBlockCard(props) {
                 <CircularProgress size={14} sx={{ py: 2 }} />
               </Box>
             )}
-            )
           </DayScheduleContainer>
 
           <DayMapCard dayEvents={dayEvents} setResult={setResult} />

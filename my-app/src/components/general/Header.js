@@ -27,6 +27,7 @@ const NavLink = styled.div`
 
 const TestLink = styled(Link)`
   text-decoration: none;
+  color: ${themeColours.dark_blue};
   &:active {
     text-decoration: none;
     color: ${themeColours.orange};

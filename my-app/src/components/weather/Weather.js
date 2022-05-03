@@ -5,17 +5,18 @@ import './weather.scss';
 import { themeColours } from '../../utils/globalTheme';
 
 const WeatherCard = styled.div`
-  width: 338px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 10px 20px;
+  padding: 10px 0;
+  margin-bottom: 60px;
 `;
 
 const CurrentSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(0, 187, 255, 0.8);
+  background: ${themeColours.light_blue};
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   height: 300px;
   border-radius: 15px 15px 0 0;
@@ -66,7 +67,8 @@ const SubInfoTitle = styled.div`
 
 const DailyWrapper = styled.div`
   display: flex;
-  background: #bae7f7;
+  justify-content: space-evenly;
+  background: ${themeColours.pale};
   padding: 10px 0;
   border-radius: 0 0 10px 10px;
 `;

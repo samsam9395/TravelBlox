@@ -16,20 +16,20 @@ const ApiKey = googleAPI();
 
 const UpperContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  /* justify-content: space-between; */
   box-sizing: content-box;
   width: 100%;
 `;
 
 const FavFolderWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  margin-bottom: 30px;
+  /* flex-direction: column; */
+  /* margin-bottom: 30px; */
 `;
 
 const UserRightSideWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   padding: 0 20px;
 `;
@@ -48,9 +48,14 @@ const UserInfoWrapper = styled.div`
   }
 `;
 
+const BtnWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
-  padding: 0 30px;
 `;
 
 const PlanMainImageContainer = styled.div`
@@ -69,8 +74,9 @@ const PlanMainImageContainer = styled.div`
 `;
 
 const PlanMainImage = styled.img`
-  width: auto;
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   &:hover {
     opacity: 60%;
     transition: 0.35s;
@@ -216,34 +222,36 @@ function StaticPlanDetail(props) {
             />
             <div>Planned by: {author}</div>
           </UserInfoWrapper>
-          <FavFolderWrapper>
-            <LightOrangeBtn
-              style={{ width: 210 }}
-              variant="contained"
-              onClick={() => setShowFavDropDown(!showfavDropDown)}>
-              Favourite this plan
-            </LightOrangeBtn>
-            {showfavDropDown && (
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={props.favFolderNames}
-                sx={{ width: 210 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Favourite Folders" />
-                )}
-                onChange={(e) => {
-                  handleFavAction(
-                    planDocRef,
-                    author,
-                    e.target.textContent,
-                    planTitle
-                  );
-                }}
-              />
-            )}
-          </FavFolderWrapper>
-          <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
+          <BtnWrapper>
+            <FavFolderWrapper>
+              <LightOrangeBtn
+                style={{ width: 210 }}
+                variant="contained"
+                onClick={() => setShowFavDropDown(!showfavDropDown)}>
+                Favourite this plan
+              </LightOrangeBtn>
+              {showfavDropDown && (
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={props.favFolderNames}
+                  sx={{ width: 210 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Favourite Folders" />
+                  )}
+                  onChange={(e) => {
+                    handleFavAction(
+                      planDocRef,
+                      author,
+                      e.target.textContent,
+                      planTitle
+                    );
+                  }}
+                />
+              )}
+            </FavFolderWrapper>
+            <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
+          </BtnWrapper>
         </UserRightSideWrapper>
       </UpperContainer>
 

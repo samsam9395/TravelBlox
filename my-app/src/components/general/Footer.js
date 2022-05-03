@@ -18,14 +18,14 @@ const Title = styled.div`
   font-weight: 800;
   font-size: 16px;
   letter-spacing: 2px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
-const SubTitle = styled.div`
-  font-size: 12px;
-  text-align: center;
-  margin-bottom: 30px;
-`;
+// const SubTitle = styled.div`
+//   font-size: 12px;
+//   text-align: center;
+//   margin-bottom: 30px;
+// `;
 
 const Rights = styled.div`
   font-size: 12px;
@@ -37,10 +37,10 @@ function Footer() {
   return (
     <Wrapper>
       <Title>EXPLORE. DRAG. PLAN. </Title>
-      <SubTitle>
+      {/* <SubTitle>
         We easify your travel planning experience! Stay worry free about the
-        preperation and only focus on your travel day!{' '}
-      </SubTitle>
+        preperation !
+      </SubTitle> */}
       <Rights>© 2022 TripBlox. All Rights Reserved.</Rights>
     </Wrapper>
   );
