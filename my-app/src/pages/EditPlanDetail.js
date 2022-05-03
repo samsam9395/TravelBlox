@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  TextField,
-  Button,
-  IconButton,
-  Box,
-  Card,
-  CardMedia,
-  Stack,
-} from '@mui/material';
+import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './planDetail.scss';
@@ -111,6 +104,10 @@ function EditPlanDetail(props) {
     });
   };
 
+  const redirectToDashboard = () => {
+    navigate('/dashboard');
+  };
+
   async function deletePlan(planDocRef, currentUserId) {
     const batch = writeBatch(db);
     const plansRef = doc(db, 'plans', planDocRef);
@@ -181,6 +178,10 @@ function EditPlanDetail(props) {
           planDocRef={planDocRef}
         />
       ) : null}
+      <ArrowBackIosIcon
+        className="hoverCursor"
+        onClick={() => redirectToDashboard()}
+      />
       <TopContainer>
         <TitleSection>
           <TextField
