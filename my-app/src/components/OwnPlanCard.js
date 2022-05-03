@@ -98,7 +98,7 @@ function OwnPlanCard(props) {
 
   const navigate = useNavigate();
 
-  console.log(props.ownPlanId);
+  // console.log(props.ownPlanId);
 
   const redirectToEdit = () => {
     navigate('/edit-plan-detail', {

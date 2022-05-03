@@ -38,7 +38,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
   const handleSelectEvent = useCallback((event) => {
     if (event.status === 'imported') {
       console.log(event.status);
-      console.log('okies');
+      // console.log('okies');
       console.log(event);
       // console.log(event.id);
       props.setCurrentSelectTimeId(event.id);
@@ -48,34 +48,37 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
       console.log(event.status);
       console.log(event);
       props.setCurrentSelectTimeData(event);
-      console.log(event.id); //this is timeBlockId
+      // console.log(event.id); //this is timeBlockId
       props.setCurrentSelectTimeId(event.id);
       props.setShowEditPopUp(true);
     }
   });
 
   // console.log(props.myEvents);
-  console.log('calendar start value', typeof props.startDateValue);
+  // console.log('calendar start value', typeof props.startDateValue);
+  // console.log('calendar start value', props.startDateValue);
 
   return (
-    <DnDCalendar
-      startAccessor="start"
-      endAccessor="end"
-      dayLayoutAlgorithm={dayLayoutAlgorithm}
-      // defaultDate={moment().toDate()}
-      defaultDate={props.startDateValue || new Date()}
-      defaultView={Views.WEEK}
-      localizer={localizer}
-      events={props.myEvents}
-      onSelectEvent={handleSelectEvent}
-      //   onSelectSlot={handleSelectSlot}
-      onEventDrop={moveEvent}
-      //   onEventResize={resizeEvent}
-      scrollToTime={scrollToTime}
-      draggableAccessor={(event) => true}
-      selectable
-      resizable
-    />
+    props.startDateValue != 0 && (
+      <DnDCalendar
+        startAccessor="start"
+        endAccessor="end"
+        dayLayoutAlgorithm={dayLayoutAlgorithm}
+        // defaultDate={moment().toDate()}
+        defaultDate={props.startDateValue}
+        defaultView={Views.WEEK}
+        localizer={localizer}
+        events={props.myEvents}
+        onSelectEvent={handleSelectEvent}
+        //   onSelectSlot={handleSelectSlot}
+        onEventDrop={moveEvent}
+        //   onEventResize={resizeEvent}
+        scrollToTime={scrollToTime}
+        draggableAccessor={(event) => true}
+        selectable
+        resizable
+      />
+    )
   );
 }
 
