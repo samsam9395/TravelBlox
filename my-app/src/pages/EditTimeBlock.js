@@ -155,7 +155,7 @@ function EditTimeBlock(props) {
           rating: location.rating || '',
           place_types: location.types || '',
           place_lat: location.geometry.location.lat(),
-          place_lnt: location.geometry.location.lng(),
+          place_lng: location.geometry.location.lng(),
           status: 'origin',
           id: props.currentSelectTimeId,
         },

@@ -33,7 +33,7 @@ function RestaurantCard({ place }) {
             src={place.photo.images.original.url}
             alt={place.photo.caption}
           />
-          <figcaption>
+          <figcaption className="resturant_card">
             <h3>More Info</h3>
 
             <p>{descriptionTen}</p>

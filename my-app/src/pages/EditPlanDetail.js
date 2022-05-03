@@ -323,7 +323,6 @@ function EditPlanDetail(props) {
                   endDateValue,
                   isPublished
                 );
-                alert('Saved!');
               } catch (error) {
                 console.log(error);
                 alert('Oops!Something went wrong, please try again!');

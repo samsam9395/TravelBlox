@@ -15,6 +15,13 @@ color: ${themeColours.dark_blue};
   cursor: pointer;
 }
 
+.flexColumnWrap{
+  display: flex;
+  flex-direction: column;
+align-items: center;
+
+}
+
 }
 `;
 
