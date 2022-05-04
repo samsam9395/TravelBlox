@@ -4,11 +4,10 @@ import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
 
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
-import DayMapCard from './DailyEventCard/DayMapCard';
-import DayCalendar from './DailyEventCard/DayCalendar';
-import { GetWeather } from '../utils/api';
-import Weather from '../components/weather/Weather';
+import firebaseDB from '../../utils/firebaseConfig';
+import DayMapCard from './DayMapCard';
+import DayCalendar from './DayCalendar';
+import Weather from '../weather/Weather';
 
 const db = firebaseDB();
 
@@ -94,7 +93,6 @@ function DayBlockCard(props) {
   const [dayEvents, setDayEvents] = useState([]);
   const [hasReturned, setHasReturned] = useState(false);
   const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
-  const [timeBlockImage, setTimeBlockImage] = useState('');
   const [result, setResult] = useState(null);
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
@@ -142,9 +140,6 @@ function DayBlockCard(props) {
   //  console.log(11, result);
   // console.log(dayEvents);
   console.log(111, dayEvents[1]);
-  // if (dayEvents[1].place_lat) {
-  //   GetWeather('47.6205063', '-122.3492774');
-  // }
 
   return (
     <MainWrapper>

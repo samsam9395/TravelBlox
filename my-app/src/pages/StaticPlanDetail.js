@@ -2,24 +2,29 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
 import { googleAPI } from '../utils/credent';
-import { Wrapper } from '@googlemaps/react-wrapper';
-import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
+import { Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import DayBlockCard from '../components/DayBlockCard';
+import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
 import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
 import './libraryStyles.scss';
+import Timeline from '../components/DailyEventCard/Timeline';
 
 const db = firebaseDB();
-const ApiKey = googleAPI();
 
 const UpperContainer = styled.div`
   display: flex;
   flex-direction: column;
   /* justify-content: space-between; */
+  box-sizing: content-box;
+  width: 100%;
+`;
+
+const LowerContainer = styled.div`
+  display: flex;
   box-sizing: content-box;
   width: 100%;
 `;
@@ -169,7 +174,6 @@ function StaticPlanDetail(props) {
   const [showfavDropDown, setShowFavDropDown] = useState(false);
 
   const location = useLocation();
-  // const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
   const planCollectionRef = doc(db, 'plans', planDocRef);
@@ -209,7 +213,6 @@ function StaticPlanDetail(props) {
 
   return (
     <>
-      {/* <Wrapper apiKey={ApiKey}> */}
       <UpperContainer>
         <PlanMainImageContainer>
           <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
@@ -262,20 +265,22 @@ function StaticPlanDetail(props) {
         </UserRightSideWrapper>
       </UpperContainer>
 
-      <PlanCardsWrapper>
-        {timestampList.map((day, index) => {
-          return (
-            <DayBlockCard
-              currentDayDate={day}
-              day={day}
-              planDocRef={planDocRef}
-              index={index}
-              key={index}
-            />
-          );
-        })}
-      </PlanCardsWrapper>
-      {/* </Wrapper> */}
+      <LowerContainer>
+        <Timeline NumofDays={timestampList.length} />
+        <PlanCardsWrapper>
+          {timestampList.map((day, index) => {
+            return (
+              <DayBlockCard
+                currentDayDate={day}
+                day={day}
+                planDocRef={planDocRef}
+                index={index}
+                key={index}
+              />
+            );
+          })}
+        </PlanCardsWrapper>
+      </LowerContainer>
     </>
   );
 }
