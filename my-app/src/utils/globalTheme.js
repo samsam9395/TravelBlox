@@ -4,6 +4,7 @@ export const themeColours = {
   orange: '#f1651d',
   light_orange: '#fea360',
   pale: '#fceebf',
+  lighter_blue: '#54cfd673',
   light_blue: '#55cfd6',
   blue: '#0a97b7',
   dark_blue: '#00213a',

@@ -51,8 +51,7 @@ const TitleSection = styled.div`
 const CalendarContainer = styled.div`
   width: 100%;
   height: 60vh;
-  border: 1px solid black;
-  margin-top: 40px;
+  margin-top: 60px;
   margin-bottom: 40px;
 `;
 

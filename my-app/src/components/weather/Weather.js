@@ -16,7 +16,7 @@ const CurrentSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${themeColours.light_blue};
+  background: ${themeColours.blue};
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   height: 300px;
   border-radius: 15px 15px 0 0;
@@ -68,7 +68,7 @@ const SubInfoTitle = styled.div`
 const DailyWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
-  background: ${themeColours.pale};
+  background: ${themeColours.light_blue};
   padding: 10px 0;
   border-radius: 0 0 10px 10px;
 `;
@@ -190,9 +190,11 @@ function Weather({ lat, lng }) {
           {weatherData.daily.map((e, index) => {
             // console.log('a', new Date(e.dt * 1000).getDay());
             // console.log('b', new Date(weatherData.current.dt * 1000).getDay());
+
             if (
               new Date(e.dt * 1000).getDay() !=
-              new Date(weatherData.current.dt * 1000).getDay()
+                new Date(weatherData.current.dt * 1000).getDay() &&
+              index < 6
             ) {
               return (
                 <DailyContainer key={index}>

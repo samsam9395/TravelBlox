@@ -11,6 +11,8 @@ import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
 import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
+import './libraryStyles.scss';
+
 const db = firebaseDB();
 const ApiKey = googleAPI();
 
@@ -66,8 +68,9 @@ const PlanMainImageContainer = styled.div`
   overflow: hidden;
   &:hover {
     div {
-      color: ${themeColours.dark_blue};
-      text-shadow: 1px 1px ${themeColours.pale};
+      color: ${themeColours.pale};
+      text-shadow: 2px 2px ${themeColours.dark_blue};
+
       transition: 0.5s;
     }
   }
@@ -77,8 +80,9 @@ const PlanMainImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 60%;
   &:hover {
-    opacity: 60%;
+    opacity: 100%;
     transition: 0.35s;
   }
 `;
@@ -90,11 +94,14 @@ const PlanTitleText = styled.div`
   left: 50px;
   font-size: 60px;
   letter-spacing: 5px;
-  color: ${themeColours.pale};
-  text-shadow: 2px 2px ${themeColours.dark_blue};
+  color: ${themeColours.light_orange};
+  text-shadow: 1px 1px ${themeColours.blue};
+
   .location_text {
+    font-weight: 400;
     letter-spacing: 1px;
     font-size: 25px;
+    text-shadow: none;
   }
 `;
 

@@ -1,2 +1,44 @@
+.rbc-button-link {
+  color: #fea360;
+}
+
+.rbc-toolbar .rbc-toolbar-label {
+  font-weight: 600;
+}
+
+.rbc-agenda-time-cell {
+  color: #fea360;
+}
+
+$out-of-range-color: lighten(#333, 40%) !default;
+$out-of-range-bg-color: lighten(#333, 70%) !default;
+
+$calendar-border: #ddd !default;
+$cell-border: #ddd !default;
+
+$border-color: #ccc !default;
+
+$time-selection-color: white !default;
+$time-selection-bg-color: rgba(0, 0, 0, 0.5) !default;
+$date-selection-bg-color: rgba(0, 0, 0, 0.1) !default;
+
+$event-bg: #fea360;
+$event-border: none !default;
+$event-outline: #f1651d;
+$event-color: #fff !default;
+$event-border-radius: 5px !default;
+$event-padding: 2px 5px !default;
+$event-zindex: 4 !default;
+
+$btn-color: #f1651d !default;
+$btn-bg: #fff !default;
+$btn-border: #ccc !default;
+
+$current-time-color: #0a97b7 !default;
+
+$rbc-css-prefix: rbc-i !default;
+
+$today-highlight-bg: #eaf6ff !default;
+
 @import 'react-big-calendar/lib/sass/styles';
 @import 'react-big-calendar/lib/addons/dragAndDrop/styles'; // if using DnD
