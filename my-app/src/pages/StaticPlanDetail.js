@@ -24,6 +24,7 @@ const UpperContainer = styled.div`
 
 const LowerContainer = styled.div`
   display: flex;
+  justify-content: center;
   box-sizing: content-box;
   width: 100%;
 `;

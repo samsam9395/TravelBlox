@@ -7,6 +7,7 @@ import firebaseDB from '../../utils/firebaseConfig';
 import DayMapCard from './DayMapCard';
 import DayCalendar from './DayCalendar';
 import Weather from '../weather/Weather';
+import { themeColours } from '../../utils/globalTheme';
 
 const db = firebaseDB();
 
@@ -17,38 +18,65 @@ const MainWrapper = styled.div`
 
 const SingleDayWrapper = styled.div`
   display: flex;
-  width: 100%;
   margin-bottom: 60px;
   /* height: 2000px; */
 `;
 
-const TimeMapContainer = styled.div`
+const LeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 300px;
+  margin-right: 35px;
+  max-width: 980px;
+  /* flex-grow: 2; */
+`;
+
+const RightWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin-left: auto;
+  min-width: 300px;
+  /* flex-grow: 1; */
 `;
 
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 20px 0;
-`;
-const DailyContentWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  margin-right: 35px;
 `;
 
 const DayScheduleContainer = styled.div`
   min-height: 400px;
-  /* border: 1px solid black; */
   margin-bottom: 60px;
 `;
 
 const TimeBlockImg = styled.img`
   margin-bottom: 15px;
   max-width: 100%;
+`;
+
+const DayTitle = styled.div`
+  font-size: 36px;
+  font-weight: 600;
+  font-family: 'Oswald', sans-serif;
+  margin-bottom: 50px;
+  color: ${themeColours.orange};
+  display: flex;
+  align-items: baseline;
+  .date {
+    padding-left: 10px;
+    font-size: 18px;
+  }
+`;
+
+const EventTitle = styled.div`
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+
+  .event_location {
+    font-size: 12px;
+    margin: 10px 0;
+  }
 `;
 
 function addOneDay(date) {
@@ -150,18 +178,23 @@ function DayBlockCard(props) {
 
   return (
     <MainWrapper>
-      <div ref={dayRef}>
-        Day{props.index + 1}, {props.currentDayDate.toDateString()}
-      </div>
+      <DayTitle ref={dayRef}>
+        Day {props.index + 1}
+        <div className="date"> {props.currentDayDate.toDateString()}</div>
+      </DayTitle>
       <SingleDayWrapper>
-        <DailyContentWrapper>
+        <LeftWrapper>
           {dayEvents.map((singleEvent, index) => {
             // console.log('here', singleEvent.end.secodns); //single event end time
             return (
               <ContentContainer key={index}>
-                <h2>{singleEvent.title}</h2>
-                <div>Place: {singleEvent.place_name}</div>
-                <div>Name: {singleEvent.place_format_address}</div>
+                <EventTitle>
+                  {singleEvent.title.toUpperCase()}
+                  {/* <div>Place: {singleEvent.place_name}</div> */}
+                  <div className="event_location">
+                    Address: {singleEvent.place_format_address}
+                  </div>
+                </EventTitle>
                 <TimeBlockImg
                   src={singleEvent.timeblock_img}
                   alt="evernt_main_image"></TimeBlockImg>
@@ -179,9 +212,9 @@ function DayBlockCard(props) {
                 return <h2>Duration is: {e.duration.text}</h2>;
               });
             })} */}
-        </DailyContentWrapper>
+        </LeftWrapper>
 
-        <TimeMapContainer>
+        <RightWrapper>
           {lat && lng && <Weather lat={lat} lng={lng} />}
           <DayScheduleContainer>
             {hasReturned ? (
@@ -197,7 +230,7 @@ function DayBlockCard(props) {
           </DayScheduleContainer>
 
           <DayMapCard dayEvents={dayEvents} setResult={setResult} />
-        </TimeMapContainer>
+        </RightWrapper>
       </SingleDayWrapper>
     </MainWrapper>
   );

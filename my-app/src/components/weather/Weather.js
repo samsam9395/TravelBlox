@@ -5,11 +5,12 @@ import './weather.scss';
 import { themeColours } from '../../utils/globalTheme';
 
 const WeatherCard = styled.div`
+  max-width: 300px;
   width: 100%;
   display: flex;
   flex-direction: column;
   padding: 10px 0;
-  margin-bottom: 60px;
+  margin: 0 auto 60px auto;
 `;
 
 const CurrentSection = styled.div`
