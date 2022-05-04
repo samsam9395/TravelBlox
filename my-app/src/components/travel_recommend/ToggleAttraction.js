@@ -12,7 +12,8 @@ const QuestionText = styled.div`
   display: flex;
   div {
     padding: 0 8px;
-    color: ${themeColours.orange};
+    font-weight: 800;
+    color: ${themeColours.blue};
     text-decoration: dotted 4px underline;
     &:hover {
       cursor: pointer;

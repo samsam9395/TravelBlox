@@ -9,7 +9,7 @@ import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
 import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
-import './libraryStyles.scss';
+import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
 

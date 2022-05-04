@@ -85,18 +85,19 @@ function UserAvatar({ currentUserId, fromLocate }) {
           {...(avatarConfig ? { ...avatarConfig } : null)}
         />
 
-        {fromLocate === 'dashbaord' && (
-          <EditIconWrapper>
+        {fromLocate === 'dashboard' && (
+          <EditIconWrapper className="hoverCursor">
             <EditIcon
               onClick={() => setShowChangeAvatar(!showChangeAvatar)}></EditIcon>
           </EditIconWrapper>
         )}
         {showChangeAvatar && (
           <>
-            <RandomIconWrapper>
+            <RandomIconWrapper className="hoverCursor">
               <ShuffleIcon onClick={() => randomAvatar()}></ShuffleIcon>
             </RandomIconWrapper>
             <OkayIconWrapper
+              className="hoverCursor"
               onClick={() => SaveConfigToDataBase(currentUserId)}>
               <CheckIcon></CheckIcon>
             </OkayIconWrapper>

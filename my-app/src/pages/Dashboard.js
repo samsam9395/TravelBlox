@@ -40,6 +40,21 @@ const UserInfoWrapper = styled.div`
   .user_id {
     margin-bottom: 30px;
   }
+
+  .user_info_title {
+    text-align: center;
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: ${themeColours.orange};
+    font-weight: 600;
+  }
+
+  .authorId {
+    color: ${themeColours.dark_blue};
+    font-weight: 400;
+    padding-left: 10px;
+  }
 `;
 
 const PlanCollectionWrapper = styled.div`
@@ -177,7 +192,7 @@ function Dashboard(props) {
       <TopSectionWrapper>
         <UserInfoWrapper>
           <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} />
-
+          <div className="user_info_title">Welcome!</div>
           <div className="user_id">{currentUserId}</div>
           <PaleBtn
             onClick={() => {
@@ -188,7 +203,13 @@ function Dashboard(props) {
           </PaleBtn>
         </UserInfoWrapper>
         <LightOrangeBtn
-          style={{ width: 200, height: 60, padding: 15, fontSize: 20 }}
+          style={{
+            width: 200,
+            height: 60,
+            padding: 15,
+            fontSize: 20,
+            fontWeight: 600,
+          }}
           onClick={() => {
             setShowAddPlanPopup(true);
           }}>
