@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { themeColours } from '../../utils/globalTheme';
 import styled from 'styled-components';
 
@@ -49,13 +49,22 @@ const scrollEffect = (targetRef, index) => {
   });
 };
 
-function Timeline({ NumofDays, RefList }) {
+function Timeline({ NumofDays, RefList, timelineRefArray }) {
+  const timelineRef = useRef([]);
+
+  useEffect(() => {
+    timelineRefArray.current.push(timelineRef);
+  }, []);
+
   return (
     <Container>
       <DayBox>
         <Day>Day</Day>
         {[...Array(NumofDays)].map((e, index) => (
           <NumberofDay
+            ref={(element) => {
+              timelineRef.current[index] = element;
+            }}
             key={index}
             className="hoverCursor"
             onClick={() => scrollEffect(RefList, index)}>

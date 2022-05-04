@@ -176,13 +176,7 @@ function Dashboard(props) {
     <>
       <TopSectionWrapper>
         <UserInfoWrapper>
-          <UserAvatar currentUserId={currentUserId} />
-          <Avatar
-            className="avatar_image"
-            alt="Remy Sharp"
-            src="/static/images/avatar/1.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
+          <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} />
 
           <div className="user_id">{currentUserId}</div>
           <PaleBtn

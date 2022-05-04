@@ -113,6 +113,8 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
   return eventByDayList;
 }
 
+// timelineRefArray={timelineRefArray}
+// itemEls={itemEls}
 // currentDayDate={day}
 // planDocRef={planDocRef}
 // index={index}
@@ -174,10 +176,27 @@ function DayBlockCard(props) {
   //  console.log(11, result);
   // console.log(dayEvents);
 
-  console.log(222, props.itemEls);
+  function changeTimelineEnterColor(timelineRefArray, index) {
+    // console.log(timelineRefArray.current[0].current[index]);
+    const enteredElement = timelineRefArray.current[0].current[index];
+    enteredElement.style.borderRadius = '50%';
+    enteredElement.style.backgroundColor = themeColours.light_blue;
+  }
+
+  function removeTimelineEnterColor(timelineRefArray, index) {
+    const enteredElement = timelineRefArray.current[0].current[index];
+    enteredElement.style.borderRadius = 0;
+    enteredElement.style.backgroundColor = 'transparent';
+  }
 
   return (
-    <MainWrapper>
+    <MainWrapper
+      onMouseEnter={() =>
+        changeTimelineEnterColor(props.timelineRefArray, props.index)
+      }
+      onMouseLeave={() =>
+        removeTimelineEnterColor(props.timelineRefArray, props.index)
+      }>
       <DayTitle ref={dayRef}>
         Day {props.index + 1}
         <div className="date"> {props.currentDayDate.toDateString()}</div>

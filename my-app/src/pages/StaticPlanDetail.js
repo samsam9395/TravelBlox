@@ -11,6 +11,7 @@ import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn'
 import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
 import './libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
+import UserAvatar from '../components/user/Avatar';
 
 const db = firebaseDB();
 
@@ -35,29 +36,38 @@ const FavFolderWrapper = styled.div`
   /* margin-bottom: 30px; */
 `;
 
-const UserRightSideWrapper = styled.div`
+const PlanInfoWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   padding: 0 20px;
+  justify-content: center;
 `;
 
-const UserInfoWrapper = styled.div`
+const UserInfoContainer = styled.div`
   padding-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  .avatar_image {
-    margin-bottom: 20px;
-  }
-  margin-bottom: 40px;
-  div {
+
+  .user_info_title {
     text-align: center;
+    display: flex;
+    margin-top: 20px;
+    color: ${themeColours.orange};
+    font-weight: 600;
+  }
+
+  .authorId {
+    color: ${themeColours.dark_blue};
+    font-weight: 400;
+    padding-left: 10px;
   }
 `;
 
 const BtnWrapper = styled.div`
+  margin-top: 20px;
   display: flex;
-  flex-direction: column;
   align-items: center;
 `;
 
@@ -178,6 +188,7 @@ function StaticPlanDetail(props) {
 
   const planCollectionRef = doc(db, 'plans', planDocRef);
   const itemEls = useRef(new Array());
+  const timelineRefArray = useRef(new Array());
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -223,16 +234,15 @@ function StaticPlanDetail(props) {
           </PlanTitleText>
         </PlanMainImageContainer>
 
-        <UserRightSideWrapper>
-          <UserInfoWrapper>
-            <Avatar
-              className="avatar_image"
-              alt="Remy Sharp"
-              src="/static/images/avatar/1.jpg"
-              sx={{ width: 100, height: 100 }}
-            />
-            <div>Planned by: {author}</div>
-          </UserInfoWrapper>
+        <PlanInfoWrapper>
+          <UserInfoContainer>
+            <UserAvatar currentUserId={author} fromLocate={'static'} />
+            <div className="user_info_title">
+              Planned by:
+              <div className="authorId">{author}</div>
+            </div>
+          </UserInfoContainer>
+
           <BtnWrapper>
             <FavFolderWrapper>
               <LightOrangeBtn
@@ -263,15 +273,20 @@ function StaticPlanDetail(props) {
             </FavFolderWrapper>
             <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
           </BtnWrapper>
-        </UserRightSideWrapper>
+        </PlanInfoWrapper>
       </UpperContainer>
 
       <LowerContainer>
-        <Timeline NumofDays={timestampList.length} RefList={itemEls} />
+        <Timeline
+          NumofDays={timestampList.length}
+          RefList={itemEls}
+          timelineRefArray={timelineRefArray}
+        />
         <PlanCardsWrapper>
           {timestampList.map((day, index) => {
             return (
               <DayBlockCard
+                timelineRefArray={timelineRefArray}
                 itemEls={itemEls}
                 currentDayDate={day}
                 day={day}

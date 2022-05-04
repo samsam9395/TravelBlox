@@ -23,6 +23,7 @@ export const LightOrangeBtn = styled.button`
   margin: 5px;
   &:hover {
     cursor: pointer;
+    background-color: ${themeColours.orange};
   }
 `;
 
@@ -35,6 +36,7 @@ export const LightBlueBtn = styled.button`
   margin: 5px;
   &:hover {
     cursor: pointer;
+    background-color: ${themeColours.blue};
   }
 `;
 

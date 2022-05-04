@@ -41,7 +41,7 @@ const OkayIconWrapper = styled.div`
   right: -24px;
 `;
 
-function UserAvatar({ currentUserId }) {
+function UserAvatar({ currentUserId, fromLocate }) {
   const [userImage, setUserImage] = useState(null);
   const [avatarConfig, setAvatarConfig] = useState(null);
   const [showChangeAvatar, setShowChangeAvatar] = useState(false);
@@ -53,7 +53,6 @@ function UserAvatar({ currentUserId }) {
   }, [currentUserId]);
 
   function randomAvatar() {
-    console.log(config);
     const config = { ...generateRandomAvatarOptions() };
 
     setAvatarConfig(config);
@@ -86,10 +85,12 @@ function UserAvatar({ currentUserId }) {
           {...(avatarConfig ? { ...avatarConfig } : null)}
         />
 
-        <EditIconWrapper>
-          <EditIcon
-            onClick={() => setShowChangeAvatar(!showChangeAvatar)}></EditIcon>
-        </EditIconWrapper>
+        {fromLocate === 'dashbaord' && (
+          <EditIconWrapper>
+            <EditIcon
+              onClick={() => setShowChangeAvatar(!showChangeAvatar)}></EditIcon>
+          </EditIconWrapper>
+        )}
         {showChangeAvatar && (
           <>
             <RandomIconWrapper>
