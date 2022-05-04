@@ -16,6 +16,7 @@ import {
   PaleBtn,
 } from '../utils/globalTheme';
 import { padding } from '@mui/system';
+import UserAvatar from '../components/user/Avatar';
 
 const db = firebaseDB();
 const TopSectionWrapper = styled.div`
@@ -175,6 +176,7 @@ function Dashboard(props) {
     <>
       <TopSectionWrapper>
         <UserInfoWrapper>
+          <UserAvatar currentUserId={currentUserId} />
           <Avatar
             className="avatar_image"
             alt="Remy Sharp"
