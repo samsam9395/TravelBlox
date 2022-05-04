@@ -142,7 +142,7 @@ function DayBlockCard(props) {
   console.log(111, dayEvents[1]);
 
   return (
-    <MainWrapper>
+    <MainWrapper ref={props.ref}>
       <h2>
         Day{props.index + 1}, {props.currentDayDate.toDateString()}
       </h2>

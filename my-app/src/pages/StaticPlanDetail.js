@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
 import { googleAPI } from '../utils/credent';
@@ -177,6 +177,7 @@ function StaticPlanDetail(props) {
   const planDocRef = location.state.planDocRef;
 
   const planCollectionRef = doc(db, 'plans', planDocRef);
+  const itemEls = useRef(new Array());
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -266,17 +267,22 @@ function StaticPlanDetail(props) {
       </UpperContainer>
 
       <LowerContainer>
-        <Timeline NumofDays={timestampList.length} />
+        <Timeline NumofDays={timestampList.length} RefList={itemEls} />
         <PlanCardsWrapper>
           {timestampList.map((day, index) => {
             return (
-              <DayBlockCard
-                currentDayDate={day}
-                day={day}
-                planDocRef={planDocRef}
-                index={index}
-                key={index}
-              />
+              <>
+                <div ref={(element) => itemEls.current.push(element)}>
+                  TESTING {index}
+                </div>
+                <DayBlockCard
+                  currentDayDate={day}
+                  day={day}
+                  planDocRef={planDocRef}
+                  index={index}
+                  key={index}
+                />
+              </>
             );
           })}
         </PlanCardsWrapper>
