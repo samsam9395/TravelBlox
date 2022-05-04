@@ -116,11 +116,6 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.end || ''
   );
   const [timeBlockImage, setTimeBlockImage] = useState('');
-  // const [isImported, setIsImported] = useState(false);
-  // const [importPlaceData, setImportPlaceData] = useState({});
-  // const [timeBlockRef, setTimeBlockRef] = useState('');
-
-  // might need to be assigned outside???
   const timeBlockRef = doc(
     db,
     'plans',
@@ -140,38 +135,64 @@ function EditTimeBlock(props) {
   ) {
     // const location_img = location.photos[0].getUrl();
     console.log(location.name);
-    try {
-      await setDoc(
-        timeBlockRef,
-        {
-          title: blockTitle,
-          text: description,
-          start: startTimeValue,
-          end: endTimeValue,
-          place_id: location.place_id || placeId,
-          place_name: location.name,
-          place_format_address: location.formatted_address,
-          timeblock_img: timeBlockImage || '',
-          place_img: location.mainImg || location.photos[0].getUrl() || '',
-          place_formatted_phone_number: location.formatted_phone_number || '',
-          place_international_phone_number:
-            location.international_phone_number || '',
-          place_url: location.url,
-          rating: location.rating || '',
-          place_types: location.types || '',
-          place_lat: location.geometry.location.lat(),
-          place_lnt: location.geometry.location.lng(),
-          status: 'origin',
-          id: props.currentSelectTimeId,
-        },
-        {
-          merge: true,
-        }
-      );
-      props.setShowEditPopUp(false);
-      alert('Successfully updated!');
-    } catch (error) {
-      console.log(error);
+    console.log(111, location);
+    if (location.geometry) {
+      try {
+        await setDoc(
+          timeBlockRef,
+          {
+            title: blockTitle,
+            text: description,
+            start: startTimeValue,
+            end: endTimeValue,
+            place_id: location.place_id || placeId,
+            place_name: location.name,
+            place_format_address: location.formatted_address,
+            timeblock_img: timeBlockImage || '',
+            place_img: location.mainImg || location.photos[0].getUrl() || '',
+            place_formatted_phone_number: location.formatted_phone_number || '',
+            place_international_phone_number:
+              location.international_phone_number || '',
+            place_url: location.url,
+            rating: location.rating || '',
+            place_types: location.types || '',
+            place_lat: location.geometry.location.lat(),
+            place_lng: location.geometry.location.lng(),
+            place_types: location.types || '',
+            status: 'origin',
+            id: props.currentSelectTimeId,
+          },
+          {
+            merge: true,
+          }
+        );
+        props.setShowEditPopUp(false);
+        alert('Successfully updated!');
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await setDoc(
+          timeBlockRef,
+          {
+            title: blockTitle,
+            text: description,
+            start: startTimeValue,
+            end: endTimeValue,
+            timeblock_img: timeBlockImage || '',
+            status: 'origin',
+            id: props.currentSelectTimeId,
+          },
+          {
+            merge: true,
+          }
+        );
+        props.setShowEditPopUp(false);
+        alert('Successfully updated!');
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -200,7 +221,8 @@ function EditTimeBlock(props) {
   ) {
     try {
       await deleteDoc(timeBlockRef);
-      alert(blockTitle, props.currentSelectTimeId, 'is deleted!');
+      alert(`${blockTitle} is deleted!`);
+      console.log(blockTitle, props.currentSelectTimeId, 'is deleted!');
       setShowEditPopUp(false);
     } catch (error) {
       console.log(error);
@@ -220,13 +242,11 @@ function EditTimeBlock(props) {
 
       retreiveFromDataBase(timeBlockRef, setInitBlockData);
     } else console.log('something wrong with edit-time-block');
-
-    console.log(344, blockTitle);
   }, [props.currentSelectTimeData]);
 
   useEffect(() => {
     const data = importBlockData;
-    console.log('formatted_address', data.place_format_address);
+    console.log(555, importBlockData);
 
     setBlockTitle(data.title);
     setLocationName(data.place_name);
@@ -239,7 +259,7 @@ function EditTimeBlock(props) {
       formatted_phone_number: data.place_formatted_phone_number || '',
       international_phone_number: data.place_international_phone_number || '',
       url: data.place_url,
-      types: data.types || '',
+      place_types: data.types || '',
       mainImg: data.place_img || '',
       rating: data.rating || '',
       place_id: data.place_id,
@@ -262,7 +282,7 @@ function EditTimeBlock(props) {
         formatted_phone_number: data.place_formatted_phone_number || '',
         international_phone_number: data.place_international_phone_number || '',
         url: data.place_url,
-        types: data.types || '',
+        place_types: data.types || '',
         mainImg: data.place_img || '',
         rating: data.rating || '',
         place_id: data.place_id,
@@ -378,24 +398,13 @@ function EditTimeBlock(props) {
             variant="contained"
             onClick={(e) => {
               if (
-                location &&
+                (location || placeId) &&
                 blockTitle &&
                 description &&
                 startTimeValue &&
                 endTimeValue
               ) {
                 try {
-                  console.log(
-                    'clicked submit 777',
-                    timeBlockRef.path,
-                    blockTitle,
-                    description,
-                    startTimeValue,
-                    endTimeValue,
-                    location,
-                    timeBlockImage
-                  );
-
                   UpdateToDataBase(
                     timeBlockRef,
                     blockTitle,

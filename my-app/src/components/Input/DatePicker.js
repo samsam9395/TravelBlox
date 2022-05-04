@@ -31,8 +31,9 @@ function DatePicker(props) {
   }, [props.startInitDateValue, props.endInitDateValue]);
 
   useEffect(() => {
+    console.log(state.length);
     if (state.length > 0) {
-      //   console.log(state);
+      console.log('here', state);
       props.setStartDateValue(state[0].startDate);
       props.setEndDateValue(state[0].endDate);
     }

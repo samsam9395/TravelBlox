@@ -9,37 +9,52 @@ import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
 import FavPlanCard from '../components/PublicPlanCard';
 import FavFolder from '../components/FavFolder';
+import {
+  themeColours,
+  LightOrangeBtn,
+  OrangeBtn,
+  PaleBtn,
+} from '../utils/globalTheme';
+import { padding } from '@mui/system';
 
 const db = firebaseDB();
 const TopSectionWrapper = styled.div`
   display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 `;
 
-const AddPlanBtn = styled.button`
-  height: 25px;
-  width: 100%;
-  padding: 20px;
-  text-align: center;
-  border: none;
-  border-radius: 15px;
-  background-color: aliceblue;
+const UserInfoWrapper = styled.div`
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .avatar_image {
+    margin-bottom: 20px;
+  }
+  margin-bottom: 40px;
+  div {
+    text-align: center;
+  }
+  .user_id {
+    margin-bottom: 30px;
+  }
 `;
 
 const PlanCollectionWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 15px;
   width: 100%;
   box-sizing: content-box;
   overflow: auto;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   margin: 30px 0;
-  height: 400px;
+  height: 450px;
 `;
 
 const SinglePlanContainer = styled.div`
   width: 450px;
-  height: 450px;
+  height: 100%;
   margin: 0 15px;
   display: flex;
   justify-content: center;
@@ -104,7 +119,7 @@ function Dashboard(props) {
   useEffect(async () => {
     if (!props.user) {
       alert('Please login first!');
-      navigate('/landing');
+      navigate('/');
     }
     setCurrentUserId(props.user.email);
 
@@ -159,32 +174,31 @@ function Dashboard(props) {
   return (
     <>
       <TopSectionWrapper>
-        <Avatar
-          onClick={() => {
-            console.log('clicked');
-          }}
-          alt="Remy Sharp"
-          src="/static/images/avatar/1.jpg"
-          sx={{ width: 56, height: 56 }}
-        />
-        <h4>Welcom! {currentUserId}</h4>
-      </TopSectionWrapper>
-      <Stack direction="column" alignItems="center" spacing={2}>
-        <AddPlanBtn
-          onClick={() => {
-            signOutFirebase();
-            navigate('/landing');
-          }}>
-          Logout
-        </AddPlanBtn>
+        <UserInfoWrapper>
+          <Avatar
+            className="avatar_image"
+            alt="Remy Sharp"
+            src="/static/images/avatar/1.jpg"
+            sx={{ width: 100, height: 100 }}
+          />
 
-        <AddPlanBtn
+          <div className="user_id">{currentUserId}</div>
+          <PaleBtn
+            onClick={() => {
+              signOutFirebase();
+              navigate('/');
+            }}>
+            Logout
+          </PaleBtn>
+        </UserInfoWrapper>
+        <LightOrangeBtn
+          style={{ width: 200, height: 60, padding: 15, fontSize: 20 }}
           onClick={() => {
             setShowAddPlanPopup(true);
           }}>
           Add New Plan
-        </AddPlanBtn>
-      </Stack>
+        </LightOrangeBtn>
+      </TopSectionWrapper>
 
       {showAddPlanPopUp &&
         navigate('/add-new-plan', {
@@ -194,7 +208,6 @@ function Dashboard(props) {
       <PlanCollectionWrapper>
         {ownPlansIdList &&
           ownPlansIdList.map((ownPlanId) => {
-            console.log('map is here', ownPlanId);
             return (
               <SinglePlanContainer key={ownPlanId}>
                 <OwnPlanCard

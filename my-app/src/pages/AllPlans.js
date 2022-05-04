@@ -21,8 +21,14 @@ const PlanCollectionWrapper = styled.div`
   box-sizing: content-box;
   /* overflow: auto; */
   flex-wrap: wrap;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   margin: 30px 0;
+`;
+
+const SearchContainer = styled.div`
+  padding-top: 20px;
+  width: 70%;
+  margin: auto;
 `;
 
 // defaultImg={defaultImg}
@@ -33,7 +39,7 @@ function Allplans(props) {
 
   useEffect(async () => {
     const allPlans = await getDocs(collection(db, 'allPlans'));
-    console.log(allPlans);
+    // console.log(allPlans);
 
     if (allPlans.docs.length === 0) {
       console.log('No plans yet!');
@@ -47,17 +53,17 @@ function Allplans(props) {
     let list = [];
 
     allPlansList.map((e) => {
-      console.log(222, e.country.label);
+      // console.log(222, e.country.label);
       if (e.author === inputValue.toLowerCase()) {
-        console.log('its equal!!! ', e);
+        // console.log('its equal!!! ', e);
         list.push(e);
         setDisplayPlans(list);
       } else if (e.title.toLowerCase().includes(inputValue.toLowerCase())) {
-        console.log('title includes ', e);
+        // console.log('title includes ', e);
         list.push(e);
         setDisplayPlans(list);
       } else if (e.country.label.toLowerCase() === inputValue.toLowerCase()) {
-        console.log('country is equal!!! ', e);
+        // console.log('country is equal!!! ', e);
         list.push(e);
         setDisplayPlans(list);
       }
@@ -67,9 +73,9 @@ function Allplans(props) {
 
   return (
     <>
-      <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-        {/* <InputLabel htmlFor="standard-adornment-amount">Search</InputLabel> */}
+      <SearchContainer>
         <Input
+          fullWidth
           id="standard-adornment-amount"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -77,7 +83,8 @@ function Allplans(props) {
             <InputAdornment position="start">Search</InputAdornment>
           }
         />
-      </FormControl>
+      </SearchContainer>
+
       <PlanCollectionWrapper>
         {displayPlans.map((planInfo, index) => (
           <PublicPlanCard

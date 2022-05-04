@@ -82,6 +82,12 @@ function AttractionInput({ showRecommends, setShowRecommends }) {
   const [restaurantList, setRestaurantList] = useState([]);
   const [loading, setLoading] = useState(null);
 
+  useEffect(() => {
+    if (attractionList === undefined || restaurantList === undefined) {
+      alert('Please try search again!');
+    }
+  }, [attractionList, restaurantList]);
+
   return (
     <MainWrapper>
       <InputWrapper>
@@ -114,11 +120,16 @@ function AttractionInput({ showRecommends, setShowRecommends }) {
         </SearchBtn>
       </InputWrapper>
       {loading && (
-        <HashLoader
-          color={themeColours.light_orange}
-          loading={loading}
-          size={100}
-        />
+        <div className="flexColumnWrap">
+          <HashLoader
+            color={themeColours.light_orange}
+            loading={loading}
+            size={100}
+          />
+          <div style={{ margin: 15 }}>
+            Trying hard to decide what to recommend you ...... hanging there!
+          </div>
+        </div>
       )}
 
       {showRecommends && !loading && (

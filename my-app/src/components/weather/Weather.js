@@ -5,21 +5,24 @@ import './weather.scss';
 import { themeColours } from '../../utils/globalTheme';
 
 const WeatherCard = styled.div`
-  width: 338px;
+  max-width: 300px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 10px 20px;
+  padding: 10px 0;
+  margin: 0 auto 60px auto;
 `;
 
 const CurrentSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #00bbff;
+  background: ${themeColours.blue};
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   height: 300px;
   border-radius: 15px 15px 0 0;
   margin: 0;
-  padding-top: 55px;
+  /* padding-top: 55px; */
 
   .todayDate {
     font-size: 20px;
@@ -65,7 +68,8 @@ const SubInfoTitle = styled.div`
 
 const DailyWrapper = styled.div`
   display: flex;
-  background: #bae7f7;
+  justify-content: space-evenly;
+  background: ${themeColours.light_blue};
   padding: 10px 0;
   border-radius: 0 0 10px 10px;
 `;
@@ -95,6 +99,15 @@ const DailyDate = styled.div`
   font-weight: 200;
 `;
 
+const AnimationContainer = styled.div`
+  width: 100%;
+  height: 110px;
+  /* position: absolute; */
+  /* left: 50%;
+  top: 50%;
+  margin: -65px -360px; */
+`;
+
 function Weather({ lat, lng }) {
   const [weatherData, setWeatherData] = useState(null);
 
@@ -105,20 +118,20 @@ function Weather({ lat, lng }) {
   function currentWeather(status) {
     switch (status) {
       case 'Clouds':
-        return <div class="cloudy"></div>;
+        return <div className="cloudy"></div>;
         break;
       case 'Rain':
-        return <div class="rainy"></div>;
+        return <div className="rainy"></div>;
       case 'Thunderstorm':
-        return <div class="stormy"></div>;
+        return <div className="stormy"></div>;
       case 'Drizzle':
-        return <div class="rainy"></div>;
+        return <div className="rainy"></div>;
       case 'Clear':
-        return <div class="sunny"></div>;
+        return <div className="sunny"></div>;
       case 'Snow':
-        return <div class="snowy"></div>;
+        return <div className="snowy"></div>;
       default:
-        return <div class="rainbow"></div>;
+        return <div className="rainbow"></div>;
         break;
     }
   }
@@ -139,8 +152,9 @@ function Weather({ lat, lng }) {
     weatherData && (
       <WeatherCard>
         <CurrentSection>
-          {currentWeather(weatherData.current.weather[0].main)}
-
+          <AnimationContainer>
+            {currentWeather(weatherData.current.weather[0].main)}
+          </AnimationContainer>
           <div className="todayDate">
             {new Date(weatherData.current.dt * 1000).toLocaleString(undefined, {
               month: 'short',
@@ -174,15 +188,17 @@ function Weather({ lat, lng }) {
         </CurrentSection>
 
         <DailyWrapper>
-          {weatherData.daily.map((e) => {
+          {weatherData.daily.map((e, index) => {
             // console.log('a', new Date(e.dt * 1000).getDay());
             // console.log('b', new Date(weatherData.current.dt * 1000).getDay());
+
             if (
               new Date(e.dt * 1000).getDay() !=
-              new Date(weatherData.current.dt * 1000).getDay()
+                new Date(weatherData.current.dt * 1000).getDay() &&
+              index < 6
             ) {
               return (
-                <DailyContainer>
+                <DailyContainer key={index}>
                   <DailyDate>
                     {new Date(e.dt * 1000).toLocaleString(undefined, {
                       day: 'numeric',

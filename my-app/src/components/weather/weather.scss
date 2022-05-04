@@ -1,7 +1,7 @@
 /* SUNNY */
 .sunny {
   animation: sunny 15s linear infinite;
-  background: linear-gradient(
+  background: -webkit-linear-gradient(
     top,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0.8) 50%,
@@ -9,13 +9,13 @@
   );
   height: 140px;
   width: 20px;
-  margin-left: -15px;
+  margin-left: 45%;
   // position: absolute;
   // left: 90px;
   // top: 20px;
 }
 .sunny:before {
-  background: linear-gradient(
+  background: -webkit-linear-gradient(
     top,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0.8) 50%,
@@ -25,7 +25,7 @@
   height: 140px;
   width: 20px;
   opacity: 1;
-  // position: absolute;
+  position: absolute;
   bottom: 0px;
   left: 0px;
   transform: rotate(90deg);
@@ -37,7 +37,7 @@
   content: '';
   height: 80px;
   width: 80px;
-  // position: absolute;
+  position: absolute;
   left: -30px;
   top: 30px;
 }
@@ -59,7 +59,9 @@
     #ffffff 60px 15px 0 -10px, #ffffff 85px 5px 0 -5px;
   height: 50px;
   width: 50px;
-  margin-left: -77px;
+  margin-left: 27%;
+  margin-top: 20%;
+  // margin-left: -77px;
   // position: relative;
   // left: 255px;
   // top: 70px;
@@ -99,7 +101,8 @@
   display: block;
   height: 50px;
   width: 50px;
-  margin-left: -77px;
+  margin-left: 27%;
+  margin-top: 20%;
   // position: absolute;
   // left: 427px;
   // top: 70px;
@@ -191,7 +194,8 @@
     #60b1f5 -12px -12px 0 11px, #a3459b -14px -14px 0 13px;
   height: 70px;
   width: 70px;
-  margin-left: -55px;
+  margin-left: 37%;
+  margin-top: 20%;
   // position: absolute;
   // left: 610px;
   // top: 71px;
@@ -284,7 +288,8 @@
     #222222 60px 15px 0 -10px, #222222 85px 5px 0 -5px;
   height: 50px;
   width: 50px;
-  margin-left: -77px;
+  margin-left: 27%;
+  margin-top: 20%;
   // position: absolute;
   // left: 947px;
   // top: 70px;
@@ -313,8 +318,10 @@
   height: 0;
   width: 0;
   // position: absolute;
-  left: 57px;
-  top: 70px;
+  // left: 57px;
+  // top: 70px;
+  margin-left: 40px;
+  margin-top: 33%;
   transform: rotate(14deg);
   transform-origin: 50% -60px;
 }
@@ -358,7 +365,8 @@
   display: block;
   height: 50px;
   width: 50px;
-  margin-left: -77px;
+  margin-left: 27%;
+  margin-top: 20%;
   // position: absolute;
   // left: 1112px;
   // top: 70px;

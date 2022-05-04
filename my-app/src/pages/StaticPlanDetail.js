@@ -1,48 +1,113 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
-import { googleAPI } from '../utils/credent';
-import { Wrapper } from '@googlemaps/react-wrapper';
-import { Button, Card, CardMedia, Typography, Avatar } from '@mui/material';
+import { Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import DayBlockCard from '../components/DayBlockCard';
+import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
+import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
+import './libraryStyles.scss';
+import Timeline from '../components/DailyEventCard/Timeline';
+
 const db = firebaseDB();
-const ApiKey = googleAPI();
 
 const UpperContainer = styled.div`
   display: flex;
-  padding: 0 30px;
-  justify-content: space-between;
-`;
-
-const PlanInfoWrapper = styled.div`
-  padding: 0 30px;
+  flex-direction: column;
+  /* justify-content: space-between; */
+  box-sizing: content-box;
   width: 100%;
 `;
 
-const LeftSideWrapper = styled.div`
+const LowerContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  box-sizing: content-box;
+  width: 100%;
+`;
+
+const FavFolderWrapper = styled.div`
+  display: flex;
+  /* flex-direction: column; */
+  /* margin-bottom: 30px; */
 `;
 
 const UserRightSideWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  padding-left: 30px;
+  align-items: center;
+  padding: 0 20px;
 `;
 
 const UserInfoWrapper = styled.div`
+  padding-top: 20px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  .avatar_image {
+    margin-bottom: 20px;
+  }
+  margin-bottom: 40px;
+  div {
+    text-align: center;
+  }
+`;
+
+const BtnWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
-  padding: 0 30px;
+`;
+
+const PlanMainImageContainer = styled.div`
+  /* width: 600px; */
+  width: auto;
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  &:hover {
+    div {
+      color: ${themeColours.pale};
+      text-shadow: 2px 2px ${themeColours.dark_blue};
+
+      transition: 0.5s;
+    }
+  }
+`;
+
+const PlanMainImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 60%;
+  &:hover {
+    opacity: 100%;
+    transition: 0.35s;
+  }
+`;
+
+const PlanTitleText = styled.div`
+  position: absolute;
+  font-weight: 800;
+  top: 100px;
+  left: 50px;
+  font-size: 60px;
+  letter-spacing: 5px;
+  color: ${themeColours.light_orange};
+  text-shadow: 1px 1px ${themeColours.blue};
+
+  .location_text {
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-size: 25px;
+    text-shadow: none;
+  }
 `;
 
 function addDays(date, days) {
@@ -109,10 +174,10 @@ function StaticPlanDetail(props) {
   const [showfavDropDown, setShowFavDropDown] = useState(false);
 
   const location = useLocation();
-  // const collectionID = location.state.collectionID;
   const planDocRef = location.state.planDocRef;
 
   const planCollectionRef = doc(db, 'plans', planDocRef);
+  const itemEls = useRef(new Array());
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -148,74 +213,77 @@ function StaticPlanDetail(props) {
   // console.log(111, 'timestampList is ', timestampList);
 
   return (
-    <Wrapper apiKey={ApiKey}>
+    <>
       <UpperContainer>
-        <LeftSideWrapper>
-          <Card sx={{ width: 400 }}>
-            <CardMedia component="img" image={mainImage} height="200" />
-            <Typography gutterBottom variant="h5" component="div">
-              {planTitle}
-            </Typography>
-          </Card>
-          <PlanInfoWrapper>
-            <Typography variant="h5" component="div">
-              Location: {country.label}
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={() => setShowFavDropDown(!showfavDropDown)}>
-              Favourite this plan
-            </Button>
-            {showfavDropDown && (
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={props.favFolderNames}
-                sx={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Favourite Folders" />
-                )}
-                onChange={(e) => {
-                  handleFavAction(
-                    planDocRef,
-                    author,
-                    e.target.textContent,
-                    planTitle
-                  );
-                }}
-              />
-            )}
-          </PlanInfoWrapper>
-        </LeftSideWrapper>
+        <PlanMainImageContainer>
+          <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
+          <PlanTitleText>
+            {planTitle}
+            <div className="location_text">Location: {country.label}</div>
+          </PlanTitleText>
+        </PlanMainImageContainer>
 
         <UserRightSideWrapper>
           <UserInfoWrapper>
             <Avatar
+              className="avatar_image"
               alt="Remy Sharp"
               src="/static/images/avatar/1.jpg"
-              sx={{ width: 56, height: 56 }}
+              sx={{ width: 100, height: 100 }}
             />
-            <span>Made by: {author}</span>
+            <div>Planned by: {author}</div>
           </UserInfoWrapper>
-
-          <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
+          <BtnWrapper>
+            <FavFolderWrapper>
+              <LightOrangeBtn
+                style={{ width: 210 }}
+                variant="contained"
+                onClick={() => setShowFavDropDown(!showfavDropDown)}>
+                Favourite this plan
+              </LightOrangeBtn>
+              {showfavDropDown && (
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={props.favFolderNames}
+                  sx={{ width: 210 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Favourite Folders" />
+                  )}
+                  onChange={(e) => {
+                    handleFavAction(
+                      planDocRef,
+                      author,
+                      e.target.textContent,
+                      planTitle
+                    );
+                  }}
+                />
+              )}
+            </FavFolderWrapper>
+            <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
+          </BtnWrapper>
         </UserRightSideWrapper>
       </UpperContainer>
 
-      <PlanCardsWrapper>
-        {timestampList.map((day, index) => {
-          return (
-            <DayBlockCard
-              currentDayDate={day}
-              day={day}
-              planDocRef={planDocRef}
-              index={index}
-              key={index}
-            />
-          );
-        })}
-      </PlanCardsWrapper>
-    </Wrapper>
+      <LowerContainer>
+        <Timeline NumofDays={timestampList.length} RefList={itemEls} />
+        <PlanCardsWrapper>
+          {timestampList.map((day, index) => {
+            return (
+              <DayBlockCard
+                itemEls={itemEls}
+                currentDayDate={day}
+                day={day}
+                planDocRef={planDocRef}
+                index={index}
+                key={index}
+              />
+            );
+          })}
+        </PlanCardsWrapper>
+      </LowerContainer>
+    </>
   );
 }
 export default StaticPlanDetail;
