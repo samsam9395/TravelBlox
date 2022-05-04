@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { themeColours } from '../../utils/globalTheme';
 import styled from 'styled-components';
 
@@ -42,13 +42,10 @@ const NumberofDay = styled.div`
   }
 `;
 
-const scrollEffect = (targetRef) => {
-  console.log(targetRef);
-  console.log(targetRef.current[0]);
-
-  targetRef.current[0].scrollIntoView({
+const scrollEffect = (targetRef, index) => {
+  targetRef.current[index].current.scrollIntoView({
     behavior: 'smooth',
-    block: 'start',
+    block: 'center',
   });
 };
 
@@ -61,7 +58,7 @@ function Timeline({ NumofDays, RefList }) {
           <NumberofDay
             key={index}
             className="hoverCursor"
-            onClick={() => scrollEffect(RefList)}>
+            onClick={() => scrollEffect(RefList, index)}>
             {index + 1}
           </NumberofDay>
         ))}

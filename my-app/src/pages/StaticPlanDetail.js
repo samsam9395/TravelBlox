@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
-import { googleAPI } from '../utils/credent';
 import { Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -271,18 +270,14 @@ function StaticPlanDetail(props) {
         <PlanCardsWrapper>
           {timestampList.map((day, index) => {
             return (
-              <>
-                <div ref={(element) => itemEls.current.push(element)}>
-                  TESTING {index}
-                </div>
-                <DayBlockCard
-                  currentDayDate={day}
-                  day={day}
-                  planDocRef={planDocRef}
-                  index={index}
-                  key={index}
-                />
-              </>
+              <DayBlockCard
+                itemEls={itemEls}
+                currentDayDate={day}
+                day={day}
+                planDocRef={planDocRef}
+                index={index}
+                key={index}
+              />
             );
           })}
         </PlanCardsWrapper>

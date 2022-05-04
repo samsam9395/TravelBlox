@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { display } from '@mui/system';
 import { Box, CircularProgress } from '@mui/material';
 
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
@@ -96,12 +95,15 @@ function DayBlockCard(props) {
   const [result, setResult] = useState(null);
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
+
   const blocksListRef = collection(
     db,
     'plans',
     props.planDocRef,
     'time_blocks'
   );
+
+  const dayRef = useRef(null);
 
   useEffect(() => {
     CalendarByDay(blocksListRef, props.currentDayDate)
@@ -122,6 +124,10 @@ function DayBlockCard(props) {
   }, [props.currentDayDate]);
 
   useEffect(() => {
+    props.itemEls.current.push(dayRef);
+  }, []);
+
+  useEffect(() => {
     dayEvents.forEach((block) => {
       // console.log(block);
       setDayTimeBlocks((prev) => [
@@ -139,13 +145,14 @@ function DayBlockCard(props) {
   }, [hasReturned]);
   //  console.log(11, result);
   // console.log(dayEvents);
-  console.log(111, dayEvents[1]);
+
+  console.log(222, props.itemEls);
 
   return (
-    <MainWrapper ref={props.ref}>
-      <h2>
+    <MainWrapper>
+      <div ref={dayRef}>
         Day{props.index + 1}, {props.currentDayDate.toDateString()}
-      </h2>
+      </div>
       <SingleDayWrapper>
         <DailyContentWrapper>
           {dayEvents.map((singleEvent, index) => {
