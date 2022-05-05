@@ -30,6 +30,13 @@ const LeftWrapper = styled.div`
   /* flex-grow: 2; */
 `;
 
+const CalendarLeftWrapper = styled.div`
+  display: flex;
+  margin-right: 35px;
+  max-width: 750px;
+  /* flex-grow: 2; */
+`;
+
 const RightWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -37,6 +44,10 @@ const RightWrapper = styled.div`
   margin-left: auto;
   min-width: 200px;
   /* flex-grow: 1; */
+`;
+
+const CalendarMapIndivWrapper = styled.div`
+  display: flex;
 `;
 
 const ContentContainer = styled.div`
@@ -47,6 +58,7 @@ const ContentContainer = styled.div`
 const DayScheduleContainer = styled.div`
   min-height: 400px;
   margin-bottom: 60px;
+  display: flex;
 `;
 
 const TimeBlockImg = styled.img`
@@ -240,6 +252,9 @@ function DayBlockCard(props) {
               });
             })} */}
           </LeftWrapper>
+          <RightWrapper>
+            {lat && lng && <Weather lat={lat} lng={lng} />}
+          </RightWrapper>
         </SingleDayWrapper>
       </MainWrapper>
     );
@@ -253,13 +268,29 @@ function DayBlockCard(props) {
           <div className="date"> {props.currentDayDate.toDateString()}</div>
         </DayTitle>
         <SingleDayWrapper>
-          <RightWrapper>
-            {lat && lng && <Weather lat={lat} lng={lng} />}
+          <LeftWrapper>
+            <DayMapCard dayEvents={dayEvents} setResult={setResult} />
+          </LeftWrapper>
+        </SingleDayWrapper>
+      </MainWrapper>
+    );
+  }
+
+  if (props.showTab === 'calendar') {
+    return (
+      <MainWrapper>
+        <DayTitle ref={dayRef}>
+          Day {props.index + 1}
+          <div className="date"> {props.currentDayDate.toDateString()}</div>
+        </DayTitle>
+        <SingleDayWrapper>
+          <CalendarLeftWrapper>
             <DayScheduleContainer>
               {hasReturned ? (
                 <DayCalendar
                   currentDayDate={props.currentDayDate}
                   dayTimeBlocks={dayTimeBlocks}
+                  showType={'week'}
                 />
               ) : (
                 <Box sx={{ display: 'flex' }} align="center" justify="center">
@@ -267,9 +298,7 @@ function DayBlockCard(props) {
                 </Box>
               )}
             </DayScheduleContainer>
-
-            <DayMapCard dayEvents={dayEvents} setResult={setResult} />
-          </RightWrapper>
+          </CalendarLeftWrapper>
         </SingleDayWrapper>
       </MainWrapper>
     );

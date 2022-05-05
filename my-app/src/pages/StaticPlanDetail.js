@@ -68,6 +68,8 @@ const UserInfoContainer = styled.div`
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
+  width: 950px;
+  /* margin: 50px auto 0 auto; */
 `;
 
 const PlanMainImageContainer = styled.div`
@@ -397,6 +399,9 @@ function StaticPlanDetail(props) {
         </div>
         <div className="tab" onClick={() => setShowTab('route')}>
           route
+        </div>
+        <div className="tab" onClick={() => setShowTab('calendar')}>
+          calendar
         </div>
       </SwitchTab>
 

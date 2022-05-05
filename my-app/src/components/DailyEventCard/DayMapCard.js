@@ -8,6 +8,7 @@ const zoom = 15;
 
 const DayMapContainer = styled.div`
   margin-bottom: 20px;
+  display: flex;
 `;
 
 const MapContainer = styled.div`
@@ -197,7 +198,6 @@ function DayMapCard(props) {
 
   return (
     <DayMapContainer>
-      {/* <Wrapper apiKey={ApiKey}> */}
       {props.dayEvents && (
         <Map
           center={center}
@@ -209,7 +209,7 @@ function DayMapCard(props) {
         />
       )}
       {hasMarker && <Marker position={markerPosition} />}
-      {/* </Wrapper> */}
+
       <PanelContainer id="sidebar"></PanelContainer>
     </DayMapContainer>
   );
