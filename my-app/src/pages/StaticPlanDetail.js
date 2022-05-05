@@ -238,6 +238,12 @@ async function handleFavAction(
   }
 }
 
+const SwitchTab = styled.div`
+  .tab {
+    margin: 0 10px;
+  }
+`;
+
 function StaticPlanDetail(props) {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
@@ -250,6 +256,7 @@ function StaticPlanDetail(props) {
   const [timestampList, setTimestampList] = useState([]);
   const [showfavDropDown, setShowFavDropDown] = useState(false);
   const [selectedFavFolder, setSelectedFavFolder] = useState('');
+  const [showTab, setShowTab] = useState('route');
 
   const location = useLocation();
   const planDocRef = location.state.planDocRef;
@@ -384,6 +391,15 @@ function StaticPlanDetail(props) {
         </PlanInfoWrapper>
       </UpperContainer>
 
+      <SwitchTab>
+        <div className="tab" onClick={() => setShowTab('dayByday')}>
+          day by day{' '}
+        </div>
+        <div className="tab" onClick={() => setShowTab('route')}>
+          route
+        </div>
+      </SwitchTab>
+
       <LowerContainer>
         <Timeline
           NumofDays={timestampList.length}
@@ -392,6 +408,7 @@ function StaticPlanDetail(props) {
         />
         <PlanCardsWrapper>
           {timestampList.map((day, index) => {
+            console.log('this line runs');
             return (
               <DayBlockCard
                 timelineRefArray={timelineRefArray}
@@ -401,6 +418,7 @@ function StaticPlanDetail(props) {
                 planDocRef={planDocRef}
                 index={index}
                 key={index}
+                showTab={showTab}
               />
             );
           })}

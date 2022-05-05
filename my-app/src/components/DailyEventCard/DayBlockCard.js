@@ -122,6 +122,7 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
 // currentDayDate={day}
 // planDocRef={planDocRef}
 // index={index}
+// showTab={showTab}
 function DayBlockCard(props) {
   const [dayEvents, setDayEvents] = useState([]);
   const [hasReturned, setHasReturned] = useState(false);
@@ -193,41 +194,42 @@ function DayBlockCard(props) {
     enteredElement.style.backgroundColor = 'transparent';
   }
 
-  return (
-    <MainWrapper
-      onMouseEnter={() =>
-        changeTimelineEnterColor(props.timelineRefArray, props.index)
-      }
-      onMouseLeave={() =>
-        removeTimelineEnterColor(props.timelineRefArray, props.index)
-      }>
-      <DayTitle ref={dayRef}>
-        Day {props.index + 1}
-        <div className="date"> {props.currentDayDate.toDateString()}</div>
-      </DayTitle>
-      <SingleDayWrapper>
-        <LeftWrapper>
-          {dayEvents.map((singleEvent, index) => {
-            // console.log('here', singleEvent.end.secodns); //single event end time
-            return (
-              <ContentContainer key={index}>
-                <EventTitle>
-                  {singleEvent.title.toUpperCase()}
-                  {/* <div>Place: {singleEvent.place_name}</div> */}
-                  <div className="event_location">
-                    Address: {singleEvent.place_format_address}
-                  </div>
-                </EventTitle>
-                <TimeBlockImg
-                  src={singleEvent.timeblock_img}
-                  alt="evernt_main_image"></TimeBlockImg>
-                <EventContentText className="content">
-                  Context: {singleEvent.text}
-                </EventContentText>
-              </ContentContainer>
-            );
-          })}
-          {/* this renders duration text, but position need to be fixed
+  if (props.showTab === 'dayByday') {
+    return (
+      <MainWrapper
+        onMouseEnter={() =>
+          changeTimelineEnterColor(props.timelineRefArray, props.index)
+        }
+        onMouseLeave={() =>
+          removeTimelineEnterColor(props.timelineRefArray, props.index)
+        }>
+        <DayTitle ref={dayRef}>
+          Day {props.index + 1}
+          <div className="date"> {props.currentDayDate.toDateString()}</div>
+        </DayTitle>
+        <SingleDayWrapper>
+          <LeftWrapper>
+            {dayEvents.map((singleEvent, index) => {
+              // console.log('here', singleEvent.end.secodns); //single event end time
+              return (
+                <ContentContainer key={index}>
+                  <EventTitle>
+                    {singleEvent.title.toUpperCase()}
+                    {/* <div>Place: {singleEvent.place_name}</div> */}
+                    <div className="event_location">
+                      Address: {singleEvent.place_format_address}
+                    </div>
+                  </EventTitle>
+                  <TimeBlockImg
+                    src={singleEvent.timeblock_img}
+                    alt="evernt_main_image"></TimeBlockImg>
+                  <EventContentText className="content">
+                    Context: {singleEvent.text}
+                  </EventContentText>
+                </ContentContainer>
+              );
+            })}
+            {/* this renders duration text, but position need to be fixed
           {
             result?.map((res) => {
               return res.map((e) => {
@@ -237,28 +239,41 @@ function DayBlockCard(props) {
                 return <h2>Duration is: {e.duration.text}</h2>;
               });
             })} */}
-        </LeftWrapper>
+          </LeftWrapper>
+        </SingleDayWrapper>
+      </MainWrapper>
+    );
+  }
 
-        <RightWrapper>
-          {lat && lng && <Weather lat={lat} lng={lng} />}
-          <DayScheduleContainer>
-            {hasReturned ? (
-              <DayCalendar
-                currentDayDate={props.currentDayDate}
-                dayTimeBlocks={dayTimeBlocks}
-              />
-            ) : (
-              <Box sx={{ display: 'flex' }} align="center" justify="center">
-                <CircularProgress size={14} sx={{ py: 2 }} />
-              </Box>
-            )}
-          </DayScheduleContainer>
+  if (props.showTab === 'route') {
+    return (
+      <MainWrapper>
+        <DayTitle ref={dayRef}>
+          Day {props.index + 1}
+          <div className="date"> {props.currentDayDate.toDateString()}</div>
+        </DayTitle>
+        <SingleDayWrapper>
+          <RightWrapper>
+            {lat && lng && <Weather lat={lat} lng={lng} />}
+            <DayScheduleContainer>
+              {hasReturned ? (
+                <DayCalendar
+                  currentDayDate={props.currentDayDate}
+                  dayTimeBlocks={dayTimeBlocks}
+                />
+              ) : (
+                <Box sx={{ display: 'flex' }} align="center" justify="center">
+                  <CircularProgress size={14} sx={{ py: 2 }} />
+                </Box>
+              )}
+            </DayScheduleContainer>
 
-          <DayMapCard dayEvents={dayEvents} setResult={setResult} />
-        </RightWrapper>
-      </SingleDayWrapper>
-    </MainWrapper>
-  );
+            <DayMapCard dayEvents={dayEvents} setResult={setResult} />
+          </RightWrapper>
+        </SingleDayWrapper>
+      </MainWrapper>
+    );
+  }
 }
 
 export default DayBlockCard;
