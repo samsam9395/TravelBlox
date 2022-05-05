@@ -16,10 +16,8 @@ $my_black: #0e0e0f !default;
   border-radius: 10px;
 }
 
-.rdrStartEdge {
-  color: $my_orange !important;
-}
-
+.rdrStartEdge,
+.rdrInRange,
 .rdrEndEdge {
   color: $my_orange !important;
 }

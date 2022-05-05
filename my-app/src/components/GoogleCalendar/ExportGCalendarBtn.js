@@ -104,7 +104,7 @@ function ExportGCalendarBtn(props) {
 
   return (
     <LightBlueBtn
-      style={{ width: 210 }}
+      style={{ width: 'auto' }}
       variant="outlined"
       onClick={() => handleExport()}>
       Export to Google Calendar

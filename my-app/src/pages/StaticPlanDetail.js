@@ -12,6 +12,7 @@ import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
 import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
+import CheckIcon from '@mui/icons-material/Check';
 
 const db = firebaseDB();
 
@@ -32,7 +33,7 @@ const LowerContainer = styled.div`
 
 const FavFolderWrapper = styled.div`
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: column;
   /* margin-bottom: 30px; */
 `;
 
@@ -65,12 +66,6 @@ const UserInfoContainer = styled.div`
   }
 `;
 
-const BtnWrapper = styled.div`
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-`;
-
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
 `;
@@ -78,16 +73,21 @@ const PlanCardsWrapper = styled.div`
 const PlanMainImageContainer = styled.div`
   /* width: 600px; */
   width: auto;
-  height: 500px;
+  height: 300px;
   position: relative;
   overflow: hidden;
+  border-radius: 10px;
   &:hover {
-    div {
-      color: ${themeColours.pale};
-      text-shadow: 2px 2px ${themeColours.dark_blue};
-
-      transition: 0.5s;
+    .planTitle_text_bakground {
+      transform: translate(0, 100%);
+      transition: all 0.3s ease-in-out 0s;
+      -webkit-transition: all 0.3s ease-in-out 0s;
     }
+
+    /* img {
+      object-fit: contain;
+      transition: 0.35s;
+    } */
   }
 `;
 
@@ -95,30 +95,90 @@ const PlanMainImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 60%;
+  opacity: 100%;
+  border-radius: 15px;
   &:hover {
-    opacity: 100%;
-    transition: 0.35s;
+    /* object-fit: contain; */
+    /* transition: 0.7s; */
   }
+`;
+
+const PlanTitleTextBakgroundOutterCircle = styled.div`
+  width: 330px;
+  height: 330px;
+  top: 82px;
+  left: 15px;
+  border-radius: 50%;
+  border: 2px solid #ffffff91;
+  background-color: transparent;
+  display: flex;
+  position: absolute;
+`;
+
+const PlanTitleTextBakground = styled.div`
+  width: 300px;
+  height: 300px;
+  top: 96px;
+  left: 30px;
+  border-radius: 50%;
+  border: 10px solid transparent;
+  background-color: #ffffff91;
+  display: flex;
+  position: absolute;
 `;
 
 const PlanTitleText = styled.div`
   position: absolute;
   font-weight: 800;
-  top: 100px;
-  left: 50px;
-  font-size: 60px;
-  letter-spacing: 5px;
-  color: ${themeColours.light_orange};
-  text-shadow: 1px 1px ${themeColours.blue};
+  top: 89px;
+  left: 30px;
+  font-size: 36px;
+  letter-spacing: 3px;
+  color: ${themeColours.dark_blue};
+  text-shadow: 2px 1px ${themeColours.pale};
 
   .location_text {
     font-weight: 400;
     letter-spacing: 1px;
-    font-size: 25px;
+    font-size: 20px;
     text-shadow: none;
   }
 `;
+
+const BtnWrapper = styled.div`
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
+
+const FavFolderAutocompleteWrapper = styled.div`
+  position: absolute;
+  top: 45px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+`;
+
+const FavFolderAutocomplete = styled(TextField)({
+  '& label.Mui-focused': {
+    color: themeColours.orange,
+  },
+  '& .MuiInput-underline:after': {
+    borderBottomColor: themeColours.orange,
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: themeColours,
+    },
+    '&:hover fieldset': {
+      borderColor: 'yellow',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'green',
+    },
+  },
+});
 
 function addDays(date, days) {
   var result = new Date(date);
@@ -147,7 +207,13 @@ function loopThroughDays(startday, days) {
 }
 
 // handleFavAction(collectionID, author)
-async function handleFavAction(planDocRef, author, selectFavFolder, planTitle) {
+async function handleFavAction(
+  planDocRef,
+  author,
+  selectFavFolder,
+  planTitle,
+  setShowFavDropDown
+) {
   const currentUserEmail = localStorage.getItem('userEmail');
 
   if (currentUserEmail === author) {
@@ -162,6 +228,7 @@ async function handleFavAction(planDocRef, author, selectFavFolder, planTitle) {
         infolder: selectFavFolder,
         fav_plan_title: planTitle,
       });
+      setShowFavDropDown(false);
       alert('Successfully favourite this plan!');
     } catch (error) {
       console.log(error);
@@ -182,6 +249,7 @@ function StaticPlanDetail(props) {
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
   const [showfavDropDown, setShowFavDropDown] = useState(false);
+  const [selectedFavFolder, setSelectedFavFolder] = useState('');
 
   const location = useLocation();
   const planDocRef = location.state.planDocRef;
@@ -222,16 +290,40 @@ function StaticPlanDetail(props) {
   }, [numberofDays]);
 
   // console.log(111, 'timestampList is ', timestampList);
+  const FavFolderRef = useRef();
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      // If the menu is open and the clicked target is not within the menu,
+      // then close the menu
+      if (
+        showfavDropDown &&
+        FavFolderRef.current &&
+        !FavFolderRef.current.contains(e.target)
+      ) {
+        setShowFavDropDown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', checkIfClickedOutside);
+
+    return () => {
+      // Cleanup the event listener
+      document.removeEventListener('mousedown', checkIfClickedOutside);
+    };
+  }, [showfavDropDown]);
 
   return (
     <>
       <UpperContainer>
         <PlanMainImageContainer>
           <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
-          <PlanTitleText>
-            {planTitle}
-            <div className="location_text">Location: {country.label}</div>
-          </PlanTitleText>
+          <PlanTitleTextBakgroundOutterCircle className="planTitle_text_bakground"></PlanTitleTextBakgroundOutterCircle>
+          <PlanTitleTextBakground className="planTitle_text_bakground">
+            <PlanTitleText>
+              {planTitle}
+              <div className="location_text">{country.label}</div>
+            </PlanTitleText>
+          </PlanTitleTextBakground>
         </PlanMainImageContainer>
 
         <PlanInfoWrapper>
@@ -252,23 +344,39 @@ function StaticPlanDetail(props) {
                 Favourite this plan
               </LightOrangeBtn>
               {showfavDropDown && (
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={props.favFolderNames}
-                  sx={{ width: 210 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Favourite Folders" />
-                  )}
-                  onChange={(e) => {
-                    handleFavAction(
-                      planDocRef,
-                      author,
-                      e.target.textContent,
-                      planTitle
-                    );
-                  }}
-                />
+                <FavFolderAutocompleteWrapper ref={FavFolderRef}>
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={props.favFolderNames}
+                    sx={{ width: 200 }}
+                    renderInput={(params) => (
+                      <FavFolderAutocomplete
+                        {...params}
+                        placeholder="Select Folder"
+                        variant="standard"></FavFolderAutocomplete>
+                    )}
+                    onChange={(e) => {
+                      setSelectedFavFolder(e.target.textContent);
+                    }}
+                  />
+                  <CheckIcon
+                    className="hoverCursor"
+                    style={{
+                      fontSize: 30,
+                      marginLeft: 7,
+                      color: themeColours.orange,
+                    }}
+                    onClick={() =>
+                      handleFavAction(
+                        planDocRef,
+                        author,
+                        selectedFavFolder,
+                        planTitle,
+                        setShowFavDropDown
+                      )
+                    }></CheckIcon>
+                </FavFolderAutocompleteWrapper>
               )}
             </FavFolderWrapper>
             <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
