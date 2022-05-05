@@ -26,16 +26,16 @@ const LeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 35px;
-  max-width: 980px;
+  max-width: 750px;
   /* flex-grow: 2; */
 `;
 
 const RightWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 400px;
+  max-width: 300px;
   margin-left: auto;
-  min-width: 300px;
+  min-width: 200px;
   /* flex-grow: 1; */
 `;
 
@@ -77,6 +77,10 @@ const EventTitle = styled.div`
     font-size: 12px;
     margin: 10px 0;
   }
+`;
+
+const EventContentText = styled.div`
+  font-size: 14px;
 `;
 
 function addOneDay(date) {
@@ -217,7 +221,9 @@ function DayBlockCard(props) {
                 <TimeBlockImg
                   src={singleEvent.timeblock_img}
                   alt="evernt_main_image"></TimeBlockImg>
-                <h3 className="content">Context: {singleEvent.text}</h3>
+                <EventContentText className="content">
+                  Context: {singleEvent.text}
+                </EventContentText>
               </ContentContainer>
             );
           })}

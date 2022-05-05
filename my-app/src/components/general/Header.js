@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import logo from '../../images/main-logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { themeColours } from '../../utils/globalTheme';
 
 const Wrapper = styled.div`
@@ -43,8 +43,8 @@ const TestLink = styled(Link)`
 `;
 
 const Logo = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background-image: url(${logo});
   background-size: cover;
 `;
@@ -55,9 +55,13 @@ const NavLinkWrapper = styled.div`
   margin-right: 30px;
 `;
 function Header() {
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
-      <Logo></Logo>
+      <Logo
+        className="hoverCursor"
+        onClick={() => navigate('/discover')}></Logo>
       <NavLinkWrapper>
         <NavLink>
           <TestLink to="/">Home</TestLink>

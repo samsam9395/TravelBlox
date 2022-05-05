@@ -130,7 +130,7 @@ const PlanTitleTextBakground = styled.div`
 const PlanTitleText = styled.div`
   position: absolute;
   font-weight: 800;
-  top: 89px;
+  top: 60px;
   left: 30px;
   font-size: 36px;
   letter-spacing: 3px;

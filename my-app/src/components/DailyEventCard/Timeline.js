@@ -6,7 +6,7 @@ const Container = styled.div`
   margin-right: 15px;
   transition: top 0.2s ease;
   font-size: 16px;
-  flex: 0 0 70px;
+  flex: 0 0 100px;
 `;
 const DayBox = styled.div`
   position: sticky;
