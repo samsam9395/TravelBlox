@@ -13,6 +13,8 @@ import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
 import CheckIcon from '@mui/icons-material/Check';
+import { fontWeight } from '@mui/system';
+import DayCalendar from '../components/DailyEventCard/DayCalendar';
 
 const db = firebaseDB();
 
@@ -22,6 +24,7 @@ const UpperContainer = styled.div`
   /* justify-content: space-between; */
   box-sizing: content-box;
   width: 100%;
+  margin-bottom: 30px;
 `;
 
 const LowerContainer = styled.div`
@@ -182,6 +185,16 @@ const FavFolderAutocomplete = styled(TextField)({
   },
 });
 
+const ColouredLine = ({ colour }) => (
+  <hr
+    style={{
+      colour: colour,
+      backgroundColor: colour,
+      height: 2,
+    }}
+  />
+);
+
 function addDays(date, days) {
   var result = new Date(date);
   result.setDate(result.getDate() + days);
@@ -241,9 +254,37 @@ async function handleFavAction(
 }
 
 const SwitchTab = styled.div`
+  display: flex;
+  width: 500px;
+  margin: auto;
+  font-size: 18px;
+  justify-content: space-evenly;
+  align-items: center;
+
   .tab {
-    margin: 0 10px;
+    padding: 10px;
+    color: rgb(0 33 58 / 60%);
   }
+
+  .tab_map {
+    color: ${themeColours.dark_blue};
+    font-weight: 600;
+    border-bottom: 1px solid ${themeColours.dark_blue};
+    /* border-bottom-style: ; */
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const ToTopScroll = styled.div`
+  letter-spacing: 3px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  float: right;
+  /* position: absolute;
+  bottom: 0; */
 `;
 
 function StaticPlanDetail(props) {
@@ -259,6 +300,7 @@ function StaticPlanDetail(props) {
   const [showfavDropDown, setShowFavDropDown] = useState(false);
   const [selectedFavFolder, setSelectedFavFolder] = useState('');
   const [showTab, setShowTab] = useState('route');
+  const [stopTimelineNav, settopTimelineNav] = useState(false);
 
   const location = useLocation();
   const planDocRef = location.state.planDocRef;
@@ -266,6 +308,38 @@ function StaticPlanDetail(props) {
   const planCollectionRef = doc(db, 'plans', planDocRef);
   const itemEls = useRef(new Array());
   const timelineRefArray = useRef(new Array());
+
+  const navTabDay = useRef(null);
+  const navTabMap = useRef(null);
+  const navTabCalendar = useRef(null);
+  const refNames = [navTabDay, navTabMap, navTabCalendar];
+
+  const navTimelineRef = useRef(null);
+
+  function toSiwtchTab(tabName, tabRef) {
+    for (let name of refNames) {
+      const styles = {
+        color: 'rgb(0 33 58 / 70%)',
+        fontWeight: 'normal',
+        borderBottomWidth: 'none',
+        borderBottomStyle: 'none',
+        paddingBottom: 'none',
+      };
+      if (name !== tabRef) {
+        Object.assign(name.current.style, styles);
+      }
+    }
+
+    const styles = {
+      color: themeColours.dark_blue,
+      fontWeight: 600,
+      borderBottomWidth: '1px',
+      borderBottomStyle: 'solid',
+    };
+    setShowTab(tabName);
+
+    Object.assign(tabRef.current.style, styles);
+  }
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -298,7 +372,6 @@ function StaticPlanDetail(props) {
     }
   }, [numberofDays]);
 
-  // console.log(111, 'timestampList is ', timestampList);
   const FavFolderRef = useRef();
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
@@ -393,42 +466,87 @@ function StaticPlanDetail(props) {
         </PlanInfoWrapper>
       </UpperContainer>
 
+      <ColouredLine colour={'black'} />
+
       <SwitchTab>
-        <div className="tab" onClick={() => setShowTab('dayByday')}>
-          day by day{' '}
+        <div
+          ref={navTabMap}
+          className="tab tab_map"
+          onClick={() => {
+            toSiwtchTab('route', navTabMap);
+            settopTimelineNav(false);
+          }}>
+          Map
         </div>
-        <div className="tab" onClick={() => setShowTab('route')}>
-          route
+        <div
+          ref={navTabDay}
+          className="tab"
+          onClick={() => {
+            toSiwtchTab('dayByday', navTabDay);
+            settopTimelineNav(false);
+          }}>
+          Day by Day
         </div>
-        <div className="tab" onClick={() => setShowTab('calendar')}>
-          calendar
+        <div
+          ref={navTabCalendar}
+          className="tab"
+          onClick={() => {
+            toSiwtchTab('calendar', navTabCalendar);
+            settopTimelineNav(true);
+          }}>
+          Calendar
         </div>
       </SwitchTab>
 
       <LowerContainer>
-        <Timeline
-          NumofDays={timestampList.length}
-          RefList={itemEls}
-          timelineRefArray={timelineRefArray}
-        />
+        {stopTimelineNav ? (
+          <Timeline
+            ref={navTimelineRef}
+            NumofDays={timestampList.length}
+            RefList={itemEls}
+            timelineRefArray={timelineRefArray}
+            stopTimelineNav={'none'}
+          />
+        ) : (
+          <Timeline
+            ref={navTimelineRef}
+            NumofDays={timestampList.length}
+            RefList={itemEls}
+            timelineRefArray={timelineRefArray}
+            stopTimelineNav={'auto'}
+          />
+        )}
         <PlanCardsWrapper>
-          {timestampList.map((day, index) => {
-            console.log('this line runs');
-            return (
-              <DayBlockCard
-                timelineRefArray={timelineRefArray}
-                itemEls={itemEls}
-                currentDayDate={day}
-                day={day}
-                planDocRef={planDocRef}
-                index={index}
-                key={index}
-                showTab={showTab}
-              />
-            );
-          })}
+          {showTab !== 'calendar' &&
+            timestampList.map((day, index) => {
+              return (
+                <DayBlockCard
+                  timelineRefArray={timelineRefArray}
+                  itemEls={itemEls}
+                  currentDayDate={day}
+                  day={day}
+                  planDocRef={planDocRef}
+                  index={index}
+                  key={index}
+                  showTab={showTab}
+                />
+              );
+            })}
+          {showTab === 'calendar' && (
+            <DayCalendar
+              itemEls={itemEls}
+              planDocRef={planDocRef}
+              currentDayDate={timestampList[0]}
+              // showType={'week'}
+            />
+          )}
         </PlanCardsWrapper>
       </LowerContainer>
+      <ToTopScroll
+        className="hoverCursor"
+        onClick={() => window.scrollTo({ top: 120, behavior: 'smooth' })}>
+        ^Top
+      </ToTopScroll>
     </>
   );
 }

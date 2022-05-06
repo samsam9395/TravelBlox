@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import './planDetail.scss';
+import './../styles/calendarStyle.scss';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import PropTypes from 'prop-types';
-import './planDetail.scss';
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -57,7 +56,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
 
   // console.log(props.myEvents);
   // console.log('calendar start value', typeof props.startDateValue);
-  // console.log('calendar start value', props.startDateValue);
+  console.log('calendar start value', props.startDateValue);
 
   return (
     props.startDateValue != 0 && (

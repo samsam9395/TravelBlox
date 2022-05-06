@@ -10,7 +10,7 @@ const Container = styled.div`
 `;
 const DayBox = styled.div`
   position: sticky;
-  top: 360px;
+  top: 155px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,6 @@ const Day = styled.div`
   font-weight: 500;
   width: 28px;
   text-align: center;
-  cursor: pointer;
   text-transform: uppercase;
   margin-bottom: 15px;
 `;
@@ -32,12 +31,12 @@ const Day = styled.div`
 const NumberofDay = styled.div`
   text-align: center;
   margin-bottom: 15px;
-  background-color: transparent;
+  /* background-color: transparent; */
   width: 28px;
   text-align: center;
-
+  /* pointer-events: ${(props) => (props.stopTimelineNav ? 'auto' : 'none')}; */
   &:hover {
-    background-color: ${themeColours.lighter_blue};
+    background-color: ${themeColours.light_blue};
     border-radius: 50%;
   }
 `;
@@ -45,12 +44,17 @@ const NumberofDay = styled.div`
 const scrollEffect = (targetRef, index) => {
   targetRef.current[index].current.scrollIntoView({
     behavior: 'smooth',
-    block: 'center',
+    block: 'start',
   });
 };
 
-function Timeline({ NumofDays, RefList, timelineRefArray }) {
+function Timeline({ NumofDays, RefList, timelineRefArray, stopTimelineNav }) {
   const timelineRef = useRef([]);
+  let doPushRef = true;
+  console.log(stopTimelineNav);
+  if (stopTimelineNav === 'none') {
+    doPushRef = false;
+  }
 
   useEffect(() => {
     timelineRefArray.current.push(timelineRef);
@@ -62,9 +66,14 @@ function Timeline({ NumofDays, RefList, timelineRefArray }) {
         <Day>Day</Day>
         {[...Array(NumofDays)].map((e, index) => (
           <NumberofDay
-            ref={(element) => {
-              timelineRef.current[index] = element;
-            }}
+            style={{ pointerEvents: stopTimelineNav }}
+            ref={
+              doPushRef
+                ? (element) => {
+                    timelineRef.current[index] = element;
+                  }
+                : undefined
+            }
             key={index}
             className="hoverCursor"
             onClick={() => scrollEffect(RefList, index)}>

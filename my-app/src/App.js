@@ -93,7 +93,7 @@ function App() {
               element={<StaticPlanDetail favFolderNames={favFolderNames} />}
             />
 
-            <Route path="/autocomplete" element={<AutoCompleteInput />} />
+            {/* <Route path="/autocomplete" element={<AutoCompleteInput />} /> */}
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route
               path="/discover"

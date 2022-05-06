@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const avatarImage = styled.div`
+const AvatarImage = styled.div`
   width: 100px;
   height: 100px;
   /* border-radius: 50%; */
@@ -47,9 +47,13 @@ function UserAvatar({ currentUserId, fromLocate }) {
   const [showChangeAvatar, setShowChangeAvatar] = useState(false);
 
   useEffect(async () => {
-    const userDoc = await getDoc(doc(db, 'userId', currentUserId));
-    console.log(111, userDoc.data());
-    setAvatarConfig(userDoc.data().avatarConfig);
+    if (currentUserId) {
+      const userDoc = await getDoc(doc(db, 'userId', currentUserId));
+      if (userDoc.data().avatarConfig) {
+        setAvatarConfig(userDoc.data().avatarConfig);
+      }
+    }
+    // console.log(111, userDoc.data());
   }, [currentUserId]);
 
   function randomAvatar() {
@@ -74,11 +78,11 @@ function UserAvatar({ currentUserId, fromLocate }) {
     }
   }
 
-  console.log(avatarConfig);
+  // console.log(avatarConfig);
 
   return (
     <Wrapper>
-      <avatarImage>
+      <AvatarImage>
         <Avatar
           avatarStyle="Circle"
           style={{ width: '120px', height: '120px' }}
@@ -103,7 +107,7 @@ function UserAvatar({ currentUserId, fromLocate }) {
             </OkayIconWrapper>
           </>
         )}
-      </avatarImage>
+      </AvatarImage>
     </Wrapper>
   );
 }

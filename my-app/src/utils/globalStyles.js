@@ -9,6 +9,7 @@ margin: 0;
 border: 0;
 font-family: 'Roboto', Helvetica, sans-serif;
 color: ${themeColours.dark_blue};
+scroll-behavior: smooth;
 
 button{
   cursor: pointer;
@@ -22,8 +23,9 @@ button{
   display: flex;
   flex-direction: column;
 align-items: center;
-
 }
+
+
 
 }
 `;

@@ -4,7 +4,7 @@ import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
-import './planDetail.scss';
+import './../styles/calendarStyle.scss';
 import PlanCalendar from './PlanCalendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';

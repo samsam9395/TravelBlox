@@ -14,6 +14,7 @@ const db = firebaseDB();
 const MainWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 const SingleDayWrapper = styled.div`
@@ -30,24 +31,29 @@ const LeftWrapper = styled.div`
   /* flex-grow: 2; */
 `;
 
-const CalendarLeftWrapper = styled.div`
+const MapIndivWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+`;
+
+const CalendarIndiWrapper = styled.div`
+  width: 100%;
+  height: 400px;
   display: flex;
   margin-right: 35px;
-  max-width: 750px;
+  /* max-width: 750px; */
   /* flex-grow: 2; */
 `;
 
 const RightWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 300px;
+  /* max-width: 300px; */
   margin-left: auto;
-  min-width: 200px;
+  width: 300px;
   /* flex-grow: 1; */
-`;
-
-const CalendarMapIndivWrapper = styled.div`
-  display: flex;
 `;
 
 const ContentContainer = styled.div`
@@ -59,6 +65,7 @@ const DayScheduleContainer = styled.div`
   min-height: 400px;
   margin-bottom: 60px;
   display: flex;
+  width: 100%;
 `;
 
 const TimeBlockImg = styled.img`
@@ -67,6 +74,7 @@ const TimeBlockImg = styled.img`
 `;
 
 const DayTitle = styled.div`
+  scroll-margin-top: 65px;
   font-size: 36px;
   font-weight: 600;
   font-family: 'Oswald', sans-serif;
@@ -171,10 +179,13 @@ function DayBlockCard(props) {
   }, [props.currentDayDate]);
 
   useEffect(() => {
-    props.itemEls.current.push(dayRef);
+    if (props.showTab === 'dayByday' || props.showTab === 'route') {
+      props.itemEls.current.push(dayRef);
+    }
   }, []);
 
   useEffect(() => {
+    console.log('dayEvents', dayEvents);
     dayEvents.forEach((block) => {
       // console.log(block);
       setDayTimeBlocks((prev) => [
@@ -268,41 +279,37 @@ function DayBlockCard(props) {
           <div className="date"> {props.currentDayDate.toDateString()}</div>
         </DayTitle>
         <SingleDayWrapper>
-          <LeftWrapper>
+          <MapIndivWrapper>
             <DayMapCard dayEvents={dayEvents} setResult={setResult} />
-          </LeftWrapper>
+          </MapIndivWrapper>
         </SingleDayWrapper>
       </MainWrapper>
     );
   }
 
-  if (props.showTab === 'calendar') {
-    return (
-      <MainWrapper>
-        <DayTitle ref={dayRef}>
-          Day {props.index + 1}
-          <div className="date"> {props.currentDayDate.toDateString()}</div>
-        </DayTitle>
-        <SingleDayWrapper>
-          <CalendarLeftWrapper>
-            <DayScheduleContainer>
-              {hasReturned ? (
-                <DayCalendar
-                  currentDayDate={props.currentDayDate}
-                  dayTimeBlocks={dayTimeBlocks}
-                  showType={'week'}
-                />
-              ) : (
-                <Box sx={{ display: 'flex' }} align="center" justify="center">
-                  <CircularProgress size={14} sx={{ py: 2 }} />
-                </Box>
-              )}
-            </DayScheduleContainer>
-          </CalendarLeftWrapper>
-        </SingleDayWrapper>
-      </MainWrapper>
-    );
-  }
+  // if (props.showTab === 'calendar') {
+  //   return (
+  //     <MainWrapper>
+  //       <SingleDayWrapper>
+  //         <CalendarIndiWrapper>
+  //           <DayScheduleContainer>
+  //             {hasReturned ? (
+  //               <DayCalendar
+  //                 currentDayDate={props.currentDayDate}
+  //                 dayTimeBlocks={dayTimeBlocks}
+  //                 showType={'day'}
+  //               />
+  //             ) : (
+  //               <Box sx={{ display: 'flex' }} align="center" justify="center">
+  //                 <CircularProgress size={14} sx={{ py: 2 }} />
+  //               </Box>
+  //             )}
+  //           </DayScheduleContainer>
+  //         </CalendarIndiWrapper>
+  //       </SingleDayWrapper>
+  //     </MainWrapper>
+  //   );
+  // }
 }
 
 export default DayBlockCard;
