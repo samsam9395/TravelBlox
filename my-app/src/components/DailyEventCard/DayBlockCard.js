@@ -158,7 +158,7 @@ function DayBlockCard(props) {
     'time_blocks'
   );
 
-  const dayRef = useRef(null);
+  const dayRef = useRef([]);
 
   useEffect(() => {
     CalendarByDay(blocksListRef, props.currentDayDate)
@@ -179,13 +179,7 @@ function DayBlockCard(props) {
   }, [props.currentDayDate]);
 
   useEffect(() => {
-    if (props.showTab === 'dayByday' || props.showTab === 'route') {
-      props.itemEls.current.push(dayRef);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log('dayEvents', dayEvents);
+    // console.log('dayEvents', dayEvents);
     dayEvents.forEach((block) => {
       // console.log(block);
       setDayTimeBlocks((prev) => [
@@ -216,6 +210,12 @@ function DayBlockCard(props) {
     enteredElement.style.borderRadius = 0;
     enteredElement.style.backgroundColor = 'transparent';
   }
+
+  useEffect(() => {
+    if (props.showTab !== 'calendar' && dayRef !== null) {
+      props.itemEls.current.push(dayRef);
+    }
+  }, []);
 
   if (props.showTab === 'dayByday') {
     return (

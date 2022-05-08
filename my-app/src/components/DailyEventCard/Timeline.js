@@ -60,6 +60,7 @@ function Timeline({ NumofDays, RefList, timelineRefArray, stopTimelineNav }) {
     timelineRefArray.current.push(timelineRef);
   }, []);
 
+  console.log(stopTimelineNav);
   return (
     <Container>
       <DayBox>

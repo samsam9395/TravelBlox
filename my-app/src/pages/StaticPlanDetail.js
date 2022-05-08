@@ -394,6 +394,20 @@ function StaticPlanDetail(props) {
     };
   }, [showfavDropDown]);
 
+  if (itemEls.current.length > 0) {
+    for (let ref of itemEls.current) {
+      // console.log(223, ref.current);
+      if (ref.current === null) {
+        let index = itemEls.current.indexOf(ref);
+        itemEls.current.splice(index, 1);
+      }
+    }
+  }
+
+  // console.log(777, itemEls);
+  // console.log(888, itemEls.current[0]);
+  // console.log(999, itemEls.current.length);
+
   return (
     <>
       <UpperContainer>
@@ -501,7 +515,7 @@ function StaticPlanDetail(props) {
       <LowerContainer>
         {stopTimelineNav ? (
           <Timeline
-            ref={navTimelineRef}
+            // ref={navTimelineRef}
             NumofDays={timestampList.length}
             RefList={itemEls}
             timelineRefArray={timelineRefArray}
@@ -509,7 +523,7 @@ function StaticPlanDetail(props) {
           />
         ) : (
           <Timeline
-            ref={navTimelineRef}
+            // ref={navTimelineRef}
             NumofDays={timestampList.length}
             RefList={itemEls}
             timelineRefArray={timelineRefArray}
@@ -534,7 +548,6 @@ function StaticPlanDetail(props) {
             })}
           {showTab === 'calendar' && (
             <DayCalendar
-              itemEls={itemEls}
               planDocRef={planDocRef}
               currentDayDate={timestampList[0]}
               // showType={'week'}

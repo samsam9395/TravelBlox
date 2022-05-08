@@ -49,11 +49,11 @@ export default function DayCalendar({
       const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
       const allTimeBlocks = await getDocs(blocksListRef);
-      console.log(allTimeBlocks);
+      // console.log(allTimeBlocks);
       allTimeBlocks.docs.forEach((e) => {
-        console.log(e);
+        // console.log(e);
         const block = e.data();
-        console.log(111, block);
+        // console.log(111, block);
         setAllPlansList((prev) => [
           ...prev,
           {
@@ -71,12 +71,12 @@ export default function DayCalendar({
     }
   }, []);
 
-  console.log(allPlansList);
+  // console.log(allPlansList);
 
-  console.log('currentDayDate', currentDayDate);
+  // console.log('currentDayDate', currentDayDate);
 
   const handleSelectEvent = useCallback((event) => {
-    console.log(event);
+    // console.log(event);
     window.open(event.place_url, '_blank').focus();
   });
 
