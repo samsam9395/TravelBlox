@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { googleCalendarConfig } from '../../utils/credent';
 import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
-import { LightBlueBtn } from '../../utils/globalTheme';
+import { LightBlueBtn } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 

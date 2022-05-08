@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AttractionInput from './AttractionInput';
-import { LightOrangeBtn } from '../../utils/globalTheme';
 import styled from 'styled-components';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours, LightOrangeBtn } from '../../styles/globalTheme';
 
 const QuestionText = styled.div`
   margin-top: 50px;

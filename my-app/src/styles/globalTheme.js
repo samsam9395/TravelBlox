@@ -22,6 +22,7 @@ export const LightOrangeBtn = styled.button`
   border: none;
   background-color: ${themeColours.light_orange};
   margin: 5px;
+  color: white;
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.orange};
@@ -36,6 +37,7 @@ export const LightBlueBtn = styled.button`
   border: none;
   background-color: ${themeColours.light_blue};
   margin: 5px;
+  color: white;
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.blue};
@@ -50,6 +52,7 @@ export const OrangeBtn = styled.button`
   border: none;
   background-color: ${themeColours.orange};
   margin: 5px;
+  color: white;
   &:hover {
     cursor: pointer;
   }
@@ -63,6 +66,7 @@ export const BlueBtn = styled.button`
   border: none;
   background-color: ${themeColours.blue};
   margin: 5px;
+  color: white;
   &:hover {
     cursor: pointer;
   }

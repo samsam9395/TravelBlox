@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import FavFolder from './FavFolder';
-import { themeColours } from '../utils/globalTheme';
+import { themeColours } from '../styles/globalTheme';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import AddIcon from '@mui/icons-material/Add';
@@ -14,6 +14,7 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
+import EditFavFolderSelector from './EditFavFolderSelector';
 
 const db = firebaseDB();
 
@@ -46,6 +47,7 @@ const FolderContainer = styled.div`
   margin-right: 20px;
   margin-bottom: 50px;
   border: 1px solid ${themeColours.pale};
+  position: relative;
 
   .folder_section {
     display: flex;
@@ -105,7 +107,6 @@ const AddNewPlanButton = styled.button`
 `;
 
 function addNewFavFolder(currentUserId, newFolder) {
-  console.log(newFolder);
   try {
     setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
       folder_name: newFolder,
@@ -121,15 +122,42 @@ function FavouriteFolderBar({ currentUserId }) {
   const [newFolderName, setNewFolderName] = useState('');
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [favFolderNames, setFavFolderNames] = useState(null);
+  const [showFavFolderEdit, setShowFavFolderEdit] = useState(false);
+  const [favFolderEditIndex, setFavFolderEditIndex] = useState(null);
+  const [showRenameBox, setShowRenameBox] = useState(null);
+  const [renameValue, setRenameValue] = useState('');
 
   const inputRef = useRef();
+  const editPopRef = useRef();
+  const renameInputRef = useRef([]);
+
+  //   async function saveRenameBlur(value, favFolderName, currentUserId) {
+  //     console.log(value.target.textContent);
+  //     console.log(favFolderName, currentUserId);
+  //       setRenameValue(value.target.textContent);
+
+  //       try {
+  //     setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
+  //       folder_name: newFolder,
+  //     });
+  //     alert('Folder added!');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  //   }
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-    console.log(22, inputRef.current);
   }, [inputRef.current]);
+
+  useEffect(() => {
+    // console.log('ref is', renameInputRef);
+    if (showRenameBox !== null) {
+      renameInputRef.current[favFolderEditIndex].focus();
+    }
+  }, [showRenameBox, renameInputRef, favFolderEditIndex]);
 
   useEffect(async () => {
     if (currentUserId) {
@@ -140,12 +168,31 @@ function FavouriteFolderBar({ currentUserId }) {
         'fav_folders'
       );
       onSnapshot(favFolderRef, (doc) => {
-        doc.docs.map((e) => console.log(e.data().folder_name));
-
         setFavFolderNames(doc.docs.map((e) => e.data().folder_name));
       });
     }
   }, [currentUserId]);
+
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      // If the menu is open and the clicked target is not within the menu,
+      // then close the menu
+      if (
+        showFavFolderEdit &&
+        editPopRef.current &&
+        !editPopRef.current.contains(e.target)
+      ) {
+        setShowFavFolderEdit(false);
+      }
+    };
+
+    document.addEventListener('mousedown', checkIfClickedOutside);
+
+    return () => {
+      // Cleanup the event listener
+      document.removeEventListener('mousedown', checkIfClickedOutside);
+    };
+  }, [showFavFolderEdit]);
 
   return (
     <div className="sub_section">
@@ -166,22 +213,48 @@ function FavouriteFolderBar({ currentUserId }) {
         </AddNewPlanButton>
       </div>
 
-      <FolderWrapper>
+      <FolderWrapper ref={editPopRef}>
         {favFolderNames?.map((favFolderName, index) => {
+          //   console.log(333, showRenameBox === index);
+          //   console.log(444, showRenameBox);
+
           return (
             <FolderContainer
-              className="hoverCursor"
               key={index}
               favFolderName={favFolderName}
-              onClick={() => setSelectedFolder(favFolderName)}>
+              onClick={(e) => {
+                setFavFolderEditIndex(index);
+              }}>
               <div className="folder_section">
                 <FolderOpenIcon style={{ color: 'grey' }}></FolderOpenIcon>
 
                 <MoreHorizIcon
                   className="hoverCursor"
-                  style={{ color: 'grey' }}></MoreHorizIcon>
+                  style={{ color: 'grey' }}
+                  onClick={() =>
+                    setShowFavFolderEdit(!showFavFolderEdit)
+                  }></MoreHorizIcon>
+
+                {showFavFolderEdit && (
+                  <EditFavFolderSelector
+                    index={index}
+                    favFolderEditIndex={favFolderEditIndex}
+                    favFolderName={favFolderName}
+                    setShowFavFolderEdit={setShowFavFolderEdit}
+                    currentUserId={currentUserId}
+                    setShowRenameBox={setShowRenameBox}
+                    showRenameBox={showRenameBox}
+                  />
+                )}
               </div>
-              <div className="folder_name">{favFolderName}</div>
+              <div
+                // onBlur={(e) => saveRenameBlur(e, favFolderName, currentUserId)}
+                ref={(element) => (renameInputRef.current[index] = element)}
+                contenteditable={showRenameBox === index ? 'true' : 'false'}
+                className="folder_name hoverCursor"
+                onClick={() => setSelectedFolder(favFolderName)}>
+                {favFolderName}
+              </div>
             </FolderContainer>
           );
         })}
@@ -212,7 +285,6 @@ function FavouriteFolderBar({ currentUserId }) {
         <FavFolder
           selectedFolder={selectedFolder}
           currentUserId={currentUserId}
-          // setHideOtherCards={setHideOtherCards}
         />
       </PlanCollectionWrapper>
     </div>

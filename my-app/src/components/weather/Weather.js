@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { GetWeather } from '../../utils/api';
 import './weather.scss';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 
 const WeatherCard = styled.div`
   max-width: 300px;

@@ -7,7 +7,7 @@ import firebaseDB from '../../utils/firebaseConfig';
 import DayMapCard from './DayMapCard';
 import DayCalendar from './DayCalendar';
 import Weather from '../weather/Weather';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 

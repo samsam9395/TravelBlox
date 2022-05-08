@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 import styled from 'styled-components';
 
 const Container = styled.div`

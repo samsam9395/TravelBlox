@@ -7,7 +7,7 @@ import {
 import styled from 'styled-components';
 import AttractionCards from './AttractionCards';
 import RestaurantCard from './RestaurantCard';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 import HashLoader from 'react-spinners/HashLoader';
 
 const MainWrapper = styled.div`

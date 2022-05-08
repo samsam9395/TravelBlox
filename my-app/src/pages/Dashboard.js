@@ -13,7 +13,7 @@ import {
   LightOrangeBtn,
   OrangeBtn,
   PaleBtn,
-} from '../utils/globalTheme';
+} from '../styles/globalTheme';
 import UserAvatar from '../components/user/Avatar';
 import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
 
@@ -111,6 +111,7 @@ const PlanCollectionWrapper = styled.div`
   margin-bottom: 30px;
   height: 450px;
   justify-content: center;
+  display: -webkit-box;
 `;
 
 const SinglePlanContainer = styled.div`
@@ -206,7 +207,7 @@ function Dashboard(props) {
         </UserInfoWrapper>
         <LightOrangeBtn
           style={{
-            width: 200,
+            width: 220,
             height: 60,
             padding: 15,
             fontSize: 20,
@@ -215,7 +216,7 @@ function Dashboard(props) {
           onClick={() => {
             setShowAddPlanPopup(true);
           }}>
-          Add New Plan
+          ADD NEW PLAN
         </LightOrangeBtn>
       </TopSectionWrapper>
 

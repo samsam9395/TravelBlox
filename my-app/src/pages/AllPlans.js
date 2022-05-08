@@ -10,7 +10,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getDocs, collection, getDoc, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
-import { themeColours } from '../utils/globalTheme';
+import { themeColours } from '../styles/globalTheme';
 
 const db = firebaseDB();
 

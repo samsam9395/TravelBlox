@@ -27,7 +27,7 @@ import {
   EditableMainImageContainer,
   EditableMainImage,
   FlexColumnWrapper,
-} from '../utils/globalTheme';
+} from '../styles/globalTheme';
 
 const db = firebaseDB();
 

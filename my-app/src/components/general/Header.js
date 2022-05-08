@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import logo from '../../images/main-logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 
 const Wrapper = styled.div`
   display: flex;

@@ -34,7 +34,7 @@ import {
   OrangeBtn,
   BlueBtn,
   PaleBtn,
-} from '../utils/globalTheme';
+} from '../styles/globalTheme';
 
 const db = firebaseDB();
 
