@@ -11,10 +11,11 @@ function RestaurantCard({ place }) {
   if (place.name && place.ranking) {
     // console.log(place);
     let descriptionTen = [];
-    const descriptonSplit = place.description.split('.');
-    for (let i = 0; i < 1; i++) {
+    const descriptonSplit = place.description.split(' ');
+
+    for (let i = 0; i < 10; i++) {
       if (descriptonSplit[i] !== undefined) {
-        descriptionTen.push(`${descriptonSplit[i]}.`);
+        descriptionTen.push(`${descriptonSplit[i]} `);
       }
     }
     // {
@@ -36,7 +37,7 @@ function RestaurantCard({ place }) {
           <figcaption className="resturant_card">
             <h3>More Info</h3>
 
-            <p>{descriptionTen}</p>
+            <p>{descriptionTen}...</p>
 
             <div
               style={{
@@ -45,8 +46,12 @@ function RestaurantCard({ place }) {
                 flexWrap: 'wrap',
                 width: '100%',
               }}>
-              {place.cuisine?.map((type) => {
-                return <div className="res-cuisine-type">#{type.name}</div>;
+              {place.cuisine?.map((type, index) => {
+                return (
+                  <div className="res-cuisine-type" key={index}>
+                    #{type.name}
+                  </div>
+                );
               })}
             </div>
 

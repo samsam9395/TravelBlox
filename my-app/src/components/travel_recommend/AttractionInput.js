@@ -11,6 +11,7 @@ import { themeColours } from '../../styles/globalTheme';
 import HashLoader from 'react-spinners/HashLoader';
 
 const MainWrapper = styled.div`
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -25,7 +26,7 @@ const InputWrapper = styled.div`
 `;
 
 const Input = styled.input`
-  color: ${themeColours.light_orange};
+  color: ${themeColours.orange};
   height: 30px;
   border-radius: 5px;
   border: 1px solid grey;
@@ -38,6 +39,7 @@ const Input = styled.input`
   }
 `;
 const AttractionCardWrapper = styled.div`
+  margin-top: 30px;
   display: flex;
   overflow: auto;
   width: 100%;
@@ -63,8 +65,10 @@ const SearchBtn = styled.button`
   border: none;
   background-color: ${themeColours.light_orange};
   margin: 5px;
+  color: white;
   &:hover {
     cursor: pointer;
+    background-color: ${themeColours.orange};
   }
 `;
 

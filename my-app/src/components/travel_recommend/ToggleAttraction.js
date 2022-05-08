@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import AttractionInput from './AttractionInput';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { themeColours, LightOrangeBtn } from '../../styles/globalTheme';
+
+const wiggleAnimation = keyframes`
+ 0% { transform: rotate(0deg); }
+ 80% { transform: rotate(0deg); }
+ 85% { transform: rotate(5deg); }
+ 95% { transform: rotate(-10deg); }
+100% { transform: rotate(0deg); }
+`;
 
 const QuestionText = styled.div`
   margin-top: 50px;
@@ -16,6 +24,9 @@ const QuestionText = styled.div`
     text-decoration: dotted 4px underline;
     &:hover {
       cursor: pointer;
+      animation-name: ${wiggleAnimation};
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
     }
   }
 `;
