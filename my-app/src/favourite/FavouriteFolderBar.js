@@ -5,7 +5,14 @@ import { themeColours } from '../utils/globalTheme';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import AddIcon from '@mui/icons-material/Add';
-import { getDocs, getDoc, collection, setDoc, doc } from 'firebase/firestore';
+import {
+  getDocs,
+  getDoc,
+  collection,
+  setDoc,
+  doc,
+  onSnapshot,
+} from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 
 const db = firebaseDB();
@@ -132,10 +139,11 @@ function FavouriteFolderBar({ currentUserId }) {
         currentUserId,
         'fav_folders'
       );
-      const doc = await getDocs(favFolderRef);
-      const list = doc.docs.map((e) => e.data().folder_name);
-      console.log(list);
-      setFavFolderNames(list);
+      onSnapshot(favFolderRef, (doc) => {
+        doc.docs.map((e) => console.log(e.data().folder_name));
+
+        setFavFolderNames(doc.docs.map((e) => e.data().folder_name));
+      });
     }
   }, [currentUserId]);
 
