@@ -31,13 +31,12 @@ const Day = styled.div`
 const NumberofDay = styled.div`
   text-align: center;
   margin-bottom: 15px;
-  /* background-color: transparent; */
   width: 28px;
   text-align: center;
   /* pointer-events: ${(props) => (props.stopTimelineNav ? 'auto' : 'none')}; */
   &:hover {
-    background-color: ${themeColours.light_blue};
-    border-radius: 50%;
+    background-color: ${themeColours.light_blue} !important;
+    border-radius: 50% !important;
   }
 `;
 

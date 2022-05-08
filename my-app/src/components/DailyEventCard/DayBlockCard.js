@@ -273,7 +273,13 @@ function DayBlockCard(props) {
 
   if (props.showTab === 'route') {
     return (
-      <MainWrapper>
+      <MainWrapper
+        onMouseEnter={() =>
+          changeTimelineEnterColor(props.timelineRefArray, props.index)
+        }
+        onMouseLeave={() =>
+          removeTimelineEnterColor(props.timelineRefArray, props.index)
+        }>
         <DayTitle ref={dayRef}>
           Day {props.index + 1}
           <div className="date"> {props.currentDayDate.toDateString()}</div>
