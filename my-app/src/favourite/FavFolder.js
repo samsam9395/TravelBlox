@@ -7,36 +7,6 @@ import OwnPlanCard from '../components/OwnPlanCard';
 
 const db = firebaseDB();
 
-const SingleFolderContainer = styled.div`
-  min-width: 300px;
-  height: 300px;
-  margin: 0 30px;
-  background-color: #8ecae6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const SingleFolderText = styled.div`
-  font-size: 20px;
-  font-weight: 600;
-  text-align: center;
-  margin-top: auto;
-`;
-
-const FavFolderContainer = styled.div`
-  width: 100%;
-`;
-
-const SinglePlanContainer = styled.div`
-  width: 450px;
-  height: 450px;
-  margin: 0 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const FavPlansCtonainer = styled.div`
   display: flex;
   overflow: auto;
