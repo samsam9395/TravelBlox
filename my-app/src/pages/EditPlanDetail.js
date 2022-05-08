@@ -65,6 +65,41 @@ const Input = styled('input')({
   display: 'none',
 });
 
+const TypeInput = styled.input`
+  width: 91%;
+  margin-left: 8px;
+  margin-bottom: 10px;
+  height: 56px;
+  padding-left: 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid ${themeColours.llight_grey};
+
+  &:focus,
+  &:hover {
+    border-color: ${themeColours.light_orange};
+  }
+`;
+
+const BottomBtnContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .left_btns {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+`;
+
+const SelectImportDropdown = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  bottom: -60px;
+  left: 164px;
+`;
 // props
 // userId={user.email} favFolderNames={favFolderNames}
 //currentPlanRef
@@ -189,7 +224,13 @@ function EditPlanDetail(props) {
       />
       <TopContainer>
         <TitleSection>
-          <TextField
+          <TypeInput
+            value={planTitle}
+            onChange={(e) => {
+              setPlanTitle(e.target.value);
+            }}
+            placeholder="Plan Title"></TypeInput>
+          {/* <TextField
             sx={{ m: 1, minWidth: 80 }}
             label="Title"
             variant="outlined"
@@ -197,7 +238,7 @@ function EditPlanDetail(props) {
             onChange={(e) => {
               setPlanTitle(e.target.value);
             }}
-          />
+          /> */}
           <CountrySelector
             setCountry={setCountry}
             country={country}
@@ -264,12 +305,8 @@ function EditPlanDetail(props) {
           startDateValue={startDateValue}
         />
       </CalendarContainer>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        spacing={2}>
-        <Stack direction="row" alignItems="center" spacing={2}>
+      <BottomBtnContainer>
+        <div className="left_btns">
           <LightBlueBtn
             variant="contained"
             onClick={() => {
@@ -284,14 +321,14 @@ function EditPlanDetail(props) {
           </LightBlueBtn>
 
           {showFavContainer && (
-            <div>
+            <SelectImportDropdown>
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={dropDownOption}
-                sx={{ width: 300 }}
+                sx={{ width: 160 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Favourite Folders" />
+                  <TextField {...params} label="Folders" />
                 )}
                 onChange={(e) => {
                   setShowFavPlans(true);
@@ -310,9 +347,10 @@ function EditPlanDetail(props) {
                   setSelectedPlanId={setSelectedPlanId}
                   selectedPlanId={selectedPlanId}
                   planDocRef={planDocRef}
+                  startDateValue={startDateValue}
                 />
               )}
-            </div>
+            </SelectImportDropdown>
           )}
 
           <LightBlueBtn
@@ -351,7 +389,7 @@ function EditPlanDetail(props) {
             }}>
             Publish
           </Button> */}
-        </Stack>
+        </div>
         <PaleBtn
           variant="contained"
           onClick={() => {
@@ -359,7 +397,7 @@ function EditPlanDetail(props) {
           }}>
           Delete
         </PaleBtn>
-      </Stack>
+      </BottomBtnContainer>
     </Wrapper>
   );
 }

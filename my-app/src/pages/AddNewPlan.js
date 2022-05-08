@@ -313,6 +313,7 @@ function AddNewPlan(props) {
                       selectedPlanId={selectedPlanId}
                       planDocRef={planDocRef}
                       setAddedTimeBlock={setAddedTimeBlock}
+                      startDateValue={startDateValue}
                     />
                   )}
                 </div>

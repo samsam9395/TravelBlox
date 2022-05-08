@@ -9,6 +9,7 @@ export const themeColours = {
   blue: '#0a97b7',
   dark_blue: '#00213a',
   black: '#0E0E0F',
+  light_grey: '#80808087',
 };
 
 // ref url: https://colorpalettes.net/color-palette-2368/

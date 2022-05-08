@@ -13,8 +13,16 @@ import {
   setDoc,
   writeBatch,
 } from 'firebase/firestore';
+import styled from 'styled-components';
 import firebaseDB from '../utils/firebaseConfig';
 const db = firebaseDB();
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  align-items: center;
+  position: relative;
+`;
 
 function FavFolderDropdown({
   favPlansNameList,
@@ -23,9 +31,13 @@ function FavFolderDropdown({
   selectedPlanId,
   planDocRef,
   setAddedTimeBlock,
+  startDateValue,
 }) {
   async function importTimeBlock(selectedPlanId) {
     console.log('importTimeBlock clicked', selectedPlanId);
+    let importEndTime = new Date(startDateValue);
+    importEndTime.setHours(importEndTime.getHours() + 2);
+
     const blocksListRef = collection(
       db,
       'plans',
@@ -39,8 +51,8 @@ function FavFolderDropdown({
     const data = docSnap.docs.map((e) => e.data());
     const importEvents = data.map((e) => ({
       status: 'imported',
-      start: new Date(e.start.seconds * 1000),
-      end: new Date(e.end.seconds * 1000),
+      start: new Date(startDateValue),
+      end: new Date(importEndTime),
       title: e.title,
       id: e.id,
       place_id: e.place_id,
@@ -114,7 +126,7 @@ function FavFolderDropdown({
   }
 
   return (
-    <Stack direction="row" alignItems="center" spacing={2}>
+    <Wrapper>
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-standard-label">Plan</InputLabel>
         <Select
@@ -148,7 +160,7 @@ function FavFolderDropdown({
         }}>
         Import
       </Button>
-    </Stack>
+    </Wrapper>
   );
 }
 
