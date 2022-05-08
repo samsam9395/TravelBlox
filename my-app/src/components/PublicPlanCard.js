@@ -3,12 +3,15 @@ import styled from 'styled-components';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 const SinglePlanContainer = styled.div`
-  width: 450px;
-  height: 450px;
+  width: 300px;
+  height: 300px;
   object-fit: contain;
   display: flex;
   align-items: center;
   margin: 10px;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const PlanTextContainer = styled.div`

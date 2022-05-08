@@ -1,0 +1,23 @@
+// @import url( https://fonts.googleapis.com/css2?family=Ubuntu&display=swap );
+
+// _library.scss
+$my_orange: #f1651d !default;
+$light_orange: #fea360 !default;
+$pale: #fceebf !default;
+$lighter_blue: #54cfd673 !default;
+$light_blue: #55cfd6 !default;
+$blue: #0a97b7 !default;
+$dark_blue: #00213a !default;
+$my_black: #0e0e0f !default;
+
+.adp-placemark {
+  background: #54cfd673 !important;
+  border: none !important;
+  border-radius: 10px;
+}
+
+.rdrStartEdge,
+.rdrInRange,
+.rdrEndEdge {
+  color: $my_orange !important;
+}

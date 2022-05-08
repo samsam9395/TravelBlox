@@ -14,6 +14,7 @@ import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
+import '../styles/libraryStyles.scss';
 
 const BlackWrapper = styled.div`
   position: fixed;

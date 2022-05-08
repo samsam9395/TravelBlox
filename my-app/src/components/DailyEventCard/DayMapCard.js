@@ -2,23 +2,29 @@ import React, { useState, useEffect, useRef, memo } from 'react';
 import styled from 'styled-components';
 import { googleAPI } from '../../utils/credent';
 
-const ApiKey = googleAPI();
 const center = { lat: -33.8666, lng: 151.1958 };
 const zoom = 15;
 
 const DayMapContainer = styled.div`
   margin-bottom: 20px;
+  display: flex;
+  width: 100%;
+  font-size: 14px;
 `;
 
 const MapContainer = styled.div`
-  /* border: 1px black solid; */
-  height: 650px;
   width: 100%;
 `;
 
 const PanelContainer = styled.div`
-  min-height: 300px;
-  margin-bottom: 30px;
+  max-width: 250px;
+  /* min-height: 300px; */
+  margin-bottom: 0 30px;
+  margin-left: 15px;
+  /* max-height: 100%; */
+  overflow: auto;
+  height: 100%;
+  box-sizing: border-box;
 `;
 
 const Marker = (position) => {
@@ -197,7 +203,6 @@ function DayMapCard(props) {
 
   return (
     <DayMapContainer>
-      {/* <Wrapper apiKey={ApiKey}> */}
       {props.dayEvents && (
         <Map
           center={center}
@@ -209,7 +214,7 @@ function DayMapCard(props) {
         />
       )}
       {hasMarker && <Marker position={markerPosition} />}
-      {/* </Wrapper> */}
+
       <PanelContainer id="sidebar"></PanelContainer>
     </DayMapContainer>
   );

@@ -16,6 +16,7 @@ import {
   PaleBtn,
 } from '../utils/globalTheme';
 import { padding } from '@mui/system';
+import UserAvatar from '../components/user/Avatar';
 
 const db = firebaseDB();
 const TopSectionWrapper = styled.div`
@@ -38,6 +39,21 @@ const UserInfoWrapper = styled.div`
   }
   .user_id {
     margin-bottom: 30px;
+  }
+
+  .user_info_title {
+    text-align: center;
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: ${themeColours.orange};
+    font-weight: 600;
+  }
+
+  .authorId {
+    color: ${themeColours.dark_blue};
+    font-weight: 400;
+    padding-left: 10px;
   }
 `;
 
@@ -175,13 +191,8 @@ function Dashboard(props) {
     <>
       <TopSectionWrapper>
         <UserInfoWrapper>
-          <Avatar
-            className="avatar_image"
-            alt="Remy Sharp"
-            src="/static/images/avatar/1.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
-
+          <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} />
+          <div className="user_info_title">Welcome!</div>
           <div className="user_id">{currentUserId}</div>
           <PaleBtn
             onClick={() => {
@@ -192,7 +203,13 @@ function Dashboard(props) {
           </PaleBtn>
         </UserInfoWrapper>
         <LightOrangeBtn
-          style={{ width: 200, height: 60, padding: 15, fontSize: 20 }}
+          style={{
+            width: 200,
+            height: 60,
+            padding: 15,
+            fontSize: 20,
+            fontWeight: 600,
+          }}
           onClick={() => {
             setShowAddPlanPopup(true);
           }}>

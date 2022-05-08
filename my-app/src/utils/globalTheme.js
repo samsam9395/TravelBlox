@@ -15,6 +15,7 @@ export const themeColours = {
 // dark blue here: https://colorpalettes.net/color-palette-3901/
 
 export const LightOrangeBtn = styled.button`
+  letter-spacing: 1.5px;
   min-width: 100px;
   padding: 10px 20px;
   border-radius: 15px;
@@ -23,10 +24,12 @@ export const LightOrangeBtn = styled.button`
   margin: 5px;
   &:hover {
     cursor: pointer;
+    background-color: ${themeColours.orange};
   }
 `;
 
 export const LightBlueBtn = styled.button`
+  letter-spacing: 1.5px;
   min-width: 100px;
   padding: 10px 20px;
   border-radius: 15px;
@@ -35,10 +38,12 @@ export const LightBlueBtn = styled.button`
   margin: 5px;
   &:hover {
     cursor: pointer;
+    background-color: ${themeColours.blue};
   }
 `;
 
 export const OrangeBtn = styled.button`
+  letter-spacing: 1.5px;
   min-width: 100px;
   padding: 10px 20px;
   border-radius: 15px;
@@ -51,6 +56,7 @@ export const OrangeBtn = styled.button`
 `;
 
 export const BlueBtn = styled.button`
+  letter-spacing: 1.5px;
   min-width: 100px;
   padding: 10px 20px;
   border-radius: 15px;
@@ -63,6 +69,7 @@ export const BlueBtn = styled.button`
 `;
 
 export const PaleBtn = styled.button`
+  letter-spacing: 1.5px;
   min-width: 100px;
   padding: 10px 20px;
   border-radius: 15px;

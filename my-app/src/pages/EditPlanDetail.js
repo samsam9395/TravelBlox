@@ -4,7 +4,7 @@ import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
-import './planDetail.scss';
+import './../styles/calendarStyle.scss';
 import PlanCalendar from './PlanCalendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
@@ -25,9 +25,15 @@ import {
 } from '../utils/functionList';
 import FavFolderDropdown from '../components/FavFolderDropdown';
 import {
+  themeColours,
   EditableMainImageContainer,
   EditableMainImage,
   FlexColumnWrapper,
+  LightBlueBtn,
+  LightOrangeBtn,
+  OrangeBtn,
+  BlueBtn,
+  PaleBtn,
 } from '../utils/globalTheme';
 
 const db = firebaseDB();
@@ -210,6 +216,7 @@ function EditPlanDetail(props) {
           <FormControlLabel
             control={
               <Switch
+                style={{ color: themeColours.orange }}
                 checked={isPublished}
                 onChange={() => setIsPublished(!isPublished)}
               />
@@ -234,7 +241,7 @@ function EditPlanDetail(props) {
             />
             <Box textAlign="center">
               <IconButton
-                color="primary"
+                style={{ color: themeColours.blue }}
                 aria-label="upload picture"
                 component="div">
                 <PhotoCamera />
@@ -263,18 +270,18 @@ function EditPlanDetail(props) {
         justifyContent="space-between"
         spacing={2}>
         <Stack direction="row" alignItems="center" spacing={2}>
-          <Button
+          <LightBlueBtn
             variant="contained"
             onClick={() => {
               setShowPopUp(true);
             }}>
             Add new event
-          </Button>
-          <Button
+          </LightBlueBtn>
+          <LightBlueBtn
             variant="contained"
             onClick={() => setShowFavContainer(!showFavContainer)}>
             Import Favourite
-          </Button>
+          </LightBlueBtn>
 
           {showFavContainer && (
             <div>
@@ -308,7 +315,7 @@ function EditPlanDetail(props) {
             </div>
           )}
 
-          <Button
+          <LightBlueBtn
             variant="contained"
             onClick={() => {
               try {
@@ -328,7 +335,7 @@ function EditPlanDetail(props) {
               }
             }}>
             Save
-          </Button>
+          </LightBlueBtn>
           {/* <Button
             variant="contained"
             onClick={() => {
@@ -345,13 +352,13 @@ function EditPlanDetail(props) {
             Publish
           </Button> */}
         </Stack>
-        <Button
+        <PaleBtn
           variant="contained"
           onClick={() => {
             deletePlan(planDocRef, currentUserId);
           }}>
           Delete
-        </Button>
+        </PaleBtn>
       </Stack>
     </Wrapper>
   );

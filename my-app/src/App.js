@@ -27,7 +27,7 @@ const ApiKey = googleAPI();
 const db = firebaseDB();
 
 const ContentWrapper = styled.div`
-  padding: 100px 60px 150px 60px;
+  padding: 100px 80px 150px 80px;
 `;
 
 function App() {
@@ -93,7 +93,7 @@ function App() {
               element={<StaticPlanDetail favFolderNames={favFolderNames} />}
             />
 
-            <Route path="/autocomplete" element={<AutoCompleteInput />} />
+            {/* <Route path="/autocomplete" element={<AutoCompleteInput />} /> */}
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route
               path="/discover"
