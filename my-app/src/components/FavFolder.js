@@ -37,52 +37,54 @@ const SinglePlanContainer = styled.div`
   align-items: center;
 `;
 
+const FavPlansCtonainer = styled.div`
+  display: flex;
+  overflow: auto;
+  justify-content: center;
+
+  .empty_notification {
+    font-size: 20px;
+  }
+`;
+
+// selectedFolder={selectedFolder}
 // favFolderName={favFolderName} currentUserId={currentUserId}
-export default function FavFolder(props) {
-  const [favPlansIdList, setFavlansIdList] = useState(null);
+export default function FavFolder({ selectedFolder, currentUserId }) {
+  const [favPlansList, setFavlansList] = useState(null);
+  const [isEmptyFolder, setIsEmptyFolder] = useState(false);
   const [showFavPlans, setShowFavPlans] = useState(false);
 
   useEffect(async () => {
-    const favRef = collection(db, 'userId', props.currentUserId, 'fav_plans');
-    const planQuery = query(
-      favRef,
-      where('infolder', '==', props.favFolderName)
-    );
+    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+    const planQuery = query(favRef, where('infolder', '==', selectedFolder));
     const favPlansIdList = await getDocs(planQuery);
 
     if (favPlansIdList.docs.length === 0) {
       console.log('No fav plans yet!');
+      setIsEmptyFolder(true);
     } else {
-      setFavlansIdList(favPlansIdList.docs.map((e) => e.data()));
+      setIsEmptyFolder(false);
+      setFavlansList(favPlansIdList.docs.map((e) => e.data()));
     }
-  }, []);
+  }, [selectedFolder]);
+
+  console.log(favPlansList);
 
   return (
-    <>
-      {showFavPlans ? (
-        <SinglePlanContainer>
-          <ArrowBackIosIcon
-            onClick={() => setShowFavPlans(false)}></ArrowBackIosIcon>
-          {favPlansIdList &&
-            favPlansIdList.map((favPlanId) => (
-              <OwnPlanCard
-                userIdentity="public"
-                ownPlanId={favPlanId.fav_plan_doc_ref}
-                key={favPlanId.fav_plan_doc_ref}
-              />
-            ))}
-        </SinglePlanContainer>
+    <FavPlansCtonainer>
+      {isEmptyFolder ? (
+        <div className="empty_notification">
+          No favourite plans added to this folder yet!
+        </div>
       ) : (
-        <SingleFolderContainer
-          onClick={() => {
-            setShowFavPlans(true);
-            // props.setHideOtherCards(true);
-          }}>
-          <FavFolderContainer>
-            <SingleFolderText>{props.favFolderName}</SingleFolderText>
-          </FavFolderContainer>
-        </SingleFolderContainer>
+        favPlansList?.map((favPlanId) => (
+          <OwnPlanCard
+            userIdentity="public"
+            ownPlanId={favPlanId.fav_plan_doc_ref}
+            key={favPlanId.fav_plan_doc_ref}
+          />
+        ))
       )}
-    </>
+    </FavPlansCtonainer>
   );
 }

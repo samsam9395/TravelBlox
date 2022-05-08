@@ -17,6 +17,8 @@ import {
 } from '../utils/globalTheme';
 import { padding } from '@mui/system';
 import UserAvatar from '../components/user/Avatar';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const db = firebaseDB();
 const TopSectionWrapper = styled.div`
@@ -57,15 +59,137 @@ const UserInfoWrapper = styled.div`
   }
 `;
 
+const SectionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-family: 'Oswald', sans-serif;
+
+  .section_wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  .sub_section_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section_title {
+    font-weight: 600;
+    font-size: 36px;
+    margin-right: 20px;
+  }
+
+  .dot {
+    color: grey;
+    font-size: 3em;
+    margin-right: 15px;
+  }
+
+  .item_amount {
+    color: grey;
+    font-size: 1.5em;
+  }
+
+  .sub_section {
+    padding: 0 5%;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section_sub-title {
+    font-size: 30px;
+    margin-right: 20px;
+  }
+`;
+
+const FolderWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const FolderContainer = styled.div`
+  width: 300px;
+  height: 130px;
+  border-radius: 15px;
+  box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
+  -webkit-box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
+  -moz-box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
+  display: flex;
+  flex-direction: column;
+  padding: 15px 20px;
+  margin-right: 20px;
+  margin-bottom: 50px;
+  border: 1px solid ${themeColours.pale};
+
+  .folder_section {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .folder_name {
+    font-size: 25px;
+    font-weight: 600;
+    margin: 15px 0;
+    text-align: center;
+  }
+
+  .new_folder_name_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .new_folder_name_input {
+    width: 60%;
+    font-size: 22px;
+    font-family: 'Oswald', sans-serif;
+    text-align: center;
+    border: 0;
+    border-bottom: 1px solid grey;
+  }
+
+  .new_folder_name_confirmBtn {
+    margin-top: 10px;
+    width: 40%;
+    padding: 5px;
+    border-radius: 15px;
+    border: 2px solid ${themeColours.pale};
+    background-color: white;
+    &:hover {
+      background-color: ${themeColours.pale};
+    }
+  }
+`;
+
+const AddNewPlanButton = styled.button`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 130px;
+  padding: 10px 15px;
+  border: none;
+  background-color: ${themeColours.light_blue};
+  border-radius: 15px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  color: white;
+  &:hover {
+    background-color: ${themeColours.blue};
+  }
+`;
+
 const PlanCollectionWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
   box-sizing: content-box;
   overflow: auto;
-  /* border: 1px solid black; */
-  margin: 30px 0;
+  margin-bottom: 30px;
   height: 450px;
+  justify-content: center;
 `;
 
 const SinglePlanContainer = styled.div`
@@ -129,8 +253,10 @@ function Dashboard(props) {
   const [newFolderName, setNewFolderName] = useState('');
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [hideOtherCards, setHideOtherCards] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+
   const navigate = useNavigate();
-  const ref = useRef();
+  const inputRef = useRef();
 
   useEffect(async () => {
     if (!props.user) {
@@ -170,22 +296,28 @@ function Dashboard(props) {
     }
   }, [currentUserId]);
 
+  // useEffect(() => {
+  //   const checkIfClickedOutside = (e) => {
+  //     // If the menu is open and the clicked target is not within the menu,
+  //     // then close the menu
+  //     if (showAddNewFolder && ref.current && !ref.current.contains(e.target)) {
+  //       setShowAddNewFolder(false);
+  //     }
+  //   };
+
+  //   document.addEventListener('mousedown', checkIfClickedOutside);
+
+  //   return () => {
+  //     // Cleanup the event listener
+  //     document.removeEventListener('mousedown', checkIfClickedOutside);
+  //   };
+  // }, [showAddNewFolder]);
   useEffect(() => {
-    const checkIfClickedOutside = (e) => {
-      // If the menu is open and the clicked target is not within the menu,
-      // then close the menu
-      if (showAddNewFolder && ref.current && !ref.current.contains(e.target)) {
-        setShowAddNewFolder(false);
-      }
-    };
-
-    document.addEventListener('mousedown', checkIfClickedOutside);
-
-    return () => {
-      // Cleanup the event listener
-      document.removeEventListener('mousedown', checkIfClickedOutside);
-    };
-  }, [showAddNewFolder]);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    console.log(22, inputRef.current);
+  }, [inputRef.current]);
 
   return (
     <>
@@ -222,13 +354,21 @@ function Dashboard(props) {
           // state: { favPlansIdList: favPlansIdList, user: props.user },
           state: { user: props.user, favFolderNames: favFolderNames },
         })}
-      <PlanCollectionWrapper>
-        {ownPlansIdList &&
-          ownPlansIdList.map((ownPlanId) => {
+
+      <SectionContainer>
+        <div className="section_wrapper">
+          <div className="section_title">Plans</div>
+          <div className="dot"> {'\u00B7'} </div>
+          {ownPlansIdList && (
+            <div className="item_amount">{ownPlansIdList.length}</div>
+          )}
+        </div>
+
+        <PlanCollectionWrapper>
+          {ownPlansIdList?.map((ownPlanId) => {
             return (
               <SinglePlanContainer key={ownPlanId}>
                 <OwnPlanCard
-                  setHideOtherCards={setHideOtherCards}
                   userIdentity="author"
                   ownPlanId={ownPlanId}
                   key={ownPlanId}
@@ -238,47 +378,83 @@ function Dashboard(props) {
               </SinglePlanContainer>
             );
           })}
-      </PlanCollectionWrapper>
+        </PlanCollectionWrapper>
+      </SectionContainer>
 
-      <PlanCollectionWrapper>
-        {favFolderNames &&
-          favFolderNames.map((favFolderName, index) => {
-            return (
-              !hideOtherCards && (
-                <FavFolder
+      <SectionContainer>
+        <div className="section_wrapper">
+          <div className="section_title">Favourites</div>
+        </div>
+
+        <div className="sub_section">
+          <div className="sub_section_wrapper">
+            <div className="section_wrapper">
+              <div className="section_sub-title">Folders</div>
+              <div className="dot"> {'\u00B7'} </div>
+              {favFolderNames && (
+                <div className="item_amount">{favFolderNames.length}</div>
+              )}
+            </div>
+            <AddNewPlanButton
+              onClick={() => {
+                setShowAddNewFolder(!showAddNewFolder);
+              }}>
+              <AddIcon style={{ fontSize: 16, marginRight: 5 }}></AddIcon>
+              Add Folder
+            </AddNewPlanButton>
+          </div>
+
+          <FolderWrapper>
+            {favFolderNames?.map((favFolderName, index) => {
+              return (
+                <FolderContainer
+                  className="hoverCursor"
                   key={index}
                   favFolderName={favFolderName}
-                  currentUserId={currentUserId}
-                  // setHideOtherCards={setHideOtherCards}
-                />
-              )
-            );
-          })}
+                  onClick={() => setSelectedFolder(favFolderName)}>
+                  <div className="folder_section">
+                    <FolderOpenIcon style={{ color: 'grey' }}></FolderOpenIcon>
 
-        <SingleFolderContainerEmpty>
-          {!showAddNewFolder && (
-            <AddIcon
-              style={{ fontSize: 50 }}
-              onClick={() => setShowAddNewFolder(!showAddNewFolder)}></AddIcon>
-          )}
+                    <MoreHorizIcon
+                      className="hoverCursor"
+                      style={{ color: 'grey' }}></MoreHorizIcon>
+                  </div>
+                  <div className="folder_name">{favFolderName}</div>
+                </FolderContainer>
+              );
+            })}
+            {showAddNewFolder && (
+              <FolderContainer>
+                <FolderOpenIcon style={{ color: 'grey' }}></FolderOpenIcon>
+                <div className="new_folder_name_container">
+                  <input
+                    ref={inputRef}
+                    className="new_folder_name_input"
+                    onChange={(e) => {
+                      setNewFolderName(e.target.value);
+                    }}></input>
+                  <button
+                    className="new_folder_name_confirmBtn"
+                    onClick={(e) => {
+                      addNewFavFolder(currentUserId, newFolderName);
+                      setShowAddNewFolder(false);
+                    }}>
+                    Create
+                  </button>
+                </div>
+              </FolderContainer>
+            )}
+          </FolderWrapper>
 
-          {showAddNewFolder && (
-            <div ref={ref}>
-              <input
-                onChange={(e) => {
-                  setNewFolderName(e.target.value);
-                }}></input>
-              <button
-                onClick={(e) => {
-                  addNewFavFolder(currentUserId, newFolderName);
-                  setShowAddNewFolder(false);
-                }}>
-                Create
-              </button>
-            </div>
-          )}
-        </SingleFolderContainerEmpty>
-      </PlanCollectionWrapper>
+          <PlanCollectionWrapper>
+            <FavFolder
+              selectedFolder={selectedFolder}
+              currentUserId={currentUserId}
+              // setHideOtherCards={setHideOtherCards}
+            />
+          </PlanCollectionWrapper>
+        </div>
+      </SectionContainer>
     </>
   );
 }
