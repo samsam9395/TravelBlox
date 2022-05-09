@@ -24,6 +24,8 @@ export const LightOrangeBtn = styled.button`
   background-color: ${themeColours.light_orange};
   margin: 5px;
   color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.orange};
@@ -39,6 +41,8 @@ export const LightBlueBtn = styled.button`
   background-color: ${themeColours.light_blue};
   margin: 5px;
   color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.blue};
@@ -54,6 +58,8 @@ export const OrangeBtn = styled.button`
   background-color: ${themeColours.orange};
   margin: 5px;
   color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
   &:hover {
     cursor: pointer;
   }
@@ -68,6 +74,8 @@ export const BlueBtn = styled.button`
   background-color: ${themeColours.blue};
   margin: 5px;
   color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
   &:hover {
     cursor: pointer;
   }
@@ -81,6 +89,8 @@ export const PaleBtn = styled.button`
   border: none;
   background-color: ${themeColours.pale};
   margin: 5px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
   &:hover {
     cursor: pointer;
   }

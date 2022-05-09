@@ -204,6 +204,7 @@ export async function getFavPlan(
   } else {
     console.log(list);
     setFavPlansNameList(list);
+    return list;
   }
 }
 

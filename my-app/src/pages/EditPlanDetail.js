@@ -41,6 +41,7 @@ import {
   BlueBtn,
   PaleBtn,
 } from '../styles/globalTheme';
+import '../favourite/favDropDown.scss';
 
 const db = firebaseDB();
 
@@ -91,6 +92,8 @@ const BottomBtnContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 150px;
+  margin-bottom: 30px;
 
   .left_btns {
     display: flex;
@@ -131,6 +134,7 @@ function EditPlanDetail(props) {
     props.favFolderNames || []
   );
   const [selectedPlanId, setSelectedPlanId] = useState('');
+  const [selectedFolderId, setSelectedFolderId] = useState('');
   const [importData, setImportData] = useState({});
 
   //React Route
@@ -180,18 +184,6 @@ function EditPlanDetail(props) {
       console.log(error);
     }
   }
-
-  useEffect(async () => {
-    const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
-
-    try {
-      const list = await getDocs(favFolderRef);
-      list.docs.map((e) => console.log(e.data()));
-      setDropDownOption(list.docs.map((e) => e.data().folder_name));
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
 
   useEffect(async () => {
     const docSnap = await getDoc(doc(db, 'plans', planDocRef));
@@ -328,44 +320,21 @@ function EditPlanDetail(props) {
             }}>
             Add new event
           </LightBlueBtn>
-          <LightBlueBtn
+          {/* <LightBlueBtn
             variant="contained"
             onClick={() => setShowFavContainer(!showFavContainer)}>
             Import Favourite
-          </LightBlueBtn>
+          </LightBlueBtn> */}
 
-          {showFavContainer && (
-            <SelectImportDropdown>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={dropDownOption}
-                sx={{ width: 160 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Folders" />
-                )}
-                onChange={(e) => {
-                  setShowFavPlans(true);
-                  console.log(e.target.textContent);
-                  getFavPlan(
-                    e.target.textContent,
-                    currentUserId,
-                    setFavPlansNameList
-                  );
-                }}
-              />
-              {showFavPlans && favPlansNameList && (
-                <FavFolderDropdown
-                  showFavPlans={showFavPlans}
-                  favPlansNameList={favPlansNameList}
-                  setSelectedPlanId={setSelectedPlanId}
-                  selectedPlanId={selectedPlanId}
-                  planDocRef={planDocRef}
-                  startDateValue={startDateValue}
-                />
-              )}
-            </SelectImportDropdown>
-          )}
+          <FavFolderDropdown
+            showFavPlans={showFavPlans}
+            favPlansNameList={favPlansNameList}
+            setSelectedPlanId={setSelectedPlanId}
+            selectedPlanId={selectedPlanId}
+            planDocRef={planDocRef}
+            startDateValue={startDateValue}
+            currentUserId={currentUserId}
+          />
 
           <LightBlueBtn
             variant="contained"

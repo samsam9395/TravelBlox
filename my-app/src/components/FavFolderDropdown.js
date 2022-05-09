@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -15,27 +15,71 @@ import {
 } from 'firebase/firestore';
 import styled from 'styled-components';
 import firebaseDB from '../utils/firebaseConfig';
-import { LightOrangeBtn } from '../styles/globalTheme';
+import {
+  LightOrangeBtn,
+  themeColours,
+  LightBlueBtn,
+} from '../styles/globalTheme';
+import '../favourite/favDropDown.scss';
+import { getFavPlan } from '../utils/functionList';
 
 const db = firebaseDB();
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  align-items: center;
+  height: 39px;
+  /* position: absolute; */
+  /* top: 50px; */
+`;
+
+const ImportBtnWrapper = styled.div`
   position: absolute;
-  top: 50px;
+  /* top: calc(100% + 115px); */
+  top: calc(100% + 120px);
+  right: -130px;
+`;
+
+const ImportWrapperTest = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
 `;
 
 function FavFolderDropdown({
-  favPlansNameList,
-  setSelectedPlanId,
   importTimeBlock,
-  selectedPlanId,
   planDocRef,
   setAddedTimeBlock,
   startDateValue,
+  currentUserId,
 }) {
+  const [favPlansNameList, setFavPlansNameList] = useState(null);
+  const [showFavPlans, setShowFavPlans] = useState(false);
+  const [dropDownOption, setDropDownOption] = useState([]);
+  const [selectedPlanId, setSelectedPlanId] = useState('');
+  const [selectedFolderId, setSelectedFolderId] = useState('');
+  const [showSecondLayer, setShowSecondLayer] = useState(false);
+  const [showImportBtn, setShowImportBtn] = useState(false);
+
+  console.log('favPlansNameList', favPlansNameList);
+
+  // function HandleShowDropDown() {
+  //   setShowSecondLayer(true);
+  // }
+
+  useEffect(async () => {
+    const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
+
+    try {
+      const list = await getDocs(favFolderRef);
+      list.docs.map((e) => console.log(e.data()));
+      setDropDownOption(list.docs.map((e) => e.data().folder_name));
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   async function importTimeBlock(selectedPlanId) {
     console.log('importTimeBlock clicked', selectedPlanId);
     let importEndTime = new Date(startDateValue);
@@ -128,41 +172,104 @@ function FavFolderDropdown({
     }
   }
 
+  useEffect(() => {
+    console.log('222 favPlansNameList', favPlansNameList);
+  }, [favPlansNameList, showSecondLayer]);
+
+  const dropDownRef = useRef([]);
+
+  console.log(66, showSecondLayer);
+  console.log(77, showImportBtn);
+
   return (
     <Wrapper>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Plan</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={selectedPlanId}
-          onChange={(e) => setSelectedPlanId(e.target.value)}
-          label="Plans">
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {favPlansNameList.map((e, index) => (
-            <MenuItem value={e.fav_plan_doc_ref || ''} key={index}>
-              {e.fav_plan_title}
-            </MenuItem>
+      <div className="dropdown">
+        <input type="checkbox" id="dropdown" />
+        <label
+          className="dropdown__face"
+          for="dropdown"
+          onClick={() => {
+            setShowSecondLayer(showSecondLayer ? !showSecondLayer : false);
+            setShowImportBtn(false);
+          }}>
+          <div className="dropdown__text">Folders</div>
+
+          <div className="dropdown__arrow"></div>
+        </label>
+        <ul className="dropdown__items">
+          {dropDownOption?.map((e, index) => (
+            <li
+              value={e.fav_plan_doc_ref || ''}
+              key={index}
+              onClick={(e) => {
+                setShowSecondLayer(true);
+                getFavPlan(
+                  e.target.textContent,
+                  currentUserId,
+                  setFavPlansNameList
+                );
+              }}>
+              {e}
+            </li>
           ))}
-        </Select>
-      </FormControl>
-      {/* <Button
-        variant="outlined"
-        onClick={() => importTimeBlock(selectedPlanId, planDocRef)}>
-        Import
-      </Button> */}
-      <LightOrangeBtn
-        variant="outlined"
-        onClick={async () => {
-          // importTimeBlock(selectedPlanId, planDocRef);
-          const importResult = await importTimeBlock(selectedPlanId);
-          console.log(importResult);
-          addImportToDataBase(planDocRef, importResult);
-        }}>
-        Import
-      </LightOrangeBtn>
+        </ul>
+        <ul
+          className="secondlayer_dropdown__items"
+          style={{
+            opacity: !showSecondLayer ? '0' : '1',
+            visibility: !showSecondLayer ? 'hidden' : 'visible',
+            top: !showSecondLayer ? 'calc(100% + 10px)' : 'calc(100% + 120px)',
+          }}>
+          {favPlansNameList?.map((e, index) => (
+            <li
+              ref={(element) => (dropDownRef.current[index] = element)}
+              value={e.fav_plan_doc_ref || ''}
+              key={index}
+              onClick={(e) => {
+                setSelectedPlanId(e.target.textContent);
+                setShowImportBtn(true);
+                dropDownRef.current.forEach((ref) => {
+                  console.log(dropDownRef.current);
+                  console.log(ref);
+                  if (dropDownRef.current.indexOf(ref) === index) {
+                    ref.style.color = themeColours.orange;
+                  } else {
+                    ref.style.color = 'white';
+                  }
+                });
+              }}>
+              {e.fav_plan_title}
+            </li>
+          ))}
+        </ul>
+        <ImportBtnWrapper>
+          {showImportBtn && (
+            <LightOrangeBtn
+              variant="outlined"
+              onClick={async () => {
+                // importTimeBlock(selectedPlanId, planDocRef);
+                const importResult = await importTimeBlock(selectedPlanId);
+                console.log(importResult);
+                addImportToDataBase(planDocRef, importResult);
+              }}>
+              Import
+            </LightOrangeBtn>
+          )}
+        </ImportBtnWrapper>
+      </div>
+
+      <svg>
+        <filter id="goo">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+          <feColorMatrix
+            in="blur"
+            type="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+            result="goo"
+          />
+          <feBlend in="SourceGraphic" in2="goo" />
+        </filter>
+      </svg>
     </Wrapper>
   );
 }
