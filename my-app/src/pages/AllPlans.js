@@ -39,7 +39,8 @@ const SearchContainer = styled.div`
 
 const MainImgContainer = styled.div`
   width: 100%;
-  height: 300px;
+  height: 320px;
+  order-radius: 10px;
 `;
 
 const MainImg = styled.img`
@@ -175,8 +176,8 @@ function Allplans(props) {
           <div className="text_are_you">are you</div>{' '}
           <div className="text_heading_to">
             {' '}
-            <div className="text_heading">heading</div> to?
-          </div>{' '}
+            <div className="text_heading">heading</div>?
+          </div>
         </CallToActionText>
         <SearchInputMUI
           variant="standard"

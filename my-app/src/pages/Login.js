@@ -14,6 +14,7 @@ import { VisibilityOff, Visibility } from '@mui/icons-material';
 import { InputAdornment } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import firebaseDB from '../utils/firebaseConfig';
+import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -228,14 +229,14 @@ function Login(props) {
                     }}
                   />
                 </InputWrapper>
-                <Button
+                <LightOrangeBtn
                   onClick={() =>
                     email && password
                       ? (logOn(email, password), setEmail(''), setPassword(''))
                       : alert('please fill in both !')
                   }>
                   Login
-                </Button>
+                </LightOrangeBtn>
                 <SignUpSwitcher>Doesn't have an account yet?</SignUpSwitcher>
                 <SignUpSwitcher>
                   Sign up
@@ -288,7 +289,7 @@ function Login(props) {
                     }}
                   />
                 </InputWrapper>
-                <Button
+                <LightOrangeBtn
                   onClick={() =>
                     email && password
                       ? (signUP(email, password),
@@ -298,7 +299,7 @@ function Login(props) {
                       : alert('please fill in both !')
                   }>
                   Sign Up
-                </Button>
+                </LightOrangeBtn>
                 <SignUpSwitcher>Already has an account? </SignUpSwitcher>
                 <SignUpSwitcher>
                   Sign in
