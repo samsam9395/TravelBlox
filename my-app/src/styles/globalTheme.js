@@ -131,8 +131,10 @@ export const EditableMainImageContainer = styled.div`
   height: 400px;
   width: auto;
   object-fit: contain;
+  border: none;
 `;
 export const EditableMainImage = styled.img`
+  border: none;
   min-width: 150px;
   width: auto;
   height: 100%;

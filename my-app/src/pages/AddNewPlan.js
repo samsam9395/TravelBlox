@@ -130,6 +130,7 @@ const CalendarColourBackground = styled.div`
   position: absolute;
 `;
 
+// defaultImg={defaultImg}
 // user={user} accessToken, email
 function AddNewPlan(props) {
   const location = useLocation();
@@ -168,6 +169,13 @@ function AddNewPlan(props) {
     const currentTimeMilli = new Date().getTime();
     const createPlanDocId = `plan${currentTimeMilli}`;
     setPlanDocRef(createPlanDocId);
+
+    console.log('mainImage is', mainImage);
+    if (mainImage === null || '') {
+      mainImage = props.defaultImg;
+      setMainImage(props.defaultImg);
+    }
+
     try {
       await setDoc(doc(db, 'plans', createPlanDocId), {
         author: currentUserId,
@@ -297,6 +305,7 @@ function AddNewPlan(props) {
         {hasCreatedCollection ? (
           <>
             <CalendarContainer>
+              <CalendarColourBackground></CalendarColourBackground>
               <PlanCalendar
                 startDateValue={startDateValue}
                 setMyEvents={setMyEvents}
