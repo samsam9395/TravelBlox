@@ -28,16 +28,66 @@ const db = firebaseDB();
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  height: 39px;
+  width: 180px;
+  position: absolute;
   /* position: absolute; */
   /* top: 50px; */
 `;
 
+const FavFolderDropDownOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 5px 10px;
+  position: relative;
+  width: 100%;
+  top: 60px;
+  left: 181px;
+  margin-top: 10px;
+  border-radius: 10px;
+  color: ${themeColours.blue};
+  border: 1px solid ${themeColours.blue};
+  transition: all 1.3s;
+
+  .folder_option {
+    padding: 5px;
+    &:hover {
+      cursor: pointer;
+      background-color: ${themeColours.pale};
+      border-radius: 10px;
+    }
+  }
+`;
+
+const FavPlanDropDownOptions = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 15px;
+  width: 100%;
+  top: calc(120% + 60px);
+  left: 181px;
+  background-color: white;
+  border: 1px solid ${themeColours.blue};
+  border-radius: 10px;
+
+  color: ${themeColours.blue};
+
+  .folder_option {
+    padding: 5px;
+    &:hover {
+      cursor: pointer;
+      background-color: ${themeColours.pale};
+      border-radius: 10px;
+    }
+  }
+`;
+
 const ImportBtnWrapper = styled.div`
+  width: 100%;
   position: absolute;
   /* top: calc(100% + 115px); */
-  top: calc(350% - 20px);
-  right: -130px;
+  top: calc(120% + 60px);
+  right: -373px;
 `;
 
 // const ImportWrapperTest = styled.div`
@@ -54,7 +104,7 @@ function FavFolderDropdown({
   startDateValue,
   currentUserId,
 }) {
-  const [favPlansNameList, setFavPlansNameList] = useState(null);
+  const [favPlansNameList, setFavPlansNameList] = useState([]);
   // const [showFavPlans, setShowFavPlans] = useState(false);
   const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
   const [selectedPlanId, setSelectedPlanId] = useState('');
@@ -64,10 +114,6 @@ function FavFolderDropdown({
 
   console.log('favPlansNameList', favPlansNameList);
   console.log('dropDownFavFolderOption', dropDownFavFolderOption);
-
-  // function HandleShowDropDown() {
-  //   setShowSecondLayer(true);
-  // }
 
   useEffect(async () => {
     const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
@@ -173,18 +219,70 @@ function FavFolderDropdown({
     }
   }
 
-  useEffect(() => {
-    console.log('222 favPlansNameList', favPlansNameList);
-  }, [favPlansNameList, showSecondLayer]);
-
   const dropDownRef = useRef([]);
 
-  console.log(66, showSecondLayer);
-  console.log(77, showImportBtn);
+  // console.log(66, showSecondLayer);
+  // console.log(77, showImportBtn);
 
   return (
     <Wrapper>
-      <div className="dropdown">
+      <FavFolderDropDownOptions>
+        {dropDownFavFolderOption?.map((folderName, index) => (
+          <div
+            key={index}
+            className="folder_option"
+            // onClick={() => console.log()}
+            onClick={(e) => {
+              setShowSecondLayer(true);
+              console.log(
+                'getting',
+                e.target.textContent,
+                currentUserId,
+                setFavPlansNameList
+              );
+              getFavPlan(
+                e.target.textContent,
+                currentUserId,
+                setFavPlansNameList
+              );
+            }}>
+            {folderName}
+          </div>
+        ))}
+      </FavFolderDropDownOptions>
+
+      {showSecondLayer && (
+        <FavPlanDropDownOptions>
+          {favPlansNameList.length <= 0 ? (
+            <div className="folder_option">No plans yet!</div>
+          ) : (
+            favPlansNameList?.map((planName, index) => (
+              <div
+                ref={(element) => (dropDownRef.current[index] = element)}
+                key={index}
+                className="folder_option"
+                onClick={(e) => {
+                  // console.log(planName);
+                  setSelectedPlanId(planName.fav_plan_doc_ref);
+                  setShowImportBtn(true);
+                  dropDownRef.current.forEach((ref) => {
+                    // console.log(dropDownRef.current);
+                    // console.log(ref);
+                    if (dropDownRef.current.indexOf(ref) === index) {
+                      ref.style.color = themeColours.light_orange;
+                    } else {
+                      ref.style.color = 'white';
+                    }
+                  });
+                }}>
+                {planName.fav_plan_title}
+              </div>
+            ))
+          )}
+        </FavPlanDropDownOptions>
+      )}
+
+      {/* <div className="dropdown">
         <input type="checkbox" id="dropdown" />
         <label
           className="dropdown__face"
@@ -243,22 +341,22 @@ function FavFolderDropdown({
               {e.fav_plan_title}
             </li>
           ))}
-        </ul>
-        <ImportBtnWrapper>
-          {showImportBtn && (
-            <LightOrangeBtn
-              variant="outlined"
-              onClick={async () => {
-                // importTimeBlock(selectedPlanId, planDocRef);
-                const importResult = await importTimeBlock(selectedPlanId);
-                console.log(importResult);
-                addImportToDataBase(planDocRef, importResult);
-              }}>
-              Import
-            </LightOrangeBtn>
-          )}
-        </ImportBtnWrapper>
-      </div>
+        </ul> */}
+      <ImportBtnWrapper>
+        {showImportBtn && (
+          <LightOrangeBtn
+            variant="outlined"
+            onClick={async () => {
+              // importTimeBlock(selectedPlanId, planDocRef);
+              const importResult = await importTimeBlock(selectedPlanId);
+              console.log(importResult);
+              addImportToDataBase(planDocRef, importResult);
+            }}>
+            Import
+          </LightOrangeBtn>
+        )}
+      </ImportBtnWrapper>
+      {/* </div>
 
       <svg className="svg_goo">
         <filter id="goo">
@@ -271,7 +369,7 @@ function FavFolderDropdown({
           />
           <feBlend in="SourceGraphic" in2="goo" />
         </filter>
-      </svg>
+      </svg> */}
     </Wrapper>
   );
 }

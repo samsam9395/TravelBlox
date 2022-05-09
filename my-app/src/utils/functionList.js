@@ -193,18 +193,28 @@ export async function getFavPlan(
 ) {
   const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
   const planQuery = query(favRef, where('infolder', '==', folderName));
-  const plansList = await getDocs(planQuery);
 
-  console.log(plansList.docs.map((e) => e.data().fav_plan_title));
-  const list = plansList.docs.map((e) => e.data());
+  try {
+    const plansList = await getDocs(planQuery);
 
-  if (list.length === 0) {
-    console.log('No fav plans yet!');
-    setFavPlansNameList('');
-  } else {
-    console.log(list);
-    setFavPlansNameList(list);
-    return list;
+    console.log(11, plansList);
+    console.log(
+      22,
+      plansList.docs.map((e) => e.data().fav_plan_title)
+    );
+
+    const list = plansList.docs.map((e) => e.data());
+
+    if (list.length === 0) {
+      console.log('No fav plans yet!');
+      setFavPlansNameList('');
+    } else {
+      console.log(33, list);
+      setFavPlansNameList(list);
+      // return list;
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 

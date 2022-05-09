@@ -28,7 +28,7 @@ import {
   listenToSnapShot,
   getFavPlan,
 } from '../utils/functionList';
-import FavFolderDropdown from '../components/FavFolderDropdown';
+import FavFolderDropdown from '../favourite/FavFolderDropdown';
 import {
   themeColours,
   EditableMainImageContainer,
@@ -113,6 +113,15 @@ const BottomBtnContainer = styled.div`
     align-items: center;
     position: relative;
   }
+
+  .import_btn_wrapper {
+    display: flex;
+    flex-direction: column;
+
+    .import_btn {
+      position: relative;
+    }
+  }
 `;
 
 const SelectImportDropdown = styled.div`
@@ -134,11 +143,11 @@ function EditPlanDetail(props) {
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
-  const [startDateValue, setStartDateValue] = useState(0);
-  const [endDateValue, setEndDateValue] = useState(0);
+  const [startDateValue, setStartDateValue] = useState(null);
+  const [endDateValue, setEndDateValue] = useState(null);
   const [startInitDateValue, setStartInitDateValue] = useState(0);
   const [endInitDateValue, setEndInitDateValue] = useState(0);
-  // const [showFavContainer, setShowFavContainer] = useState(false);
+  const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   // import
   const [favPlansNameList, setFavPlansNameList] = useState(null);
@@ -270,14 +279,25 @@ function EditPlanDetail(props) {
             planTitle={planTitle}
           />
 
-          <DatePicker
-            setStartDateValue={setStartDateValue}
-            setEndDateValue={setEndDateValue}
-            startDateValue={startDateValue}
-            endDateValue={endDateValue}
-            startInitDateValue={startInitDateValue}
-            endInitDateValue={endInitDateValue}
-          />
+          {endDateValue && startDateValue ? (
+            <DatePicker
+              setStartDateValue={setStartDateValue}
+              setEndDateValue={setEndDateValue}
+              startDateValue={startDateValue}
+              endDateValue={endDateValue}
+              startInitDateValue={startInitDateValue}
+              endInitDateValue={endInitDateValue}
+            />
+          ) : (
+            <DatePicker
+              setStartDateValue={setStartDateValue}
+              setEndDateValue={setEndDateValue}
+              startDateValue={new Date()}
+              endDateValue={new Date()}
+              startInitDateValue={new Date()}
+              endInitDateValue={new Date()}
+            />
+          )}
 
           <FormControlLabel
             control={
@@ -320,9 +340,8 @@ function EditPlanDetail(props) {
       <ToggleAttractionSearch />
 
       <CalendarContainer>
-        <CalendarColourBackground>
-          {/* <div className="background_line"></div> */}
-        </CalendarColourBackground>
+        {/* <div className="background_line"></div> */}
+        <CalendarColourBackground></CalendarColourBackground>
 
         <PlanCalendar
           setImportData={setImportData}
@@ -349,16 +368,25 @@ function EditPlanDetail(props) {
             Import Favourite
           </LightBlueBtn> */}
 
-          <FavFolderDropdown
-            showFavPlans={showFavPlans}
-            selectedPlanId={selectedPlanId}
-            planDocRef={planDocRef}
-            startDateValue={startDateValue}
-            currentUserId={currentUserId}
-          />
+          {/* <div className="import_btn_wrapper"> */}
+          <LightBlueBtn
+            className="import_btn"
+            onClick={() => setShowFavContainer(!showFavContainer)}>
+            Import Favourite
+          </LightBlueBtn>
+
+          {showFavContainer && (
+            <FavFolderDropdown
+              showFavPlans={showFavPlans}
+              selectedPlanId={selectedPlanId}
+              planDocRef={planDocRef}
+              startDateValue={startDateValue}
+              currentUserId={currentUserId}
+            />
+          )}
+          {/* </div> */}
 
           <LightBlueBtn
-            variant="contained"
             onClick={() => {
               try {
                 saveToDataBase(

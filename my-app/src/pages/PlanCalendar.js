@@ -56,7 +56,6 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
 
   // console.log(props.myEvents);
   // console.log('calendar start value', typeof props.startDateValue);
-  console.log('calendar start value', props.startDateValue);
 
   return (
     props.startDateValue != 0 && (

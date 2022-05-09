@@ -22,7 +22,7 @@ import {
   listenToSnapShot,
   getFavPlan,
 } from '../utils/functionList';
-import FavFolderDropdown from '../components/FavFolderDropdown';
+import FavFolderDropdown from '../favourite/FavFolderDropdown';
 import {
   themeColours,
   EditableMainImageContainer,
@@ -317,7 +317,6 @@ function AddNewPlan(props) {
             </CalendarContainer>
             <BottomBtnContainer>
               <LightBlueBtn
-                variant="contained"
                 onClick={() => {
                   setShowPopUp(true);
                 }}>
@@ -329,15 +328,22 @@ function AddNewPlan(props) {
                 Import Favourite
               </Button> */}
 
-              <FavFolderDropdown
-                showFavPlans={showFavPlans}
-                favPlansNameList={favPlansNameList}
-                setSelectedPlanId={setSelectedPlanId}
-                selectedPlanId={selectedPlanId}
-                planDocRef={planDocRef}
-                startDateValue={startDateValue}
-                currentUserId={currentUserId}
-              />
+              <LightBlueBtn
+                onClick={() => setShowFavContainer(!showFavContainer)}>
+                Import Favourite
+              </LightBlueBtn>
+
+              {showFavContainer && (
+                <FavFolderDropdown
+                  showFavPlans={showFavPlans}
+                  favPlansNameList={favPlansNameList}
+                  setSelectedPlanId={setSelectedPlanId}
+                  selectedPlanId={selectedPlanId}
+                  planDocRef={planDocRef}
+                  startDateValue={startDateValue}
+                  currentUserId={currentUserId}
+                />
+              )}
               {/* {showFavContainer && (
                 <div>
                   <Autocomplete
