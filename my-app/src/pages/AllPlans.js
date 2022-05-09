@@ -20,7 +20,7 @@ const PlanCollectionWrapper = styled.div`
   width: 100%;
   box-sizing: content-box;
   flex-wrap: wrap;
-
+  justify-content: center;
   margin: 30px 0;
 `;
 

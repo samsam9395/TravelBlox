@@ -250,7 +250,7 @@ function FavouriteFolderBar({ currentUserId }) {
               <div
                 // onBlur={(e) => saveRenameBlur(e, favFolderName, currentUserId)}
                 ref={(element) => (renameInputRef.current[index] = element)}
-                contenteditable={showRenameBox === index ? 'true' : 'false'}
+                // contenteditable={showRenameBox === index ? 'true' : 'false'}
                 className="folder_name hoverCursor"
                 onClick={() => setSelectedFolder(favFolderName)}>
                 {favFolderName}

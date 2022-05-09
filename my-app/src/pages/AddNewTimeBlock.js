@@ -17,6 +17,7 @@ import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
+import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -32,7 +33,7 @@ const BlackWrapper = styled.div`
 
 const PopBox = styled.div`
   position: relative;
-  width: 80vw;
+  width: 55vw;
   height: 70%;
   margin: 0 auto;
   background-color: white;
@@ -71,6 +72,33 @@ const Input = styled('input')({
   display: 'none',
 });
 
+const TimeblockImgUploadContainer = styled.div`
+  width: 100%;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* min-height: 100px; */
+
+  input {
+    display: none;
+  }
+  .upload_image {
+    margin-top: 30px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border: none;
+  }
+
+  .uploadBtn_camera {
+    margin: 10px 0;
+    &:hover {
+      background-color: ${themeColours.pale};
+    }
+  }
+`;
+
 function handleImageUpload(e, setTimeBlockImage) {
   console.log(e.target.files[0]);
   const reader = new FileReader();
@@ -79,7 +107,7 @@ function handleImageUpload(e, setTimeBlockImage) {
   }
 
   reader.onload = function () {
-    // console.log(reader.result); //base64encoded string
+    console.log(reader.result); //base64encoded string
     setTimeBlockImage(reader.result);
   };
   reader.onerror = function (error) {
@@ -174,7 +202,11 @@ function AddNewTimeBlock(props) {
           <FormsContainer>
             <TextField
               required
-              sx={{ m: 1, minWidth: 80 }}
+              sx={{
+                m: 1,
+                minWidth: 80,
+                label: { color: themeColours.light_orange },
+              }}
               size="small"
               label="Title"
               variant="outlined"
@@ -193,7 +225,12 @@ function AddNewTimeBlock(props) {
             <LocationCard location={location} />
             <TextField
               required
-              sx={{ m: 1, minWidth: 8, minHeight: 120 }}
+              sx={{
+                m: 1,
+                minWidth: 8,
+                minHeight: 120,
+                label: { color: themeColours.light_orange },
+              }}
               multiline
               size="small"
               label="Description"
@@ -205,7 +242,32 @@ function AddNewTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
-            <ImageUploader>
+            <TimeblockImgUploadContainer>
+              {timeBlockImage && (
+                <img src={timeBlockImage} alt="" className="upload_image" />
+              )}
+              <label for="imgupload">
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="imgupload"
+                  onChange={(e) => {
+                    // console.log(e);
+                    handleImageUpload(e, setTimeBlockImage);
+                  }}
+                />
+
+                <IconButton
+                  className="uploadBtn_camera"
+                  color="primary"
+                  aria-label="upload picture"
+                  component="div">
+                  <PhotoCamera style={{ color: themeColours.light_blue }} />
+                </IconButton>
+              </label>
+            </TimeblockImgUploadContainer>
+
+            {/* <ImageUploader>
               <Card sx={{ width: 400 }}>
                 <CardMedia
                   component="img"
@@ -221,17 +283,17 @@ function AddNewTimeBlock(props) {
                       handleImageUpload(e, setTimeBlockImage);
                     }}
                   />
-                  <Box textAlign="center">
+                  <Box textAlign="center" fullwidth>
                     <IconButton
                       color="primary"
                       aria-label="upload picture"
                       component="div">
-                      <PhotoCamera />
+                      <PhotoCamera style={{ color: themeColours.light_blue }} />
                     </IconButton>
                   </Box>
                 </label>
               </Card>
-            </ImageUploader>
+            </ImageUploader> */}
           </FormsContainer>
           <Button
             variant="contained"

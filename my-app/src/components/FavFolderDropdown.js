@@ -226,7 +226,8 @@ function FavFolderDropdown({
               value={e.fav_plan_doc_ref || ''}
               key={index}
               onClick={(e) => {
-                setSelectedPlanId(e.target.textContent);
+                // console.log(e.target.getAttribute('value'));
+                setSelectedPlanId(e.target.getAttribute('value'));
                 setShowImportBtn(true);
                 dropDownRef.current.forEach((ref) => {
                   console.log(dropDownRef.current);

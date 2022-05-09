@@ -15,6 +15,7 @@ import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
 import '../styles/libraryStyles.scss';
+import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -28,7 +29,7 @@ const BlackWrapper = styled.div`
 
 const PopBox = styled.div`
   position: relative;
-  width: 80vw;
+  width: 55vw;
   height: 70%;
   margin: 0 auto;
   background-color: white;
@@ -74,6 +75,33 @@ const TimeBlockImgContainer = styled.div`
   width: 100%;
   margin-top: 30px;
   margin-bottom: 30px;
+`;
+
+const TimeblockImgUploadContainer = styled.div`
+  width: 100%;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* min-height: 100px; */
+
+  input {
+    display: none;
+  }
+  .upload_image {
+    margin-top: 30px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border: none;
+  }
+
+  .uploadBtn_camera {
+    margin: 10px 0;
+    &:hover {
+      background-color: ${themeColours.pale};
+    }
+  }
 `;
 
 function handleImageUpload(e, setTimeBlockImage) {
@@ -330,7 +358,11 @@ function EditTimeBlock(props) {
           <FormsContainer>
             <TextField
               required
-              sx={{ m: 1, minWidth: 80 }}
+              sx={{
+                m: 1,
+                minWidth: 80,
+                label: { color: themeColours.light_orange },
+              }}
               size="small"
               label="Title"
               variant="outlined"
@@ -353,7 +385,12 @@ function EditTimeBlock(props) {
             <LocationCard location={location} />
 
             <TextField
-              sx={{ m: 1, minWidth: 8, minHeight: 120 }}
+              sx={{
+                m: 1,
+                minWidth: 8,
+                minHeight: 120,
+                label: { color: themeColours.light_orange },
+              }}
               multiline
               required
               size="small"
@@ -366,8 +403,39 @@ function EditTimeBlock(props) {
                 setDescription(e.target.value);
               }}
             />
-            <TimeBlockImgContainer>
-              <Card sx={{ m: 1, minWidthh: 200, minHeight: 200 }}>
+
+            <TimeblockImgUploadContainer>
+              {timeBlockImage && (
+                <img src={timeBlockImage} alt="" className="upload_image" />
+              )}
+              <label for="imgupload">
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="imgupload"
+                  onChange={(e) => {
+                    // console.log(e);
+                    handleImageUpload(e, setTimeBlockImage);
+                  }}
+                />
+
+                <IconButton
+                  className="uploadBtn_camera"
+                  color="primary"
+                  aria-label="upload picture"
+                  component="div">
+                  <PhotoCamera style={{ color: themeColours.light_blue }} />
+                </IconButton>
+              </label>
+            </TimeblockImgUploadContainer>
+            {/* <TimeBlockImgContainer>
+              <Card
+                sx={{
+                  m: 1,
+                  minWidthh: 200,
+                  minHeight: 200,
+                  label: { color: themeColours.light_orange },
+                }}>
                 <CardMedia
                   component="img"
                   image={timeBlockImage}
@@ -388,15 +456,14 @@ function EditTimeBlock(props) {
                       color="primary"
                       aria-label="upload picture"
                       component="div">
-                      <PhotoCamera />
+                      <PhotoCamera style={{ color: themeColours.light_blue }} />
                     </IconButton>
                   </Box>
                 </label>
               </Card>
-            </TimeBlockImgContainer>
+            </TimeBlockImgContainer> */}
           </FormsContainer>
-          <Button
-            variant="contained"
+          <LightOrangeBtn
             onClick={(e) => {
               if (
                 (location || placeId) &&
@@ -424,7 +491,7 @@ function EditTimeBlock(props) {
               }
             }}>
             Submit
-          </Button>
+          </LightOrangeBtn>
         </PopBox>
       </BlackWrapper>
     </>

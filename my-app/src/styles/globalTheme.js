@@ -96,6 +96,23 @@ export const PaleBtn = styled.button`
   }
 `;
 
+export const PaleEmptyBtn = styled.button`
+  letter-spacing: 1.5px;
+  min-width: 100px;
+  padding: 10px 20px;
+  border-radius: 15px;
+  border: 2px solid ${themeColours.pale};
+  background-color: white;
+  margin: 5px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: ${themeColours.light_grey};
+  &:hover {
+    cursor: pointer;
+    background-color: ${themeColours.pale};
+  }
+`;
+
 export const FlexColumnWrapper = styled.div`
   display: flex;
   flex-direction: column;

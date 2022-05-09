@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './../styles/calendarStyle.scss';
 import PlanCalendar from './PlanCalendar';
@@ -61,11 +60,25 @@ const TitleSection = styled.div`
   margin-right: 30px;
 `;
 
+const CalendarColourBackground = styled.div`
+  background-color: #fdfcf8;
+  width: 100%;
+  height: 60vh;
+  z-index: -10;
+  border-radius: 15%;
+  right: 0;
+  top: 15px;
+  position: absolute;
+`;
+
 const CalendarContainer = styled.div`
   width: 100%;
   height: 60vh;
   margin-top: 60px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+  position: relative;
+
+  /* background-color: #fdf7e1; */
 `;
 
 const Input = styled('input')({
@@ -80,7 +93,7 @@ const TypeInput = styled.input`
   padding-left: 20px;
   font-size: 16px;
   border-radius: 5px;
-  border: 1px solid ${themeColours.llight_grey};
+  border: 1px solid ${themeColours.light_grey};
 
   &:focus,
   &:hover {
@@ -230,21 +243,27 @@ function EditPlanDetail(props) {
       />
       <TopContainer>
         <TitleSection>
-          <TypeInput
+          {/* <TypeInput
             value={planTitle}
             onChange={(e) => {
               setPlanTitle(e.target.value);
             }}
-            placeholder="Plan Title"></TypeInput>
-          {/* <TextField
-            sx={{ m: 1, minWidth: 80 }}
+            placeholder="Plan Title"></TypeInput> */}
+          <TextField
+            required
+            sx={{
+              m: 1,
+              width: 300,
+              label: { color: themeColours.light_orange },
+            }}
             label="Title"
             variant="outlined"
             value={planTitle}
             onChange={(e) => {
               setPlanTitle(e.target.value);
             }}
-          /> */}
+            autoComplete="off"
+          />
           <CountrySelector
             setCountry={setCountry}
             country={country}
@@ -291,7 +310,7 @@ function EditPlanDetail(props) {
                 style={{ color: themeColours.blue }}
                 aria-label="upload picture"
                 component="div">
-                <PhotoCamera />
+                <PhotoCamera style={{ color: themeColours.light_blue }} />
               </IconButton>
             </Box>
           </label>
@@ -301,6 +320,10 @@ function EditPlanDetail(props) {
       <ToggleAttractionSearch />
 
       <CalendarContainer>
+        <CalendarColourBackground>
+          {/* <div className="background_line"></div> */}
+        </CalendarColourBackground>
+
         <PlanCalendar
           setImportData={setImportData}
           setMyEvents={setMyEvents}

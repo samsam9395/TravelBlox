@@ -107,7 +107,8 @@ const PlanCollectionWrapper = styled.div`
   align-items: center;
   width: 100%;
   box-sizing: content-box;
-  overflow: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
   margin-bottom: 30px;
   height: 450px;
   justify-content: center;

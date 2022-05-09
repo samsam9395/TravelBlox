@@ -29,14 +29,6 @@ const PlanTextContainer = styled.div`
   -webkit-transition: all 0.3s ease-in-out 0s;
   -moz-transition: all 0.3s ease-in-out 0s;
   transition: all 0.3s ease-in-out 0s;
-
-  /* .SinglePlanSubInfo {
-    -webkit-transform: translate(-80%, -80%);
-    -moz-transform: translate(-80%, -80%);
-    transform: translate(-80%, -80%);
-    top: 80%;
-    left: 50%;
-  } */
 `;
 
 const MainImage = styled.img`
@@ -56,12 +48,12 @@ const SinglePlanText = styled.div`
   top: 45%;
 `;
 
-const SinglePlanSubInfo = styled.div`
-  color: #fff;
-  font-size: 0.8em;
-  position: relative;
-  top: 80%;
-`;
+// const SinglePlanSubInfo = styled.div`
+//   color: #fff;
+//   font-size: 0.8em;
+//   position: relative;
+//   top: 60%;
+// `;
 
 const PlanMainImageContainer = styled.div`
   width: 100%;
@@ -69,6 +61,7 @@ const PlanMainImageContainer = styled.div`
   position: relative;
   margin: auto;
   overflow: hidden;
+
   .content-overlay {
     background: rgba(0, 0, 0, 0.7);
     position: absolute;
@@ -84,6 +77,13 @@ const PlanMainImageContainer = styled.div`
     transition: all 0.4s ease-in-out 0s;
   }
 
+  .subInfo_container {
+    color: #fff;
+    font-size: 0.8em;
+    position: relative;
+    top: 60%;
+  }
+
   &:hover {
     cursor: pointer;
     .content-overlay {
@@ -94,6 +94,13 @@ const PlanMainImageContainer = styled.div`
       left: 50%;
       opacity: 1;
       height: 100%;
+
+      .subInfo_container {
+        position: relative;
+        top: 60%;
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
   .fadeIn-bottom {
@@ -125,12 +132,12 @@ function PublicPlanCard(props) {
 
         <PlanTextContainer className="content-details fadeIn-bottom">
           <SinglePlanText>{props.planInfo.title}</SinglePlanText>
-          <SinglePlanSubInfo>Author: {props.planInfo.author}</SinglePlanSubInfo>
-          {props.planInfo.country && (
-            <SinglePlanSubInfo>
-              Country: {props.planInfo.country['label']}
-            </SinglePlanSubInfo>
-          )}
+          <div className="subInfo_container">
+            <div>Author: {props.planInfo.author}</div>
+            {props.planInfo.country && (
+              <div>Country: {props.planInfo.country['label']}</div>
+            )}
+          </div>
         </PlanTextContainer>
       </PlanMainImageContainer>
     </SinglePlanContainer>

@@ -10,6 +10,7 @@ const CardWrapper = styled.div`
   padding: 10px;
   display: flex;
   flex-direction: row;
+  margin: 30px 0;
 `;
 
 const MainImage = styled.img`
