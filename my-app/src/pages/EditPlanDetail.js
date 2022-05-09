@@ -12,7 +12,13 @@ import DatePicker from '../components/Input/DatePicker';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { doc, getDoc, writeBatch } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  writeBatch,
+} from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
@@ -175,9 +181,17 @@ function EditPlanDetail(props) {
     }
   }
 
-  useEffect(() => {
-    setDropDownOption(props.favFolderNames);
-  }, [props.favFolderNames]);
+  useEffect(async () => {
+    const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
+
+    try {
+      const list = await getDocs(favFolderRef);
+      list.docs.map((e) => console.log(e.data()));
+      setDropDownOption(list.docs.map((e) => e.data().folder_name));
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   useEffect(async () => {
     const docSnap = await getDoc(doc(db, 'plans', planDocRef));

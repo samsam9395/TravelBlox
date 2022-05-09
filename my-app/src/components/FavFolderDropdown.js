@@ -15,13 +15,16 @@ import {
 } from 'firebase/firestore';
 import styled from 'styled-components';
 import firebaseDB from '../utils/firebaseConfig';
+import { LightOrangeBtn } from '../styles/globalTheme';
+
 const db = firebaseDB();
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   align-items: center;
-  position: relative;
+  position: absolute;
+  top: 50px;
 `;
 
 function FavFolderDropdown({
@@ -150,7 +153,7 @@ function FavFolderDropdown({
         onClick={() => importTimeBlock(selectedPlanId, planDocRef)}>
         Import
       </Button> */}
-      <Button
+      <LightOrangeBtn
         variant="outlined"
         onClick={async () => {
           // importTimeBlock(selectedPlanId, planDocRef);
@@ -159,7 +162,7 @@ function FavFolderDropdown({
           addImportToDataBase(planDocRef, importResult);
         }}>
         Import
-      </Button>
+      </LightOrangeBtn>
     </Wrapper>
   );
 }
