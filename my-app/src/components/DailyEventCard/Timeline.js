@@ -50,7 +50,7 @@ const scrollEffect = (targetRef, index) => {
 function Timeline({ NumofDays, RefList, timelineRefArray, stopTimelineNav }) {
   const timelineRef = useRef([]);
   let doPushRef = true;
-  console.log(stopTimelineNav);
+
   if (stopTimelineNav === 'none') {
     doPushRef = false;
   }
@@ -59,7 +59,6 @@ function Timeline({ NumofDays, RefList, timelineRefArray, stopTimelineNav }) {
     timelineRefArray.current.push(timelineRef);
   }, []);
 
-  console.log(stopTimelineNav);
   return (
     <Container>
       <DayBox>

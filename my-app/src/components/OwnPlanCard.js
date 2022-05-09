@@ -115,10 +115,9 @@ function OwnPlanCard(props) {
   };
 
   useEffect(async () => {
-    console.log(props.planId);
     const docSnap = await getDoc(doc(db, 'plans', planId));
 
-    console.log(docSnap.data());
+    // console.log(docSnap.data());
     setDocData(docSnap.data());
   }, [planId]);
 
