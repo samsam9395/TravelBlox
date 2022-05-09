@@ -59,6 +59,7 @@ const RightWrapper = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 30px;
 `;
 
 const DayScheduleContainer = styled.div`
@@ -247,7 +248,7 @@ function DayBlockCard(props) {
                     src={singleEvent.timeblock_img}
                     alt="evernt_main_image"></TimeBlockImg>
                   <EventContentText className="content">
-                    Context: {singleEvent.text}
+                    {singleEvent.text}
                   </EventContentText>
                 </ContentContainer>
               );

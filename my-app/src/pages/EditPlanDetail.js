@@ -343,15 +343,17 @@ function EditPlanDetail(props) {
         {/* <div className="background_line"></div> */}
         <CalendarColourBackground></CalendarColourBackground>
 
-        <PlanCalendar
-          setImportData={setImportData}
-          setMyEvents={setMyEvents}
-          myEvents={myEvents}
-          setShowEditPopUp={setShowEditPopUp}
-          setCurrentSelectTimeData={setCurrentSelectTimeData}
-          setCurrentSelectTimeId={setCurrentSelectTimeId}
-          startDateValue={startDateValue}
-        />
+        {startDateValue ? (
+          <PlanCalendar
+            setImportData={setImportData}
+            setMyEvents={setMyEvents}
+            myEvents={myEvents}
+            setShowEditPopUp={setShowEditPopUp}
+            setCurrentSelectTimeData={setCurrentSelectTimeData}
+            setCurrentSelectTimeId={setCurrentSelectTimeId}
+            startDateValue={startDateValue}
+          />
+        ) : null}
       </CalendarContainer>
       <BottomBtnContainer>
         <div className="left_btns">

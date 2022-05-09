@@ -26,6 +26,8 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     []
   );
 
+  console.log(props.startDateValue);
+
   const moveEvent = ({ event, start, end }) => {
     const newEvents = props.myEvents.map((existingEvent) => {
       return existingEvent.id == event.id
@@ -64,7 +66,7 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
         endAccessor="end"
         dayLayoutAlgorithm={dayLayoutAlgorithm}
         // defaultDate={moment().toDate()}
-        defaultDate={props.startDateValue}
+        defaultDate={'Fri Apr 22 2022 00:00:00 GMT+0800 (Taipei Standard Time)'}
         defaultView={Views.WEEK}
         localizer={localizer}
         events={props.myEvents}

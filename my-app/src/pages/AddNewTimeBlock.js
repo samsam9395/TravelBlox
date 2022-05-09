@@ -246,7 +246,7 @@ function AddNewTimeBlock(props) {
               {timeBlockImage && (
                 <img src={timeBlockImage} alt="" className="upload_image" />
               )}
-              <label for="imgupload">
+              <label htmlFor="imgupload">
                 <input
                   accept="image/*"
                   type="file"
@@ -295,8 +295,7 @@ function AddNewTimeBlock(props) {
               </Card>
             </ImageUploader> */}
           </FormsContainer>
-          <Button
-            variant="contained"
+          <LightOrangeBtn
             onClick={(e) => {
               if (
                 blockTitle &&
@@ -319,7 +318,7 @@ function AddNewTimeBlock(props) {
               }
             }}>
             Submit
-          </Button>
+          </LightOrangeBtn>
         </PopBox>
       </BlackWrapper>
     </>
