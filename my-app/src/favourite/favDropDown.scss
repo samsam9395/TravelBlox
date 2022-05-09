@@ -88,7 +88,7 @@
     background-color: $light_blue;
     padding: 10px 5px 10px 20px;
     border-radius: 25px;
-    // top: calc(100% + 105px);
+    top: calc(350% - 20px);
     visibility: visible;
     opacity: 1;
     display: flex;
@@ -151,6 +151,6 @@
   box-sizing: border-box;
 }
 
-svg {
+.svg_goo {
   display: none;
 }

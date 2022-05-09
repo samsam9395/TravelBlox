@@ -138,7 +138,7 @@ function EditPlanDetail(props) {
   const [endDateValue, setEndDateValue] = useState(0);
   const [startInitDateValue, setStartInitDateValue] = useState(0);
   const [endInitDateValue, setEndInitDateValue] = useState(0);
-  const [showFavContainer, setShowFavContainer] = useState(false);
+  // const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   // import
   const [favPlansNameList, setFavPlansNameList] = useState(null);
@@ -351,8 +351,6 @@ function EditPlanDetail(props) {
 
           <FavFolderDropdown
             showFavPlans={showFavPlans}
-            favPlansNameList={favPlansNameList}
-            setSelectedPlanId={setSelectedPlanId}
             selectedPlanId={selectedPlanId}
             planDocRef={planDocRef}
             startDateValue={startDateValue}

@@ -1,7 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import firebaseDB from '../utils/firebaseConfig';
-import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
+import {
+  doc,
+  setDoc,
+  collection,
+  getDoc,
+  deleteDoc,
+  writeBatch,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
 
 const db = firebaseDB();
 
@@ -57,31 +67,31 @@ const Wrapper = styled.div`
 //   }
 // `;
 
-async function renameFavFolder(
-  favFolderName,
-  showFavFolderEdit,
-  currentUserId
-) {
-  const folderRef = doc(
-    db,
-    'userId',
-    currentUserId,
-    'fav_folders',
-    favFolderName
-  );
+// async function renameFavFolder(
+//   favFolderName,
+//   showFavFolderEdit,
+//   currentUserId
+// ) {
+//   const folderRef = doc(
+//     db,
+//     'userId',
+//     currentUserId,
+//     'fav_folders',
+//     favFolderName
+//   );
 
-  if (favFolderName === 'default') {
-    alert('You cannot rename default folder!');
-  } else {
-    try {
-      await setDoc(folderRef, {});
-      showFavFolderEdit(false);
-      alert(`${favFolderName} is renamed!`);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-}
+//   if (favFolderName === 'default') {
+//     alert('You cannot rename default folder!');
+//   } else {
+//     try {
+//       await setDoc(folderRef, {});
+//       showFavFolderEdit(false);
+//       alert(`${favFolderName} is renamed!`);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+// }
 
 function EditFavFolderSelector({
   index,
@@ -112,19 +122,32 @@ function EditFavFolderSelector({
     currentUserId,
     setShowFavFolderEdit
   ) {
-    const folderRef = doc(
-      db,
-      'userId',
-      currentUserId,
-      'fav_folders',
-      favFolderName
-    );
+    const batch = writeBatch(db);
 
     if (favFolderName === 'default') {
       alert('You cannot delete default folder!');
     } else {
+      const folderRef = doc(
+        db,
+        'userId',
+        currentUserId,
+        'fav_folders',
+        favFolderName
+      );
+
+      const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+      const planQuery = query(favRef, where('infolder', '==', favFolderName));
+      const plansList = await getDocs(planQuery);
+
+      batch.delete(folderRef);
+
+      plansList.forEach((doc) => {
+        // console.log(doc.ref);
+        batch.delete(doc.ref);
+      });
+
       try {
-        await deleteDoc(folderRef);
+        await batch.commit();
         setShowFavFolderEdit(false);
         alert(`${favFolderName} is deleted!`);
       } catch (error) {

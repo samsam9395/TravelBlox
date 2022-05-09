@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
-import { Avatar } from '@mui/material';
+import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
@@ -13,7 +12,6 @@ import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
 import CheckIcon from '@mui/icons-material/Check';
-import { fontWeight } from '@mui/system';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
 
 const db = firebaseDB();
@@ -37,6 +35,7 @@ const LowerContainer = styled.div`
 const FavFolderWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   /* margin-bottom: 30px; */
 `;
 
@@ -72,9 +71,28 @@ const UserInfoContainer = styled.div`
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
   width: 950px;
-  /* margin: 50px auto 0 auto; */
 `;
 
+const FavFolderDropDownOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 5px 15px;
+  position: absolute;
+  width: 90%;
+  top: 44px;
+  left: 10px;
+  background-color: white;
+  border-radius: 0 0 10px 10px;
+
+  .folder_option {
+    padding: 5px;
+    &:hover {
+      cursor: pointer;
+      background-color: ${themeColours.pale};
+      border-radius: 10px;
+    }
+  }
+`;
 const PlanMainImageContainer = styled.div`
   /* width: 600px; */
   width: auto;
@@ -221,38 +239,6 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
-// handleFavAction(collectionID, author)
-async function handleFavAction(
-  planDocRef,
-  author,
-  selectFavFolder,
-  planTitle,
-  setShowFavDropDown
-) {
-  const currentUserEmail = localStorage.getItem('userEmail');
-
-  if (currentUserEmail === author) {
-    alert('Do not favourite your own plan!');
-  } else if (selectFavFolder !== '') {
-    // console.log(selectFavFolder);
-    const favRef = doc(db, 'userId', currentUserEmail, 'fav_plans', planDocRef);
-
-    try {
-      await setDoc(favRef, {
-        fav_plan_doc_ref: planDocRef,
-        infolder: selectFavFolder,
-        fav_plan_title: planTitle,
-      });
-      setShowFavDropDown(false);
-      alert('Successfully favourite this plan!');
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    alert('Please select a folder!');
-  }
-}
-
 const SwitchTab = styled.div`
   display: flex;
   width: 500px;
@@ -286,7 +272,7 @@ const ToTopScroll = styled.div`
   /* position: absolute;
   bottom: 0; */
 `;
-
+//user={user}
 function StaticPlanDetail(props) {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
@@ -313,6 +299,7 @@ function StaticPlanDetail(props) {
   const navTabMap = useRef(null);
   const navTabCalendar = useRef(null);
   const refNames = [navTabDay, navTabMap, navTabCalendar];
+  const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
 
   const navTimelineRef = useRef(null);
 
@@ -340,6 +327,63 @@ function StaticPlanDetail(props) {
 
     Object.assign(tabRef.current.style, styles);
   }
+
+  // handleFavAction(collectionID, author)
+  async function handleFavAction(
+    planDocRef,
+    author,
+    selectFavFolder,
+    planTitle,
+    setShowFavDropDown
+  ) {
+    const currentUserEmail = props.user.email;
+
+    if (currentUserEmail === author) {
+      alert('Do not favourite your own plan!');
+    } else if (selectFavFolder !== '') {
+      // console.log(selectFavFolder);
+      const favRef = doc(
+        db,
+        'userId',
+        currentUserEmail,
+        'fav_plans',
+        planDocRef
+      );
+
+      try {
+        await setDoc(favRef, {
+          fav_plan_doc_ref: planDocRef,
+          infolder: selectFavFolder,
+          fav_plan_title: planTitle,
+        });
+        setShowFavDropDown(false);
+        alert('Successfully favourite this plan!');
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert('Please select a folder!');
+    }
+  }
+
+  useEffect(async () => {
+    if (props.user) {
+      const favFolderRef = collection(
+        db,
+        'userId',
+        props.user.email,
+        'fav_folders'
+      );
+
+      try {
+        const list = await getDocs(favFolderRef);
+        list.docs.map((e) => console.log(222, e.data()));
+        setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [props.user]);
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
@@ -440,11 +484,32 @@ function StaticPlanDetail(props) {
                 Favourite this plan
               </LightOrangeBtn>
               {showfavDropDown && (
+                <FavFolderDropDownOptions>
+                  {dropDownFavFolderOption?.map((folderName, index) => (
+                    <div
+                      key={index}
+                      className="folder_option"
+                      // onClick={() => console.log()}
+                      onClick={() =>
+                        handleFavAction(
+                          planDocRef,
+                          author,
+                          folderName,
+                          planTitle,
+                          setShowFavDropDown
+                        )
+                      }>
+                      {folderName}
+                    </div>
+                  ))}
+                </FavFolderDropDownOptions>
+              )}
+              {/* {showfavDropDown && (
                 <FavFolderAutocompleteWrapper ref={FavFolderRef}>
                   <Autocomplete
                     disablePortal
                     id="combo-box-demo"
-                    options={props.favFolderNames}
+                    options={dropDownFavFolderOption}
                     sx={{ width: 200 }}
                     renderInput={(params) => (
                       <FavFolderAutocomplete
@@ -473,7 +538,7 @@ function StaticPlanDetail(props) {
                       )
                     }></CheckIcon>
                 </FavFolderAutocompleteWrapper>
-              )}
+              )} */}
             </FavFolderWrapper>
             <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
           </BtnWrapper>

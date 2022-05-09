@@ -36,16 +36,16 @@ const Wrapper = styled.div`
 const ImportBtnWrapper = styled.div`
   position: absolute;
   /* top: calc(100% + 115px); */
-  top: calc(100% + 120px);
+  top: calc(350% - 20px);
   right: -130px;
 `;
 
-const ImportWrapperTest = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: relative;
-`;
+// const ImportWrapperTest = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   position: relative;
+// `;
 
 function FavFolderDropdown({
   importTimeBlock,
@@ -55,14 +55,15 @@ function FavFolderDropdown({
   currentUserId,
 }) {
   const [favPlansNameList, setFavPlansNameList] = useState(null);
-  const [showFavPlans, setShowFavPlans] = useState(false);
-  const [dropDownOption, setDropDownOption] = useState([]);
+  // const [showFavPlans, setShowFavPlans] = useState(false);
+  const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
   const [selectedPlanId, setSelectedPlanId] = useState('');
-  const [selectedFolderId, setSelectedFolderId] = useState('');
+  // const [selectedFolderId, setSelectedFolderId] = useState('');
   const [showSecondLayer, setShowSecondLayer] = useState(false);
   const [showImportBtn, setShowImportBtn] = useState(false);
 
   console.log('favPlansNameList', favPlansNameList);
+  console.log('dropDownFavFolderOption', dropDownFavFolderOption);
 
   // function HandleShowDropDown() {
   //   setShowSecondLayer(true);
@@ -74,7 +75,7 @@ function FavFolderDropdown({
     try {
       const list = await getDocs(favFolderRef);
       list.docs.map((e) => console.log(e.data()));
-      setDropDownOption(list.docs.map((e) => e.data().folder_name));
+      setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
     } catch (error) {
       console.log(error);
     }
@@ -197,7 +198,7 @@ function FavFolderDropdown({
           <div className="dropdown__arrow"></div>
         </label>
         <ul className="dropdown__items">
-          {dropDownOption?.map((e, index) => (
+          {dropDownFavFolderOption?.map((e, index) => (
             <li
               value={e.fav_plan_doc_ref || ''}
               key={index}
@@ -218,7 +219,7 @@ function FavFolderDropdown({
           style={{
             opacity: !showSecondLayer ? '0' : '1',
             visibility: !showSecondLayer ? 'hidden' : 'visible',
-            top: !showSecondLayer ? 'calc(100% + 10px)' : 'calc(100% + 120px)',
+            top: !showSecondLayer ? 'calc(100% + 10px)' : null,
           }}>
           {favPlansNameList?.map((e, index) => (
             <li
@@ -259,7 +260,7 @@ function FavFolderDropdown({
         </ImportBtnWrapper>
       </div>
 
-      <svg>
+      <svg className="svg_goo">
         <filter id="goo">
           <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
           <feColorMatrix
