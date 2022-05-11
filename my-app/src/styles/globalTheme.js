@@ -25,6 +25,7 @@ export const themeColours = {
 export const fonts = {
   main_font: 'Roboto',
   secondary_font: 'Oswald',
+  handwriting: 'Gellatio',
 };
 
 export const LightOrangeBtn = styled.button`

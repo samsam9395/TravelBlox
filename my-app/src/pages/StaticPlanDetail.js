@@ -18,10 +18,11 @@ const db = firebaseDB();
 
 const UpperContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   /* justify-content: space-between; */
   box-sizing: content-box;
   width: 100%;
+  height: 500px;
   margin-bottom: 30px;
 `;
 
@@ -102,11 +103,15 @@ const FavFolderDropDownOptions = styled.div`
 `;
 const PlanMainImageContainer = styled.div`
   /* width: 600px; */
-  width: auto;
-  height: 300px;
+  width: 70%;
+  height: 100%;
   position: relative;
   overflow: hidden;
   border-radius: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
   &:hover {
     .planTitle_text_bakground {
       transform: translate(0, 100%);
@@ -121,12 +126,24 @@ const PlanMainImageContainer = styled.div`
   }
 `;
 
-const PlanMainImage = styled.img`
-  width: 100%;
+const PlanMainImage = styled.div`
+  width: 300px;
   height: 100%;
-  object-fit: cover;
+  /* width: 300px;
+  height: 300px; */
+
   opacity: 100%;
   border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 500px 500px 0 0;
+  }
+
   &:hover {
     /* object-fit: contain; */
     /* transition: 0.7s; */
@@ -168,10 +185,13 @@ const PlanTitleText = styled.div`
   text-shadow: 2px 1px ${themeColours.pale};
 
   .location_text {
+    font-family: 'Gellatio';
     font-weight: 400;
     letter-spacing: 1px;
-    font-size: 20px;
+    /* font-size: 20px; */
     text-shadow: none;
+    font-size: 2em;
+    color: wheat;
   }
 `;
 
@@ -472,14 +492,21 @@ function StaticPlanDetail(props) {
     <>
       <UpperContainer>
         <PlanMainImageContainer>
-          <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
-          <PlanTitleTextBakgroundOutterCircle className="planTitle_text_bakground"></PlanTitleTextBakgroundOutterCircle>
+          <PlanMainImage className="overlay">
+            <img src={mainImage} loading="lazy" alt="plan image" />
+          </PlanMainImage>
+          <PlanTitleText>
+            {planTitle}
+            <div className="location_text">{country.label}</div>
+          </PlanTitleText>
+
+          {/* <PlanTitleTextBakgroundOutterCircle className="planTitle_text_bakground"></PlanTitleTextBakgroundOutterCircle>
           <PlanTitleTextBakground className="planTitle_text_bakground">
             <PlanTitleText>
               {planTitle}
               <div className="location_text">{country.label}</div>
             </PlanTitleText>
-          </PlanTitleTextBakground>
+          </PlanTitleTextBakground> */}
         </PlanMainImageContainer>
 
         <PlanInfoWrapper>
@@ -521,41 +548,6 @@ function StaticPlanDetail(props) {
                   ))}
                 </FavFolderDropDownOptions>
               )}
-              {/* {showfavDropDown && (
-                <FavFolderAutocompleteWrapper ref={FavFolderRef}>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={dropDownFavFolderOption}
-                    sx={{ width: 200 }}
-                    renderInput={(params) => (
-                      <FavFolderAutocomplete
-                        {...params}
-                        placeholder="Select Folder"
-                        variant="standard"></FavFolderAutocomplete>
-                    )}
-                    onChange={(e) => {
-                      setSelectedFavFolder(e.target.textContent);
-                    }}
-                  />
-                  <CheckIcon
-                    className="hoverCursor"
-                    style={{
-                      fontSize: 30,
-                      marginLeft: 7,
-                      color: themeColours.light_orange,
-                    }}
-                    onClick={() =>
-                      handleFavAction(
-                        planDocRef,
-                        author,
-                        selectedFavFolder,
-                        planTitle,
-                        setShowFavDropDown
-                      )
-                    }></CheckIcon>
-                </FavFolderAutocompleteWrapper>
-              )} */}
             </FavFolderWrapper>
             <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
           </BtnWrapper>

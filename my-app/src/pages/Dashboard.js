@@ -168,8 +168,8 @@ const UserAvatarUpload = styled.div`
     height: 120px;
     border-radius: 50%;
     position: absolute;
-    left: -49px;
-    top: -33px;
+    left: -29px;
+    top: -23px;
     /* left: 14%;
     top: 25%; */
     border: 1px solid ${themeColours.orange_grey};

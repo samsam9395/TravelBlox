@@ -26,7 +26,7 @@ const ApiKey = googleAPI();
 const db = firebaseDB();
 
 const ContentWrapper = styled.div`
-  padding: 100px 120px 150px 120px;
+  padding: 100px 100px 150px 100px;
   overflow: hidden;
 `;
 
@@ -70,7 +70,6 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <Header />
       <ContentWrapper>
         <Wrapper apiKey={ApiKey} libraries={['places']}>
           <Routes>
@@ -107,7 +106,6 @@ function App() {
           </Routes>
         </Wrapper>
       </ContentWrapper>
-      <Footer />
     </>
   );
 }
