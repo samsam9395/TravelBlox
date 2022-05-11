@@ -85,7 +85,6 @@ const TopSectionWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  /* background-color: ${themeColours.light_grey}; */
   position: relative;
   margin-bottom: 100px;
 
@@ -363,32 +362,37 @@ function Dashboard(props) {
     if (!props.user) {
       alert('Please login first!');
       navigate('/');
-    }
-    setCurrentUserId(props.user.email);
-
-    const ref = collection(db, 'userId', props.user.email, 'own_plans');
-    const plansList = await getDocs(ref);
-
-    if (plansList.docs.length === 0) {
-      console.log('No own plans yet!');
-      setShowNoPlansText(true);
     } else {
-      setShowNoPlansText(false);
-      const list = [];
-      plansList.forEach((plan) => {
-        list.push(plan.data().collection_id);
-      });
+      setCurrentUserId(props.user.email);
 
-      console.log(333, list);
-      setOwnPlansIdList(list);
+      const ref = collection(db, 'userId', props.user.email, 'own_plans');
+      const plansList = await getDocs(ref);
+
+      if (plansList.docs.length === 0) {
+        console.log('No own plans yet!');
+        setShowNoPlansText(true);
+      } else {
+        setShowNoPlansText(false);
+        const list = [];
+        plansList.forEach((plan) => {
+          list.push(plan.data().collection_id);
+        });
+
+        console.log(333, list);
+        setOwnPlansIdList(list);
+      }
+
+      try {
+        const userDoc = await getDoc(doc(db, 'userId', props.user.email));
+        setUserImage(userDoc.data().userImage);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }, []);
+  }, [props.user]);
 
   useEffect(async () => {
     if (props.user.email) {
-      const imageRef = (db, 'userId', props.user.email);
-      const data = await getDoc(imageRef);
-      setUserImage(data.data().userImage);
     }
   }, [props.user.email]);
 

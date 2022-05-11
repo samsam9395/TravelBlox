@@ -13,6 +13,7 @@ import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
 import CheckIcon from '@mui/icons-material/Check';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
+import leafShadow from '../images/static/leaf_one.png';
 
 const db = firebaseDB();
 
@@ -24,6 +25,14 @@ const UpperContainer = styled.div`
   width: 100%;
   height: 500px;
   margin-bottom: 30px;
+  position: relative;
+
+  .leaf_shadow {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const LowerContainer = styled.div`
@@ -46,6 +55,7 @@ const PlanInfoWrapper = styled.div`
   align-items: center;
   padding: 0 20px;
   justify-content: center;
+  flex-grow: 1;
 `;
 
 const UserInfoContainer = styled.div`
@@ -106,11 +116,12 @@ const PlanMainImageContainer = styled.div`
   width: 70%;
   height: 100%;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 10px;
   align-items: center;
   display: flex;
   justify-content: center;
+  flex-grow: 2;
 
   &:hover {
     .planTitle_text_bakground {
@@ -150,36 +161,40 @@ const PlanMainImage = styled.div`
   }
 `;
 
-const PlanTitleTextBakgroundOutterCircle = styled.div`
-  width: 330px;
-  height: 330px;
-  top: 82px;
-  left: 15px;
-  border-radius: 50%;
-  border: 2px solid #ffffff91;
-  background-color: transparent;
-  display: flex;
-  position: absolute;
-`;
+// const PlanTitleTextBakgroundOutterCircle = styled.div`
+//   width: 330px;
+//   height: 330px;
+//   top: 82px;
+//   left: 15px;
+//   border-radius: 50%;
+//   border: 2px solid #ffffff91;
+//   background-color: transparent;
+//   display: flex;
+//   position: absolute;
+// `;
 
-const PlanTitleTextBakground = styled.div`
-  width: 300px;
-  height: 300px;
-  top: 96px;
-  left: 30px;
-  border-radius: 50%;
-  border: 10px solid transparent;
-  background-color: #ffffff91;
-  display: flex;
-  position: absolute;
-`;
+// const PlanTitleTextBakground = styled.div`
+//   width: 300px;
+//   height: 300px;
+//   top: 96px;
+//   left: 30px;
+//   border-radius: 50%;
+//   border: 10px solid transparent;
+//   background-color: #ffffff91;
+//   display: flex;
+//   position: absolute;
+// `;
 
 const PlanTitleText = styled.div`
+  font-family: 'Gellatio';
   position: absolute;
   font-weight: 800;
-  top: 60px;
-  left: 30px;
-  font-size: 36px;
+  top: 5%;
+  left: 6%;
+  /* top: 14%; */
+  /* left: 26%; */
+  /* transform: translate(-57%, -50%); */
+  font-size: 4vw;
   letter-spacing: 3px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
@@ -190,8 +205,11 @@ const PlanTitleText = styled.div`
     letter-spacing: 1px;
     /* font-size: 20px; */
     text-shadow: none;
-    font-size: 2em;
-    color: wheat;
+    color: ${themeColours.pale};
+    font-size: 5.5vw;
+    position: absolute;
+    color: #fceebf;
+    right: -44%;
   }
 `;
 
@@ -429,9 +447,12 @@ function StaticPlanDetail(props) {
 
   useEffect(async () => {
     if (author) {
-      const docSnap = await getDoc(doc(db, 'userId', author));
-      const data = docSnap.data().userImage;
-      setUserImage(data);
+      try {
+        const userDoc = await getDoc(doc(db, 'userId', author));
+        setUserImage(userDoc.data().userImage);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [author]);
 
@@ -491,6 +512,7 @@ function StaticPlanDetail(props) {
   return (
     <>
       <UpperContainer>
+        <img className="leaf_shadow" src={leafShadow} alt="" />
         <PlanMainImageContainer>
           <PlanMainImage className="overlay">
             <img src={mainImage} loading="lazy" alt="plan image" />

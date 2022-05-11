@@ -29,8 +29,6 @@ const Title = styled.div`
 
 const Rights = styled.div`
   font-size: 12px;
-  position: absolute;
-  bottom: 0;
 `;
 
 function Footer() {
