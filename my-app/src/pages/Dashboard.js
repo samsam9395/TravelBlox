@@ -10,6 +10,7 @@ import FavPlanCard from '../components/PublicPlanCard';
 
 import {
   themeColours,
+  fonts,
   LightOrangeBtn,
   OrangeBtn,
   PaleBtn,
@@ -124,6 +125,31 @@ const SinglePlanContainer = styled.div`
   align-items: center;
 `;
 
+const NoPlansText = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: ${fonts.main_font}, sans-serif;
+
+  .title {
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  .instruction {
+    font-size: 18px;
+    font-weight: 200;
+    display: flex;
+
+    .btn_cta {
+      margin: 0 5px;
+      padding: 0 3px;
+      background-color: ${themeColours.light_orange};
+      color: white;
+    }
+  }
+`;
+
 function signOutFirebase() {
   const auth = getAuth();
 
@@ -148,6 +174,7 @@ function Dashboard(props) {
   const [currentUserId, setCurrentUserId] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
+  const [showNoPlansText, setShowNoPlansText] = useState(false);
 
   const navigate = useNavigate();
 
@@ -163,7 +190,9 @@ function Dashboard(props) {
 
     if (plansList.docs.length === 0) {
       console.log('No own plans yet!');
+      setShowNoPlansText(true);
     } else {
+      setShowNoPlansText(false);
       const list = [];
       plansList.forEach((plan) => {
         list.push(plan.data().collection_id);
@@ -237,6 +266,18 @@ function Dashboard(props) {
         </div>
 
         <PlanCollectionWrapper>
+          {showNoPlansText && (
+            <NoPlansText>
+              <div className="title">
+                You haven't created any travel plans yet.
+              </div>
+              <div className="instruction">
+                Click on
+                <div className="btn_cta">ADD NEW PLAN</div>
+                to start one!
+              </div>
+            </NoPlansText>
+          )}
           {ownPlansIdList?.map((ownPlanId) => {
             return (
               <SinglePlanContainer key={ownPlanId}>

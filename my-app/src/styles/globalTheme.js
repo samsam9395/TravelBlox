@@ -15,6 +15,11 @@ export const themeColours = {
 // ref url: https://colorpalettes.net/color-palette-2368/
 // dark blue here: https://colorpalettes.net/color-palette-3901/
 
+export const fonts = {
+  main_font: 'Roboto',
+  secondary_font: 'Oswald',
+};
+
 export const LightOrangeBtn = styled.button`
   letter-spacing: 1.5px;
   min-width: 100px;

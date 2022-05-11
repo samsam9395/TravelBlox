@@ -4,6 +4,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { getDocs, getDoc, collection, query, where } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
+import { themeColours, fonts } from '../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -12,8 +13,35 @@ const FavPlansCtonainer = styled.div`
   overflow: auto;
   justify-content: center;
   display: -webkit-box;
+
   .empty_notification {
-    font-size: 20px;
+    font-family: ${fonts.main_font}, sans-serif;
+    font-size: 30px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .instruction {
+      font-size: 18px;
+      font-weight: 200;
+      display: flex;
+      margin-top: 5px;
+
+      .btn_cta {
+        margin: 0 5px;
+        padding: 0 3px;
+        background-color: ${themeColours.light_orange};
+        color: white;
+      }
+
+      .hightlight_text {
+        margin: 0 5px;
+        padding: 0 3px;
+        font-weight: 600;
+        font-style: italic;
+      }
+    }
   }
 `;
 
@@ -26,7 +54,6 @@ const FavPlansWrapper = styled.div`
 export default function FavFolder({ selectedFolder, currentUserId }) {
   const [favPlansList, setFavlansList] = useState(null);
   const [isEmptyFolder, setIsEmptyFolder] = useState(false);
-  const [showFavPlans, setShowFavPlans] = useState(false);
 
   useEffect(async () => {
     if (currentUserId) {
@@ -49,6 +76,15 @@ export default function FavFolder({ selectedFolder, currentUserId }) {
       {isEmptyFolder ? (
         <div className="empty_notification">
           No favourite plans added to this folder yet!
+          <div className="instruction">
+            Discover new plans and
+            <div className="btn_cta">add them to favourites</div>!
+          </div>
+          <div className="instruction">
+            Those plans will appear here and
+            <div className="hightlight_text"> can be imported</div>
+            to your own travel plans!
+          </div>
         </div>
       ) : (
         favPlansList?.map((favPlanId, index) => (
