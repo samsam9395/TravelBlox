@@ -302,7 +302,7 @@ function EditPlanDetail(props) {
           <FormControlLabel
             control={
               <Switch
-                style={{ color: themeColours.orange }}
+                style={{ color: themeColours.light_orange }}
                 checked={isPublished}
                 onChange={() => setIsPublished(!isPublished)}
               />

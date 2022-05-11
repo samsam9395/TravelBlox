@@ -1,15 +1,21 @@
 import styled from 'styled-components';
 
 export const themeColours = {
-  orange: '#f1651d',
-  light_orange: '#fea360',
+  // orange: '#f1651d',
+
+  // light_orange: '#fea360',
+  light_orange: '#e7ac81', //new
+  darker_orange: '#bb8c6b',
   pale: '#fceebf',
-  lighter_blue: '#54cfd673',
-  light_blue: '#55cfd6',
+  // lighter_blue: '#54cfd673',
+  lighter_blue: 'hsl(184, 23%, 80%)', //new
+  // light_blue: '#55cfd6',
+  light_blue: '#6ca5a9', //new
   blue: '#0a97b7',
   dark_blue: '#00213a',
   black: '#0E0E0F',
   light_grey: '#80808087',
+  orange_grey: '#d9c1b0',
 };
 
 // ref url: https://colorpalettes.net/color-palette-2368/
@@ -33,7 +39,7 @@ export const LightOrangeBtn = styled.button`
   font-size: 16px;
   &:hover {
     cursor: pointer;
-    background-color: ${themeColours.orange};
+    background-color: ${themeColours.darker_orange};
   }
 `;
 
@@ -60,7 +66,7 @@ export const OrangeBtn = styled.button`
   padding: 10px 20px;
   border-radius: 15px;
   border: none;
-  background-color: ${themeColours.orange};
+  background-color: ${themeColours.light_orange};
   margin: 5px;
   color: white;
   font-family: 'Roboto', sans-serif;

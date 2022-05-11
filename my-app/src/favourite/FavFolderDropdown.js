@@ -332,7 +332,7 @@ function FavFolderDropdown({
                   console.log(dropDownRef.current);
                   console.log(ref);
                   if (dropDownRef.current.indexOf(ref) === index) {
-                    ref.style.color = themeColours.orange;
+                    ref.style.color = themeColours.light_orange;
                   } else {
                     ref.style.color = 'white';
                   }

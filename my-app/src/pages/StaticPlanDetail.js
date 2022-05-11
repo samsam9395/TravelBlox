@@ -57,7 +57,7 @@ const UserInfoContainer = styled.div`
     text-align: center;
     display: flex;
     margin-top: 20px;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
     font-weight: 600;
   }
 
@@ -185,10 +185,10 @@ const FavFolderAutocompleteWrapper = styled.div`
 
 const FavFolderAutocomplete = styled(TextField)({
   '& label.Mui-focused': {
-    color: themeColours.orange,
+    color: themeColours.light_orange,
   },
   '& .MuiInput-underline:after': {
-    borderBottomColor: themeColours.orange,
+    borderBottomColor: themeColours.light_orange,
   },
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
@@ -526,7 +526,7 @@ function StaticPlanDetail(props) {
                     style={{
                       fontSize: 30,
                       marginLeft: 7,
-                      color: themeColours.orange,
+                      color: themeColours.light_orange,
                     }}
                     onClick={() =>
                       handleFavAction(

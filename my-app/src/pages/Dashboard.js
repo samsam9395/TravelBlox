@@ -7,6 +7,10 @@ import { getAuth, signOut } from 'firebase/auth';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
 import FavPlanCard from '../components/PublicPlanCard';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { handleMainImageUpload } from '../utils/functionList';
+import UploadIcon from '@mui/icons-material/Upload';
+import { IconButton } from '@mui/material';
 
 import {
   themeColours,
@@ -21,10 +25,17 @@ import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
 const db = firebaseDB();
 
 const TopSectionWrapper = styled.div`
+  background: rgba(76, 74, 74, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+
+  border: none;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background-color: ${themeColours.light_grey};
+  /* background-color: ${themeColours.light_grey}; */
   position: relative;
   margin-bottom: 100px;
 `;
@@ -32,32 +43,84 @@ const TopSectionWrapper = styled.div`
 const UserInfoWrapper = styled.div`
   padding-top: 20px;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
-  .avatar_image {
-    margin-bottom: 20px;
-  }
-  margin-bottom: 40px;
-  div {
-    text-align: center;
-  }
-  .user_id {
-    margin-bottom: 30px;
+  height: 300px;
+
+  .user_info_container {
+    display: flex;
+    /* align-items: center; */
+    flex-direction: column;
+    margin-left: 30px;
   }
 
-  .user_info_title {
+  .greeting {
     text-align: center;
     display: flex;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: ${themeColours.orange};
+    /* margin-top: 20px; */
+    margin-bottom: 20px;
+    font-size: 30px;
+    color: ${themeColours.light_orange};
     font-weight: 600;
   }
 
-  .authorId {
+  .user_id {
     color: ${themeColours.dark_blue};
-    font-weight: 400;
-    padding-left: 10px;
+  }
+`;
+
+const UserAvatarUpload = styled.div`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: grey;
+  position: relative;
+
+  img {
+    display: none;
+  }
+
+  img[src] {
+    display: block;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    border: none;
+    object-fit: cover;
+  }
+
+  .avatar_line {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    position: absolute;
+    left: -49px;
+    top: -33px;
+    border: 1px solid ${themeColours.orange_grey};
+    z-index: -10;
+  }
+
+  .upload_avatar_icon {
+    position: absolute;
+    bottom: 0;
+    right: -10px;
+    background-color: white;
+    border-radius: 50%;
+  }
+`;
+
+const LogoutContainer = styled.div`
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  color: ${themeColours.light_grey};
+  font-size: 14px;
+  &:hover {
+    cursor: pointer;
+  }
+
+  .icon {
+    margin-right: 5px;
   }
 `;
 
@@ -211,6 +274,7 @@ function Dashboard(props) {
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [showNoPlansText, setShowNoPlansText] = useState(false);
   const [displaySection, setDisplaySection] = useState('My Plans');
+  const [userImage, setUserImage] = useState(null);
 
   const navigate = useNavigate();
 
@@ -256,27 +320,64 @@ function Dashboard(props) {
   //   };
   // }, [showAddNewFolder]);
 
+  function saveImgToDataBase(userImage) {
+    try {
+      setDoc(
+        doc(db, 'userId', currentUserId),
+        {
+          userImage: userImage,
+        },
+        { merge: true }
+      );
+      alert('Saved your image!');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <TopSectionWrapper>
         <UserInfoWrapper>
-          <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} />
-          <div className="user_info_title">Welcome!</div>
-          <div className="user_id">{currentUserId}</div>
-          <PaleBtn
-            onClick={() => {
-              signOutFirebase();
-              navigate('/');
-            }}>
-            Logout
-          </PaleBtn>
+          <UserAvatarUpload>
+            <img className="user_img" src={userImage} alt="" />
+            <label htmlFor="user_avatar_file" className="upload_avatar_icon">
+              <input
+                style={{ display: 'none' }}
+                accept="image/*"
+                id="user_avatar_file"
+                type="file"
+                onChange={(e) => {
+                  handleMainImageUpload(e, setUserImage);
+                  saveImgToDataBase(userImage);
+                }}></input>
+              <IconButton
+                // style={{ color: themeColours.blue }}
+                aria-label="upload picture"
+                component="div">
+                <UploadIcon style={{ color: themeColours.light_grey }} />
+              </IconButton>
+            </label>
+            <div className="avatar_line"></div>
+          </UserAvatarUpload>
+          {/* <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} /> */}
+          <div className="user_info_container">
+            <div className="greeting">Hello!</div>
+            <div className="user_id">{currentUserId}</div>
+            <LogoutContainer
+              onClick={() => {
+                signOutFirebase();
+                navigate('/');
+              }}>
+              <LogoutIcon className="icon"></LogoutIcon> Logout
+            </LogoutContainer>
+          </div>
         </UserInfoWrapper>
         <LightOrangeBtn
           style={{
-            width: 220,
-            height: 60,
-            padding: 15,
-            fontSize: 20,
+            width: 190,
+            height: 40,
+            fontSize: 18,
             fontWeight: 600,
           }}
           onClick={() => {

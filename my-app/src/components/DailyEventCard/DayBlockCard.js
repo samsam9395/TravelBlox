@@ -80,7 +80,7 @@ const DayTitle = styled.div`
   font-weight: 600;
   font-family: 'Oswald', sans-serif;
   margin-bottom: 50px;
-  color: ${themeColours.orange};
+  color: ${themeColours.light_orange};
   display: flex;
   align-items: baseline;
   .date {

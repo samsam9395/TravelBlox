@@ -30,7 +30,7 @@ const TestLink = styled(Link)`
   color: ${themeColours.dark_blue};
   &:active {
     text-decoration: none;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
   &:visited {
     text-decoration: none;
@@ -38,7 +38,7 @@ const TestLink = styled(Link)`
   }
   &:hover {
     cursor: pointer;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
 `;
 

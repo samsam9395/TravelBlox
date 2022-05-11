@@ -26,7 +26,7 @@ const InputWrapper = styled.div`
 `;
 
 const Input = styled.input`
-  color: ${themeColours.orange};
+  color: ${themeColours.light_orange};
   height: 30px;
   border-radius: 5px;
   border: 1px solid grey;
@@ -68,7 +68,7 @@ const SearchBtn = styled.button`
   color: white;
   &:hover {
     cursor: pointer;
-    background-color: ${themeColours.orange};
+    background-color: ${themeColours.light_orange};
   }
 `;
 

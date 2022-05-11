@@ -74,7 +74,7 @@ const CallToActionText = styled.div`
     font-size: 40px;
     margin-right: 20px;
     font-style: italic;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
   @media (max-width: 768px) {
     margin-bottom: 30px;
@@ -95,7 +95,7 @@ const CallToActionText = styled.div`
 
 const SearchInputMUI = styled(TextField)({
   '& label.Mui-focused': {
-    color: themeColours.orange,
+    color: themeColours.light_orange,
   },
   '& .MuiInput-underline:after': {
     borderBottomColor: 'red',
@@ -103,7 +103,7 @@ const SearchInputMUI = styled(TextField)({
   // minWidth: '30vw',
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
-      borderColor: themeColours.orange,
+      borderColor: themeColours.light_orange,
     },
   },
   '&:hover label.Mui-focused': {
@@ -189,7 +189,7 @@ function Allplans(props) {
             startAdornment: (
               <SearchIcon
                 position="start"
-                style={{ color: themeColours.orange }}>
+                style={{ color: themeColours.light_orange }}>
                 Search
               </SearchIcon>
             ),

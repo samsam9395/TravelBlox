@@ -30,7 +30,7 @@ const CurrentSection = styled.div`
     padding-top: 25px;
     letter-spacing: 4px;
     margin-bottom: 10px;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
     text-shadow: 2px 1px ${themeColours.dark_blue};
   }
   .mainText {
