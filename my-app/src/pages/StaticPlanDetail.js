@@ -66,6 +66,13 @@ const UserInfoContainer = styled.div`
     font-weight: 400;
     padding-left: 10px;
   }
+
+  .user_img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
 `;
 
 const PlanCardsWrapper = styled.div`
@@ -300,6 +307,7 @@ function StaticPlanDetail(props) {
   const navTabCalendar = useRef(null);
   const refNames = [navTabDay, navTabMap, navTabCalendar];
   const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
+  const [userImage, setUserImage] = useState(null);
 
   const navTimelineRef = useRef(null);
 
@@ -399,6 +407,14 @@ function StaticPlanDetail(props) {
     setAuthor(data.author);
   }, []);
 
+  useEffect(async () => {
+    if (author) {
+      const docSnap = await getDoc(doc(db, 'userId', author));
+      const data = docSnap.data().userImage;
+      setUserImage(data);
+    }
+  }, [author]);
+
   useEffect(() => {
     const nofDays =
       (endDate.seconds * 1000 - startDate.seconds * 1000) /
@@ -468,7 +484,8 @@ function StaticPlanDetail(props) {
 
         <PlanInfoWrapper>
           <UserInfoContainer>
-            <UserAvatar currentUserId={author} fromLocate={'static'} />
+            <img className="user_img" src={userImage} alt="" />
+            {/* <UserAvatar currentUserId={author} fromLocate={'static'} /> */}
             <div className="user_info_title">
               Planned by:
               <div className="authorId">{author}</div>

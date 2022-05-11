@@ -6,6 +6,7 @@ export const themeColours = {
   // light_orange: '#fea360',
   light_orange: '#e7ac81', //new
   darker_orange: '#bb8c6b',
+  milktea: '#E4D1B9',
   pale: '#fceebf',
   // lighter_blue: '#54cfd673',
   lighter_blue: 'hsl(184, 23%, 80%)', //new

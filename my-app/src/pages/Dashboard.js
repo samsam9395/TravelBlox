@@ -40,6 +40,17 @@ const TopSectionWrapper = styled.div`
   margin-bottom: 100px;
 `;
 
+const UpperPartBackground = styled.div`
+  background-color: ${themeColours.milktea};
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  z-index: -100;
+  border-radius: 50%;
+  right: -264px;
+  top: -183px;
+`;
+
 const UserInfoWrapper = styled.div`
   padding-top: 20px;
   display: flex;
@@ -338,6 +349,7 @@ function Dashboard(props) {
   return (
     <>
       <TopSectionWrapper>
+        <UpperPartBackground></UpperPartBackground>
         <UserInfoWrapper>
           <UserAvatarUpload>
             <img className="user_img" src={userImage} alt="" />
