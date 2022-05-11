@@ -1,4 +1,4 @@
-import './App.scss';
+// import './App.scss';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalStyle from './styles/globalStyles';
@@ -27,6 +27,7 @@ const db = firebaseDB();
 
 const ContentWrapper = styled.div`
   padding: 100px 120px 150px 120px;
+  overflow: hidden;
 `;
 
 function App() {

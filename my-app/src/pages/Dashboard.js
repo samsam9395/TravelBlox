@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
@@ -21,8 +21,58 @@ import {
 } from '../styles/globalTheme';
 import UserAvatar from '../components/user/Avatar';
 import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
+import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
+import sparkle from '../images/dashboard/spark.png';
 
 const db = firebaseDB();
+
+const Wrapper = styled.div`
+  position: relative;
+
+  .milktea_svg_long {
+    position: absolute;
+    right: -144px;
+    top: -45px;
+  }
+`;
+
+const Sparkles = styled.div`
+  position: relative;
+  top: 50%;
+  right: 0;
+
+  .sparkle_left {
+    position: absolute;
+    width: 29px;
+    left: -414px;
+  }
+
+  .sparkle_left_small {
+    position: absolute;
+    width: 13px;
+    left: -391px;
+    bottom: -48px;
+  }
+
+  .sparkle_right {
+    position: absolute;
+    width: 24px;
+    right: 200px;
+    top: -85px;
+  }
+`;
+
+const UpperPartBackground = styled.div`
+  background-color: ${themeColours.milktea};
+  border: none;
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  z-index: -100;
+  border-radius: 50%;
+  right: -333px;
+  top: -209px;
+`;
 
 const TopSectionWrapper = styled.div`
   background: rgba(76, 74, 74, 0.05);
@@ -38,17 +88,30 @@ const TopSectionWrapper = styled.div`
   /* background-color: ${themeColours.light_grey}; */
   position: relative;
   margin-bottom: 100px;
-`;
 
-const UpperPartBackground = styled.div`
-  background-color: ${themeColours.milktea};
-  width: 400px;
-  height: 400px;
-  position: absolute;
-  z-index: -100;
-  border-radius: 50%;
-  right: -264px;
-  top: -183px;
+  .sparkle_left {
+    position: absolute;
+    width: 29px;
+    /* left: -414px; */
+    top: 58%;
+    left: 10%;
+  }
+
+  .sparkle_left_small {
+    position: absolute;
+    width: 13px;
+    /* left: -391px;
+    bottom: -48px; */
+    bottom: 21%;
+    left: 15%;
+  }
+
+  .sparkle_right {
+    position: absolute;
+    width: 24px;
+    top: 24%;
+    left: 25%;
+  }
 `;
 
 const UserInfoWrapper = styled.div`
@@ -107,6 +170,8 @@ const UserAvatarUpload = styled.div`
     position: absolute;
     left: -49px;
     top: -33px;
+    /* left: 14%;
+    top: 25%; */
     border: 1px solid ${themeColours.orange_grey};
     z-index: -10;
   }
@@ -115,8 +180,11 @@ const UserAvatarUpload = styled.div`
     position: absolute;
     bottom: 0;
     right: -10px;
-    background-color: white;
     border-radius: 50%;
+
+    &:hover {
+      background-color: rgb(0 0 0 / 12%);
+    }
   }
 `;
 
@@ -286,8 +354,10 @@ function Dashboard(props) {
   const [showNoPlansText, setShowNoPlansText] = useState(false);
   const [displaySection, setDisplaySection] = useState('My Plans');
   const [userImage, setUserImage] = useState(null);
+  const [showUserUploadIcon, setShowUserUploadIcon] = useState('hidden');
 
   const navigate = useNavigate();
+  const uploadIconRef = useRef(null);
 
   useEffect(async () => {
     if (!props.user) {
@@ -314,22 +384,13 @@ function Dashboard(props) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const checkIfClickedOutside = (e) => {
-  //     // If the menu is open and the clicked target is not within the menu,
-  //     // then close the menu
-  //     if (showAddNewFolder && ref.current && !ref.current.contains(e.target)) {
-  //       setShowAddNewFolder(false);
-  //     }
-  //   };
-
-  //   document.addEventListener('mousedown', checkIfClickedOutside);
-
-  //   return () => {
-  //     // Cleanup the event listener
-  //     document.removeEventListener('mousedown', checkIfClickedOutside);
-  //   };
-  // }, [showAddNewFolder]);
+  useEffect(async () => {
+    if (props.user.email) {
+      const imageRef = (db, 'userId', props.user.email);
+      const data = await getDoc(imageRef);
+      setUserImage(data.data().userImage);
+    }
+  }, [props.user.email]);
 
   function saveImgToDataBase(userImage) {
     try {
@@ -340,6 +401,7 @@ function Dashboard(props) {
         },
         { merge: true }
       );
+
       alert('Saved your image!');
     } catch (error) {
       console.log(error);
@@ -347,12 +409,21 @@ function Dashboard(props) {
   }
 
   return (
-    <>
+    <Wrapper>
+      <UpperPartBackground></UpperPartBackground>
+      <YourSvg className="milktea_svg_long"></YourSvg>
+
       <TopSectionWrapper>
-        <UpperPartBackground></UpperPartBackground>
+        <img className="sparkle_left" src={sparkle} alt="" />
+        <img className="sparkle_left_small" src={sparkle} alt="" />
+        <img className="sparkle_right" src={sparkle} alt="" />
+
         <UserInfoWrapper>
-          <UserAvatarUpload>
+          <UserAvatarUpload
+            onMouseEnter={() => setShowUserUploadIcon('visible')}
+            onMouseLeave={() => setShowUserUploadIcon('hidden')}>
             <img className="user_img" src={userImage} alt="" />
+
             <label htmlFor="user_avatar_file" className="upload_avatar_icon">
               <input
                 style={{ display: 'none' }}
@@ -361,17 +432,25 @@ function Dashboard(props) {
                 type="file"
                 onChange={(e) => {
                   handleMainImageUpload(e, setUserImage);
-                  saveImgToDataBase(userImage);
+                  if (userImage) {
+                    saveImgToDataBase(userImage);
+                  }
                 }}></input>
               <IconButton
-                // style={{ color: themeColours.blue }}
+                style={{
+                  visibility: showUserUploadIcon,
+                  // transition: 'opacity 5s',
+                }}
+                ref={uploadIconRef}
                 aria-label="upload picture"
                 component="div">
-                <UploadIcon style={{ color: themeColours.light_grey }} />
+                <UploadIcon style={{ color: themeColours.dark_blue }} />
               </IconButton>
             </label>
+
             <div className="avatar_line"></div>
           </UserAvatarUpload>
+
           {/* <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} /> */}
           <div className="user_info_container">
             <div className="greeting">Hello!</div>
@@ -474,7 +553,7 @@ function Dashboard(props) {
           <FavouriteFolderBar currentUserId={currentUserId} />
         </SectionContainer>
       )}
-    </>
+    </Wrapper>
   );
 }
 
