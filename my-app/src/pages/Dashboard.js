@@ -19,10 +19,14 @@ import UserAvatar from '../components/user/Avatar';
 import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
 
 const db = firebaseDB();
+
 const TopSectionWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  background-color: ${themeColours.light_grey};
+  position: relative;
+  margin-bottom: 100px;
 `;
 
 const UserInfoWrapper = styled.div`
@@ -74,6 +78,7 @@ const SectionContainer = styled.div`
   }
 
   .section_title {
+    height: 100%;
     font-weight: 600;
     font-size: 36px;
     margin-right: 20px;
@@ -150,6 +155,36 @@ const NoPlansText = styled.div`
   }
 `;
 
+const DisplaySwitch = styled.div`
+  display: flex;
+  width: 500px;
+  border-radius: 25px;
+  height: 60px;
+  background-color: white;
+  align-items: center;
+  font-family: ${fonts.main_font};
+  letter-spacing: 2px;
+  position: absolute;
+  bottom: -24px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+  .plan_tab {
+    text-align: center;
+    flex-grow: 1;
+    padding: 14px 24px;
+    height: 100%;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: #dfd8d887;
+      cursor: pointer;
+    }
+  }
+`;
+
 function signOutFirebase() {
   const auth = getAuth();
 
@@ -175,6 +210,7 @@ function Dashboard(props) {
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [showNoPlansText, setShowNoPlansText] = useState(false);
+  const [displaySection, setDisplaySection] = useState('My Plans');
 
   const navigate = useNavigate();
 
@@ -248,6 +284,20 @@ function Dashboard(props) {
           }}>
           ADD NEW PLAN
         </LightOrangeBtn>
+        <DisplaySwitch>
+          <div
+            className="plan_tab"
+            value="own_plan"
+            onClick={(e) => setDisplaySection(e.target.textContent)}>
+            My Plans
+          </div>
+          <div
+            className="plan_tab"
+            value="fav_plan"
+            onClick={(e) => setDisplaySection(e.target.textContent)}>
+            Favourite Plans
+          </div>
+        </DisplaySwitch>
       </TopSectionWrapper>
 
       {showAddPlanPopUp &&
@@ -256,50 +306,61 @@ function Dashboard(props) {
           state: { user: props.user },
         })}
 
-      <SectionContainer>
-        <div className="section_wrapper">
-          <div className="section_title">Plans</div>
-          <div className="dot"> {'\u00B7'} </div>
-          {ownPlansIdList && (
-            <div className="item_amount">{ownPlansIdList.length}</div>
-          )}
-        </div>
-
-        <PlanCollectionWrapper>
-          {showNoPlansText && (
-            <NoPlansText>
-              <div className="title">
-                You haven't created any travel plans yet.
+      {displaySection === 'My Plans' && (
+        <SectionContainer>
+          <div className="section_wrapper">
+            <div className="section_title">Plans</div>
+          </div>
+          <div className="sub_section">
+            <div className="sub_section_wrapper">
+              <div className="section_wrapper">
+                <div className="section_sub-title">My Plans</div>
+                <div className="dot"> {'\u00B7'} </div>
+                {ownPlansIdList && (
+                  <div className="item_amount">{ownPlansIdList.length}</div>
+                )}
               </div>
-              <div className="instruction">
-                Click on
-                <div className="btn_cta">ADD NEW PLAN</div>
-                to start one!
-              </div>
-            </NoPlansText>
-          )}
-          {ownPlansIdList?.map((ownPlanId) => {
-            return (
-              <SinglePlanContainer key={ownPlanId}>
-                <OwnPlanCard
-                  userIdentity="author"
-                  ownPlanId={ownPlanId}
-                  key={ownPlanId}
-                  setOpenEditPopUp={setOpenEditPopUp}
-                  openEditPopUp={openEditPopUp}
-                />
-              </SinglePlanContainer>
-            );
-          })}
-        </PlanCollectionWrapper>
-      </SectionContainer>
+            </div>
 
-      <SectionContainer>
-        <div className="section_wrapper">
-          <div className="section_title">Favourites</div>
-        </div>
-        <FavouriteFolderBar currentUserId={currentUserId} />
-      </SectionContainer>
+            <PlanCollectionWrapper>
+              {showNoPlansText && (
+                <NoPlansText>
+                  <div className="title">
+                    You haven't created any travel plans yet.
+                  </div>
+                  <div className="instruction">
+                    Click on
+                    <div className="btn_cta">ADD NEW PLAN</div>
+                    to start one!
+                  </div>
+                </NoPlansText>
+              )}
+              {ownPlansIdList?.map((ownPlanId) => {
+                return (
+                  <SinglePlanContainer key={ownPlanId}>
+                    <OwnPlanCard
+                      userIdentity="author"
+                      ownPlanId={ownPlanId}
+                      key={ownPlanId}
+                      setOpenEditPopUp={setOpenEditPopUp}
+                      openEditPopUp={openEditPopUp}
+                    />
+                  </SinglePlanContainer>
+                );
+              })}
+            </PlanCollectionWrapper>
+          </div>
+        </SectionContainer>
+      )}
+
+      {displaySection === 'Favourite Plans' && (
+        <SectionContainer>
+          <div className="section_wrapper">
+            <div className="section_title">Favourites</div>
+          </div>
+          <FavouriteFolderBar currentUserId={currentUserId} />
+        </SectionContainer>
+      )}
     </>
   );
 }
