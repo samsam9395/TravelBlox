@@ -13,9 +13,7 @@ import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
 import CheckIcon from '@mui/icons-material/Check';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
-import leafShadow from '../images/static/leaf_right_with window.png';
 import sunburst from '../images/static/sunburst_solid.png';
-// import leafShadow from '../images/static/only_sunshine.png';
 import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
 import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
 
@@ -116,7 +114,7 @@ const UserInfoContainer = styled.div`
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
-  width: 950px;
+  width: 1000px;
 `;
 
 const FavFolderDropDownOptions = styled.div`
