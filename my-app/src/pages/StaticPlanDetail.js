@@ -17,6 +17,7 @@ import leafShadow from '../images/static/leaf_right_with window.png';
 import sunburst from '../images/static/sunburst_solid.png';
 // import leafShadow from '../images/static/only_sunshine.png';
 import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
+import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
 
 const db = firebaseDB();
 
@@ -162,13 +163,12 @@ const PlanMainImageContainer = styled.div`
     top: 30px;
     width: 60px;
   }
-  .sunburst_small{
+  .sunburst_small {
     position: absolute;
     right: 74px;
     top: 217px;
     width: 40px;
   }
-  .
 `;
 
 const PlanMainImage = styled.div`
@@ -362,6 +362,7 @@ function StaticPlanDetail(props) {
   const refNames = [navTabDay, navTabMap, navTabCalendar];
   const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
   const [userImage, setUserImage] = useState(null);
+  const [showFullImage, setShowFullImage] = useState(false);
 
   const navTimelineRef = useRef(null);
   const planImageRef = useRef(null);
@@ -528,12 +529,24 @@ function StaticPlanDetail(props) {
 
   return (
     <>
+      {showFullImage && (
+        <ImageEnlarge
+          mainImage={mainImage}
+          setShowFullImage={setShowFullImage}
+        />
+      )}
       <UpperContainer>
         {/* <img className="leaf_shadow" src={leafShadow} alt="" /> */}
+
         <MilkTeaLeftCurveLine className="milktea_svg_left"></MilkTeaLeftCurveLine>
         <PlanMainImageContainer>
           <PlanMainImage className="overlay" ref={planImageRef}>
-            <img src={mainImage} loading="lazy" alt="plan image" />
+            <img
+              src={mainImage}
+              loading="lazy"
+              alt="plan image"
+              onClick={() => setShowFullImage(true)}
+            />
           </PlanMainImage>
 
           <img src={sunburst} alt="sunburst" className="sunburst" />
