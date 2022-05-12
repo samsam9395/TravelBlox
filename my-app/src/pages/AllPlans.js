@@ -10,7 +10,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getDocs, collection, getDoc, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
-import { themeColours } from '../utils/globalTheme';
+import { themeColours } from '../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -20,7 +20,7 @@ const PlanCollectionWrapper = styled.div`
   width: 100%;
   box-sizing: content-box;
   flex-wrap: wrap;
-
+  justify-content: center;
   margin: 30px 0;
 `;
 
@@ -39,7 +39,8 @@ const SearchContainer = styled.div`
 
 const MainImgContainer = styled.div`
   width: 100%;
-  height: 300px;
+  height: 320px;
+  order-radius: 10px;
 `;
 
 const MainImg = styled.img`
@@ -73,7 +74,7 @@ const CallToActionText = styled.div`
     font-size: 40px;
     margin-right: 20px;
     font-style: italic;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
   @media (max-width: 768px) {
     margin-bottom: 30px;
@@ -94,7 +95,7 @@ const CallToActionText = styled.div`
 
 const SearchInputMUI = styled(TextField)({
   '& label.Mui-focused': {
-    color: themeColours.orange,
+    color: themeColours.light_orange,
   },
   '& .MuiInput-underline:after': {
     borderBottomColor: 'red',
@@ -102,7 +103,7 @@ const SearchInputMUI = styled(TextField)({
   // minWidth: '30vw',
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
-      borderColor: themeColours.orange,
+      borderColor: themeColours.light_orange,
     },
   },
   '&:hover label.Mui-focused': {
@@ -175,8 +176,8 @@ function Allplans(props) {
           <div className="text_are_you">are you</div>{' '}
           <div className="text_heading_to">
             {' '}
-            <div className="text_heading">heading</div> to?
-          </div>{' '}
+            <div className="text_heading">heading</div>?
+          </div>
         </CallToActionText>
         <SearchInputMUI
           variant="standard"
@@ -188,7 +189,7 @@ function Allplans(props) {
             startAdornment: (
               <SearchIcon
                 position="start"
-                style={{ color: themeColours.orange }}>
+                style={{ color: themeColours.light_orange }}>
                 Search
               </SearchIcon>
             ),

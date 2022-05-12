@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import './../styles/calendarStyle.scss';
 import PlanCalendar from './PlanCalendar';
@@ -12,7 +11,13 @@ import DatePicker from '../components/Input/DatePicker';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { doc, getDoc, writeBatch } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  writeBatch,
+} from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
@@ -23,7 +28,7 @@ import {
   listenToSnapShot,
   getFavPlan,
 } from '../utils/functionList';
-import FavFolderDropdown from '../components/FavFolderDropdown';
+import FavFolderDropdown from '../favourite/FavFolderDropdown';
 import {
   themeColours,
   EditableMainImageContainer,
@@ -34,7 +39,8 @@ import {
   OrangeBtn,
   BlueBtn,
   PaleBtn,
-} from '../utils/globalTheme';
+} from '../styles/globalTheme';
+import '../favourite/favDropDown.scss';
 
 const db = firebaseDB();
 
@@ -54,17 +60,77 @@ const TitleSection = styled.div`
   margin-right: 30px;
 `;
 
+const CalendarColourBackground = styled.div`
+  background-color: #fdfcf8;
+  width: 100%;
+  height: 60vh;
+  z-index: -10;
+  border-radius: 15%;
+  right: 0;
+  top: 15px;
+  position: absolute;
+`;
+
 const CalendarContainer = styled.div`
   width: 100%;
   height: 60vh;
   margin-top: 60px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+  position: relative;
+
+  /* background-color: #fdf7e1; */
 `;
 
 const Input = styled('input')({
   display: 'none',
 });
 
+const TypeInput = styled.input`
+  width: 91%;
+  margin-left: 8px;
+  margin-bottom: 10px;
+  height: 56px;
+  padding-left: 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid ${themeColours.light_grey};
+
+  &:focus,
+  &:hover {
+    border-color: ${themeColours.light_orange};
+  }
+`;
+
+const BottomBtnContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 150px;
+  margin-bottom: 30px;
+
+  .left_btns {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .import_btn_wrapper {
+    display: flex;
+    flex-direction: column;
+
+    .import_btn {
+      position: relative;
+    }
+  }
+`;
+
+const SelectImportDropdown = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  bottom: -60px;
+  left: 164px;
+`;
 // props
 // userId={user.email} favFolderNames={favFolderNames}
 //currentPlanRef
@@ -77,8 +143,8 @@ function EditPlanDetail(props) {
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
-  const [startDateValue, setStartDateValue] = useState(0);
-  const [endDateValue, setEndDateValue] = useState(0);
+  const [startDateValue, setStartDateValue] = useState(null);
+  const [endDateValue, setEndDateValue] = useState(null);
   const [startInitDateValue, setStartInitDateValue] = useState(0);
   const [endInitDateValue, setEndInitDateValue] = useState(0);
   const [showFavContainer, setShowFavContainer] = useState(false);
@@ -90,6 +156,7 @@ function EditPlanDetail(props) {
     props.favFolderNames || []
   );
   const [selectedPlanId, setSelectedPlanId] = useState('');
+  const [selectedFolderId, setSelectedFolderId] = useState('');
   const [importData, setImportData] = useState({});
 
   //React Route
@@ -140,10 +207,6 @@ function EditPlanDetail(props) {
     }
   }
 
-  useEffect(() => {
-    setDropDownOption(props.favFolderNames);
-  }, [props.favFolderNames]);
-
   useEffect(async () => {
     const docSnap = await getDoc(doc(db, 'plans', planDocRef));
 
@@ -189,14 +252,26 @@ function EditPlanDetail(props) {
       />
       <TopContainer>
         <TitleSection>
+          {/* <TypeInput
+            value={planTitle}
+            onChange={(e) => {
+              setPlanTitle(e.target.value);
+            }}
+            placeholder="Plan Title"></TypeInput> */}
           <TextField
-            sx={{ m: 1, minWidth: 80 }}
+            required
+            sx={{
+              m: 1,
+              width: 300,
+              label: { color: themeColours.light_orange },
+            }}
             label="Title"
             variant="outlined"
             value={planTitle}
             onChange={(e) => {
               setPlanTitle(e.target.value);
             }}
+            autoComplete="off"
           />
           <CountrySelector
             setCountry={setCountry}
@@ -204,19 +279,30 @@ function EditPlanDetail(props) {
             planTitle={planTitle}
           />
 
-          <DatePicker
-            setStartDateValue={setStartDateValue}
-            setEndDateValue={setEndDateValue}
-            startDateValue={startDateValue}
-            endDateValue={endDateValue}
-            startInitDateValue={startInitDateValue}
-            endInitDateValue={endInitDateValue}
-          />
+          {endDateValue && startDateValue ? (
+            <DatePicker
+              setStartDateValue={setStartDateValue}
+              setEndDateValue={setEndDateValue}
+              startDateValue={startDateValue}
+              endDateValue={endDateValue}
+              startInitDateValue={startInitDateValue}
+              endInitDateValue={endInitDateValue}
+            />
+          ) : (
+            <DatePicker
+              setStartDateValue={setStartDateValue}
+              setEndDateValue={setEndDateValue}
+              startDateValue={new Date()}
+              endDateValue={new Date()}
+              startInitDateValue={new Date()}
+              endInitDateValue={new Date()}
+            />
+          )}
 
           <FormControlLabel
             control={
               <Switch
-                style={{ color: themeColours.orange }}
+                style={{ color: themeColours.light_orange }}
                 checked={isPublished}
                 onChange={() => setIsPublished(!isPublished)}
               />
@@ -244,7 +330,7 @@ function EditPlanDetail(props) {
                 style={{ color: themeColours.blue }}
                 aria-label="upload picture"
                 component="div">
-                <PhotoCamera />
+                <PhotoCamera style={{ color: themeColours.light_blue }} />
               </IconButton>
             </Box>
           </label>
@@ -254,22 +340,23 @@ function EditPlanDetail(props) {
       <ToggleAttractionSearch />
 
       <CalendarContainer>
-        <PlanCalendar
-          setImportData={setImportData}
-          setMyEvents={setMyEvents}
-          myEvents={myEvents}
-          setShowEditPopUp={setShowEditPopUp}
-          setCurrentSelectTimeData={setCurrentSelectTimeData}
-          setCurrentSelectTimeId={setCurrentSelectTimeId}
-          startDateValue={startDateValue}
-        />
+        {/* <div className="background_line"></div> */}
+        <CalendarColourBackground></CalendarColourBackground>
+
+        {startDateValue ? (
+          <PlanCalendar
+            setImportData={setImportData}
+            setMyEvents={setMyEvents}
+            myEvents={myEvents}
+            setShowEditPopUp={setShowEditPopUp}
+            setCurrentSelectTimeData={setCurrentSelectTimeData}
+            setCurrentSelectTimeId={setCurrentSelectTimeId}
+            startDateValue={startDateValue}
+          />
+        ) : null}
       </CalendarContainer>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        spacing={2}>
-        <Stack direction="row" alignItems="center" spacing={2}>
+      <BottomBtnContainer>
+        <div className="left_btns">
           <LightBlueBtn
             variant="contained"
             onClick={() => {
@@ -277,46 +364,31 @@ function EditPlanDetail(props) {
             }}>
             Add new event
           </LightBlueBtn>
-          <LightBlueBtn
+          {/* <LightBlueBtn
             variant="contained"
+            onClick={() => setShowFavContainer(!showFavContainer)}>
+            Import Favourite
+          </LightBlueBtn> */}
+
+          {/* <div className="import_btn_wrapper"> */}
+          <LightBlueBtn
+            className="import_btn"
             onClick={() => setShowFavContainer(!showFavContainer)}>
             Import Favourite
           </LightBlueBtn>
 
           {showFavContainer && (
-            <div>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={dropDownOption}
-                sx={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Favourite Folders" />
-                )}
-                onChange={(e) => {
-                  setShowFavPlans(true);
-                  console.log(e.target.textContent);
-                  getFavPlan(
-                    e.target.textContent,
-                    currentUserId,
-                    setFavPlansNameList
-                  );
-                }}
-              />
-              {showFavPlans && favPlansNameList && (
-                <FavFolderDropdown
-                  showFavPlans={showFavPlans}
-                  favPlansNameList={favPlansNameList}
-                  setSelectedPlanId={setSelectedPlanId}
-                  selectedPlanId={selectedPlanId}
-                  planDocRef={planDocRef}
-                />
-              )}
-            </div>
+            <FavFolderDropdown
+              showFavPlans={showFavPlans}
+              selectedPlanId={selectedPlanId}
+              planDocRef={planDocRef}
+              startDateValue={startDateValue}
+              currentUserId={currentUserId}
+            />
           )}
+          {/* </div> */}
 
           <LightBlueBtn
-            variant="contained"
             onClick={() => {
               try {
                 saveToDataBase(
@@ -351,7 +423,7 @@ function EditPlanDetail(props) {
             }}>
             Publish
           </Button> */}
-        </Stack>
+        </div>
         <PaleBtn
           variant="contained"
           onClick={() => {
@@ -359,7 +431,7 @@ function EditPlanDetail(props) {
           }}>
           Delete
         </PaleBtn>
-      </Stack>
+      </BottomBtnContainer>
     </Wrapper>
   );
 }

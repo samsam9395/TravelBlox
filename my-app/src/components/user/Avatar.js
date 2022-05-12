@@ -11,8 +11,8 @@ import firebaseDB from '../../utils/firebaseConfig';
 const db = firebaseDB();
 
 const Wrapper = styled.div`
-  max-width: 120px;
-  max-height: 120px;
+  width: 120px;
+  height: 120px;
   position: relative;
 `;
 
@@ -26,19 +26,19 @@ const AvatarImage = styled.div`
 const EditIconWrapper = styled.div`
   position: absolute;
   top: 20px;
-  right: -24px;
+  right: -40px;
 `;
 
 const RandomIconWrapper = styled.div`
   position: absolute;
-  top: 50px;
-  right: -24px;
+  top: 60px;
+  right: -40px;
 `;
 
 const OkayIconWrapper = styled.div`
   position: absolute;
-  top: 80px;
-  right: -24px;
+  top: 90px;
+  right: -40px;
 `;
 
 function UserAvatar({ currentUserId, fromLocate }) {

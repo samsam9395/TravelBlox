@@ -22,12 +22,20 @@ import {
   listenToSnapShot,
   getFavPlan,
 } from '../utils/functionList';
-import FavFolderDropdown from '../components/FavFolderDropdown';
+import FavFolderDropdown from '../favourite/FavFolderDropdown';
 import {
+  themeColours,
   EditableMainImageContainer,
   EditableMainImage,
   FlexColumnWrapper,
-} from '../utils/globalTheme';
+  LightBlueBtn,
+  PaleEmptyBtn,
+  LightOrangeBtn,
+  OrangeBtn,
+  BlueBtn,
+  PaleBtn,
+} from '../styles/globalTheme';
+import '../favourite/favDropDown.scss';
 
 const db = firebaseDB();
 
@@ -50,8 +58,9 @@ const TitleSection = styled.div`
 const CalendarContainer = styled.div`
   width: 100%;
   height: 60vh;
-  border: 1px solid black;
-  margin-top: 40px;
+  margin-top: 60px;
+  margin-bottom: 30px;
+  position: relative;
 `;
 
 const Input = styled('input')({
@@ -96,6 +105,32 @@ async function addPlanToUserInfo(currentUserId, createPlanDocId) {
   }
 }
 
+const BottomBtnContainer = styled.div`
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  height: 150px;
+  margin-bottom: 30px;
+  position: relative;
+  /* .left_btns {
+    display: flex;
+    align-items: center;
+    position: relative;
+  } */
+`;
+
+const CalendarColourBackground = styled.div`
+  background-color: #fdfcf8;
+  width: 100%;
+  height: 60vh;
+  z-index: -10;
+  border-radius: 15%;
+  right: 0;
+  top: 15px;
+  position: absolute;
+`;
+
+// defaultImg={defaultImg}
 // user={user} accessToken, email
 function AddNewPlan(props) {
   const location = useLocation();
@@ -134,6 +169,13 @@ function AddNewPlan(props) {
     const currentTimeMilli = new Date().getTime();
     const createPlanDocId = `plan${currentTimeMilli}`;
     setPlanDocRef(createPlanDocId);
+
+    console.log('mainImage is', mainImage);
+    if (mainImage === null || '') {
+      mainImage = props.defaultImg;
+      setMainImage(props.defaultImg);
+    }
+
     try {
       await setDoc(doc(db, 'plans', createPlanDocId), {
         author: currentUserId,
@@ -200,7 +242,11 @@ function AddNewPlan(props) {
           <TitleSection>
             <TextField
               required
-              sx={{ m: 1, minWidth: 80 }}
+              sx={{
+                m: 1,
+                width: 300,
+                label: { color: themeColours.light_orange },
+              }}
               label="Title"
               variant="outlined"
               value={planTitle}
@@ -219,6 +265,7 @@ function AddNewPlan(props) {
             <FormControlLabel
               control={
                 <Switch
+                  style={{ color: themeColours.orange }}
                   checked={isPublished}
                   onChange={() => setIsPublished(!isPublished)}
                 />
@@ -248,7 +295,7 @@ function AddNewPlan(props) {
                   color="primary"
                   aria-label="upload picture"
                   component="div">
-                  <PhotoCamera />
+                  <PhotoCamera style={{ color: themeColours.light_blue }} />
                 </IconButton>
               </Box>
             </label>
@@ -258,6 +305,7 @@ function AddNewPlan(props) {
         {hasCreatedCollection ? (
           <>
             <CalendarContainer>
+              <CalendarColourBackground></CalendarColourBackground>
               <PlanCalendar
                 startDateValue={startDateValue}
                 setMyEvents={setMyEvents}
@@ -267,25 +315,36 @@ function AddNewPlan(props) {
                 setCurrentSelectTimeId={setCurrentSelectTimeId}
               />
             </CalendarContainer>
-            <Stack
-              sx={{ m: 2 }}
-              direction="row"
-              alignItems="center"
-              spacing={2}>
-              <Button
-                variant="contained"
+            <BottomBtnContainer>
+              <LightBlueBtn
                 onClick={() => {
                   setShowPopUp(true);
                 }}>
                 Add new event
-              </Button>
-              <Button
+              </LightBlueBtn>
+              {/* <Button
                 variant="contained"
                 onClick={() => setShowFavContainer(!showFavContainer)}>
                 Import Favourite
-              </Button>
+              </Button> */}
+
+              <LightBlueBtn
+                onClick={() => setShowFavContainer(!showFavContainer)}>
+                Import Favourite
+              </LightBlueBtn>
 
               {showFavContainer && (
+                <FavFolderDropdown
+                  showFavPlans={showFavPlans}
+                  favPlansNameList={favPlansNameList}
+                  setSelectedPlanId={setSelectedPlanId}
+                  selectedPlanId={selectedPlanId}
+                  planDocRef={planDocRef}
+                  startDateValue={startDateValue}
+                  currentUserId={currentUserId}
+                />
+              )}
+              {/* {showFavContainer && (
                 <div>
                   <Autocomplete
                     disablePortal
@@ -313,43 +372,43 @@ function AddNewPlan(props) {
                       selectedPlanId={selectedPlanId}
                       planDocRef={planDocRef}
                       setAddedTimeBlock={setAddedTimeBlock}
+                      startDateValue={startDateValue}
                     />
                   )}
                 </div>
-              )}
-            </Stack>
+              )} */}
 
-            <Button
-              sx={{ m: 5 }}
-              variant="contained"
-              onClick={() => {
-                console.log(myEvents.length);
-                if (myEvents.length === 0) {
-                  alert('Please create at least one event!');
-                } else {
-                  if (
-                    saveToDataBase(
-                      myEvents,
-                      planTitle,
-                      country,
-                      mainImage,
-                      planDocRef,
-                      startDateValue,
-                      endDateValue,
-                      isPublished
-                    )
-                  ) {
-                    navigate('/dashboard');
+              <LightBlueBtn
+                variant="contained"
+                onClick={() => {
+                  console.log(myEvents.length);
+                  if (myEvents.length === 0) {
+                    alert('Please create at least one event!');
+                  } else {
+                    if (
+                      saveToDataBase(
+                        myEvents,
+                        planTitle,
+                        country,
+                        mainImage,
+                        planDocRef,
+                        startDateValue,
+                        endDateValue,
+                        isPublished
+                      )
+                    ) {
+                      navigate('/dashboard');
+                    }
                   }
-                }
-              }}>
-              Save
-            </Button>
+                }}>
+                Save
+              </LightBlueBtn>
+            </BottomBtnContainer>
           </>
         ) : (
           <ButtonContainer>
             <Stack direction="row" alignItems="center" spacing={2}>
-              <Button
+              <LightBlueBtn
                 variant="contained"
                 onClick={() => {
                   if (startDateValue && endDateValue && planTitle) {
@@ -365,10 +424,12 @@ function AddNewPlan(props) {
                   }
                 }}>
                 All Set
-              </Button>
-              <Button variant="outlined" onClick={() => navigate('/dashboard')}>
+              </LightBlueBtn>
+              <PaleEmptyBtn
+                variant="outlined"
+                onClick={() => navigate('/dashboard')}>
                 Nah create later
-              </Button>
+              </PaleEmptyBtn>
             </Stack>
           </ButtonContainer>
         )}

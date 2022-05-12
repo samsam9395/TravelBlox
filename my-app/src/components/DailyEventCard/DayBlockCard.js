@@ -7,7 +7,7 @@ import firebaseDB from '../../utils/firebaseConfig';
 import DayMapCard from './DayMapCard';
 import DayCalendar from './DayCalendar';
 import Weather from '../weather/Weather';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -59,6 +59,7 @@ const RightWrapper = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 30px;
 `;
 
 const DayScheduleContainer = styled.div`
@@ -79,7 +80,7 @@ const DayTitle = styled.div`
   font-weight: 600;
   font-family: 'Oswald', sans-serif;
   margin-bottom: 50px;
-  color: ${themeColours.orange};
+  color: ${themeColours.light_orange};
   display: flex;
   align-items: baseline;
   .date {
@@ -101,6 +102,7 @@ const EventTitle = styled.div`
 
 const EventContentText = styled.div`
   font-size: 14px;
+  display: inline-block;
 `;
 
 function addOneDay(date) {
@@ -246,8 +248,13 @@ function DayBlockCard(props) {
                   <TimeBlockImg
                     src={singleEvent.timeblock_img}
                     alt="evernt_main_image"></TimeBlockImg>
-                  <EventContentText className="content">
-                    Context: {singleEvent.text}
+                  {/* <EventContentText className="content">
+                    {singleEvent.text.split('\n').map((it, i) => (
+                      <div key={'x' + i}>{it}</div>
+                    ))}
+                  </EventContentText> */}
+                  <EventContentText style={{ whiteSpace: 'pre-wrap' }}>
+                    {singleEvent.text}
                   </EventContentText>
                 </ContentContainer>
               );

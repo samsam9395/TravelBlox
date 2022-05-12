@@ -7,10 +7,11 @@ import {
 import styled from 'styled-components';
 import AttractionCards from './AttractionCards';
 import RestaurantCard from './RestaurantCard';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 import HashLoader from 'react-spinners/HashLoader';
 
 const MainWrapper = styled.div`
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -38,6 +39,7 @@ const Input = styled.input`
   }
 `;
 const AttractionCardWrapper = styled.div`
+  margin-top: 30px;
   display: flex;
   overflow: auto;
   width: 100%;
@@ -63,8 +65,10 @@ const SearchBtn = styled.button`
   border: none;
   background-color: ${themeColours.light_orange};
   margin: 5px;
+  color: white;
   &:hover {
     cursor: pointer;
+    background-color: ${themeColours.light_orange};
   }
 `;
 

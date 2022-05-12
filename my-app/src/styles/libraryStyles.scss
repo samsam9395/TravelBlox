@@ -1,17 +1,21 @@
 // @import url( https://fonts.googleapis.com/css2?family=Ubuntu&display=swap );
 
 // _library.scss
-$my_orange: #f1651d !default;
-$light_orange: #fea360 !default;
+$my_orange: #e7ac81 !default;
+$light_orange: #e7ac81 !default;
+$darker_orange: #bb8c6b;
+$milktea: #e4d1b9;
 $pale: #fceebf !default;
-$lighter_blue: #54cfd673 !default;
-$light_blue: #55cfd6 !default;
+$lighter_blue: hsl(184, 23%, 80%) !default;
+$light_blue: #6ca5a9 !default;
 $blue: #0a97b7 !default;
+$light_grey: #80808087;
+$orange_grey: #d9c1b0;
 $dark_blue: #00213a !default;
 $my_black: #0e0e0f !default;
 
 .adp-placemark {
-  background: #54cfd673 !important;
+  background: hsl(184, 23%, 80%) !important;
   border: none !important;
   border-radius: 10px;
 }
@@ -21,3 +25,12 @@ $my_black: #0e0e0f !default;
 .rdrEndEdge {
   color: $my_orange !important;
 }
+
+.rdrDayToday {
+  ::after {
+    background: $light_blue;
+  }
+}
+
+// .rdrDayHovered {
+// }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import { themeColours } from '../styles/globalTheme';
 // setCountry={setCountry} setIsLoading={setIsLoading}
 export default function CountrySelector(props) {
   // const [country, setCountry] = useState('');
@@ -37,7 +37,7 @@ export default function CountrySelector(props) {
   return (
     <Autocomplete
       id="country-select"
-      sx={{ m: 1, width: 300 }}
+      sx={{ m: 1, width: 300, label: { color: themeColours.light_orange } }}
       value={displayValue}
       options={countryList}
       autoHighlight

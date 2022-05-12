@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { googleCalendarConfig } from '../../utils/credent';
 import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
-import { LightBlueBtn } from '../../utils/globalTheme';
+import { LightBlueBtn } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -103,10 +103,7 @@ function ExportGCalendarBtn(props) {
   }
 
   return (
-    <LightBlueBtn
-      style={{ width: 'auto' }}
-      variant="outlined"
-      onClick={() => handleExport()}>
+    <LightBlueBtn style={{ width: 195 }} onClick={() => handleExport()}>
       Export to Google Calendar
     </LightBlueBtn>
   );

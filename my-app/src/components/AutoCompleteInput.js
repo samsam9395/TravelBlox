@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TextField } from '@mui/material';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { googleAPI } from '../utils/credent';
+import { themeColours } from '../styles/globalTheme';
 const ApiKey = googleAPI();
 
 function SearchInput(props) {
@@ -29,11 +30,10 @@ function SearchInput(props) {
 
   return (
     <TextField
-      // ref={ref}
       inputRef={ref}
       required
       autoComplete="off"
-      sx={{ m: 1, minWidth: 80 }}
+      sx={{ m: 1, minWidth: 80, label: { color: themeColours.light_orange } }}
       size="small"
       label="Address"
       variant="outlined"

@@ -1,30 +1,62 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { doc, getDoc, collection, setDoc } from 'firebase/firestore';
-import { Avatar } from '@mui/material';
+import styled, { keyframes } from 'styled-components';
+import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
 import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
-import { themeColours, LightOrangeBtn } from '../utils/globalTheme';
+import { themeColours, LightOrangeBtn } from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
 import CheckIcon from '@mui/icons-material/Check';
-import { fontWeight } from '@mui/system';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
+import sunburst from '../images/static/sunburst_solid.png';
+import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
+import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
 
 const db = firebaseDB();
 
+const zoomInAnimation = keyframes`
+  0% {
+    transform: scale(1, 1);
+  }
+  100% {
+    transform: scale(1.5, 1.5);
+  }
+`;
+
 const UpperContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   /* justify-content: space-between; */
   box-sizing: content-box;
   width: 100%;
+  height: 500px;
   margin-bottom: 30px;
+  position: relative;
+
+  /* .leaf_shadow {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    left: -102px;
+    width: 119%;
+    height: 110%;
+    top: -50px;
+    z-index: 5;
+    border-radius: 10px;
+  } */
+
+  .milktea_svg_left {
+    position: absolute;
+    right: 119px;
+    top: -150px;
+    z-index: -10;
+  }
 `;
 
 const LowerContainer = styled.div`
@@ -37,15 +69,18 @@ const LowerContainer = styled.div`
 const FavFolderWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   /* margin-bottom: 30px; */
 `;
 
 const PlanInfoWrapper = styled.div`
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px;
+  padding-left: 20px;
   justify-content: center;
+  flex-grow: 0;
 `;
 
 const UserInfoContainer = styled.div`
@@ -58,7 +93,8 @@ const UserInfoContainer = styled.div`
     text-align: center;
     display: flex;
     margin-top: 20px;
-    color: ${themeColours.orange};
+    color: ${themeColours.dark_blue};
+    flex-direction: column;
     font-weight: 600;
   }
 
@@ -67,86 +103,127 @@ const UserInfoContainer = styled.div`
     font-weight: 400;
     padding-left: 10px;
   }
+
+  .user_img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
 `;
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
-  width: 950px;
-  /* margin: 50px auto 0 auto; */
+  width: 1000px;
 `;
 
+const FavFolderDropDownOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 5px 15px;
+  position: absolute;
+  width: 90%;
+  top: 44px;
+  left: 10px;
+  background-color: white;
+  border-radius: 0 0 10px 10px;
+
+  .folder_option {
+    padding: 5px;
+    &:hover {
+      cursor: pointer;
+      background-color: ${themeColours.pale};
+      border-radius: 10px;
+    }
+  }
+`;
 const PlanMainImageContainer = styled.div`
-  /* width: 600px; */
-  width: auto;
-  height: 300px;
+  width: 80%;
+  height: 100%;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+
   &:hover {
     .planTitle_text_bakground {
       transform: translate(0, 100%);
       transition: all 0.3s ease-in-out 0s;
       -webkit-transition: all 0.3s ease-in-out 0s;
     }
+  }
 
-    /* img {
-      object-fit: contain;
-      transition: 0.35s;
-    } */
+  .sunburst {
+    position: absolute;
+    right: 34px;
+    top: 30px;
+    width: 60px;
+  }
+  .sunburst_small {
+    position: absolute;
+    right: 74px;
+    top: 217px;
+    width: 40px;
   }
 `;
 
-const PlanMainImage = styled.img`
-  width: 100%;
+const PlanMainImage = styled.div`
+  width: 445px;
   height: 100%;
-  object-fit: cover;
+  /* width: 300px;
+  height: 300px; */
+
   opacity: 100%;
   border-radius: 15px;
-  &:hover {
-    /* object-fit: contain; */
-    /* transition: 0.7s; */
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 500px 500px 0 0;
+    &:hover {
+      /* object-fit: contain; */
+      /* transition: 0.7s; */
+      /* background-color: red; */
+      cursor: pointer;
+      animation-name: ${zoomInAnimation};
+      animation-duration: 1.5s;
+      /* animation-iteration-count: infinite; */
+    }
   }
-`;
-
-const PlanTitleTextBakgroundOutterCircle = styled.div`
-  width: 330px;
-  height: 330px;
-  top: 82px;
-  left: 15px;
-  border-radius: 50%;
-  border: 2px solid #ffffff91;
-  background-color: transparent;
-  display: flex;
-  position: absolute;
-`;
-
-const PlanTitleTextBakground = styled.div`
-  width: 300px;
-  height: 300px;
-  top: 96px;
-  left: 30px;
-  border-radius: 50%;
-  border: 10px solid transparent;
-  background-color: #ffffff91;
-  display: flex;
-  position: absolute;
 `;
 
 const PlanTitleText = styled.div`
+  width: 55%;
+  z-index: 10;
+  font-family: 'Gellatio';
   position: absolute;
   font-weight: 800;
-  top: 60px;
-  left: 30px;
-  font-size: 36px;
+  top: 25%;
+  left: 0%;
+  /* top: 14%; */
+  /* left: 26%; */
+  /* transform: translate(-57%, -50%); */
+  font-size: 4vw;
   letter-spacing: 3px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
 
   .location_text {
+    font-family: 'Gellatio';
     font-weight: 400;
     letter-spacing: 1px;
-    font-size: 20px;
     text-shadow: none;
+    color: ${themeColours.pale};
+    font-size: 5.5vw;
+    position: absolute;
+    color: #fceebf;
+    right: -44%;
   }
 `;
 
@@ -155,6 +232,7 @@ const BtnWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  flex-direction: column;
 `;
 
 const FavFolderAutocompleteWrapper = styled.div`
@@ -167,10 +245,10 @@ const FavFolderAutocompleteWrapper = styled.div`
 
 const FavFolderAutocomplete = styled(TextField)({
   '& label.Mui-focused': {
-    color: themeColours.orange,
+    color: themeColours.light_orange,
   },
   '& .MuiInput-underline:after': {
-    borderBottomColor: themeColours.orange,
+    borderBottomColor: themeColours.light_orange,
   },
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
@@ -221,38 +299,6 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
-// handleFavAction(collectionID, author)
-async function handleFavAction(
-  planDocRef,
-  author,
-  selectFavFolder,
-  planTitle,
-  setShowFavDropDown
-) {
-  const currentUserEmail = localStorage.getItem('userEmail');
-
-  if (currentUserEmail === author) {
-    alert('Do not favourite your own plan!');
-  } else if (selectFavFolder !== '') {
-    // console.log(selectFavFolder);
-    const favRef = doc(db, 'userId', currentUserEmail, 'fav_plans', planDocRef);
-
-    try {
-      await setDoc(favRef, {
-        fav_plan_doc_ref: planDocRef,
-        infolder: selectFavFolder,
-        fav_plan_title: planTitle,
-      });
-      setShowFavDropDown(false);
-      alert('Successfully favourite this plan!');
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    alert('Please select a folder!');
-  }
-}
-
 const SwitchTab = styled.div`
   display: flex;
   width: 500px;
@@ -286,7 +332,7 @@ const ToTopScroll = styled.div`
   /* position: absolute;
   bottom: 0; */
 `;
-
+//user={user}
 function StaticPlanDetail(props) {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
@@ -313,8 +359,12 @@ function StaticPlanDetail(props) {
   const navTabMap = useRef(null);
   const navTabCalendar = useRef(null);
   const refNames = [navTabDay, navTabMap, navTabCalendar];
+  const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
+  const [userImage, setUserImage] = useState(null);
+  const [showFullImage, setShowFullImage] = useState(false);
 
   const navTimelineRef = useRef(null);
+  const planImageRef = useRef(null);
 
   function toSiwtchTab(tabName, tabRef) {
     for (let name of refNames) {
@@ -341,6 +391,63 @@ function StaticPlanDetail(props) {
     Object.assign(tabRef.current.style, styles);
   }
 
+  // handleFavAction(collectionID, author)
+  async function handleFavAction(
+    planDocRef,
+    author,
+    selectFavFolder,
+    planTitle,
+    setShowFavDropDown
+  ) {
+    const currentUserEmail = props.user.email;
+
+    if (currentUserEmail === author) {
+      alert('Do not favourite your own plan!');
+    } else if (selectFavFolder !== '') {
+      // console.log(selectFavFolder);
+      const favRef = doc(
+        db,
+        'userId',
+        currentUserEmail,
+        'fav_plans',
+        planDocRef
+      );
+
+      try {
+        await setDoc(favRef, {
+          fav_plan_doc_ref: planDocRef,
+          infolder: selectFavFolder,
+          fav_plan_title: planTitle,
+        });
+        setShowFavDropDown(false);
+        alert('Successfully favourite this plan!');
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert('Please select a folder!');
+    }
+  }
+
+  useEffect(async () => {
+    if (props.user) {
+      const favFolderRef = collection(
+        db,
+        'userId',
+        props.user.email,
+        'fav_folders'
+      );
+
+      try {
+        const list = await getDocs(favFolderRef);
+        list.docs.map((e) => console.log(222, e.data()));
+        setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [props.user]);
+
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
     const data = docSnap.data();
@@ -354,6 +461,17 @@ function StaticPlanDetail(props) {
     setHasVitied(data.visited);
     setAuthor(data.author);
   }, []);
+
+  useEffect(async () => {
+    if (author) {
+      try {
+        const userDoc = await getDoc(doc(db, 'userId', author));
+        setUserImage(userDoc.data().userImage);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [author]);
 
   useEffect(() => {
     const nofDays =
@@ -410,21 +528,38 @@ function StaticPlanDetail(props) {
 
   return (
     <>
+      {showFullImage && (
+        <ImageEnlarge
+          mainImage={mainImage}
+          setShowFullImage={setShowFullImage}
+        />
+      )}
       <UpperContainer>
+        {/* <img className="leaf_shadow" src={leafShadow} alt="" /> */}
+
+        <MilkTeaLeftCurveLine className="milktea_svg_left"></MilkTeaLeftCurveLine>
         <PlanMainImageContainer>
-          <PlanMainImage src={mainImage} loading="lazy"></PlanMainImage>
-          <PlanTitleTextBakgroundOutterCircle className="planTitle_text_bakground"></PlanTitleTextBakgroundOutterCircle>
-          <PlanTitleTextBakground className="planTitle_text_bakground">
-            <PlanTitleText>
-              {planTitle}
-              <div className="location_text">{country.label}</div>
-            </PlanTitleText>
-          </PlanTitleTextBakground>
+          <PlanMainImage className="overlay" ref={planImageRef}>
+            <img
+              src={mainImage}
+              loading="lazy"
+              alt="plan image"
+              onClick={() => setShowFullImage(true)}
+            />
+          </PlanMainImage>
+
+          <img src={sunburst} alt="sunburst" className="sunburst" />
+          <img src={sunburst} alt="sunburst" className="sunburst_small" />
+          <PlanTitleText>
+            {planTitle}
+            <div className="location_text">{country.label}</div>
+          </PlanTitleText>
         </PlanMainImageContainer>
 
         <PlanInfoWrapper>
           <UserInfoContainer>
-            <UserAvatar currentUserId={author} fromLocate={'static'} />
+            <img className="user_img" src={userImage} alt="" />
+            {/* <UserAvatar currentUserId={author} fromLocate={'static'} /> */}
             <div className="user_info_title">
               Planned by:
               <div className="authorId">{author}</div>
@@ -434,45 +569,30 @@ function StaticPlanDetail(props) {
           <BtnWrapper>
             <FavFolderWrapper>
               <LightOrangeBtn
-                style={{ width: 210 }}
-                variant="contained"
+                style={{ width: 195 }}
                 onClick={() => setShowFavDropDown(!showfavDropDown)}>
                 Favourite this plan
               </LightOrangeBtn>
               {showfavDropDown && (
-                <FavFolderAutocompleteWrapper ref={FavFolderRef}>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={props.favFolderNames}
-                    sx={{ width: 200 }}
-                    renderInput={(params) => (
-                      <FavFolderAutocomplete
-                        {...params}
-                        placeholder="Select Folder"
-                        variant="standard"></FavFolderAutocomplete>
-                    )}
-                    onChange={(e) => {
-                      setSelectedFavFolder(e.target.textContent);
-                    }}
-                  />
-                  <CheckIcon
-                    className="hoverCursor"
-                    style={{
-                      fontSize: 30,
-                      marginLeft: 7,
-                      color: themeColours.orange,
-                    }}
-                    onClick={() =>
-                      handleFavAction(
-                        planDocRef,
-                        author,
-                        selectedFavFolder,
-                        planTitle,
-                        setShowFavDropDown
-                      )
-                    }></CheckIcon>
-                </FavFolderAutocompleteWrapper>
+                <FavFolderDropDownOptions>
+                  {dropDownFavFolderOption?.map((folderName, index) => (
+                    <div
+                      key={index}
+                      className="folder_option"
+                      // onClick={() => console.log()}
+                      onClick={() =>
+                        handleFavAction(
+                          planDocRef,
+                          author,
+                          folderName,
+                          planTitle,
+                          setShowFavDropDown
+                        )
+                      }>
+                      {folderName}
+                    </div>
+                  ))}
+                </FavFolderDropDownOptions>
               )}
             </FavFolderWrapper>
             <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />

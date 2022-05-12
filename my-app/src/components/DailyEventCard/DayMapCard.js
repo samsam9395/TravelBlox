@@ -51,11 +51,24 @@ const Marker = (position) => {
   return null;
 };
 
-const Map = (props) => {
-  const ref = useRef(null);
+// const Map = (props) => {
+
+//   return (
+
+//   );
+// };
+
+// dayEvents={dayEvents}
+function DayMapCard(props) {
+  const [hasMarker, setHasMarker] = useState(false);
+  const [markerPosition, setMarkerPosition] = useState('');
+  const sideRouteRef = useRef(null);
+
   const [map, setMap] = useState();
   const [placeIdList, setPlaceIdList] = useState([]);
-  // const [result, setResult] = useState(null);
+  // const [result, props.setResult] = useState(null);
+
+  const ref = useRef(null);
 
   // console.log('Map is rendered', props.dayEvents);
 
@@ -85,7 +98,7 @@ const Map = (props) => {
       const directionsRenderer = new window.google.maps.DirectionsRenderer();
 
       if (placeIdList && placeIdList.length === 1) {
-        props.setMarkerPosition({ placeId: placeIdList[0] });
+        setMarkerPosition({ placeId: placeIdList[0] });
         map.setZoom(5);
         // const marker = new google.maps.Marker({
         //   position: { placeId: placeIdList },
@@ -107,7 +120,7 @@ const Map = (props) => {
           } else console.log('something wrong');
         });
 
-        props.setHasMarker(true);
+        setHasMarker(true);
       }
 
       if (placeIdList && placeIdList.length === 2) {
@@ -172,7 +185,7 @@ const Map = (props) => {
 
               // directionsRenderer.getDirections();
               props.setResult(travelDuration);
-              directionsRenderer.setPanel(document.getElementById('sidebar'));
+              directionsRenderer.setPanel(sideRouteRef.current);
             } else console.log('something wrong');
           })
 
@@ -184,38 +197,30 @@ const Map = (props) => {
   }, [ref.current, props.dayEvents]);
 
   return (
-    <MapContainer>
-      <div
-        style={{
-          height: '100%',
-          position: 'relative',
-        }}
-        ref={ref}
-      />
-    </MapContainer>
-  );
-};
-
-// dayEvents={dayEvents}
-function DayMapCard(props) {
-  const [hasMarker, setHasMarker] = useState(false);
-  const [markerPosition, setMarkerPosition] = useState('');
-
-  return (
     <DayMapContainer>
       {props.dayEvents && (
-        <Map
-          center={center}
-          zoom={zoom}
-          dayEvents={props.dayEvents}
-          setHasMarker={setHasMarker}
-          setMarkerPosition={setMarkerPosition}
-          setResult={props.setResult}
-        />
+        // <Map
+        //   center={center}
+        //   zoom={zoom}
+        //   dayEvents={props.dayEvents}
+        //   setHasMarker={setHasMarker}
+        //   setMarkerPosition={setMarkerPosition}
+        //   props.setResult={props.props.setResult}
+        // />
+
+        <MapContainer>
+          <div
+            style={{
+              height: '100%',
+              position: 'relative',
+            }}
+            ref={ref}
+          />
+        </MapContainer>
       )}
       {hasMarker && <Marker position={markerPosition} />}
 
-      <PanelContainer id="sidebar"></PanelContainer>
+      <PanelContainer id="sidebar" ref={sideRouteRef}></PanelContainer>
     </DayMapContainer>
   );
 }

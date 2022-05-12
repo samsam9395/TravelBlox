@@ -6,8 +6,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  position: fixed;
-  bottom: 0;
+  /* position: fixed; */
+  /* bottom: 0; */
   background-color: black;
   color: white;
   height: 60px;
@@ -29,18 +29,12 @@ const Title = styled.div`
 
 const Rights = styled.div`
   font-size: 12px;
-  position: absolute;
-  bottom: 0;
 `;
 
 function Footer() {
   return (
     <Wrapper>
       <Title>EXPLORE. DRAG. PLAN. </Title>
-      {/* <SubTitle>
-        We easify your travel planning experience! Stay worry free about the
-        preperation !
-      </SubTitle> */}
       <Rights>© 2022 TripBlox. All Rights Reserved.</Rights>
     </Wrapper>
   );

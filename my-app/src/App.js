@@ -1,10 +1,10 @@
-import './App.scss';
+// import './App.scss';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import GlobalStyle from './utils/globalStyles';
+import GlobalStyle from './styles/globalStyles';
 import Header from './components/general/Header';
 import Footer from './components/general/Footer';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import LandingPage from './pages/LandingPage';
 import '@fontsource/roboto/300.css';
@@ -13,7 +13,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import EditPlanDetail from './pages/EditPlanDetail';
 import StaticPlanDetail from './pages/StaticPlanDetail';
-import AutoCompleteInput from './components/AutoCompleteInput';
 import Dashboard from './pages/Dashboard';
 import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
@@ -28,6 +27,7 @@ const db = firebaseDB();
 
 const ContentWrapper = styled.div`
   padding: 100px 80px 150px 80px;
+  overflow: hidden;
 `;
 
 function App() {
@@ -70,7 +70,6 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <Header />
       <ContentWrapper>
         <Wrapper apiKey={ApiKey} libraries={['places']}>
           <Routes>
@@ -87,10 +86,15 @@ function App() {
                 />
               }
             />
-            <Route path="/add-new-plan" element={<AddNewPlan user={user} />} />
+            <Route
+              path="/add-new-plan"
+              element={<AddNewPlan user={user} defaultImg={defaultImg} />}
+            />
             <Route
               path="/static-plan-detail"
-              element={<StaticPlanDetail favFolderNames={favFolderNames} />}
+              element={
+                <StaticPlanDetail favFolderNames={favFolderNames} user={user} />
+              }
             />
 
             {/* <Route path="/autocomplete" element={<AutoCompleteInput />} /> */}
@@ -102,7 +106,6 @@ function App() {
           </Routes>
         </Wrapper>
       </ContentWrapper>
-      <Footer />
     </>
   );
 }

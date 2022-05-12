@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { GetWeather } from '../../utils/api';
 import './weather.scss';
-import { themeColours } from '../../utils/globalTheme';
+import { themeColours, fonts } from '../../styles/globalTheme';
+import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
+import asset1 from '../../images/static/Asset1.png';
+import { ReactComponent as WatercolourBlue } from '../../images/static/watercolour_blue2.svg';
 
 const WeatherCard = styled.div`
   max-width: 300px;
@@ -11,18 +14,84 @@ const WeatherCard = styled.div`
   flex-direction: column;
   padding: 10px 0;
   margin: 0 auto 60px auto;
+  position: relative;
+
+  .watercolour_background {
+    width: 86%;
+    position: absolute;
+    top: 22px;
+    right: 11%;
+    transform: rotate(344deg);
+  }
+
+  .golden_spark_simple_left {
+    height: 48px;
+    position: absolute;
+    top: 66px;
+    left: -16px;
+    padding: 5px 0;
+    background-color: white;
+  }
+  .golden_spark_simple_right {
+    height: 48px;
+    position: absolute;
+    bottom: 69px;
+    right: -17px;
+    padding: 5px 0;
+    background-color: white;
+  }
+
+  .right_side_text {
+    writing-mode: vertical-rl;
+    font-family: ${fonts.main_font};
+    font-size: 10px;
+    position: absolute;
+    right: -13px;
+    top: 50px;
+  }
+
+  .empty_ellipse {
+    height: 6%;
+    width: 19%;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid #e7ac81;
+    position: absolute;
+    right: -24px;
+    transform: rotate(345deg);
+    top: -10px;
+  }
+
+  .second {
+    top: 0px;
+  }
+
+  .third {
+    top: 10px;
+  }
+
+  .forth {
+    top: 20px;
+  }
+
+  .fifth {
+    top: 30px;
+  }
 `;
 
 const CurrentSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${themeColours.blue};
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  height: 300px;
-  border-radius: 15px 15px 0 0;
+  /* background: ${themeColours.blue}; */
+  /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
+  height: 315px;
+  /* border-radius: 15px 15px 0 0; */
   margin: 0;
-  /* padding-top: 55px; */
+  background-color: #fdfdfd;
+  border: 2px solid #e7ac81;
+  border-radius: 70px 0 0 0;
+  border-bottom: 0;
 
   .todayDate {
     font-size: 20px;
@@ -30,8 +99,9 @@ const CurrentSection = styled.div`
     padding-top: 25px;
     letter-spacing: 4px;
     margin-bottom: 10px;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
     text-shadow: 2px 1px ${themeColours.dark_blue};
+    font-family: ${fonts.secondary_font};
   }
   .mainText {
     font-weight: 800;
@@ -64,14 +134,29 @@ const SubInfoContainer = styled.div`
 const SubInfoTitle = styled.div`
   margin-right: 10px;
   font-weight: normal;
+  position: relative;
+
+  .highlighter {
+    position: absolute;
+    height: 66%;
+    width: 60%;
+    top: 9px;
+    background-color: #e7ac8152;
+    left: -6px;
+  }
 `;
 
 const DailyWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
-  background: ${themeColours.light_blue};
+  /* background: ${themeColours.light_blue}; */
   padding: 10px 0;
-  border-radius: 0 0 10px 10px;
+  /* border-radius: 0 0 10px 10px; */
+
+  border: 2px solid #e7ac81;
+  border-radius: 0 0 70px 0;
+  border-top: 0;
+  padding-right: 30px;
 `;
 
 const DailyContainer = styled.div`
@@ -90,8 +175,8 @@ const DailyIcon = styled.img`
 `;
 
 const DailyIconContainer = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
 `;
 
@@ -106,6 +191,12 @@ const AnimationContainer = styled.div`
   /* left: 50%;
   top: 50%;
   margin: -65px -360px; */
+`;
+
+const OuterDeco = styled.div`
+  width: 257px;
+  height: 300px;
+  border-radius: 70px 0 70px 0;
 `;
 
 function Weather({ lat, lng }) {
@@ -151,6 +242,27 @@ function Weather({ lat, lng }) {
   return (
     weatherData && (
       <WeatherCard>
+        <WatercolourBlue className="watercolour_background"></WatercolourBlue>
+        <div className="right_side_text">
+          CURRENT WEATHER FOR THIS EVENT LOCATION
+        </div>
+        <div className="empty_ellipse"></div>
+        <div className="empty_ellipse second"></div>
+        <div className="empty_ellipse third"></div>
+        <div className="empty_ellipse forth"></div>
+        <div className="empty_ellipse fifth"></div>
+
+        <img
+          className="golden_spark_simple_left"
+          src={goldenSparkSimple}
+          alt="golden sparkle"
+        />
+        <img
+          className="golden_spark_simple_right"
+          src={goldenSparkSimple}
+          alt="golden sparkle"
+        />
+
         <CurrentSection>
           <AnimationContainer>
             {currentWeather(weatherData.current.weather[0].main)}
@@ -168,18 +280,21 @@ function Weather({ lat, lng }) {
           <SubInfoWrapper>
             <SubInfoTitle styled={{ gridArea: 1 / 1 / 2 / 2 }}>
               Temperature:
+              <div className="highlighter"></div>
             </SubInfoTitle>
             <SubInfoContainer styled={{ gridArea: 1 / 2 / 2 / 3 }}>
               {weatherData.current.temp} {'\u2103'}
             </SubInfoContainer>
             <SubInfoTitle styled={{ gridArea: 2 / 1 / 3 / 2 }}>
               Feels like:
+              <div className="highlighter"></div>
             </SubInfoTitle>
             <SubInfoContainer styled={{ gridArea: 2 / 2 / 3 / 3 }}>
               {weatherData.current.feels_like} {'\u2103'}
             </SubInfoContainer>
             <SubInfoTitle styled={{ gridArea: 3 / 1 / 4 / 2 }}>
               Humidity:
+              <div className="highlighter"></div>
             </SubInfoTitle>
             <SubInfoContainer styled={{ gridArea: 3 / 2 / 4 / 3 }}>
               {weatherData.current.humidity} %
