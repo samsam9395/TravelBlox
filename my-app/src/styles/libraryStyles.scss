@@ -25,3 +25,12 @@ $my_black: #0e0e0f !default;
 .rdrEndEdge {
   color: $my_orange !important;
 }
+
+.rdrDayToday {
+  ::after {
+    background: $light_blue;
+  }
+}
+
+// .rdrDayHovered {
+// }

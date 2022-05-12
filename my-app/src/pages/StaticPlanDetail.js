@@ -57,6 +57,7 @@ const UpperContainer = styled.div`
     position: absolute;
     right: 119px;
     top: -150px;
+    z-index: -10;
   }
 `;
 

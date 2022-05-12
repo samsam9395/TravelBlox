@@ -78,7 +78,7 @@ const TimeblockImgUploadContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* min-height: 100px; */
+  margin-top: 30px;
 
   input {
     display: none;
@@ -96,6 +96,14 @@ const TimeblockImgUploadContainer = styled.div`
     &:hover {
       background-color: ${themeColours.pale};
     }
+  }
+
+  .instruction_text {
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 1.66;
+    letter-spacing: 0.03333em;
+    text-align: left;
+    font-size: 12px;
   }
 `;
 
@@ -265,6 +273,9 @@ function AddNewTimeBlock(props) {
                   <PhotoCamera style={{ color: themeColours.light_blue }} />
                 </IconButton>
               </label>
+              <div className="instruction_text">
+                You can upload an image for this time event.
+              </div>
             </TimeblockImgUploadContainer>
 
             {/* <ImageUploader>

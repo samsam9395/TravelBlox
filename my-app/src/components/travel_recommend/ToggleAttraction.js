@@ -20,13 +20,14 @@ const QuestionText = styled.div`
   div {
     padding: 0 8px;
     font-weight: 800;
-    color: ${themeColours.blue};
+    color: ${themeColours.light_blue};
     text-decoration: dotted 4px underline;
+    animation-name: ${wiggleAnimation};
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+
     &:hover {
       cursor: pointer;
-      animation-name: ${wiggleAnimation};
-      animation-duration: 1.5s;
-      animation-iteration-count: infinite;
     }
   }
 `;

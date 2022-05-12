@@ -102,6 +102,7 @@ const EventTitle = styled.div`
 
 const EventContentText = styled.div`
   font-size: 14px;
+  display: inline-block;
 `;
 
 function addOneDay(date) {
@@ -247,7 +248,12 @@ function DayBlockCard(props) {
                   <TimeBlockImg
                     src={singleEvent.timeblock_img}
                     alt="evernt_main_image"></TimeBlockImg>
-                  <EventContentText className="content">
+                  {/* <EventContentText className="content">
+                    {singleEvent.text.split('\n').map((it, i) => (
+                      <div key={'x' + i}>{it}</div>
+                    ))}
+                  </EventContentText> */}
+                  <EventContentText style={{ whiteSpace: 'pre-wrap' }}>
                     {singleEvent.text}
                   </EventContentText>
                 </ContentContainer>

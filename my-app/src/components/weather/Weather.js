@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { GetWeather } from '../../utils/api';
 import './weather.scss';
-import { themeColours } from '../../styles/globalTheme';
+import { themeColours, fonts } from '../../styles/globalTheme';
 
 const WeatherCard = styled.div`
   max-width: 300px;
@@ -17,12 +17,15 @@ const CurrentSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${themeColours.blue};
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  /* background: ${themeColours.blue}; */
+  /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
   height: 300px;
-  border-radius: 15px 15px 0 0;
+  /* border-radius: 15px 15px 0 0; */
   margin: 0;
-  /* padding-top: 55px; */
+  background-color: #fdfdfd;
+  border: 1px solid #e7ac81;
+  border-radius: 70px 0 0 0;
+  border-bottom: 0;
 
   .todayDate {
     font-size: 20px;
@@ -32,6 +35,7 @@ const CurrentSection = styled.div`
     margin-bottom: 10px;
     color: ${themeColours.light_orange};
     text-shadow: 2px 1px ${themeColours.dark_blue};
+    font-family: ${fonts.secondary_font};
   }
   .mainText {
     font-weight: 800;
@@ -69,9 +73,14 @@ const SubInfoTitle = styled.div`
 const DailyWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
-  background: ${themeColours.light_blue};
+  /* background: ${themeColours.light_blue}; */
   padding: 10px 0;
-  border-radius: 0 0 10px 10px;
+  /* border-radius: 0 0 10px 10px; */
+
+  border: 1px solid #e7ac81;
+  border-radius: 0 0 70px 0;
+  border-top: 0;
+  padding-right: 30px;
 `;
 
 const DailyContainer = styled.div`
@@ -90,8 +99,8 @@ const DailyIcon = styled.img`
 `;
 
 const DailyIconContainer = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
 `;
 

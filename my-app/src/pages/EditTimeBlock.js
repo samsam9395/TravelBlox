@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  TextField,
-  Button,
-  IconButton,
-  CardMedia,
-  Card,
-  Box,
-} from '@mui/material';
+import { TextField, Button, IconButton } from '@mui/material';
 import { Delete, Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
 import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
@@ -29,8 +22,8 @@ const BlackWrapper = styled.div`
 
 const PopBox = styled.div`
   position: relative;
-  width: 55vw;
-  height: 70%;
+  width: 60vw;
+  height: 80%;
   margin: 0 auto;
   background-color: white;
   margin-top: calc(100vh - 85vh - 20px);
@@ -67,15 +60,15 @@ const FormsContainer = styled.div`
 
 const db = firebaseDB();
 
-const Input = styled('input')({
-  display: 'none',
-});
+// const Input = styled('input')({
+//   display: 'none',
+// });
 
-const TimeBlockImgContainer = styled.div`
-  width: 100%;
-  margin-top: 30px;
-  margin-bottom: 30px;
-`;
+// const TimeBlockImgContainer = styled.div`
+//   width: 100%;
+//   margin-top: 30px;
+//   margin-bottom: 30px;
+// `;
 
 const TimeblockImgUploadContainer = styled.div`
   width: 100%;
@@ -83,7 +76,7 @@ const TimeblockImgUploadContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* min-height: 100px; */
+  margin-top: 30px;
 
   input {
     display: none;
@@ -102,10 +95,18 @@ const TimeblockImgUploadContainer = styled.div`
       background-color: ${themeColours.pale};
     }
   }
+
+  .instruction_text {
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 1.66;
+    letter-spacing: 0.03333em;
+    text-align: left;
+    font-size: 12px;
+  }
 `;
 
 function handleImageUpload(e, setTimeBlockImage) {
-  console.log(e.target.files[0]);
+  // console.log(e.target.files[0]);
   const reader = new FileReader();
   if (e) {
     reader.readAsDataURL(e.target.files[0]);
@@ -163,8 +164,8 @@ function EditTimeBlock(props) {
     timeBlockImage
   ) {
     // const location_img = location.photos[0].getUrl();
-    console.log(location.name);
-    console.log(111, location);
+    // console.log(location.name);
+    // console.log(111, location);
     if (location.geometry) {
       try {
         await setDoc(
@@ -229,9 +230,8 @@ function EditTimeBlock(props) {
     const timeBlockSnap = await getDoc(timeBlockRef);
 
     if (timeBlockSnap.exists()) {
-      console.log('retreived');
       const initialData = timeBlockSnap.data();
-      console.log(initialData);
+      // console.log(initialData);
 
       if (setInitBlockData) {
         setInitBlockData(initialData);
@@ -258,16 +258,14 @@ function EditTimeBlock(props) {
     }
   }
 
-  // console.log(props.importData);
-
   useEffect(() => {
     if (props.currentSelectTimeData.status === 'imported') {
       setImportBlockData(props.currentSelectTimeData);
-      console.log(111, 'imported yes');
+      // console.log(111, 'imported yes');
       // setImportPlaceData(data);
     } else if (props.currentSelectTimeData.status === 'origin') {
-      console.log('origin');
-      console.log(props.currentSelectTimeData.id);
+      // console.log('origin');
+      // console.log(props.currentSelectTimeData.id);
 
       retreiveFromDataBase(timeBlockRef, setInitBlockData);
     } else console.log('something wrong with edit-time-block');
@@ -275,7 +273,7 @@ function EditTimeBlock(props) {
 
   useEffect(() => {
     const data = importBlockData;
-    console.log(555, importBlockData);
+    // console.log(555, importBlockData);
 
     setBlockTitle(data.title);
     setLocationName(data.place_name);
@@ -301,7 +299,7 @@ function EditTimeBlock(props) {
     const data = initBlockData;
 
     if (initBlockData) {
-      console.log(333, initBlockData);
+      // console.log(333, initBlockData);
       setBlockTitle(data.title);
       setLocationName(data.place_name);
       setPlaceId(data.place_id);
@@ -322,14 +320,13 @@ function EditTimeBlock(props) {
       setTimeBlockImage(data.timeblock_img);
       if (data.start) {
         setStartTimeValue(new Date(data.start.seconds * 1000));
-        console.log(data.start.seconds);
+        // console.log(data.start.seconds);
       }
       if (data.end) {
         setEndTimeValue(new Date(data.end.seconds * 1000));
       }
     }
   }, [initBlockData]);
-  // console.log('8888 current timeblock ref is ', timeBlockRef);
 
   return (
     <>
@@ -388,7 +385,6 @@ function EditTimeBlock(props) {
               sx={{
                 m: 1,
                 minWidth: 8,
-                minHeight: 120,
                 label: { color: themeColours.light_orange },
               }}
               multiline
@@ -397,7 +393,7 @@ function EditTimeBlock(props) {
               label="Description"
               variant="outlined"
               value={description}
-              rows={4}
+              rows={5}
               helperText="Please enter description for this time block."
               onChange={(e) => {
                 setDescription(e.target.value);
@@ -408,7 +404,7 @@ function EditTimeBlock(props) {
               {timeBlockImage && (
                 <img src={timeBlockImage} alt="" className="upload_image" />
               )}
-              <label for="imgupload">
+              <label htmlFor="imgupload">
                 <input
                   accept="image/*"
                   type="file"
@@ -427,41 +423,10 @@ function EditTimeBlock(props) {
                   <PhotoCamera style={{ color: themeColours.light_blue }} />
                 </IconButton>
               </label>
+              <div className="instruction_text">
+                You can upload an image for this time event.
+              </div>
             </TimeblockImgUploadContainer>
-            {/* <TimeBlockImgContainer>
-              <Card
-                sx={{
-                  m: 1,
-                  minWidthh: 200,
-                  minHeight: 200,
-                  label: { color: themeColours.light_orange },
-                }}>
-                <CardMedia
-                  component="img"
-                  image={timeBlockImage}
-                  height="300"
-                />
-                <label htmlFor="icon-button-file">
-                  <Input
-                    helperText="Add an image for this time block."
-                    accept="image/*"
-                    id="icon-button-file"
-                    type="file"
-                    onChange={(e) => {
-                      handleImageUpload(e, setTimeBlockImage);
-                    }}
-                  />
-                  <Box textAlign="center">
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="div">
-                      <PhotoCamera style={{ color: themeColours.light_blue }} />
-                    </IconButton>
-                  </Box>
-                </label>
-              </Card>
-            </TimeBlockImgContainer> */}
           </FormsContainer>
           <LightOrangeBtn
             onClick={(e) => {
