@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -13,9 +13,21 @@ import Timeline from '../components/DailyEventCard/Timeline';
 import UserAvatar from '../components/user/Avatar';
 import CheckIcon from '@mui/icons-material/Check';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
-import leafShadow from '../images/static/leaf_one.png';
+import leafShadow from '../images/static/leaf_right_with window.png';
+import sunburst from '../images/static/sunburst_solid.png';
+// import leafShadow from '../images/static/only_sunshine.png';
+import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
 
 const db = firebaseDB();
+
+const zoomInAnimation = keyframes`
+  0% {
+    transform: scale(1, 1);
+  }
+  100% {
+    transform: scale(1.5, 1.5);
+  }
+`;
 
 const UpperContainer = styled.div`
   display: flex;
@@ -27,11 +39,23 @@ const UpperContainer = styled.div`
   margin-bottom: 30px;
   position: relative;
 
-  .leaf_shadow {
+  /* .leaf_shadow {
     position: absolute;
     left: 0;
     width: 100%;
     height: 100%;
+    left: -102px;
+    width: 119%;
+    height: 110%;
+    top: -50px;
+    z-index: 5;
+    border-radius: 10px;
+  } */
+
+  .milktea_svg_left {
+    position: absolute;
+    right: 119px;
+    top: -150px;
   }
 `;
 
@@ -50,12 +74,13 @@ const FavFolderWrapper = styled.div`
 `;
 
 const PlanInfoWrapper = styled.div`
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px;
+  padding-left: 20px;
   justify-content: center;
-  flex-grow: 1;
+  flex-grow: 0;
 `;
 
 const UserInfoContainer = styled.div`
@@ -68,7 +93,8 @@ const UserInfoContainer = styled.div`
     text-align: center;
     display: flex;
     margin-top: 20px;
-    color: ${themeColours.light_orange};
+    color: ${themeColours.dark_blue};
+    flex-direction: column;
     font-weight: 600;
   }
 
@@ -112,8 +138,7 @@ const FavFolderDropDownOptions = styled.div`
   }
 `;
 const PlanMainImageContainer = styled.div`
-  /* width: 600px; */
-  width: 70%;
+  width: 80%;
   height: 100%;
   position: relative;
   /* overflow: hidden; */
@@ -121,7 +146,7 @@ const PlanMainImageContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
-  flex-grow: 2;
+  flex-grow: 1;
 
   &:hover {
     .planTitle_text_bakground {
@@ -129,16 +154,25 @@ const PlanMainImageContainer = styled.div`
       transition: all 0.3s ease-in-out 0s;
       -webkit-transition: all 0.3s ease-in-out 0s;
     }
-
-    /* img {
-      object-fit: contain;
-      transition: 0.35s;
-    } */
   }
+
+  .sunburst {
+    position: absolute;
+    right: 34px;
+    top: 30px;
+    width: 60px;
+  }
+  .sunburst_small{
+    position: absolute;
+    right: 74px;
+    top: 217px;
+    width: 40px;
+  }
+  .
 `;
 
 const PlanMainImage = styled.div`
-  width: 300px;
+  width: 445px;
   height: 100%;
   /* width: 300px;
   height: 300px; */
@@ -153,44 +187,26 @@ const PlanMainImage = styled.div`
     height: 100%;
     object-fit: cover;
     border-radius: 500px 500px 0 0;
-  }
-
-  &:hover {
-    /* object-fit: contain; */
-    /* transition: 0.7s; */
+    &:hover {
+      /* object-fit: contain; */
+      /* transition: 0.7s; */
+      /* background-color: red; */
+      cursor: pointer;
+      animation-name: ${zoomInAnimation};
+      animation-duration: 1.5s;
+      /* animation-iteration-count: infinite; */
+    }
   }
 `;
 
-// const PlanTitleTextBakgroundOutterCircle = styled.div`
-//   width: 330px;
-//   height: 330px;
-//   top: 82px;
-//   left: 15px;
-//   border-radius: 50%;
-//   border: 2px solid #ffffff91;
-//   background-color: transparent;
-//   display: flex;
-//   position: absolute;
-// `;
-
-// const PlanTitleTextBakground = styled.div`
-//   width: 300px;
-//   height: 300px;
-//   top: 96px;
-//   left: 30px;
-//   border-radius: 50%;
-//   border: 10px solid transparent;
-//   background-color: #ffffff91;
-//   display: flex;
-//   position: absolute;
-// `;
-
 const PlanTitleText = styled.div`
+  width: 55%;
+  z-index: 10;
   font-family: 'Gellatio';
   position: absolute;
   font-weight: 800;
-  top: 5%;
-  left: 6%;
+  top: 25%;
+  left: 0%;
   /* top: 14%; */
   /* left: 26%; */
   /* transform: translate(-57%, -50%); */
@@ -203,7 +219,6 @@ const PlanTitleText = styled.div`
     font-family: 'Gellatio';
     font-weight: 400;
     letter-spacing: 1px;
-    /* font-size: 20px; */
     text-shadow: none;
     color: ${themeColours.pale};
     font-size: 5.5vw;
@@ -218,6 +233,7 @@ const BtnWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  flex-direction: column;
 `;
 
 const FavFolderAutocompleteWrapper = styled.div`
@@ -348,6 +364,7 @@ function StaticPlanDetail(props) {
   const [userImage, setUserImage] = useState(null);
 
   const navTimelineRef = useRef(null);
+  const planImageRef = useRef(null);
 
   function toSiwtchTab(tabName, tabRef) {
     for (let name of refNames) {
@@ -512,23 +529,19 @@ function StaticPlanDetail(props) {
   return (
     <>
       <UpperContainer>
-        <img className="leaf_shadow" src={leafShadow} alt="" />
+        {/* <img className="leaf_shadow" src={leafShadow} alt="" /> */}
+        <MilkTeaLeftCurveLine className="milktea_svg_left"></MilkTeaLeftCurveLine>
         <PlanMainImageContainer>
-          <PlanMainImage className="overlay">
+          <PlanMainImage className="overlay" ref={planImageRef}>
             <img src={mainImage} loading="lazy" alt="plan image" />
           </PlanMainImage>
+
+          <img src={sunburst} alt="sunburst" className="sunburst" />
+          <img src={sunburst} alt="sunburst" className="sunburst_small" />
           <PlanTitleText>
             {planTitle}
             <div className="location_text">{country.label}</div>
           </PlanTitleText>
-
-          {/* <PlanTitleTextBakgroundOutterCircle className="planTitle_text_bakground"></PlanTitleTextBakgroundOutterCircle>
-          <PlanTitleTextBakground className="planTitle_text_bakground">
-            <PlanTitleText>
-              {planTitle}
-              <div className="location_text">{country.label}</div>
-            </PlanTitleText>
-          </PlanTitleTextBakground> */}
         </PlanMainImageContainer>
 
         <PlanInfoWrapper>
@@ -544,8 +557,7 @@ function StaticPlanDetail(props) {
           <BtnWrapper>
             <FavFolderWrapper>
               <LightOrangeBtn
-                style={{ width: 210 }}
-                variant="contained"
+                style={{ width: 195 }}
                 onClick={() => setShowFavDropDown(!showfavDropDown)}>
                 Favourite this plan
               </LightOrangeBtn>

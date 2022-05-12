@@ -3,16 +3,14 @@ import styled from 'styled-components';
 export const themeColours = {
   // orange: '#f1651d',
 
-  // light_orange: '#fea360',
   light_orange: '#e7ac81', //new
   darker_orange: '#bb8c6b',
   milktea: '#E4D1B9',
   pale: '#fceebf',
-  // lighter_blue: '#54cfd673',
   lighter_blue: 'hsl(184, 23%, 80%)', //new
-  // light_blue: '#55cfd6',
   light_blue: '#6ca5a9', //new
-  blue: '#0a97b7',
+  greyer_blue: '#6a8c8f', //new
+  // blue: '#0a97b7',
   dark_blue: '#00213a',
   black: '#0E0E0F',
   light_grey: '#80808087',
@@ -38,7 +36,7 @@ export const LightOrangeBtn = styled.button`
   margin: 5px;
   color: white;
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.darker_orange};
@@ -55,10 +53,10 @@ export const LightBlueBtn = styled.button`
   margin: 5px;
   color: white;
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   &:hover {
     cursor: pointer;
-    background-color: ${themeColours.blue};
+    background-color: ${themeColours.greyer_blue};
   }
 `;
 
@@ -78,21 +76,21 @@ export const OrangeBtn = styled.button`
   }
 `;
 
-export const BlueBtn = styled.button`
-  letter-spacing: 1.5px;
-  min-width: 100px;
-  padding: 10px 20px;
-  border-radius: 15px;
-  border: none;
-  background-color: ${themeColours.blue};
-  margin: 5px;
-  color: white;
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
-  &:hover {
-    cursor: pointer;
-  }
-`;
+// export const BlueBtn = styled.button`
+//   letter-spacing: 1.5px;
+//   min-width: 100px;
+//   padding: 10px 20px;
+//   border-radius: 15px;
+//   border: none;
+//   background-color: ${themeColours.blue};
+//   margin: 5px;
+//   color: white;
+//   font-family: 'Roboto', sans-serif;
+//   font-size: 16px;
+//   &:hover {
+//     cursor: pointer;
+//   }
+// `;
 
 export const PaleBtn = styled.button`
   letter-spacing: 1.5px;
