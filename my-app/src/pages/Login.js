@@ -46,6 +46,7 @@ const LoginWrapper = styled.div`
 const Title = styled.div`
   font-size: 20px;
   font-weight: 800;
+  margin-bottom: 15px;
 `;
 
 const InputContainer = styled.div`
@@ -55,52 +56,29 @@ const InputContainer = styled.div`
 `;
 
 const InputWrapper = styled.div`
-  margin-top: 10px;
-`;
-
-const Button = styled.button`
-  padding: 5px;
-  background-color: #f4976c;
-  border: none;
   margin-top: 20px;
-  border-radius: 5px;
-  &:hover {
-    background-color: #a65632;
-  }
 `;
 
 const SignUpSwitcher = styled.div`
   font-size: 14px;
   letter-spacing: 1.5px;
   display: flex;
+  flex-direction: column;
+
+  .signSection {
+    display: flex;
+    margin-top: 5px;
+  }
+
+  .click_here {
+    color: #d06224;
+    font-weight: 800;
+    /* width: 40px; */
+    padding: 0 10px;
+  }
 `;
 
-const ClickTag = styled.div`
-  color: #d06224;
-  font-weight: 800;
-  /* width: 40px; */
-  padding: 0 10px;
-`;
-
-function signOutFirebase() {
-  const auth = getAuth();
-
-  signOut(auth)
-    .then(() => {
-      if (localStorage.getItem('accessToken')) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('userEmail');
-        alert('You have been signed out!');
-      } else {
-        alert('You were not signed in!');
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
-async function signUP(email, password) {
+async function signUP(email, password, username) {
   const docRef = doc(db, 'userId', email);
   const docSnap = await getDoc(docRef);
 
@@ -117,6 +95,7 @@ async function signUP(email, password) {
       .then((emailId) => {
         setDoc(doc(db, 'userId', emailId), {
           id: emailId,
+          username: username,
         });
         return emailId;
       })
@@ -143,6 +122,7 @@ function Login(props) {
   // const [hasSignedIn, setHasSignedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUserName] = useState('');
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const setIsNewUser = props.setIsNewUser;
@@ -230,6 +210,8 @@ function Login(props) {
                   />
                 </InputWrapper>
                 <LightOrangeBtn
+                  marginBottom="20px"
+                  marginTop="20px"
                   onClick={() =>
                     email && password
                       ? (logOn(email, password), setEmail(''), setPassword(''))
@@ -237,16 +219,18 @@ function Login(props) {
                   }>
                   Login
                 </LightOrangeBtn>
-                <SignUpSwitcher>Doesn't have an account yet?</SignUpSwitcher>
                 <SignUpSwitcher>
-                  Sign up
-                  <ClickTag
-                    className="hoverCursor"
-                    onClick={() => {
-                      setShowSignUp(!showSignUp);
-                    }}>
-                    here!
-                  </ClickTag>
+                  Doesn't have an account yet?
+                  <div className="signSection">
+                    Sign up
+                    <div
+                      className="click_here hoverCursor"
+                      onClick={() => {
+                        setShowSignUp(!showSignUp);
+                      }}>
+                      here!
+                    </div>
+                  </div>
                 </SignUpSwitcher>
               </>
             ) : (
@@ -262,6 +246,19 @@ function Login(props) {
                     variant="outlined"
                     onChange={(e) => {
                       setEmail(e.target.value);
+                    }}
+                  />
+                </InputWrapper>
+                <InputWrapper>
+                  <TextField
+                    required
+                    fullWidth
+                    value={username}
+                    label="username"
+                    size="small"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setUserName(e.target.value);
                     }}
                   />
                 </InputWrapper>
@@ -290,36 +287,33 @@ function Login(props) {
                   />
                 </InputWrapper>
                 <LightOrangeBtn
+                  marginBottom="20px"
+                  marginTop="20px"
                   onClick={() =>
-                    email && password
-                      ? (signUP(email, password),
+                    email && password && username
+                      ? (signUP(email, password, username),
                         setEmail(''),
                         setPassword(''),
+                        setUserName(''),
                         setIsNewUser)
                       : alert('please fill in both !')
                   }>
                   Sign Up
                 </LightOrangeBtn>
-                <SignUpSwitcher>Already has an account? </SignUpSwitcher>
+
                 <SignUpSwitcher>
-                  Sign in
-                  <ClickTag
-                    className="hoverCursor"
-                    onClick={() => {
-                      setShowSignUp(!showSignUp);
-                    }}>
-                    here!
-                  </ClickTag>
+                  Already has an account?
+                  <div className="signSection">
+                    Sign in
+                    <div
+                      className="click_here hoverCursor"
+                      onClick={() => {
+                        setShowSignUp(!showSignUp);
+                      }}>
+                      here!
+                    </div>
+                  </div>
                 </SignUpSwitcher>
-                {/* <SignUpSwitcher>
-                  Sign out
-                  <ClickTag
-                    onClick={() => {
-                      signOutFirebase();
-                    }}>
-                    here!
-                  </ClickTag>
-                </SignUpSwitcher> */}
               </>
             )}
           </InputContainer>

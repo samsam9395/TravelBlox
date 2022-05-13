@@ -7,7 +7,7 @@ import '../styles/calendarStyle.scss';
 import PlanCalendar from './PlanCalendar';
 import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
@@ -135,6 +135,7 @@ const CalendarColourBackground = styled.div`
 // user={user} accessToken, email
 function AddNewPlan(props) {
   const { currentUserId } = useParams();
+  const [username, setUsername] = useState('');
   // const location = useLocation();
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -176,6 +177,7 @@ function AddNewPlan(props) {
       // console.log(currentUserId);
       await setDoc(doc(db, 'plans', createPlanDocId), {
         author: currentUserId,
+        author_name: username,
         start_date: startDateValue,
         end_date: endDateValue,
         title: planTitle,
@@ -208,6 +210,15 @@ function AddNewPlan(props) {
       listenToSnapShot(setMyEvents, planDocRef);
     }
   }, [addedTimeBlock]);
+
+  useEffect(async () => {
+    if (currentUserId) {
+      const userDoc = await getDoc(doc(db, 'userId', currentUserId));
+      if (userDoc.data().username) {
+        setUsername(userDoc.data().username);
+      }
+    }
+  }, [currentUserId]);
 
   return (
     <Wrapper>

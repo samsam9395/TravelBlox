@@ -14,7 +14,7 @@ import firebaseDB from '../utils/firebaseConfig';
 
 const db = firebaseDB();
 
-export function handleMainImageUpload(e, setMainImage) {
+export function handleMainImageUpload(e, setMainImage, setUploadUserImg) {
   console.log(e.target.files[0]);
   const reader = new FileReader();
   if (e) {
@@ -24,9 +24,14 @@ export function handleMainImageUpload(e, setMainImage) {
   reader.onload = function () {
     // console.log(reader.result); //base64encoded string
     setMainImage(reader.result);
+    if (setUploadUserImg) {
+      setUploadUserImg(true);
+    }
+    return reader.result;
   };
   reader.onerror = function (error) {
     console.log('Error: ', error);
+    return null;
   };
 }
 

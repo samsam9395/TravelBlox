@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
 export const themeColours = {
-  // orange: '#f1651d',
-
   light_orange: '#e7ac81', //new
   darker_orange: '#bb8c6b',
   milktea: '#E4D1B9',
@@ -29,14 +27,17 @@ export const fonts = {
 export const LightOrangeBtn = styled.button`
   letter-spacing: 1.5px;
   min-width: 100px;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
+  padding: ${(props) => props.padding || '10px 20px'};
   border-radius: 15px;
   border: none;
   background-color: ${themeColours.light_orange};
-  margin: 5px;
+  margin-top: ${(props) => props.marginTop};
+  margin-bottom: ${(props) => props.marginBottom};
   color: white;
   font-family: 'Roboto', sans-serif;
-  font-size: 14px;
+  font-size: ${(props) => props.fontSize || '14px'};
+  width: ${(props) => props.width || 'auto'};
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.darker_orange};
@@ -46,14 +47,15 @@ export const LightOrangeBtn = styled.button`
 export const LightBlueBtn = styled.button`
   letter-spacing: 1.5px;
   min-width: 100px;
-  padding: 10px 20px;
+  padding: ${(props) => props.padding || '10px 20px'};
   border-radius: 15px;
   border: none;
   background-color: ${themeColours.light_blue};
   margin: 5px;
   color: white;
   font-family: 'Roboto', sans-serif;
-  font-size: 14px;
+  font-size: ${(props) => props.fontSize || '14px'};
+  width: ${(props) => props.width || 'auto'};
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.greyer_blue};
@@ -63,34 +65,19 @@ export const LightBlueBtn = styled.button`
 export const OrangeBtn = styled.button`
   letter-spacing: 1.5px;
   min-width: 100px;
-  padding: 10px 20px;
+  padding: ${(props) => props.padding || '10px 20px'};
+  /* padding: 10px 20px; */
   border-radius: 15px;
   border: none;
   background-color: ${themeColours.light_orange};
   margin: 5px;
   color: white;
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  font-size: ${(props) => props.fontSize || '14px'};
   &:hover {
     cursor: pointer;
   }
 `;
-
-// export const BlueBtn = styled.button`
-//   letter-spacing: 1.5px;
-//   min-width: 100px;
-//   padding: 10px 20px;
-//   border-radius: 15px;
-//   border: none;
-//   background-color: ${themeColours.blue};
-//   margin: 5px;
-//   color: white;
-//   font-family: 'Roboto', sans-serif;
-//   font-size: 16px;
-//   &:hover {
-//     cursor: pointer;
-//   }
-// `;
 
 export const PaleBtn = styled.button`
   letter-spacing: 1.5px;

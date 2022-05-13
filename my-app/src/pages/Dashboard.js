@@ -339,12 +339,14 @@ function signOutFirebase() {
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
+  const [userName, setUserName] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [showNoPlansText, setShowNoPlansText] = useState(false);
   const [displaySection, setDisplaySection] = useState('My Plans');
   const [userImage, setUserImage] = useState(null);
   const [showUserUploadIcon, setShowUserUploadIcon] = useState('hidden');
+  const [uploadUserImg, setUploadUserImg] = useState(false);
 
   const navigate = useNavigate();
   const uploadIconRef = useRef(null);
@@ -376,16 +378,24 @@ function Dashboard(props) {
       try {
         const userDoc = await getDoc(doc(db, 'userId', props.user.email));
         setUserImage(userDoc.data().userImage);
+        setUserName(userDoc.data().username);
       } catch (error) {
         console.log(error);
       }
     }
   }, [props.user]);
 
-  useEffect(async () => {
-    if (props.user.email) {
+  // useEffect(async () => {
+  //   if (props.user.email) {
+  //   }
+  // }, [props.user.email]);
+
+  useEffect(() => {
+    if (uploadUserImg) {
+      console.log('inside', userImage);
+      saveImgToDataBase(userImage);
     }
-  }, [props.user.email]);
+  }, [uploadUserImg]);
 
   function saveImgToDataBase(userImage) {
     try {
@@ -426,10 +436,7 @@ function Dashboard(props) {
                 id="user_avatar_file"
                 type="file"
                 onChange={(e) => {
-                  handleMainImageUpload(e, setUserImage);
-                  if (userImage) {
-                    saveImgToDataBase(userImage);
-                  }
+                  handleMainImageUpload(e, setUserImage, setUploadUserImg);
                 }}></input>
               <IconButton
                 style={{
@@ -449,6 +456,7 @@ function Dashboard(props) {
           {/* <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} /> */}
           <div className="user_info_container">
             <div className="greeting">Hello!</div>
+            <div className="user_id">{userName}</div>
             <div className="user_id">{currentUserId}</div>
             <LogoutContainer
               onClick={() => {

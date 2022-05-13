@@ -115,7 +115,7 @@ function handleImageUpload(e, setTimeBlockImage) {
   }
 
   reader.onload = function () {
-    console.log(reader.result); //base64encoded string
+    // console.log(reader.result); //base64encoded string
     setTimeBlockImage(reader.result);
   };
   reader.onerror = function (error) {
@@ -186,7 +186,12 @@ function AddNewTimeBlock(props) {
       props.setShowPopUp(false);
       alert('Successfully added!');
     } catch (error) {
-      console.log(error);
+      if (
+        error.message ==
+        'The value of property "timeblock_img" is longer than 1048487 bytes.'
+      ) {
+        alert('Your image is too large, Please change another image.');
+      }
     }
 
     {

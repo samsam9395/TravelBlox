@@ -39,19 +39,6 @@ const UpperContainer = styled.div`
   margin-bottom: 30px;
   position: relative;
 
-  /* .leaf_shadow {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    left: -102px;
-    width: 119%;
-    height: 110%;
-    top: -50px;
-    z-index: 5;
-    border-radius: 10px;
-  } */
-
   .milktea_svg_left {
     position: absolute;
     right: 119px;
@@ -89,20 +76,32 @@ const UserInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-size: 14px;
 
   .user_info_title {
     text-align: center;
     display: flex;
     margin-top: 20px;
-    color: ${themeColours.dark_blue};
+    color: ${themeColours.light_grey};
     flex-direction: column;
     font-weight: 600;
+    font-style: italic;
   }
 
-  .authorId {
+  .author_name {
+    font-style: normal;
+    font-weight: 600;
+    margin: 10px 0 5px 0;
+    letter-spacing: 1px;
+    color: ${themeColours.darker_orange};
+  }
+
+  .author_id {
+    font-style: normal;
     color: ${themeColours.dark_blue};
-    font-weight: 400;
+    font-weight: 200;
     padding-left: 10px;
+    font-size: 12px;
   }
 
   .user_img {
@@ -174,9 +173,6 @@ const PlanMainImageContainer = styled.div`
 const PlanMainImage = styled.div`
   width: 445px;
   height: 100%;
-  /* width: 300px;
-  height: 300px; */
-
   opacity: 100%;
   border-radius: 15px;
   position: relative;
@@ -188,9 +184,6 @@ const PlanMainImage = styled.div`
     object-fit: cover;
     border-radius: 500px 500px 0 0;
     &:hover {
-      /* object-fit: contain; */
-      /* transition: 0.7s; */
-      /* background-color: red; */
       cursor: pointer;
       animation-name: ${zoomInAnimation};
       animation-duration: 1.5s;
@@ -339,8 +332,9 @@ function StaticPlanDetail(props) {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  const [hasVisited, setHasVitied] = useState(true);
+  // const [hasVisited, setHasVitied] = useState(true);
   const [author, setAuthor] = useState('');
+  const [authorName, setAuthorName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [numberofDays, setNumberofDays] = useState(0);
@@ -460,7 +454,7 @@ function StaticPlanDetail(props) {
     setMainImage(data.main_image);
     setStartDate(data.start_date);
     setEndDate(data.end_date);
-    setHasVitied(data.visited);
+    // setHasVitied(data.visited);
     setAuthor(data.author);
   }, []);
 
@@ -469,6 +463,7 @@ function StaticPlanDetail(props) {
       try {
         const userDoc = await getDoc(doc(db, 'userId', author));
         setUserImage(userDoc.data().userImage);
+        setAuthorName(userDoc.data().username);
       } catch (error) {
         console.log(error);
       }
@@ -524,10 +519,6 @@ function StaticPlanDetail(props) {
     }
   }
 
-  // console.log(777, itemEls);
-  // console.log(888, itemEls.current[0]);
-  // console.log(999, itemEls.current.length);
-
   return (
     <>
       {showFullImage && (
@@ -564,14 +555,17 @@ function StaticPlanDetail(props) {
             {/* <UserAvatar currentUserId={author} fromLocate={'static'} /> */}
             <div className="user_info_title">
               Planned by:
-              <div className="authorId">{author}</div>
+              {authorName && <div className="author_name">{authorName}</div>}
+              <div className="author_id">{author}</div>
             </div>
           </UserInfoContainer>
 
           <BtnWrapper>
             <FavFolderWrapper>
               <LightOrangeBtn
-                style={{ width: 195 }}
+                padding="10px"
+                fontSize="12px"
+                width="165px"
                 onClick={() => setShowFavDropDown(!showfavDropDown)}>
                 Favourite this plan
               </LightOrangeBtn>
