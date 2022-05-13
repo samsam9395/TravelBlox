@@ -48,6 +48,11 @@ const TopContainer = styled.div`
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
+
+  .instruction_text {
+    color: ${themeColours.light_grey};
+    font-size: 12px;
+  }
 `;
 
 const CalendarContainer = styled.div`
@@ -151,9 +156,7 @@ function AddNewPlan(props) {
   const [selectedPlanId, setSelectedPlanId] = useState('');
 
   const [showFavContainer, setShowFavContainer] = useState(false);
-  // const currentUserId = props.user.email;
   const navigate = useNavigate();
-  console.log(currentUserId);
   const createNewCollection = async (
     startDateValue,
     endDateValue,
@@ -164,7 +167,6 @@ function AddNewPlan(props) {
     const createPlanDocId = `plan${currentTimeMilli}`;
     setPlanDocRef(createPlanDocId);
 
-    console.log('mainImage is', mainImage);
     if (mainImage === null || '') {
       mainImage = props.defaultImg;
       setMainImage(props.defaultImg);
@@ -262,16 +264,23 @@ function AddNewPlan(props) {
               setEndDateValue={setEndDateValue}
             />
 
-            <FormControlLabel
-              control={
-                <Switch
-                  style={{ color: themeColours.light_orange }}
-                  checked={isPublished}
-                  onChange={() => setIsPublished(!isPublished)}
+            {hasCreatedCollection && (
+              <>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      style={{ color: themeColours.light_orange }}
+                      checked={isPublished}
+                      onChange={() => setIsPublished(!isPublished)}
+                    />
+                  }
+                  label="Published"
                 />
-              }
-              label="Published"
-            />
+                <div className="instruction_text">
+                  Checking this will make your travel plan public to others.
+                </div>
+              </>
+            )}
           </TitleSection>
 
           <FlexColumnWrapper>
@@ -387,9 +396,7 @@ function AddNewPlan(props) {
                 }}>
                 All Set
               </LightBlueBtn>
-              <PaleEmptyBtn
-                variant="outlined"
-                onClick={() => navigate('/dashboard')}>
+              <PaleEmptyBtn onClick={() => navigate('/dashboard')}>
                 Nah create later
               </PaleEmptyBtn>
             </Stack>
