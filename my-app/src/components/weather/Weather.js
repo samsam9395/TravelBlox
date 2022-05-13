@@ -246,11 +246,11 @@ function Weather({ lat, lng }) {
         <div className="right_side_text">
           CURRENT WEATHER FOR THIS EVENT LOCATION
         </div>
-        <div className="empty_ellipse"></div>
+        {/* <div className="empty_ellipse"></div>
         <div className="empty_ellipse second"></div>
         <div className="empty_ellipse third"></div>
         <div className="empty_ellipse forth"></div>
-        <div className="empty_ellipse fifth"></div>
+        <div className="empty_ellipse fifth"></div> */}
 
         <img
           className="golden_spark_simple_left"

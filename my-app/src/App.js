@@ -38,7 +38,6 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
-      // setCanRedirect(true);
       setUser({
         accessToken: localStorage.getItem('accessToken'),
         email: localStorage.getItem('userEmail'),
@@ -78,7 +77,7 @@ function App() {
               element={<LandingPage user={user} setUser={setUser} />}
             />
             <Route
-              path="/edit-plan-detail"
+              path="/edit-plan-detail/:planDocRef"
               element={
                 <EditPlanDetail
                   userId={user.email}
@@ -87,11 +86,11 @@ function App() {
               }
             />
             <Route
-              path="/add-new-plan"
+              path="/new-plan/:currentUserId"
               element={<AddNewPlan user={user} defaultImg={defaultImg} />}
             />
             <Route
-              path="/static-plan-detail"
+              path="/static-plan-detail/:planDocRef"
               element={
                 <StaticPlanDetail favFolderNames={favFolderNames} user={user} />
               }

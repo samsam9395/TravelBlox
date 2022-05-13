@@ -10,12 +10,13 @@ import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn'
 import { themeColours, LightOrangeBtn } from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
-import UserAvatar from '../components/user/Avatar';
-import CheckIcon from '@mui/icons-material/Check';
+// import UserAvatar from '../components/user/Avatar';
+// import CheckIcon from '@mui/icons-material/Check';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
 import sunburst from '../images/static/sunburst_solid.png';
 import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
 import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
+import { useParams } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -334,6 +335,7 @@ const ToTopScroll = styled.div`
 `;
 //user={user}
 function StaticPlanDetail(props) {
+  const { planDocRef } = useParams();
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -348,8 +350,8 @@ function StaticPlanDetail(props) {
   const [showTab, setShowTab] = useState('route');
   const [stopTimelineNav, settopTimelineNav] = useState(false);
 
-  const location = useLocation();
-  const planDocRef = location.state.planDocRef;
+  // const location = useLocation();
+  // const planDocRef = location.state.planDocRef;
 
   const planCollectionRef = doc(db, 'plans', planDocRef);
   const itemEls = useRef(new Array());
@@ -440,7 +442,7 @@ function StaticPlanDetail(props) {
 
       try {
         const list = await getDocs(favFolderRef);
-        list.docs.map((e) => console.log(222, e.data()));
+        // list.docs.map((e) => console.log(222, e.data()));
         setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
       } catch (error) {
         console.log(error);
@@ -451,7 +453,7 @@ function StaticPlanDetail(props) {
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
     const data = docSnap.data();
-    console.log(data);
+    // console.log(data);
 
     setPlanTitle(data.title);
     setCountry(data.country);

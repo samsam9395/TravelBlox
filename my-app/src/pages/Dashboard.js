@@ -1,25 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import { getDocs, getDoc, collection, setDoc, doc } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
-import FavPlanCard from '../components/PublicPlanCard';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { handleMainImageUpload } from '../utils/functionList';
 import UploadIcon from '@mui/icons-material/Upload';
 import { IconButton } from '@mui/material';
 
-import {
-  themeColours,
-  fonts,
-  LightOrangeBtn,
-  OrangeBtn,
-  PaleBtn,
-} from '../styles/globalTheme';
-import UserAvatar from '../components/user/Avatar';
+import { themeColours, fonts, LightOrangeBtn } from '../styles/globalTheme';
 import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import sparkle from '../images/dashboard/spark.png';
@@ -496,11 +487,13 @@ function Dashboard(props) {
         </DisplaySwitch>
       </TopSectionWrapper>
 
-      {showAddPlanPopUp &&
-        navigate('/add-new-plan', {
-          // state: { favPlansIdList: favPlansIdList, user: props.user },
-          state: { user: props.user },
-        })}
+      {
+        showAddPlanPopUp && navigate(`/new-plan/${props.user.email}`)
+        //     , {
+        //     state: { favPlansIdList: favPlansIdList, user: props.user },
+        //     state: { user: props.user },
+        // })
+      }
 
       {displaySection === 'My Plans' && (
         <SectionContainer>

@@ -92,7 +92,7 @@ const PlanMainImageContainer = styled.div`
 // props.userIdentity
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
-  const [currentPlanRef, setCurrentPlanRef] = useState(null);
+  // const [currentPlanRef, setCurrentPlanRef] = useState(null);
   const [doImport, setDoimport] = useState(false);
   const planId = props.ownPlanId;
 
@@ -101,17 +101,22 @@ function OwnPlanCard(props) {
   // console.log(props.ownPlanId);
 
   const redirectToEdit = () => {
-    navigate('/edit-plan-detail', {
-      state: {
-        from: 'dashboard',
-        // collectionID: currentPlanRef.collectionID,
-        planDocRef: planId,
-      },
-    });
+    navigate(
+      `/edit-plan-detail/${planId}`
+      //  , {
+      //   state: {
+      //     from: 'dashboard',
+      //     planDocRef: planId,
+      //   },
+      //   }
+    );
   };
 
   const redirectToStatic = () => {
-    navigate('/static-plan-detail', { state: { currentPlanRef: planId } });
+    navigate(
+      `/static-plan-detail${planId}`
+      // , { state: { currentPlanRef:  } });
+    );
   };
 
   useEffect(async () => {

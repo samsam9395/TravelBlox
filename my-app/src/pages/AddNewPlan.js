@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
 import { PhotoCamera } from '@mui/icons-material';
 import '../styles/calendarStyle.scss';
 import PlanCalendar from './PlanCalendar';
@@ -10,7 +9,7 @@ import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import { doc, setDoc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -30,10 +29,6 @@ import {
   FlexColumnWrapper,
   LightBlueBtn,
   PaleEmptyBtn,
-  LightOrangeBtn,
-  OrangeBtn,
-  BlueBtn,
-  PaleBtn,
 } from '../styles/globalTheme';
 import '../favourite/favDropDown.scss';
 
@@ -93,6 +88,7 @@ async function addPlanToUserInfo(currentUserId, createPlanDocId) {
       'own_plans',
       createPlanDocId
     );
+
     await setDoc(
       userInfoRef,
       {
@@ -133,7 +129,8 @@ const CalendarColourBackground = styled.div`
 // defaultImg={defaultImg}
 // user={user} accessToken, email
 function AddNewPlan(props) {
-  const location = useLocation();
+  const { currentUserId } = useParams();
+  // const location = useLocation();
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [mainImage, setMainImage] = useState(null);
@@ -151,15 +148,12 @@ function AddNewPlan(props) {
   const [isPublished, setIsPublished] = useState(false);
   const [favPlansNameList, setFavPlansNameList] = useState(null);
   const [showFavPlans, setShowFavPlans] = useState(false);
-  const [dropDownOption, setDropDownOption] = useState(
-    location.state.favFolderNames || []
-  );
   const [selectedPlanId, setSelectedPlanId] = useState('');
 
   const [showFavContainer, setShowFavContainer] = useState(false);
-  const currentUserId = props.user.email;
+  // const currentUserId = props.user.email;
   const navigate = useNavigate();
-
+  console.log(currentUserId);
   const createNewCollection = async (
     startDateValue,
     endDateValue,
@@ -177,6 +171,7 @@ function AddNewPlan(props) {
     }
 
     try {
+      // console.log(currentUserId);
       await setDoc(doc(db, 'plans', createPlanDocId), {
         author: currentUserId,
         start_date: startDateValue,
@@ -188,7 +183,6 @@ function AddNewPlan(props) {
       });
 
       setHasCreatedCollection(true);
-      // setCollectionRef('plans');
 
       addPlanToUserInfo(props.user.email, createPlanDocId);
 
@@ -237,7 +231,11 @@ function AddNewPlan(props) {
         />
       ) : null}
       <>
-        <InstructionText>Please create some basic info first!</InstructionText>
+        {!hasCreatedCollection && (
+          <InstructionText>
+            Please create some basic info first!
+          </InstructionText>
+        )}
         <TopContainer>
           <TitleSection>
             <TextField
@@ -258,6 +256,8 @@ function AddNewPlan(props) {
             <CountrySelector setCountry={setCountry} country={country} />
 
             <DatePicker
+              startDateValue={new Date()}
+              endDateValue={new Date()}
               setStartDateValue={setStartDateValue}
               setEndDateValue={setEndDateValue}
             />
@@ -265,7 +265,7 @@ function AddNewPlan(props) {
             <FormControlLabel
               control={
                 <Switch
-                  style={{ color: themeColours.orange }}
+                  style={{ color: themeColours.light_orange }}
                   checked={isPublished}
                   onChange={() => setIsPublished(!isPublished)}
                 />
@@ -322,11 +322,6 @@ function AddNewPlan(props) {
                 }}>
                 Add new event
               </LightBlueBtn>
-              {/* <Button
-                variant="contained"
-                onClick={() => setShowFavContainer(!showFavContainer)}>
-                Import Favourite
-              </Button> */}
 
               <LightBlueBtn
                 onClick={() => setShowFavContainer(!showFavContainer)}>
@@ -344,39 +339,6 @@ function AddNewPlan(props) {
                   currentUserId={currentUserId}
                 />
               )}
-              {/* {showFavContainer && (
-                <div>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={dropDownOption}
-                    sx={{ width: 300 }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Favourite Folders" />
-                    )}
-                    onChange={(e) => {
-                      setShowFavPlans(true);
-                      console.log(e.target.textContent);
-                      getFavPlan(
-                        e.target.textContent,
-                        currentUserId,
-                        setFavPlansNameList
-                      );
-                    }}
-                  />
-                  {showFavPlans && favPlansNameList && (
-                    <FavFolderDropdown
-                      showFavPlans={showFavPlans}
-                      favPlansNameList={favPlansNameList}
-                      setSelectedPlanId={setSelectedPlanId}
-                      selectedPlanId={selectedPlanId}
-                      planDocRef={planDocRef}
-                      setAddedTimeBlock={setAddedTimeBlock}
-                      startDateValue={startDateValue}
-                    />
-                  )}
-                </div>
-              )} */}
 
               <LightBlueBtn
                 variant="contained"

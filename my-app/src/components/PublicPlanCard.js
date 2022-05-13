@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 const SinglePlanContainer = styled.div`
   width: 300px;
@@ -114,12 +114,15 @@ function PublicPlanCard(props) {
   const navigate = useNavigate();
 
   const redirectToStatic = () => {
-    navigate('/static-plan-detail', {
-      state: {
-        fromPage: 'allPlans',
-        planDocRef: props.planInfo.plan_doc_ref,
-      },
-    });
+    navigate(
+      `/static-plan-detail/${props.planInfo.plan_doc_ref}`
+      // , {
+      // state: {
+      //   fromPage: 'allPlans',
+      //   planDocRef: props.planInfo.plan_doc_ref,
+      // },
+      // }
+    );
   };
 
   return (

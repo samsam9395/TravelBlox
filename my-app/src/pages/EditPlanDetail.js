@@ -11,13 +11,7 @@ import DatePicker from '../components/Input/DatePicker';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import {
-  doc,
-  getDoc,
-  getDocs,
-  collection,
-  writeBatch,
-} from 'firebase/firestore';
+import { doc, getDoc, writeBatch } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
@@ -35,12 +29,10 @@ import {
   EditableMainImage,
   FlexColumnWrapper,
   LightBlueBtn,
-  LightOrangeBtn,
-  OrangeBtn,
-  BlueBtn,
   PaleBtn,
 } from '../styles/globalTheme';
 import '../favourite/favDropDown.scss';
+import { useParams } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -135,6 +127,8 @@ const SelectImportDropdown = styled.div`
 // userId={user.email} favFolderNames={favFolderNames}
 //currentPlanRef
 function EditPlanDetail(props) {
+  const { planDocRef } = useParams();
+  const [planAuthor, setPlanAuthor] = useState('');
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [mainImage, setMainImage] = useState(null);
@@ -150,30 +144,29 @@ function EditPlanDetail(props) {
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   // import
-  const [favPlansNameList, setFavPlansNameList] = useState(null);
+
   const [showFavPlans, setShowFavPlans] = useState(false);
-  const [dropDownOption, setDropDownOption] = useState(
-    props.favFolderNames || []
-  );
   const [selectedPlanId, setSelectedPlanId] = useState('');
-  const [selectedFolderId, setSelectedFolderId] = useState('');
   const [importData, setImportData] = useState({});
 
   //React Route
-  const location = useLocation();
-  const planDocRef = location.state.planDocRef;
   const currentUserId = props.userId;
   // const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
   const navigate = useNavigate();
 
   const redirectToStatic = () => {
-    navigate('/static-plan-detail', {
-      state: {
-        fromPage: 'editPlans',
-        planDocRef: planDocRef,
-      },
-    });
+    navigate(
+      `/static-plan-detail${planDocRef}`
+      // , { state: { currentPlanRef:  } });
+    );
+
+    // navigate('/static-plan-detail', {
+    //   state: {
+    //     fromPage: 'editPlans',
+    //     planDocRef: planDocRef,
+    //   },
+    // });
   };
 
   const redirectToDashboard = () => {
@@ -207,9 +200,23 @@ function EditPlanDetail(props) {
     }
   }
 
+  useEffect(() => {
+    if (planAuthor) {
+      if (localStorage.getItem('userEmail')) {
+        if (localStorage.getItem('userEmail') !== planAuthor) {
+          alert('You can only edit your own plan!');
+          navigate('/dashboard');
+        }
+      } else {
+        alert('Please login to your account first!');
+        navigate('/');
+      }
+    }
+  }, [localStorage.getItem('userEmail'), planAuthor]);
+
   useEffect(async () => {
     const docSnap = await getDoc(doc(db, 'plans', planDocRef));
-
+    setPlanAuthor(docSnap.data().author);
     setCountry(docSnap.data().country);
     setPlanTitle(docSnap.data().title);
     setMainImage(docSnap.data().main_image);
@@ -386,7 +393,6 @@ function EditPlanDetail(props) {
               currentUserId={currentUserId}
             />
           )}
-          {/* </div> */}
 
           <LightBlueBtn
             onClick={() => {

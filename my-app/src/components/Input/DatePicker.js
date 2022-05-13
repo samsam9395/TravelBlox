@@ -11,27 +11,41 @@ import { useState, useEffect } from 'react';
 // endInitDateValue={endInitDateValue}
 // startInitDateValue={startInitDateValue}
 function DatePicker(props) {
+  // const [state, setState] = useState([
+  //   {
+  //     startDate: props.startDateValue,
+  //     endDate: props.endDateValue,
+  //     key: 'selection',
+  //   },
+  // ]);
   const [state, setState] = useState([
     {
-      startDate: props.startDateValue,
-      endDate: props.endDateValue,
+      startDate: new Date(),
+      endDate: new Date(),
       key: 'selection',
     },
   ]);
+
   const [hasUpdate, setHasUpdate] = useState(false);
 
-  useEffect(() => {
-    setState([
-      {
-        startDate: props.startInitDateValue,
-        endDate: props.endInitDateValue,
-        key: 'selection',
-      },
-    ]);
-  }, [props.startInitDateValue, props.endInitDateValue]);
+  console.log(11, state);
 
   useEffect(() => {
-    console.log(state.length);
+    if (props.startInitDateValue) {
+      setState([
+        {
+          startDate: props.startInitDateValue,
+          endDate: props.endInitDateValue,
+          key: 'selection',
+        },
+      ]);
+    }
+  }, [props.startInitDateValue, props.endInitDateValue]);
+
+  console.log(22, state);
+
+  useEffect(() => {
+    // console.log(state.length);
     if (state.length > 0) {
       console.log('here', state);
       props.setStartDateValue(state[0].startDate);

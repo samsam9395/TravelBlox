@@ -34,7 +34,7 @@ const BlackWrapper = styled.div`
 const PopBox = styled.div`
   position: relative;
   width: 55vw;
-  height: 70%;
+  height: 75%;
   margin: 0 auto;
   background-color: white;
   margin-top: calc(100vh - 85vh - 20px);
