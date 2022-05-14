@@ -31,6 +31,8 @@ import {
   PaleEmptyBtn,
 } from '../styles/globalTheme';
 import '../favourite/favDropDown.scss';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -365,7 +367,7 @@ function AddNewPlan(props) {
                 onClick={() => {
                   console.log(myEvents.length);
                   if (myEvents.length === 0) {
-                    alert('Please create at least one event!');
+                    Swal.fire('Please create at least one event!');
                   } else {
                     if (
                       saveToDataBase(
@@ -402,7 +404,7 @@ function AddNewPlan(props) {
                       mainImage
                     );
                   } else {
-                    alert('Please provide the required fields!');
+                    Swal.fire('Please provide the required fields!');
                   }
                 }}>
                 All Set

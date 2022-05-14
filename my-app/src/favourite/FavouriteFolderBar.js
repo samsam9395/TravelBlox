@@ -15,6 +15,8 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import EditFavFolderSelector from './EditFavFolderSelector';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -111,7 +113,7 @@ function addNewFavFolder(currentUserId, newFolder) {
     setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
       folder_name: newFolder,
     });
-    alert('Folder added!');
+    Swal.fire('Folder added!');
   } catch (error) {
     console.log(error);
   }

@@ -101,7 +101,7 @@ const EventTitle = styled.div`
 `;
 
 const EventContentText = styled.div`
-  font-size: 14px;
+  font-size: 16px;
   display: inline-block;
 `;
 

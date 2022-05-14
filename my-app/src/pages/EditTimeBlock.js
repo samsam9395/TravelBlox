@@ -9,6 +9,8 @@ import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
 import '../styles/libraryStyles.scss';
 import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -197,7 +199,7 @@ function EditTimeBlock(props) {
           }
         );
         props.setShowEditPopUp(false);
-        alert('Successfully updated!');
+        Swal.fire('Successfully updated!');
       } catch (error) {
         console.log(error);
       }
@@ -219,7 +221,7 @@ function EditTimeBlock(props) {
           }
         );
         props.setShowEditPopUp(false);
-        alert('Successfully updated!');
+        Swal.fire('Successfully updated!');
       } catch (error) {
         console.log(error);
       }
@@ -250,7 +252,7 @@ function EditTimeBlock(props) {
   ) {
     try {
       await deleteDoc(timeBlockRef);
-      alert(`${blockTitle} is deleted!`);
+      Swal.fire(`${blockTitle} is deleted!`);
       console.log(blockTitle, props.currentSelectTimeId, 'is deleted!');
       setShowEditPopUp(false);
     } catch (error) {
@@ -448,11 +450,11 @@ function EditTimeBlock(props) {
                     timeBlockImage
                   );
                 } catch (error) {
-                  alert('Something went wrong, please try again!');
+                  Swal.fire('Something went wrong, please try again!');
                   console.log(error);
                 }
               } else {
-                alert('Please check your inputs!');
+                Swal.fire('Please check your inputs!');
               }
             }}>
             Submit

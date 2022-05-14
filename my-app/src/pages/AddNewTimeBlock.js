@@ -18,6 +18,8 @@ import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
 import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -184,13 +186,13 @@ function AddNewTimeBlock(props) {
       });
 
       props.setShowPopUp(false);
-      alert('Successfully added!');
+      Swal.fire('Successfully added!');
     } catch (error) {
       if (
         error.message ==
         'The value of property "timeblock_img" is longer than 1048487 bytes.'
       ) {
-        alert('Your image is too large, Please change another image.');
+        Swal.fire('Your image is too large, Please change another image.');
       }
     }
 
@@ -330,7 +332,7 @@ function AddNewTimeBlock(props) {
                   timeBlockImage
                 );
               } else {
-                alert('Please fill in all the requirements!');
+                Swal.fire('Please fill in all the requirements!');
               }
             }}>
             Submit

@@ -2,21 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
-import { useLocation } from 'react-router-dom';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
-import { themeColours, LightOrangeBtn } from '../styles/globalTheme';
+import { themeColours, LightOrangeBtn, fonts } from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
-// import UserAvatar from '../components/user/Avatar';
-// import CheckIcon from '@mui/icons-material/Check';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
 import sunburst from '../images/static/sunburst_solid.png';
 import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
 import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
+// import 'sweetalert2/src/sweetalert2.scss';
 
 const db = firebaseDB();
 
@@ -397,9 +396,10 @@ function StaticPlanDetail(props) {
     setShowFavDropDown
   ) {
     const currentUserEmail = props.user.email;
-
+    console.log(111, currentUserEmail);
+    console.log(222, author);
     if (currentUserEmail === author) {
-      alert('Do not favourite your own plan!');
+      Swal.fire('Do not favourite your own plan!');
     } else if (selectFavFolder !== '') {
       // console.log(selectFavFolder);
       const favRef = doc(
@@ -417,12 +417,12 @@ function StaticPlanDetail(props) {
           fav_plan_title: planTitle,
         });
         setShowFavDropDown(false);
-        alert('Successfully favourite this plan!');
+        Swal.fire('Successfully favourite this plan!');
       } catch (error) {
         console.log(error);
       }
     } else {
-      alert('Please select a folder!');
+      Swal.fire('Please select a folder!');
     }
   }
 
