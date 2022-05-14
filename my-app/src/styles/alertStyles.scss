@@ -1,9 +1,36 @@
 @import '../styles/libraryStyles.scss';
-.swal2-title {
-  font-size: 16px;
+
+.swal2-container {
   font-family: 'Roboto';
 }
 
+.swal2-title {
+  // padding-top: 10px;
+  font-size: 25px;
+  font-weight: 600px;
+
+  color: $darker_orange;
+  letter-spacing: 1px;
+}
+
+.swal2-popup .swal2-styled:focus {
+  box-shadow: none;
+}
+
 .swal2-styled.swal2-confirm {
-  background-color: #e7ac81;
+  background-color: $light_orange;
+  border-color: $light_orange;
+  border: none;
+  letter-spacing: 1.5px;
+}
+
+.swal2-html-container {
+  color: $light_orange;
+  //  #877b72;
+  font-style: italic;
+}
+
+body.swal2-shown > [aria-hidden='true'] {
+  transition: 0.1s filter;
+  filter: blur(5px);
 }

@@ -15,7 +15,6 @@ import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
-// import 'sweetalert2/src/sweetalert2.scss';
 
 const db = firebaseDB();
 
@@ -417,7 +416,16 @@ function StaticPlanDetail(props) {
           fav_plan_title: planTitle,
         });
         setShowFavDropDown(false);
-        Swal.fire('Successfully favourite this plan!');
+
+        Swal.fire({
+          title: 'Successfully favourite this plan',
+          width: 600,
+          text: 'You can now import this schedule to your own travel plans!',
+          confirmButtonText: 'OK',
+          // confirmButtonColor: '#e7ac81',
+          focusConfirm: 'false',
+        });
+        // Swal.fire('Successfully favourite this plan!');
       } catch (error) {
         console.log(error);
       }
@@ -553,7 +561,7 @@ function StaticPlanDetail(props) {
         <PlanInfoWrapper>
           <UserInfoContainer>
             <img className="user_img" src={userImage} alt="" />
-            {/* <UserAvatar currentUserId={author} fromLocate={'static'} /> */}
+
             <div className="user_info_title">
               Planned by:
               {authorName && <div className="author_name">{authorName}</div>}

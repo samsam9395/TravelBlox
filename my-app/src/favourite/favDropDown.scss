@@ -25,7 +25,6 @@
       font-weight: 600;
       cursor: pointer;
       color: $pale;
-      //   color: $my_orange;
     }
   }
   &__items {
@@ -132,7 +131,7 @@
 
   li {
     &:hover {
-      color: $my_orange;
+      color: $light_orange;
       cursor: pointer;
     }
   }

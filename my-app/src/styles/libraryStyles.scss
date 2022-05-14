@@ -1,7 +1,7 @@
 // @import url( https://fonts.googleapis.com/css2?family=Ubuntu&display=swap );
 
 // _library.scss
-$my_orange: #e7ac81 !default;
+// $my_orange: #e7ac81 !default;
 $light_orange: #e7ac81 !default;
 $darker_orange: #bb8c6b;
 $milktea: #e4d1b9;
@@ -23,7 +23,7 @@ $my_black: #0e0e0f !default;
 .rdrStartEdge,
 .rdrInRange,
 .rdrEndEdge {
-  color: $my_orange !important;
+  color: $light_orange !important;
 }
 
 .rdrDayToday {
