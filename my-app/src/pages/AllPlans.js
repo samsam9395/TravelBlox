@@ -8,6 +8,7 @@ import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
 import { themeColours } from '../styles/globalTheme';
 import FullLoading from '../components/general/FullLoading';
+import SkyMainImg from '../components/all_plan/SkyMainImg';
 
 const db = firebaseDB();
 
@@ -21,95 +22,20 @@ const PlanCollectionWrapper = styled.div`
   margin: 30px 0;
 `;
 
-const SearchContainer = styled.div`
-  padding-top: 20px;
-  width: 70%;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    width: 100%;
-    margin: none;
-  }
-`;
-
-const MainImgContainer = styled.div`
-  width: 100%;
-  height: 320px;
-`;
-
-const MainImg = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 0 -92px;
-  @media (max-width: 768px) {
-    object-position: unset;
-  }
-`;
-
-const CallToActionText = styled.div`
-  font-size: 36px;
-  font-weight: 600;
-  min-width: 300px;
-  .text_where {
-    font-size: 48px;
-  }
-
-  .text_are_you {
-    text-align: center;
-    padding-left: 30px;
-  }
-
-  .text_heading_to {
-    display: flex;
-    align-items: center;
-  }
-  .text_heading {
-    font-size: 40px;
-    margin-right: 20px;
-    font-style: italic;
-    color: ${themeColours.light_orange};
-  }
-  @media (max-width: 768px) {
-    margin-bottom: 30px;
-    width: 70%;
-    line-height: 2em;
-    .text_are_you {
-      text-align: right;
-      padding-left: 30px;
-    }
-  }
-`;
-
-// const SearchInput = styled.input`
-//   width: auto;
-//   padding: 0 10px;
-//   height: 30px;
+// const MainImgContainer = styled.div`
+//   width: 100%;
+//   height: 320px;
 // `;
 
-const SearchInputMUI = styled(TextField)({
-  '& label.Mui-focused': {
-    color: themeColours.light_orange,
-  },
-  '& .MuiInput-underline:after': {
-    borderBottomColor: 'red',
-  },
-  // minWidth: '30vw',
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: themeColours.light_orange,
-    },
-  },
-  '&:hover label.Mui-focused': {
-    borderColor: 'yellow',
-  },
-  '&.Mui-focused fieldset': {
-    borderColor: 'green',
-  },
-  // },
-});
+// const MainImg = styled.img`
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+//   object-position: 0 -92px;
+//   @media (max-width: 768px) {
+//     object-position: unset;
+//   }
+// `;
 
 // defaultImg={defaultImg}
 function Allplans(props) {
@@ -170,34 +96,10 @@ function Allplans(props) {
   return (
     <>
       <FullLoading opacity={loadindOpacity} />
-      <MainImgContainer>
+      <SkyMainImg setInputValue={setInputValue} inputValue={inputValue} />
+      {/* <MainImgContainer>
         <MainImg src={discoverMainImg}></MainImg>
-      </MainImgContainer>
-      <SearchContainer>
-        <CallToActionText>
-          <div className="text_where">Where</div>
-          <div className="text_are_you">are you</div>{' '}
-          <div className="text_heading_to">
-            {' '}
-            <div className="text_heading">heading</div>?
-          </div>
-        </CallToActionText>
-        <SearchInputMUI
-          variant="standard"
-          fullWidth
-          id="standard-adornment-amount"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <SearchIcon
-                position="start"
-                style={{ color: themeColours.light_orange }}>
-                Search
-              </SearchIcon>
-            ),
-          }}></SearchInputMUI>
-      </SearchContainer>
+      </MainImgContainer> */}
 
       <PlanCollectionWrapper>
         {displayPlans.map((planInfo, index) => (

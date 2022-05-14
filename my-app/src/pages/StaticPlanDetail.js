@@ -394,8 +394,8 @@ function StaticPlanDetail(props) {
     setShowFavDropDown
   ) {
     const currentUserEmail = props.user.email;
-    console.log(111, currentUserEmail);
-    console.log(222, author);
+    // console.log(111, currentUserEmail);
+    // console.log(222, author);
     if (currentUserEmail === author) {
       Swal.fire('Do not favourite your own plan!');
     } else if (selectFavFolder !== '') {
@@ -528,8 +528,6 @@ function StaticPlanDetail(props) {
   }
 
   useEffect(() => {
-    console.log(22, mainImage);
-    console.log(33, authorName);
     if (mainImage && authorName) {
       setLoadindOpacity(0);
     }
