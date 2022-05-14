@@ -4,7 +4,7 @@ import { GetWeather } from '../../utils/api';
 import './weather.scss';
 import { themeColours, fonts } from '../../styles/globalTheme';
 import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
-import asset1 from '../../images/static/Asset1.png';
+import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
 import { ReactComponent as WatercolourBlue } from '../../images/static/watercolour_blue2.svg';
 
 const WeatherCard = styled.div`
@@ -17,10 +17,10 @@ const WeatherCard = styled.div`
   position: relative;
 
   .watercolour_background {
-    width: 86%;
+    width: 95%;
     position: absolute;
-    top: 22px;
-    right: 11%;
+    top: 20px;
+    right: 1%;
     transform: rotate(344deg);
   }
 
@@ -193,11 +193,11 @@ const AnimationContainer = styled.div`
   margin: -65px -360px; */
 `;
 
-const OuterDeco = styled.div`
-  width: 257px;
-  height: 300px;
-  border-radius: 70px 0 70px 0;
-`;
+// const OuterDeco = styled.div`
+//   width: 257px;
+//   height: 300px;
+//   border-radius: 70px 0 70px 0;
+// `;
 
 function Weather({ lat, lng }) {
   const [weatherData, setWeatherData] = useState(null);
@@ -242,10 +242,15 @@ function Weather({ lat, lng }) {
   return (
     weatherData && (
       <WeatherCard>
-        <WatercolourBlue className="watercolour_background"></WatercolourBlue>
-        <div className="right_side_text">
+        <img
+          className="watercolour_background"
+          src={WatercolourBluePng}
+          alt="current weather background"
+        />
+        {/* <WatercolourBlue className="watercolour_background"></WatercolourBlue> */}
+        {/* <div className="right_side_text">
           CURRENT WEATHER FOR THIS EVENT LOCATION
-        </div>
+        </div> */}
         {/* <div className="empty_ellipse"></div>
         <div className="empty_ellipse second"></div>
         <div className="empty_ellipse third"></div>

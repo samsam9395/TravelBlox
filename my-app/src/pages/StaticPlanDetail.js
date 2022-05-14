@@ -528,10 +528,12 @@ function StaticPlanDetail(props) {
   }
 
   useEffect(() => {
-    if (mainImage && userImage) {
+    console.log(22, mainImage);
+    console.log(33, authorName);
+    if (mainImage && authorName) {
       setLoadindOpacity(0);
     }
-  }, [mainImage, userImage]);
+  }, [mainImage, authorName]);
 
   return (
     <>
