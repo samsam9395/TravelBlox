@@ -11,6 +11,7 @@ import { getDocs, collection, getDoc, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
 import { themeColours } from '../styles/globalTheme';
+import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
@@ -121,6 +122,7 @@ function Allplans(props) {
   const [inputValue, setInputValue] = useState('');
   const [displayPlans, setDisplayPlans] = useState([]);
   const [discoverMainImg, setDiscoverMainImg] = useState('');
+  const [stopLoading, setStopLoading] = useState(false);
 
   useEffect(async () => {
     const allPlans = await getDocs(collection(db, 'allPlans'));
@@ -138,9 +140,13 @@ function Allplans(props) {
     const discoverMainImg = await getDoc(
       doc(db, 'main-components', 'discover_main_image')
     );
-    // console.log(discoverMainImg.data().discover_main_image);
 
     setDiscoverMainImg(discoverMainImg.data().discover_main_image);
+  }, []);
+
+  useEffect(() => {
+    const displayLoading = setTimeout(() => setStopLoading(true), 2500);
+    return () => clearTimeout(displayLoading);
   }, []);
 
   useEffect(() => {
@@ -165,7 +171,7 @@ function Allplans(props) {
     });
   }, [inputValue]);
 
-  return (
+  return discoverMainImg && stopLoading ? (
     <>
       <MainImgContainer>
         <MainImg src={discoverMainImg}></MainImg>
@@ -206,6 +212,8 @@ function Allplans(props) {
         ))}
       </PlanCollectionWrapper>
     </>
+  ) : (
+    <FullLoading />
   );
 }
 
