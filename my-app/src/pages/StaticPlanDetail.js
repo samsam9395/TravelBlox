@@ -15,6 +15,7 @@ import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
+import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
@@ -331,7 +332,6 @@ function StaticPlanDetail(props) {
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  // const [hasVisited, setHasVitied] = useState(true);
   const [author, setAuthor] = useState('');
   const [authorName, setAuthorName] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -339,13 +339,9 @@ function StaticPlanDetail(props) {
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
   const [showfavDropDown, setShowFavDropDown] = useState(false);
-  const [selectedFavFolder, setSelectedFavFolder] = useState('');
+  // const [selectedFavFolder, setSelectedFavFolder] = useState('');
   const [showTab, setShowTab] = useState('route');
   const [stopTimelineNav, settopTimelineNav] = useState(false);
-
-  // const location = useLocation();
-  // const planDocRef = location.state.planDocRef;
-
   const planCollectionRef = doc(db, 'plans', planDocRef);
   const itemEls = useRef(new Array());
   const timelineRefArray = useRef(new Array());
@@ -354,9 +350,12 @@ function StaticPlanDetail(props) {
   const navTabMap = useRef(null);
   const navTabCalendar = useRef(null);
   const refNames = [navTabDay, navTabMap, navTabCalendar];
+
   const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
+
   const [userImage, setUserImage] = useState(null);
   const [showFullImage, setShowFullImage] = useState(false);
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
 
   const navTimelineRef = useRef(null);
   const planImageRef = useRef(null);
@@ -528,8 +527,15 @@ function StaticPlanDetail(props) {
     }
   }
 
+  useEffect(() => {
+    if (mainImage && userImage) {
+      setLoadindOpacity(0);
+    }
+  }, [mainImage, userImage]);
+
   return (
     <>
+      <FullLoading opacity={loadindOpacity} />
       {showFullImage && (
         <ImageEnlarge
           mainImage={mainImage}

@@ -16,6 +16,7 @@ import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.sv
 import sparkle from '../images/dashboard/spark.png';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
+import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
@@ -354,13 +355,13 @@ function Dashboard(props) {
   const [userImage, setUserImage] = useState(null);
   const [showUserUploadIcon, setShowUserUploadIcon] = useState('hidden');
   const [uploadUserImg, setUploadUserImg] = useState(false);
-
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
   const navigate = useNavigate();
   const uploadIconRef = useRef(null);
 
   useEffect(() => {
     if (userImage) {
-      props.setLoadindOpacity(0);
+      setLoadindOpacity(0);
     }
   }, [userImage]);
 
@@ -428,6 +429,7 @@ function Dashboard(props) {
 
   return (
     <Wrapper>
+      <FullLoading opacity={loadindOpacity} />
       <UpperPartBackground></UpperPartBackground>
       <YourSvg className="milktea_svg_long"></YourSvg>
 

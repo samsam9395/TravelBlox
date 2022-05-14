@@ -7,6 +7,7 @@ import { getDocs, collection, getDoc, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
 import { themeColours } from '../styles/globalTheme';
+import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
@@ -116,6 +117,7 @@ function Allplans(props) {
   const [inputValue, setInputValue] = useState('');
   const [displayPlans, setDisplayPlans] = useState([]);
   const [discoverMainImg, setDiscoverMainImg] = useState('');
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
 
   useEffect(async () => {
     const allPlans = await getDocs(collection(db, 'allPlans'));
@@ -137,15 +139,9 @@ function Allplans(props) {
     setDiscoverMainImg(discoverMainImg.data().discover_main_image);
   }, []);
 
-  // useEffect(() => {
-  //   const displayLoading = setTimeout(() => props.setLoadindOpacity(0), 2000);
-
-  //   return () => clearTimeout(displayLoading);
-  // }, []);
-
   useEffect(() => {
     if (discoverMainImg) {
-      props.setLoadindOpacity(0);
+      setLoadindOpacity(0);
     }
   }, [discoverMainImg]);
 
@@ -173,6 +169,7 @@ function Allplans(props) {
 
   return (
     <>
+      <FullLoading opacity={loadindOpacity} />
       <MainImgContainer>
         <MainImg src={discoverMainImg}></MainImg>
       </MainImgContainer>

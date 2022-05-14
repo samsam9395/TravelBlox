@@ -43,13 +43,17 @@ const pulse = keyframes`
 `;
 
 const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
+  left: 0;
+  top: 0;
+  /* width: 100vw;
+  height: 100vh; */
   position: fixed;
   background-color: white;
   z-index: 80;
   opacity: ${(props) => props.opacity};
   transition: opacity 1.8s;
+  width: ${(props) => (props.changeDisplay ? 0 : '100vw')};
+  height: ${(props) => (props.changeDisplay ? 0 : '100vh')};
 `;
 
 const ElementContainer = styled.div`
@@ -103,10 +107,24 @@ const ElementContainer = styled.div`
 `;
 
 function FullLoading({ opacity }) {
-  console.log(opacity);
+  const [changeDisplay, setChangeDisplay] = useState(false);
+
+  useEffect(() => {
+    if (opacity === 0) {
+      console.log('opacity changed!');
+      const timeout = setTimeout(() => {
+        setChangeDisplay(true);
+        console.log(222, 'set timedisplay');
+      }, 1400);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [opacity]);
 
   return (
-    <Wrapper opacity={opacity}>
+    <Wrapper opacity={opacity} changeDisplay={changeDisplay}>
       <ElementContainer>
         <CircularMoon className="svg_element circular_moon"></CircularMoon>
         <div className="svg_element">
