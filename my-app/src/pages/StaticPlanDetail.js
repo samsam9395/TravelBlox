@@ -120,13 +120,14 @@ const PlanCardsWrapper = styled.div`
 const FavFolderDropDownOptions = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 5px 15px;
+  padding: 10px 15px;
   position: absolute;
   width: 90%;
-  top: 44px;
+  top: 33px;
   left: 10px;
-  background-color: white;
+  color: white;
   border-radius: 0 0 10px 10px;
+  background-color: ${themeColours.light_orange};
 
   .folder_option {
     padding: 5px;
@@ -564,7 +565,7 @@ function StaticPlanDetail(props) {
             <FavFolderWrapper>
               <LightOrangeBtn
                 padding="10px"
-                fontSize="12px"
+                fontSize="14px"
                 width="165px"
                 onClick={() => setShowFavDropDown(!showfavDropDown)}>
                 Favourite this plan

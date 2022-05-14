@@ -301,6 +301,7 @@ const DisplaySwitch = styled.div`
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 
   .plan_tab {
+    min-width: 50%;
     text-align: center;
     flex-grow: 1;
     padding: 14px 24px;
@@ -314,6 +315,9 @@ const DisplaySwitch = styled.div`
       background-color: #dfd8d887;
       cursor: pointer;
     }
+  }
+  .divider {
+    color: ${themeColours.light_grey};
   }
 `;
 
@@ -486,6 +490,7 @@ function Dashboard(props) {
             onClick={(e) => setDisplaySection(e.target.textContent)}>
             My Plans
           </div>
+          <div className="divider">|</div>
           <div
             className="plan_tab"
             value="fav_plan"

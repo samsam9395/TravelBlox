@@ -104,7 +104,7 @@ function ExportGCalendarBtn(props) {
 
   return (
     <LightBlueBtn
-      fontSize="12px"
+      fontSize="14px"
       width="165px"
       padding="10px"
       onClick={() => handleExport()}>
