@@ -358,6 +358,12 @@ function Dashboard(props) {
   const navigate = useNavigate();
   const uploadIconRef = useRef(null);
 
+  useEffect(() => {
+    if (userImage) {
+      props.setLoadindOpacity(0);
+    }
+  }, [userImage]);
+
   useEffect(async () => {
     if (!props.user) {
       Swal.fire('Please login first!');

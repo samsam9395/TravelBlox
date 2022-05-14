@@ -43,8 +43,13 @@ const pulse = keyframes`
 `;
 
 const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: white;
+  z-index: 80;
+  opacity: ${(props) => props.opacity};
+  transition: opacity 1.8s;
 `;
 
 const ElementContainer = styled.div`
@@ -97,9 +102,11 @@ const ElementContainer = styled.div`
   }
 `;
 
-function FullLoading() {
+function FullLoading({ opacity }) {
+  console.log(opacity);
+
   return (
-    <Wrapper>
+    <Wrapper opacity={opacity}>
       <ElementContainer>
         <CircularMoon className="svg_element circular_moon"></CircularMoon>
         <div className="svg_element">

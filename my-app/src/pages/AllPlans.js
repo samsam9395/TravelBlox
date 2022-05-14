@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import Input from '@mui/material/Input';
-import InputAdornment from '@mui/material/InputAdornment';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getDocs, collection, getDoc, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
 import { themeColours } from '../styles/globalTheme';
-import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
@@ -41,7 +36,6 @@ const SearchContainer = styled.div`
 const MainImgContainer = styled.div`
   width: 100%;
   height: 320px;
-  order-radius: 10px;
 `;
 
 const MainImg = styled.img`
@@ -122,7 +116,6 @@ function Allplans(props) {
   const [inputValue, setInputValue] = useState('');
   const [displayPlans, setDisplayPlans] = useState([]);
   const [discoverMainImg, setDiscoverMainImg] = useState('');
-  const [stopLoading, setStopLoading] = useState(false);
 
   useEffect(async () => {
     const allPlans = await getDocs(collection(db, 'allPlans'));
@@ -144,10 +137,17 @@ function Allplans(props) {
     setDiscoverMainImg(discoverMainImg.data().discover_main_image);
   }, []);
 
+  // useEffect(() => {
+  //   const displayLoading = setTimeout(() => props.setLoadindOpacity(0), 2000);
+
+  //   return () => clearTimeout(displayLoading);
+  // }, []);
+
   useEffect(() => {
-    const displayLoading = setTimeout(() => setStopLoading(true), 2500);
-    return () => clearTimeout(displayLoading);
-  }, []);
+    if (discoverMainImg) {
+      props.setLoadindOpacity(0);
+    }
+  }, [discoverMainImg]);
 
   useEffect(() => {
     let list = [];
@@ -171,7 +171,7 @@ function Allplans(props) {
     });
   }, [inputValue]);
 
-  return discoverMainImg && stopLoading ? (
+  return (
     <>
       <MainImgContainer>
         <MainImg src={discoverMainImg}></MainImg>
@@ -212,8 +212,6 @@ function Allplans(props) {
         ))}
       </PlanCollectionWrapper>
     </>
-  ) : (
-    <FullLoading />
   );
 }
 

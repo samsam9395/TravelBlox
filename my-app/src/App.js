@@ -21,6 +21,7 @@ import firebaseDB from './utils/firebaseConfig';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { googleAPI } from './utils/credent';
+import FullLoading from './components/general/FullLoading';
 const ApiKey = googleAPI();
 
 const db = firebaseDB();
@@ -34,6 +35,9 @@ function App() {
   const [user, setUser] = useState('');
   const [favFolderNames, setFavFolderNames] = useState(null);
   const [defaultImg, setDefaultImg] = useState('');
+  const [stopLoading, setStopLoading] = useState(false);
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,9 +70,11 @@ function App() {
     setDefaultImg(docSnap.data().default_plan_img);
   }, []);
 
+  console.log(loadindOpacity);
   return (
     <>
       <GlobalStyle />
+      <FullLoading opacity={loadindOpacity} />
       <ContentWrapper>
         <Wrapper apiKey={ApiKey} libraries={['places']}>
           <Routes>
@@ -97,10 +103,20 @@ function App() {
             />
 
             {/* <Route path="/autocomplete" element={<AutoCompleteInput />} /> */}
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
+            <Route
+              path="/dashboard"
+              element={
+                <Dashboard user={user} setLoadindOpacity={setLoadindOpacity} />
+              }
+            />
             <Route
               path="/discover"
-              element={<Allplans defaultImg={defaultImg} />}
+              element={
+                <Allplans
+                  defaultImg={defaultImg}
+                  setLoadindOpacity={setLoadindOpacity}
+                />
+              }
             />
           </Routes>
         </Wrapper>
