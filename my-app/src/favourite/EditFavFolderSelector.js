@@ -12,6 +12,8 @@ import {
   query,
   where,
 } from 'firebase/firestore';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -125,7 +127,7 @@ function EditFavFolderSelector({
     const batch = writeBatch(db);
 
     if (favFolderName === 'default') {
-      alert('You cannot delete default folder!');
+      Swal.fire('You cannot delete default folder!');
     } else {
       const folderRef = doc(
         db,
@@ -149,7 +151,7 @@ function EditFavFolderSelector({
       try {
         await batch.commit();
         setShowFavFolderEdit(false);
-        alert(`${favFolderName} is deleted!`);
+        Swal.fire(`${favFolderName} is deleted!`);
       } catch (error) {
         console.log(error);
       }

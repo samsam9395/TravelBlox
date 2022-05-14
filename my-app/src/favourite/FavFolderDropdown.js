@@ -22,6 +22,8 @@ import {
 } from '../styles/globalTheme';
 import '../favourite/favDropDown.scss';
 import { getFavPlan } from '../utils/functionList';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -212,7 +214,7 @@ function FavFolderDropdown({
           setAddedTimeBlock(true);
         }
         console.log('Successfully imported!');
-        alert('Successfully imported!');
+        Swal.fire('Successfully imported!');
       } catch (error) {
         console.log(error);
       }

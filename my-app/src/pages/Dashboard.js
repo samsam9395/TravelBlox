@@ -14,6 +14,8 @@ import { themeColours, fonts, LightOrangeBtn } from '../styles/globalTheme';
 import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import sparkle from '../images/dashboard/spark.png';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -325,9 +327,9 @@ function signOutFirebase() {
       if (localStorage.getItem('accessToken')) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('userEmail');
-        alert('You have been signed out!');
+        Swal.fire('You have been signed out!');
       } else {
-        alert('You were not signed in!');
+        Swal.fire('You were not signed in!');
       }
     })
     .catch((error) => {
@@ -353,7 +355,7 @@ function Dashboard(props) {
 
   useEffect(async () => {
     if (!props.user) {
-      alert('Please login first!');
+      Swal.fire('Please login first!');
       navigate('/');
     } else {
       setCurrentUserId(props.user.email);
@@ -407,7 +409,7 @@ function Dashboard(props) {
         { merge: true }
       );
 
-      alert('Saved your image!');
+      Swal.fire('Saved your image!');
     } catch (error) {
       console.log(error);
     }

@@ -9,6 +9,8 @@ import AttractionCards from './AttractionCards';
 import RestaurantCard from './RestaurantCard';
 import { themeColours } from '../../styles/globalTheme';
 import HashLoader from 'react-spinners/HashLoader';
+import Swal from 'sweetalert2';
+import '../../styles/alertStyles.scss';
 
 const MainWrapper = styled.div`
   margin-top: 30px;
@@ -88,7 +90,7 @@ function AttractionInput({ showRecommends, setShowRecommends }) {
 
   useEffect(() => {
     if (attractionList === undefined || restaurantList === undefined) {
-      alert('Please try search again!');
+      Swal.fire('Please try search again!');
     }
   }, [attractionList, restaurantList]);
 

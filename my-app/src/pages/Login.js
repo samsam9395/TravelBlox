@@ -15,6 +15,8 @@ import { InputAdornment } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import firebaseDB from '../utils/firebaseConfig';
 import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import Swal from 'sweetalert2';
+import 'sweetalert2/src/sweetalert2.scss';
 
 const db = firebaseDB();
 
@@ -83,7 +85,7 @@ async function signUP(email, password, username) {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    alert('You are a member already!');
+    Swal.fire('You are a member already!');
   } else {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
@@ -110,7 +112,7 @@ async function signUP(email, password, username) {
       })
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {
-          alert('Email already in use, please pick another one!');
+          Swal.fire('Email already in use, please pick another one!');
         }
         console.log(error.message);
         console.log(error.code);
@@ -139,7 +141,7 @@ function Login(props) {
         console.log(error.code);
         console.log(error.message);
         if (error.message === 'EMAIL_NOT_FOUND') {
-          alert('Email not found! Please check again!');
+          Swal.fire('Email not found! Please check again!');
         }
       });
   }
@@ -215,7 +217,7 @@ function Login(props) {
                   onClick={() =>
                     email && password
                       ? (logOn(email, password), setEmail(''), setPassword(''))
-                      : alert('please fill in both !')
+                      : Swal.fire('please fill in both !')
                   }>
                   Login
                 </LightOrangeBtn>
@@ -296,7 +298,7 @@ function Login(props) {
                         setPassword(''),
                         setUserName(''),
                         setIsNewUser)
-                      : alert('please fill in both !')
+                      : Swal.fire('please fill in both !')
                   }>
                   Sign Up
                 </LightOrangeBtn>

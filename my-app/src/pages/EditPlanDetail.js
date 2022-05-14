@@ -33,6 +33,8 @@ import {
 } from '../styles/globalTheme';
 import '../favourite/favDropDown.scss';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -193,7 +195,7 @@ function EditPlanDetail(props) {
 
     try {
       await batch.commit();
-      alert('Successfully deleted!');
+      Swal.fire('Successfully deleted!');
       navigate('/dashboard');
     } catch (error) {
       console.log(error);
@@ -204,11 +206,11 @@ function EditPlanDetail(props) {
     if (planAuthor) {
       if (localStorage.getItem('userEmail')) {
         if (localStorage.getItem('userEmail') !== planAuthor) {
-          alert('You can only edit your own plan!');
+          Swal.fire('You can only edit your own plan!');
           navigate('/dashboard');
         }
       } else {
-        alert('Please login to your account first!');
+        Swal.fire('Please login to your account first!');
         navigate('/');
       }
     }
@@ -409,7 +411,7 @@ function EditPlanDetail(props) {
                 );
               } catch (error) {
                 console.log(error);
-                alert('Oops!Something went wrong, please try again!');
+                Swal.fire('Oops!Something went wrong, please try again!');
               }
             }}>
             Save

@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   top: 0;
   background-color: white;
   border-bottom: 2px solid ${themeColours.pale};
-  padding: 0 24px;
+  padding: 0px 40px;
   z-index: 100;
 `;
 
@@ -25,9 +25,10 @@ const NavLink = styled.div`
   width: 80px;
 `;
 
-const TestLink = styled(Link)`
+const SubNavLink = styled(Link)`
   text-decoration: none;
   color: ${themeColours.dark_blue};
+  width: 80px;
   &:active {
     text-decoration: none;
     color: ${themeColours.orange};
@@ -52,7 +53,7 @@ const Logo = styled.div`
 const NavLinkWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 30px;
+  justify-content: flex-end;
 `;
 function Header() {
   const navigate = useNavigate();
@@ -63,15 +64,13 @@ function Header() {
         className="hoverCursor"
         onClick={() => navigate('/discover')}></Logo>
       <NavLinkWrapper>
-        <NavLink>
-          <TestLink to="/">Home</TestLink>
+        {/* <NavLink>
+         
         </NavLink>
-        <NavLink>
-          <TestLink to="/discover">Discover</TestLink>
-        </NavLink>
-        <NavLink>
-          <TestLink to="/dashboard">Dashboard</TestLink>
-        </NavLink>
+        <NavLink> */}
+        <SubNavLink to="/discover">Discover</SubNavLink>
+        <SubNavLink to="/dashboard">Dashboard</SubNavLink>
+        {/* </NavLink> */}
       </NavLinkWrapper>
     </Wrapper>
   );

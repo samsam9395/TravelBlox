@@ -11,6 +11,8 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -110,7 +112,7 @@ export async function saveToDataBase(
 
   try {
     await batch.commit();
-    alert('Successfully saved!');
+    Swal.fire('Successfully saved!');
     return true;
   } catch (error) {
     console.log(error.message);
