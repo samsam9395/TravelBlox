@@ -3,8 +3,14 @@ import styled from 'styled-components';
 import { getDocs, collection } from 'firebase/firestore';
 import Login from './Login';
 import firebaseDB from '../utils/firebaseConfig';
+import ParallaxLanding from './landing_page/ParallaxLanding';
 
 const db = firebaseDB();
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const MainImage = styled.img`
   margin-top: 40px;
@@ -12,6 +18,10 @@ const MainImage = styled.img`
   max-height: 60vh;
   object-fit: cover;
   border-radius: 15px;
+`;
+
+const Space = styled.div`
+  /* margin-top: 200px; */
 `;
 
 function LandingPage(props) {
@@ -35,14 +45,14 @@ function LandingPage(props) {
   }, [props.user]);
 
   return (
-    <>
-      <MainImage src={mainImage} />
+    <Wrapper>
+      <ParallaxLanding />
       <Login
         setHasSignedIn={setHasSignedIn}
         hasSignedIn={hasSignedIn}
         setUser={props.setUser}
       />
-    </>
+    </Wrapper>
   );
 }
 

@@ -24,10 +24,14 @@ const Wrapper = styled.div`
   height: 400px;
   display: flex;
   flex-direction: column;
+  z-index: 4;
+  margin-top: 150px;
+  background-color: white;
+  border-radius: 20px;
 `;
 
 const ImageContainer = styled.div`
-  min-width: 50%;
+  width: 30%;
   margin-right: 10px;
   height: 100%;
   background-size: contain;
@@ -40,8 +44,8 @@ const LoginWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 30px;
-  padding-bottom: 200px;
+  /* padding-top: 30px; */
+  padding-bottom: 50px;
   height: 1000px;
 `;
 
@@ -55,6 +59,7 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px 0;
+  width: 40%;
 `;
 
 const InputWrapper = styled.div`
@@ -105,10 +110,6 @@ async function signUP(email, password, username) {
         setDoc(doc(db, 'userId', emailId, 'fav_folders', 'default'), {
           folder_name: 'default',
         });
-        // // const q = query(favRef, where('fav_collection_id' === collectionID));
-
-        // // setDoc(collection(db, 'userId', emailId, 'time_blocks'));
-        //   })
       })
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {
@@ -188,6 +189,7 @@ function Login(props) {
                 </InputWrapper>
                 <InputWrapper>
                   <TextField
+                    fullWidth
                     required
                     type={showPassword ? 'text' : 'password'}
                     value={password}

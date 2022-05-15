@@ -11,9 +11,9 @@ const Wrapper = styled.div`
   width: 100%;
   position: fixed;
   top: 0;
-  background-color: ${(props) => props.backgroundColour};
+  background-color: ${(props) => props.backgroundcolour};
   border-bottom: ${(props) =>
-    props.backgroundColour === 'white'
+    props.backgroundcolour === 'white'
       ? `2px solid ${themeColours.pale}`
       : 'none'};
   padding: 0px 40px;
@@ -24,11 +24,11 @@ const SubNavLink = styled(Link)`
   text-decoration: none;
   font-weight: 600;
   color: ${(props) =>
-    props.backgroundColour === 'transparent'
+    props.backgroundcolour === 'transparent'
       ? 'white'
       : themeColours.dark_blue};
   text-shadow: ${(props) =>
-    props.backgroundColour === 'transparent' ? '2px 3px 0 #7A7A7A' : 'none'};
+    props.backgroundcolour === 'transparent' ? '2px 3px 0 #7A7A7A' : 'none'};
   width: 80px;
 
   &:active {
@@ -97,15 +97,15 @@ function Header() {
   }, [window.location.pathname]);
 
   return (
-    <Wrapper backgroundColour={backgroundColour}>
+    <Wrapper backgroundcolour={backgroundColour}>
       <Logo
         className="hoverCursor"
         onClick={() => navigate('/discover')}></Logo>
       <NavLinkWrapper>
-        <SubNavLink backgroundColour={backgroundColour} to="/discover">
+        <SubNavLink backgroundcolour={backgroundColour} to="/discover">
           Discover
         </SubNavLink>
-        <SubNavLink backgroundColour={backgroundColour} to="/dashboard">
+        <SubNavLink backgroundcolour={backgroundColour} to="/dashboard">
           Dashboard
         </SubNavLink>
       </NavLinkWrapper>

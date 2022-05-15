@@ -356,6 +356,7 @@ function StaticPlanDetail(props) {
   const [userImage, setUserImage] = useState(null);
   const [showFullImage, setShowFullImage] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
+  const [weatherReady, setWeatherReady] = useState(false);
 
   const navTimelineRef = useRef(null);
   const planImageRef = useRef(null);

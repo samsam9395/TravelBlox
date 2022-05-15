@@ -27,7 +27,7 @@ const LeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 35px;
-  max-width: 750px;
+  width: 750px;
   /* flex-grow: 2; */
 `;
 
