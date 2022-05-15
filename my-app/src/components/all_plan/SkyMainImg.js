@@ -82,81 +82,60 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
-  /* background-color: black; */
 
   .back_img {
-    top: -102px;
+    top: -200px;
     position: absolute;
-    width: 110%;
-    /* height: 100%; */
+    width: 100%;
     object-fit: cover;
-    opacity: 0.95;
+    /* opacity: 0.95; */
     object-position: bottom;
+  }
+`;
+
+const TitleText = styled.div`
+  position: absolute;
+  top: 0;
+  left: 15%;
+  font-size: 8vw;
+  font-weight: 600;
+  min-width: 300px;
+  color: white;
+  text-shadow: 1px 8px 5px #aba8a8, 9px 41px 3px rgb(0 0 0 / 0%);
+  display: flex;
+  flex-direction: column;
+
+  .sub_title {
+    font-size: 2vw;
+    font-weight: 200;
+    margin-top: -10px;
+    text-align: right;
   }
 `;
 
 const SearchContainer = styled.div`
   position: absolute;
-  bottom: 50px;
-  padding: 20px 40px;
-  width: 74%;
+  top: 40%;
+  padding: 30px 40px;
+  width: 70%;
   margin: auto;
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.22);
   border-radius: 25px;
   box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
   backdrop-filter: blur(3px);
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    width: 100%;
+    width: 60%;
     margin: none;
   }
 `;
 
-const CallToActionText = styled.div`
-  font-size: 36px;
-  font-weight: 600;
-  min-width: 300px;
-  color: white;
-  text-shadow: 1px 8px 5px #aba8a8, 9px 41px 3px rgb(0 0 0 / 0%);
-
-  .text_where {
-    font-size: 48px;
-  }
-
-  .text_are_you {
-    text-align: center;
-    padding-left: 30px;
-  }
-
-  .text_heading_to {
-    display: flex;
-    align-items: center;
-  }
-  .text_heading {
-    font-size: 40px;
-    margin-right: 20px;
-    font-style: italic;
-    color: ${themeColours.light_orange};
-    text-shadow: 3px 7px 5px #ffffff7a, 9px 41px 3px rgb(0 0 0 / 0%);
-  }
-  @media (max-width: 768px) {
-    margin-bottom: 30px;
-    width: 70%;
-    line-height: 2em;
-
-    .text_are_you {
-      text-align: right;
-      padding-left: 30px;
-    }
-  }
-`;
-
 const SearchInputMUI = styled(TextField)({
+  'padding-left': '20px',
   '& .MuiInputBase-input': {
-    color: '#fff', // Text color
+    color: 'black', // Text color
   },
   '& .MuiInput-underline:before': {
     borderBottomColor: '#fff8', // Semi-transparent underline
@@ -196,16 +175,14 @@ function SkyMainImg({ inputValue, setInputValue }) {
         </div>
       </CloudsContainer>
 
+      <TitleText>
+        Discover.
+        <div className="sub_title"> {'\u2E3A'} Your next journey</div>
+      </TitleText>
+
       <SearchContainer>
-        <CallToActionText>
-          <div className="text_where">Where</div>
-          <div className="text_are_you">are you</div>{' '}
-          <div className="text_heading_to">
-            {' '}
-            <div className="text_heading">heading</div>?
-          </div>
-        </CallToActionText>
         <SearchInputMUI
+          placeholder="Search travel plans by country, title or author"
           variant="standard"
           fullWidth
           id="standard-adornment-amount"
@@ -215,7 +192,7 @@ function SkyMainImg({ inputValue, setInputValue }) {
             startAdornment: (
               <SearchIcon
                 position="start"
-                style={{ color: themeColours.light_orange }}>
+                style={{ color: '#fb7f24', fontSize: '30px' }}>
                 Search
               </SearchIcon>
             ),

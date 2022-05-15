@@ -97,10 +97,6 @@ function Allplans(props) {
     <>
       <FullLoading opacity={loadindOpacity} />
       <SkyMainImg setInputValue={setInputValue} inputValue={inputValue} />
-      {/* <MainImgContainer>
-        <MainImg src={discoverMainImg}></MainImg>
-      </MainImgContainer> */}
-
       <PlanCollectionWrapper>
         {displayPlans.map((planInfo, index) => (
           <PublicPlanCard

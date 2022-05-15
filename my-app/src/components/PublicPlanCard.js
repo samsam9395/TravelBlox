@@ -48,19 +48,13 @@ const SinglePlanText = styled.div`
   top: 45%;
 `;
 
-// const SinglePlanSubInfo = styled.div`
-//   color: #fff;
-//   font-size: 0.8em;
-//   position: relative;
-//   top: 60%;
-// `;
-
 const PlanMainImageContainer = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
   margin: auto;
   overflow: hidden;
+  border-radius: 10px;
 
   .content-overlay {
     background: rgba(0, 0, 0, 0.7);
