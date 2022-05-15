@@ -105,6 +105,7 @@ function FavFolderDropdown({
   setAddedTimeBlock,
   startDateValue,
   currentUserId,
+  setShowFavContainer,
 }) {
   const [favPlansNameList, setFavPlansNameList] = useState([]);
   // const [showFavPlans, setShowFavPlans] = useState(false);
@@ -114,8 +115,8 @@ function FavFolderDropdown({
   const [showSecondLayer, setShowSecondLayer] = useState(false);
   const [showImportBtn, setShowImportBtn] = useState(false);
 
-  console.log('favPlansNameList', favPlansNameList);
-  console.log('dropDownFavFolderOption', dropDownFavFolderOption);
+  // console.log('favPlansNameList', favPlansNameList);
+  // console.log('dropDownFavFolderOption', dropDownFavFolderOption);
 
   useEffect(async () => {
     const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
@@ -215,6 +216,7 @@ function FavFolderDropdown({
         }
         console.log('Successfully imported!');
         Swal.fire('Successfully imported!');
+        setShowFavContainer(false);
       } catch (error) {
         console.log(error);
       }

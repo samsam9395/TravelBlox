@@ -35,6 +35,7 @@ import '../favourite/favDropDown.scss';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
+import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
@@ -145,6 +146,8 @@ function EditPlanDetail(props) {
   const [endInitDateValue, setEndInitDateValue] = useState(0);
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
+
   // import
 
   const [showFavPlans, setShowFavPlans] = useState(false);
@@ -234,8 +237,15 @@ function EditPlanDetail(props) {
     listenToSnapShot(setMyEvents, planDocRef);
   }, []);
 
+  useEffect(() => {
+    if (mainImage && startDateValue) {
+      setLoadindOpacity(0);
+    }
+  }, [mainImage, startDateValue]);
+
   return (
     <Wrapper>
+      <FullLoading opacity={loadindOpacity} />
       {showPopUp && (
         <AddNewTimeBlock
           setShowPopUp={setShowPopUp}
@@ -288,7 +298,7 @@ function EditPlanDetail(props) {
             planTitle={planTitle}
           />
 
-          {endDateValue && startDateValue ? (
+          {endDateValue && startDateValue && (
             <DatePicker
               setStartDateValue={setStartDateValue}
               setEndDateValue={setEndDateValue}
@@ -296,15 +306,6 @@ function EditPlanDetail(props) {
               endDateValue={endDateValue}
               startInitDateValue={startInitDateValue}
               endInitDateValue={endInitDateValue}
-            />
-          ) : (
-            <DatePicker
-              setStartDateValue={setStartDateValue}
-              setEndDateValue={setEndDateValue}
-              startDateValue={new Date()}
-              endDateValue={new Date()}
-              startInitDateValue={new Date()}
-              endInitDateValue={new Date()}
             />
           )}
 
@@ -351,7 +352,7 @@ function EditPlanDetail(props) {
       <CalendarContainer>
         {/* <div className="background_line"></div> */}
         <CalendarColourBackground></CalendarColourBackground>
-
+        {console.log(111, startDateValue, 'startDateValue')}
         {startDateValue ? (
           <PlanCalendar
             setImportData={setImportData}
@@ -393,6 +394,7 @@ function EditPlanDetail(props) {
               planDocRef={planDocRef}
               startDateValue={startDateValue}
               currentUserId={currentUserId}
+              setShowFavContainer={setShowFavContainer}
             />
           )}
 

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import bg from '../../images/parallx_img_layers/bg_full.png';
 import mountain from '../../images/parallx_img_layers/mountain.png';
 import tree from '../../images/parallx_img_layers/tree_long.png';
-import orangeCar from '../../images/parallx_img_layers/orange_car.jpg';
 
 const SectionWrapper = styled.div`
   height: 100vh;
