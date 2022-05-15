@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import logo from '../../images/main-logo.png';
+import logo from '../../images/main-logo-transparent.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { themeColours } from '../../styles/globalTheme';
 
@@ -11,35 +11,37 @@ const Wrapper = styled.div`
   width: 100%;
   position: fixed;
   top: 0;
-  background-color: white;
-  border-bottom: 2px solid ${themeColours.pale};
+  background-color: ${(props) => props.backgroundColour};
+  border-bottom: ${(props) =>
+    props.backgroundColour === 'white'
+      ? `2px solid ${themeColours.pale}`
+      : 'none'};
   padding: 0px 40px;
   z-index: 100;
 `;
 
-const NavLink = styled.div`
-  &:active,
-  &:visited {
-    text-decoration: none;
-  }
-  width: 80px;
-`;
-
 const SubNavLink = styled(Link)`
   text-decoration: none;
-  color: ${themeColours.dark_blue};
+  font-weight: 600;
+  color: ${(props) =>
+    props.backgroundColour === 'transparent'
+      ? 'white'
+      : themeColours.dark_blue};
+  text-shadow: ${(props) =>
+    props.backgroundColour === 'transparent' ? '2px 3px 0 #7A7A7A' : 'none'};
   width: 80px;
+
   &:active {
     text-decoration: none;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
   &:visited {
     text-decoration: none;
-    color: inherit;
+    color: 'red';
   }
   &:hover {
     cursor: pointer;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
 `;
 
@@ -55,22 +57,42 @@ const NavLinkWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
 `;
+
 function Header() {
   const navigate = useNavigate();
+  const [backgroundColour, setBackgroundColour] = useState('transparent');
+
+  useEffect(() => {
+    var scrollTrigger = 60;
+
+    window.onscroll = function () {
+      // We add pageYOffset for compatibility with IE.
+      if (
+        window.scrollY >= scrollTrigger ||
+        window.pageYOffset >= scrollTrigger
+      ) {
+        setBackgroundColour('white');
+      }
+
+      if (window.scrollY == 0) {
+        //user scrolled to the top of the page
+        setBackgroundColour('transparent');
+      }
+    };
+  }, []);
 
   return (
-    <Wrapper>
+    <Wrapper backgroundColour={backgroundColour}>
       <Logo
         className="hoverCursor"
         onClick={() => navigate('/discover')}></Logo>
       <NavLinkWrapper>
-        {/* <NavLink>
-         
-        </NavLink>
-        <NavLink> */}
-        <SubNavLink to="/discover">Discover</SubNavLink>
-        <SubNavLink to="/dashboard">Dashboard</SubNavLink>
-        {/* </NavLink> */}
+        <SubNavLink backgroundColour={backgroundColour} to="/discover">
+          Discover
+        </SubNavLink>
+        <SubNavLink backgroundColour={backgroundColour} to="/dashboard">
+          Dashboard
+        </SubNavLink>
       </NavLinkWrapper>
     </Wrapper>
   );
