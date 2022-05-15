@@ -26,7 +26,7 @@ const ApiKey = googleAPI();
 const db = firebaseDB();
 
 const ContentWrapper = styled.div`
-  padding: 100px 80px 150px 80px;
+  padding: 70px 80px 100px 80px;
   overflow: hidden;
 `;
 

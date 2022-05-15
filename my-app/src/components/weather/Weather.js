@@ -5,7 +5,6 @@ import './weather.scss';
 import { themeColours, fonts } from '../../styles/globalTheme';
 import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
 import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
-import { ReactComponent as WatercolourBlue } from '../../images/static/watercolour_blue2.svg';
 
 const WeatherCard = styled.div`
   max-width: 300px;

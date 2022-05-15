@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import blueSky from '../../images/all_plan/blue_sky.jpg';
+// import blueSky from '../../images/all_plan/blue_sky.jpg';
+import blueSky from '../../images/all_plan/orange_sky_brushed4.png';
 import { themeColours } from '../../styles/globalTheme';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
@@ -13,6 +14,15 @@ import cloudSmallFour from '../../images/all_plan/cloud_4@4x.png';
 const cloudAnimation = keyframes`
 0% {
     margin-left: -600px;
+}
+100% {
+    margin-left: 100%;
+}
+`;
+
+const cloudAnimationMiddle = keyframes`
+0% {
+    margin-left: -500px;
 }
 100% {
     margin-left: 100%;
@@ -32,7 +42,7 @@ const CloudsContainer = styled.div`
   }
 
   .cloud2 {
-    animation: ${cloudAnimation} 195s linear infinite;
+    animation: ${cloudAnimationMiddle} 195s linear infinite;
     transform: scale(0.4);
     position: absolute;
     top: -90px;
@@ -47,7 +57,7 @@ const CloudsContainer = styled.div`
   }
 
   .cloud4 {
-    animation: ${cloudAnimation} 65s linear infinite;
+    animation: ${cloudAnimationMiddle} 65s linear infinite;
     transform: scale(0.4);
     position: absolute;
     /* bottom: -98px; */
@@ -64,20 +74,24 @@ const CloudsContainer = styled.div`
 
 const Wrapper = styled.div`
   width: 105vw;
-  top: -38px;
   left: -100px;
-  height: 460px;
+  height: 530px;
+  /* top: -38px;
+  left: -100px;
+  height: 460px; */
   position: relative;
   display: flex;
   justify-content: center;
-  background-color: black;
+  /* background-color: black; */
 
   .back_img {
+    top: -102px;
     position: absolute;
     width: 110%;
-    height: 100%;
+    /* height: 100%; */
     object-fit: cover;
     opacity: 0.95;
+    object-position: bottom;
   }
 `;
 
@@ -141,25 +155,22 @@ const CallToActionText = styled.div`
 `;
 
 const SearchInputMUI = styled(TextField)({
-  '& label.Mui-focused': {
-    color: themeColours.light_orange,
+  '& .MuiInputBase-input': {
+    color: '#fff', // Text color
+  },
+  '& .MuiInput-underline:before': {
+    borderBottomColor: '#fff8', // Semi-transparent underline
+  },
+  '& .MuiInput-underline:hover:after': {
+    borderBottomColor: themeColours.light_blue, // Solid underline on hover
   },
   '& .MuiInput-underline:after': {
-    borderBottomColor: 'red',
+    borderBottomColor: themeColours.light_blue, // Solid underline on focus
   },
-  // minWidth: '30vw',
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: themeColours.light_orange,
-    },
-  },
-  '&:hover label.Mui-focused': {
-    borderColor: 'yellow',
-  },
-  '&.Mui-focused fieldset': {
-    borderColor: 'green',
-  },
-  // },
+  '.css-1a1fmpi-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled):before':
+    {
+      borderBottomColor: '#fff8',
+    }, //.css-1a1fmpi-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled):before
 });
 
 function SkyMainImg({ inputValue, setInputValue }) {
