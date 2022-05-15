@@ -234,6 +234,7 @@ function SkyMainImg({ inputValue, setInputValue }) {
           id="standard-adornment-amount"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          autoComplete="off"
           InputProps={{
             startAdornment: (
               <SearchIcon
