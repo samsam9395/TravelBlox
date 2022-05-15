@@ -2,8 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalStyle from './styles/globalStyles';
-import Header from './components/general/Header';
-import Footer from './components/general/Footer';
 import { Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import LandingPage from './pages/LandingPage';

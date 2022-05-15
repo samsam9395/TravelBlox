@@ -61,12 +61,13 @@ const NavLinkWrapper = styled.div`
 function Header() {
   const navigate = useNavigate();
   const [backgroundColour, setBackgroundColour] = useState('transparent');
-  // const [startScrollListen, setStartScrollListen] = useState(true);
+  const [startScrollListen, setStartScrollListen] = useState(true);
+
   useEffect(() => {
     var scrollTrigger = 60;
-    if (startScrollListen) {
-      window.onscroll = function () {
-        // We add pageYOffset for compatibility with IE.
+
+    window.onscroll = function () {
+      if (startScrollListen) {
         if (
           window.scrollY >= scrollTrigger ||
           window.pageYOffset >= scrollTrigger
@@ -78,18 +79,22 @@ function Header() {
           //user scrolled to the top of the page
           setBackgroundColour('transparent');
         }
-      };
-    }
-  }, []);
+      } else {
+        setBackgroundColour('white');
+      }
+    };
+  }, [startScrollListen]);
 
   useEffect(() => {
-    if (!window.location.href.includes('/discover')) {
-      console.log('did not includes!', window.location.href);
+    console.log(window.location.pathname);
+    if (window.location.pathname !== '/discover') {
       setStartScrollListen(false);
+      setBackgroundColour('white');
     } else {
       setStartScrollListen(true);
+      setBackgroundColour('transparent');
     }
-  }, []);
+  }, [window.location.pathname]);
 
   return (
     <Wrapper backgroundColour={backgroundColour}>
