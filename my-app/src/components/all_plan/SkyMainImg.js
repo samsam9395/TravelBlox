@@ -13,7 +13,7 @@ import cloudSmallFour from '../../images/all_plan/cloud_4@4x.png';
 
 const cloudAnimation = keyframes`
 0% {
-    margin-left: -600px;
+    margin-left: -650px;
 }
 100% {
     margin-left: 100%;
@@ -35,14 +35,14 @@ const CloudsContainer = styled.div`
   position: relative;
 
   .cloud1 {
-    animation: ${cloudAnimation} 155s linear infinite;
+    animation: ${cloudAnimation} 125s linear infinite;
     transform: scale(0.5);
     position: absolute;
     top: -52px;
   }
 
   .cloud2 {
-    animation: ${cloudAnimationMiddle} 195s linear infinite;
+    animation: ${cloudAnimationMiddle} 185s linear infinite;
     transform: scale(0.4);
     position: absolute;
     top: -90px;
@@ -68,7 +68,34 @@ const CloudsContainer = styled.div`
     animation: ${cloudAnimation} 35s linear infinite;
     transform: scale(0.5);
     position: absolute;
-    top: 105px;
+    top: 65px;
+  }
+
+  @media (max-width: 768px) {
+    .cloud1 {
+      transform: scale(0.4);
+      top: -138px;
+    }
+
+    .cloud2 {
+      transform: scale(0.3);
+      top: -180px;
+    }
+
+    .cloud3 {
+      transform: scale(0.3);
+      bottom: -64px;
+    }
+
+    .cloud4 {
+      transform: scale(0.3);
+      top: -31px;
+    }
+
+    .cloud5 {
+      transform: scale(0.4);
+      top: 85px;
+    }
   }
 `;
 
@@ -87,9 +114,20 @@ const Wrapper = styled.div`
     top: -200px;
     position: absolute;
     width: 100%;
+    height: 780px;
     object-fit: cover;
     /* opacity: 0.95; */
     object-position: bottom;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 70px;
+    height: 380px;
+
+    .back_img {
+      top: -100px;
+      height: 500px;
+    }
   }
 `;
 
@@ -97,7 +135,7 @@ const TitleText = styled.div`
   position: absolute;
   top: 0;
   left: 15%;
-  font-size: 8vw;
+  font-size: 120px;
   font-weight: 600;
   min-width: 300px;
   color: white;
@@ -106,10 +144,18 @@ const TitleText = styled.div`
   flex-direction: column;
 
   .sub_title {
-    font-size: 2vw;
+    font-size: 30px;
     font-weight: 200;
     margin-top: -10px;
     text-align: right;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 70px;
+
+    .sub_title {
+      font-size: 20px;
+    }
   }
 `;
 

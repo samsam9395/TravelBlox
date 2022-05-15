@@ -17,7 +17,7 @@ const PlanCollectionWrapper = styled.div`
   box-sizing: content-box;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 30px 0;
+  /* margin: 30px 0; */
 
   .empty_notification {
     font-size: 20px;
@@ -41,17 +41,18 @@ const PlanCollectionWrapper = styled.div`
 
 // defaultImg={defaultImg}
 function Allplans(props) {
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
   const [allPlansList, setAllPlansList] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [displayPlans, setDisplayPlans] = useState([]);
+
   const [discoverMainImg, setDiscoverMainImg] = useState('');
-  const [loadindOpacity, setLoadindOpacity] = useState(1);
+
   const [emptyMatch, setEmptyMatch] = useState(false);
+
+  const [displayPlans, setDisplayPlans] = useState([]);
 
   useEffect(async () => {
     const allPlans = await getDocs(collection(db, 'allPlans'));
-    // console.log(allPlans);
-
     if (allPlans.docs.length === 0) {
       console.log('No plans yet!');
     } else {
@@ -75,31 +76,32 @@ function Allplans(props) {
   }, [discoverMainImg]);
 
   useEffect(() => {
-    let list = [];
-    // console.log(10, allPlansList);
-    allPlansList.map((e) => {
-      console.log(33, e.title, e.country.label);
-
-      if (e.author === inputValue.toLowerCase()) {
-        setEmptyMatch(false);
-        list.push(e);
-        setDisplayPlans(list);
-      } else if (e.title.toLowerCase().includes(inputValue.toLowerCase())) {
-        setEmptyMatch(false);
-        list.push(e);
-        setDisplayPlans(list);
-      } else if (e.country.label?.toLowerCase() === inputValue.toLowerCase()) {
-        setEmptyMatch(false);
-        list.push(e);
-
-        setDisplayPlans(list);
-      } else {
-        setDisplayPlans([]);
-        setEmptyMatch(true);
-      }
-      console.log(displayPlans);
-    });
+    if (inputValue !== '') {
+      const filteredData = allPlansList.filter((item) => {
+        // return item.title.toLowerCase().startsWith(inputValue.toLowerCase());
+        if (
+          item.title.toLowerCase().includes(inputValue.toLowerCase()) ||
+          item.country.label
+            ?.toLowerCase()
+            .includes(inputValue.toLowerCase()) ||
+          item.author.toLowerCase().includes(inputValue.toLowerCase())
+        ) {
+          return item;
+        }
+      });
+      setDisplayPlans(filteredData);
+    } else {
+      setDisplayPlans(allPlansList);
+    }
   }, [inputValue]);
+
+  useEffect(() => {
+    if (displayPlans.length < 1) {
+      setEmptyMatch(true);
+    } else {
+      setEmptyMatch(false);
+    }
+  }, [displayPlans]);
 
   return (
     <>

@@ -61,24 +61,34 @@ const NavLinkWrapper = styled.div`
 function Header() {
   const navigate = useNavigate();
   const [backgroundColour, setBackgroundColour] = useState('transparent');
-
+  // const [startScrollListen, setStartScrollListen] = useState(true);
   useEffect(() => {
     var scrollTrigger = 60;
+    if (startScrollListen) {
+      window.onscroll = function () {
+        // We add pageYOffset for compatibility with IE.
+        if (
+          window.scrollY >= scrollTrigger ||
+          window.pageYOffset >= scrollTrigger
+        ) {
+          setBackgroundColour('white');
+        }
 
-    window.onscroll = function () {
-      // We add pageYOffset for compatibility with IE.
-      if (
-        window.scrollY >= scrollTrigger ||
-        window.pageYOffset >= scrollTrigger
-      ) {
-        setBackgroundColour('white');
-      }
+        if (window.scrollY == 0) {
+          //user scrolled to the top of the page
+          setBackgroundColour('transparent');
+        }
+      };
+    }
+  }, []);
 
-      if (window.scrollY == 0) {
-        //user scrolled to the top of the page
-        setBackgroundColour('transparent');
-      }
-    };
+  useEffect(() => {
+    if (!window.location.href.includes('/discover')) {
+      console.log('did not includes!', window.location.href);
+      setStartScrollListen(false);
+    } else {
+      setStartScrollListen(true);
+    }
   }, []);
 
   return (
