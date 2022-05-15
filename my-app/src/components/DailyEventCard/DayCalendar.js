@@ -5,6 +5,8 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import styled from 'styled-components';
 import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
+import { themeColours } from '../../styles/globalTheme';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 const db = firebaseDB();
 
@@ -17,12 +19,14 @@ const SingleDayWrapper = styled.div`
   display: flex;
   margin-bottom: 60px;
   /* height: 2000px; */
+  flex-direction: column;
 `;
 
 const CalendarIndiWrapper = styled.div`
   width: 100%;
   height: 500px;
   display: flex;
+
   margin-right: 35px;
   /* max-width: 750px; */
   /* flex-grow: 2; */
@@ -33,6 +37,12 @@ const DayScheduleContainer = styled.div`
   margin-bottom: 30px;
   display: flex;
   width: 100%;
+`;
+
+const SmallNotice = styled.div`
+  font-size: 14px;
+  color: ${themeColours.orange_grey};
+  margin: 50px 20px;
 `;
 
 export default function DayCalendar({
@@ -84,8 +94,7 @@ export default function DayCalendar({
     <SingleDayWrapper>
       <CalendarIndiWrapper>
         <DayScheduleContainer>
-          {/* {hasReturned ? ( */}
-          {allPlansList && currentDayDate && (
+          {allPlansList && currentDayDate ? (
             <Calendar
               defaultDate={currentDayDate}
               localizer={localizer}
@@ -96,14 +105,28 @@ export default function DayCalendar({
               onSelectEvent={handleSelectEvent}
               // toolbar={false}
             />
+          ) : (
+            <BeatLoader color={themeColours.milktea} size={8}></BeatLoader>
           )}
-          {/* ) : (
-                <Box sx={{ display: 'flex' }} align="center" justify="center">
-                  <CircularProgress size={14} sx={{ py: 2 }} />
-                </Box>
-              )} */}
+          {/*           
+          {allPlansList && currentDayDate && (
+            <Calendar
+              defaultDate={currentDayDate}
+              localizer={localizer}
+              events={allPlansList}
+              startAccessor="start"
+              endAccessor="end"
+              defaultView={Views.AGENDA}
+              onSelectEvent={handleSelectEvent}
+              // toolbar={false}
+            />
+          )} */}
         </DayScheduleContainer>
       </CalendarIndiWrapper>
+      <SmallNotice>
+        Try click on the even timeblock, it will redirect you to its detail
+        information!
+      </SmallNotice>
     </SingleDayWrapper>
   );
 

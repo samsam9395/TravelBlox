@@ -25,7 +25,10 @@ const db = firebaseDB();
 
 const ContentWrapper = styled.div`
   padding: 70px 80px 100px 80px;
-  overflow: hidden;
+  min-height: 300px;
+  /* overflow: hidden; */
+  /* overflow-x: hidden;
+  overflow-y: scroll; */
 `;
 
 function App() {
@@ -99,7 +102,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route
               path="/discover"
-              element={<Allplans defaultImg={defaultImg} />}
+              element={<Allplans defaultImg={defaultImg} user={user} />}
             />
           </Routes>
         </Wrapper>

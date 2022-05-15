@@ -16,6 +16,7 @@ import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
 import FullLoading from '../components/general/FullLoading';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 const db = firebaseDB();
 
@@ -306,7 +307,7 @@ const SwitchTab = styled.div`
     color: rgb(0 33 58 / 60%);
   }
 
-  .tab_map {
+  .tab_calendar {
     color: ${themeColours.dark_blue};
     font-weight: 600;
     border-bottom: 1px solid ${themeColours.dark_blue};
@@ -340,7 +341,7 @@ function StaticPlanDetail(props) {
   const [timestampList, setTimestampList] = useState([]);
   const [showfavDropDown, setShowFavDropDown] = useState(false);
   // const [selectedFavFolder, setSelectedFavFolder] = useState('');
-  const [showTab, setShowTab] = useState('route');
+  const [showTab, setShowTab] = useState('calendar');
   const [stopTimelineNav, settopTimelineNav] = useState(false);
   const planCollectionRef = doc(db, 'plans', planDocRef);
   const itemEls = useRef(new Array());
@@ -529,7 +530,7 @@ function StaticPlanDetail(props) {
   }
 
   useEffect(() => {
-    if (mainImage && authorName) {
+    if (mainImage && authorName && timestampList.length !== 0) {
       setLoadindOpacity(0);
     }
   }, [mainImage, authorName]);
@@ -616,8 +617,17 @@ function StaticPlanDetail(props) {
 
       <SwitchTab>
         <div
+          ref={navTabCalendar}
+          className="tab tab_calendar"
+          onClick={() => {
+            toSiwtchTab('calendar', navTabCalendar);
+            settopTimelineNav(true);
+          }}>
+          Calendar
+        </div>
+        <div
           ref={navTabMap}
-          className="tab tab_map"
+          className="tab "
           onClick={() => {
             toSiwtchTab('route', navTabMap);
             settopTimelineNav(false);
@@ -632,15 +642,6 @@ function StaticPlanDetail(props) {
             settopTimelineNav(false);
           }}>
           Day by Day
-        </div>
-        <div
-          ref={navTabCalendar}
-          className="tab"
-          onClick={() => {
-            toSiwtchTab('calendar', navTabCalendar);
-            settopTimelineNav(true);
-          }}>
-          Calendar
         </div>
       </SwitchTab>
 
@@ -678,7 +679,7 @@ function StaticPlanDetail(props) {
                 />
               );
             })}
-          {showTab === 'calendar' && (
+          {showTab === 'calendar' && timestampList[0] != 'Invalid Date' && (
             <DayCalendar
               planDocRef={planDocRef}
               currentDayDate={timestampList[0]}

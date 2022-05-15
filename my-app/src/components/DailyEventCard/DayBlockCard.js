@@ -8,6 +8,7 @@ import DayMapCard from './DayMapCard';
 import DayCalendar from './DayCalendar';
 import Weather from '../weather/Weather';
 import { themeColours } from '../../styles/globalTheme';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 const db = firebaseDB();
 

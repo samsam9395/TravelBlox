@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { getDocs, collection, getDoc, doc } from 'firebase/firestore';
+import {
+  getDocs,
+  collection,
+  getDoc,
+  doc,
+  query,
+  where,
+} from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
 import { themeColours } from '../styles/globalTheme';
 import FullLoading from '../components/general/FullLoading';
 import SkyMainImg from '../components/all_plan/SkyMainImg';
+import Swal from 'sweetalert2';
+import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -16,9 +25,8 @@ const PlanCollectionWrapper = styled.div`
   width: 100%;
   box-sizing: content-box;
   flex-wrap: wrap;
-  justify-content: center;
-  /* margin: 30px 0; */
-
+  justify-content: flex-start;
+  transform: translate(5%, 0%);
   .empty_notification {
     font-size: 20px;
   }
@@ -46,13 +54,25 @@ function Allplans(props) {
   const [inputValue, setInputValue] = useState('');
 
   const [discoverMainImg, setDiscoverMainImg] = useState('');
-
   const [emptyMatch, setEmptyMatch] = useState(false);
-
   const [displayPlans, setDisplayPlans] = useState([]);
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (!props.user) {
+  //     Swal.fire('Please login first!');
+  //     navigate('/');
+  //   }
+  // }, []);
 
   useEffect(async () => {
-    const allPlans = await getDocs(collection(db, 'allPlans'));
+    // const allPlans = await getDocs(collection(db, 'allPlans'));
+    const allPlansRef = collection(db, 'allPlans');
+    const q = query(allPlansRef, where('published', '==', true));
+    const allPlans = await getDocs(q);
+
+    console.log(77, allPlans);
+
     if (allPlans.docs.length === 0) {
       console.log('No plans yet!');
     } else {

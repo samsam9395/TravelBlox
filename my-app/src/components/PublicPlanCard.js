@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 const SinglePlanContainer = styled.div`
-  width: 300px;
-  height: 300px;
+  width: 320px;
+  height: 320px;
   object-fit: contain;
   display: flex;
   align-items: center;

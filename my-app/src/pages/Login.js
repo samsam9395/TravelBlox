@@ -103,6 +103,8 @@ async function signUP(email, password, username) {
         setDoc(doc(db, 'userId', emailId), {
           id: emailId,
           username: username,
+          userImage:
+            'https://is4-ssl.mzstatic.com/image/thumb/Purple125/v4/79/77/67/7977678c-89be-76ff-b9f3-cdc560170cb6/source/256x256bb.jpg',
         });
         return emailId;
       })

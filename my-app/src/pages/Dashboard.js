@@ -360,10 +360,10 @@ function Dashboard(props) {
   const uploadIconRef = useRef(null);
 
   useEffect(() => {
-    if (userImage) {
+    if (userName) {
       setLoadindOpacity(0);
     }
-  }, [userImage]);
+  }, [userName]);
 
   useEffect(async () => {
     if (!props.user) {
