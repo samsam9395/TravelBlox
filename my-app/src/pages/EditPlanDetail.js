@@ -149,7 +149,6 @@ function EditPlanDetail(props) {
   const [loadindOpacity, setLoadindOpacity] = useState(1);
 
   // import
-
   const [showFavPlans, setShowFavPlans] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState('');
   const [importData, setImportData] = useState({});

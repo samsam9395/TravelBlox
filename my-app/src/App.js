@@ -27,8 +27,8 @@ const ContentWrapper = styled.div`
   padding: 70px 80px 100px 80px;
   min-height: 300px;
   /* overflow: hidden; */
-  /* overflow-x: hidden;
-  overflow-y: scroll; */
+  overflow-x: hidden;
+  /* overflow-y: scroll;  */
 `;
 
 function App() {
