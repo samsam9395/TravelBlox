@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getDocs, collection, getDoc, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
@@ -20,6 +18,10 @@ const PlanCollectionWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   margin: 30px 0;
+
+  .empty_notification {
+    font-size: 20px;
+  }
 `;
 
 // const MainImgContainer = styled.div`
@@ -44,6 +46,7 @@ function Allplans(props) {
   const [displayPlans, setDisplayPlans] = useState([]);
   const [discoverMainImg, setDiscoverMainImg] = useState('');
   const [loadindOpacity, setLoadindOpacity] = useState(1);
+  const [emptyMatch, setEmptyMatch] = useState(false);
 
   useEffect(async () => {
     const allPlans = await getDocs(collection(db, 'allPlans'));
@@ -73,21 +76,26 @@ function Allplans(props) {
 
   useEffect(() => {
     let list = [];
-
+    // console.log(10, allPlansList);
     allPlansList.map((e) => {
-      // console.log(222, e.country.label);
+      console.log(33, e.title, e.country.label);
+
       if (e.author === inputValue.toLowerCase()) {
-        // console.log('its equal!!! ', e);
+        setEmptyMatch(false);
         list.push(e);
         setDisplayPlans(list);
       } else if (e.title.toLowerCase().includes(inputValue.toLowerCase())) {
-        // console.log('title includes ', e);
+        setEmptyMatch(false);
         list.push(e);
         setDisplayPlans(list);
-      } else if (e.country.label.toLowerCase() === inputValue.toLowerCase()) {
-        // console.log('country is equal!!! ', e);
+      } else if (e.country.label?.toLowerCase() === inputValue.toLowerCase()) {
+        setEmptyMatch(false);
         list.push(e);
+
         setDisplayPlans(list);
+      } else {
+        setDisplayPlans([]);
+        setEmptyMatch(true);
       }
       console.log(displayPlans);
     });
@@ -98,6 +106,11 @@ function Allplans(props) {
       <FullLoading opacity={loadindOpacity} />
       <SkyMainImg setInputValue={setInputValue} inputValue={inputValue} />
       <PlanCollectionWrapper>
+        {emptyMatch && (
+          <div className="empty_notification">
+            Oops, no results were found. Please try another search.
+          </div>
+        )}
         {displayPlans.map((planInfo, index) => (
           <PublicPlanCard
             planInfo={planInfo}
