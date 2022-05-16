@@ -20,14 +20,36 @@ import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
-const Wrapper = styled.div`
-  position: relative;
+const WidthWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  left: -80px;
+  position: absolute;
+  top: -20px;
 
   .milktea_svg_long {
     position: absolute;
-    right: -144px;
-    top: -45px;
+    right: -34px;
+    /* top: -45px; */
   }
+`;
+
+const UpperPartBackground = styled.div`
+  background-color: ${themeColours.milktea};
+  border: none;
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  z-index: -100;
+  border-radius: 50%;
+  right: -333px;
+  top: -209px;
+`;
+
+const Wrapper = styled.div`
+  position: relative;
+  padding-top: 20px;
 `;
 
 const Sparkles = styled.div`
@@ -54,18 +76,6 @@ const Sparkles = styled.div`
     right: 200px;
     top: -85px;
   }
-`;
-
-const UpperPartBackground = styled.div`
-  background-color: ${themeColours.milktea};
-  border: none;
-  width: 400px;
-  height: 400px;
-  position: absolute;
-  z-index: -100;
-  border-radius: 50%;
-  right: -333px;
-  top: -209px;
 `;
 
 const TopSectionWrapper = styled.div`
@@ -430,8 +440,10 @@ function Dashboard(props) {
   return (
     <Wrapper>
       <FullLoading opacity={loadindOpacity} />
-      <UpperPartBackground></UpperPartBackground>
-      <YourSvg className="milktea_svg_long"></YourSvg>
+      <WidthWrapper>
+        <UpperPartBackground></UpperPartBackground>
+        <YourSvg className="milktea_svg_long"></YourSvg>
+      </WidthWrapper>
 
       <TopSectionWrapper>
         <img className="sparkle_left" src={sparkle} alt="" />

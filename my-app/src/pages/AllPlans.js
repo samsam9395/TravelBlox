@@ -19,6 +19,11 @@ import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
+const WidthWrapper = styled.div`
+  width: 100%;
+  overflow-x: hidden;
+`;
+
 const PlanCollectionWrapper = styled.div`
   display: flex;
   padding: 15px;
@@ -26,7 +31,7 @@ const PlanCollectionWrapper = styled.div`
   box-sizing: content-box;
   flex-wrap: wrap;
   justify-content: flex-start;
-  transform: translate(5%, 0%);
+  /* transform: translate(5%, 0%); */
   .empty_notification {
     font-size: 20px;
   }
@@ -126,7 +131,10 @@ function Allplans(props) {
   return (
     <>
       <FullLoading opacity={loadindOpacity} />
-      <SkyMainImg setInputValue={setInputValue} inputValue={inputValue} />
+      <WidthWrapper>
+        <SkyMainImg setInputValue={setInputValue} inputValue={inputValue} />
+      </WidthWrapper>
+
       <PlanCollectionWrapper>
         {emptyMatch && (
           <div className="empty_notification">
