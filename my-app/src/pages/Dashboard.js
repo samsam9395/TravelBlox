@@ -26,7 +26,7 @@ const WidthWrapper = styled.div`
   overflow-x: hidden;
   left: -80px;
   position: absolute;
-  top: -20px;
+  top: -10px;
 
   .milktea_svg_long {
     position: absolute;
