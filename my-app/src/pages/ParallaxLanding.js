@@ -7,6 +7,7 @@ import bird from '../images/parallx_img_layers/bird.png';
 import { getDocs, collection } from 'firebase/firestore';
 import Login from './Login';
 import firebaseDB from '../utils/firebaseConfig';
+import { fonts } from '../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -22,19 +23,15 @@ const SectionWrapper = styled.div`
   overflow: hidden;
 `;
 
-const DescriptionText = styled.div`
-  padding: 2rem 20rem;
-  font-size: 1.1rem;
-`;
-
 const MainTtitle = styled.div`
   position: absolute;
-  top: 28%;
+  top: 30%;
   left: 50%;
   font-size: 6rem;
   transform: translate(-50%, -30%);
   color: white;
   z-index: 1;
+  font-weight: 600;
 `;
 
 const BgImg = styled.img`
@@ -92,7 +89,7 @@ const SubSection = styled.div`
   z-index: 2;
   position: absolute;
   background-color: #fff;
-  top: 103%;
+  top: 113%;
 
   ::before {
     content: '';
@@ -125,7 +122,31 @@ const SubSection = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  height: 100px;
+  width: 1000px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  margin: auto;
+
+  .content_section {
+    display: flex;
+    margin-bottom: 50px;
+    height: 200px;
+  }
+
+  .description_text_title {
+    padding: 10px 20px;
+    font-size: 4em;
+    width: 500px;
+    font-family: ${fonts.secondary_font};
+  }
+
+  .description_text {
+    font-size: 1em;
+    text-align: start;
+    width: 600px;
+  }
 `;
 
 function ParallaxLanding({ user, setUser }) {
@@ -173,12 +194,39 @@ function ParallaxLanding({ user, setUser }) {
       </SectionWrapper>
 
       <SubSection>
-        {/* <ContentContainer></ContentContainer> */}
-        {/* <div className="content-images">
-          <DescriptionText>FAVOURITE TRAVEL PLANS</DescriptionText>
-          <DescriptionText>DRAG AND DROP YOUR EVENT</DescriptionText>
-          <DescriptionText>EXPORT AS YOUR OWN CALENDAR</DescriptionText>
-        </div> */}
+        <ContentContainer>
+          <div className="content_section">
+            <div className="description_text_title">
+              DRAG {'\u0026'}
+              <br /> DROP
+            </div>
+            <div className="description_text">
+              Simply drag and drop timeblocks, and your travel schedule is good
+              to go!
+            </div>
+          </div>
+
+          <div className="content_section">
+            <div className="description_text">
+              Wanting to travel, but not sure what attractions or places to go?
+              Discover travel experience and plans shared by others! Favourite
+              them, and customize it into your own!
+            </div>
+            <div className="description_text_title">
+              FAVOURITE {'\u0026'} IMPORT
+            </div>
+          </div>
+
+          <div className="content_section">
+            <div className="description_text_title">PLAN {'\u0026'} EXPORT</div>
+            <div className="description_text">
+              Satisfied with your travel plan? Export to your google calendar,
+              integrate it with your own personal timetable and ready for your
+              trip!
+            </div>
+          </div>
+        </ContentContainer>
+
         <Login
           setHasSignedIn={setHasSignedIn}
           hasSignedIn={hasSignedIn}
