@@ -62,6 +62,7 @@ function Header() {
   const navigate = useNavigate();
   const [backgroundColour, setBackgroundColour] = useState('transparent');
   const [startScrollListen, setStartScrollListen] = useState(true);
+  const [onLandingPage, setOnLandingPage] = useState(false);
 
   useEffect(() => {
     var scrollTrigger = 60;
@@ -79,6 +80,8 @@ function Header() {
           //user scrolled to the top of the page
           setBackgroundColour('transparent');
         }
+      } else if (onLandingPage) {
+        setBackgroundColour('transparent');
       } else {
         setBackgroundColour('white');
       }
@@ -87,13 +90,23 @@ function Header() {
 
   useEffect(() => {
     console.log(window.location.pathname);
-    if (window.location.pathname !== '/discover') {
-      setStartScrollListen(false);
-      setBackgroundColour('white');
-    } else {
+    if (
+      window.location.pathname == '/discover'
+      // || window.location.pathname == '/'
+    ) {
       setStartScrollListen(true);
       setBackgroundColour('transparent');
+    } else {
+      setStartScrollListen(false);
+      setBackgroundColour('white');
     }
+    if (window.location.pathname == '/') {
+      console.log(true);
+      setOnLandingPage(true);
+      setStartScrollListen(false);
+    }
+    console.log(onLandingPage);
+    console.log(333, 'current  colour', backgroundColour, startScrollListen);
   }, [window.location.pathname]);
 
   return (

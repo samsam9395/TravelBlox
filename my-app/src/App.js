@@ -19,6 +19,7 @@ import firebaseDB from './utils/firebaseConfig';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { googleAPI } from './utils/credent';
+import ParallaxLanding from './pages/ParallaxLanding';
 const ApiKey = googleAPI();
 
 const db = firebaseDB();
@@ -74,9 +75,13 @@ function App() {
       <ContentWrapper>
         <Wrapper apiKey={ApiKey} libraries={['places']}>
           <Routes>
-            <Route
+            {/* <Route
               path="/"
               element={<LandingPage user={user} setUser={setUser} />}
+            /> */}
+            <Route
+              path="/"
+              element={<ParallaxLanding user={user} setUser={setUser} />}
             />
             <Route
               path="/edit-plan-detail/:planDocRef"
@@ -98,7 +103,6 @@ function App() {
               }
             />
 
-            {/* <Route path="/autocomplete" element={<AutoCompleteInput />} /> */}
             <Route path="/dashboard" element={<Dashboard user={user} />} />
             <Route
               path="/discover"

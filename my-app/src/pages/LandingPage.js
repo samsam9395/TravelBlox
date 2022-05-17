@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { getDocs, collection } from 'firebase/firestore';
 import Login from './Login';
 import firebaseDB from '../utils/firebaseConfig';
-import ParallaxLanding from './landing_page/ParallaxLanding';
+import ParallaxLanding from './ParallaxLanding';
 
 const db = firebaseDB();
 
@@ -22,6 +22,11 @@ const MainImage = styled.img`
 
 const Space = styled.div`
   /* margin-top: 200px; */
+`;
+
+const SubSectionSample = styled.div`
+  position: relative;
+  padding: 100px;
 `;
 
 function LandingPage(props) {
@@ -47,11 +52,26 @@ function LandingPage(props) {
   return (
     <Wrapper>
       <ParallaxLanding />
-      <Login
+      <SubSectionSample>
+        <p>
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut dolor
+          perferendis atque quisquam ullam inventore, in a doloremque tempora,
+          cumque vero sunt delectus ipsum nemo saepe animi quia tenetur optio!
+          Doloremque, consectetur praesentium accusamus necessitatibus quos
+          vitae unde vero totam, vel repudiandae similique hic sint provident
+          expedita possimus. Dignissimos unde illum commodi cum tenetur ullam
+          possimus repudiandae ipsam sit nobis. Totam eligendi deserunt
+          repellendus illo tempore excepturi molestias. Harum minima qui
+          repudiandae iusto, optio quasi dolorem velit doloremque sunt
+          distinctio dolor praesentium officiis est. Facere ab maiores soluta
+          asperiores ut.
+        </p>
+      </SubSectionSample>
+      {/* <Login
         setHasSignedIn={setHasSignedIn}
         hasSignedIn={hasSignedIn}
         setUser={props.setUser}
-      />
+      /> */}
     </Wrapper>
   );
 }

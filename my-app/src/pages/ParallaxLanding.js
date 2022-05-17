@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import bg from '../../images/parallx_img_layers/bg_full.png';
-import mountain from '../../images/parallx_img_layers/mountain.png';
-import tree from '../../images/parallx_img_layers/tree_long.png';
+import bg from '../images/parallx_img_layers/bg_full.png';
+import mountain from '../images/parallx_img_layers/mountain.png';
+import tree from '../images/parallx_img_layers/tree_long.png';
+import bird from '../images/parallx_img_layers/bird.png';
+import { getDocs, collection } from 'firebase/firestore';
+import Login from './Login';
+import firebaseDB from '../utils/firebaseConfig';
+
+const db = firebaseDB();
 
 const SectionWrapper = styled.div`
+  top: -80px;
+  left: -80px;
   height: 100vh;
   width: 100vw;
-  left: -82px;
+  /* left: -82px; */
   position: relative;
   /* background-color: #e0b99f; */
   background-color: #e0b99f;
+  overflow: hidden;
 `;
 
 const DescriptionText = styled.div`
@@ -20,7 +29,7 @@ const DescriptionText = styled.div`
 
 const MainTtitle = styled.div`
   position: absolute;
-  top: 25%;
+  top: 28%;
   left: 50%;
   font-size: 6rem;
   transform: translate(-50%, -30%);
@@ -46,7 +55,7 @@ const MountainImg = styled.img`
   z-index: -1;
   top: 0;
   position: absolute;
-  top: ${(props) => `${props.scrollvalue * 1}px`};
+  top: ${(props) => `${props.scrollvalue * 1.8}px`};
   z-index: 1;
 `;
 
@@ -57,9 +66,21 @@ const TreeImg = styled.img`
   object-fit: cover;
   z-index: -1;
   position: absolute;
-  bottom: 0;
+  bottom: -96px;
   /* bottom: ${(props) => `${props.scrollvalue * 0.5}px`}; */
   z-index: 2;
+`;
+
+const BirdImg = styled.img`
+  width: 30px;
+  position: absolute;
+  height: 30px;
+  object-fit: cover;
+  z-index: -1;
+  top: 30%;
+  position: absolute;
+  left: ${(props) => `${props.scrollvalue * 1.8 + 20}px`};
+  z-index: 1;
 `;
 
 const SubSection = styled.div`
@@ -71,7 +92,7 @@ const SubSection = styled.div`
   z-index: 2;
   position: absolute;
   background-color: #fff;
-  top: 93%;
+  top: 103%;
 
   ::before {
     content: '';
@@ -107,9 +128,27 @@ const ContentContainer = styled.div`
   height: 100px;
 `;
 
-function ParallaxLanding() {
+function ParallaxLanding({ user, setUser }) {
   const [scrollYValue, setscrollYValue] = useState(0);
-  console.log(scrollYValue);
+  // const [mainImage, setMainImage] = useState(null);
+  const [hasSignedIn, setHasSignedIn] = useState(false);
+
+  // useEffect(async () => {
+  //   const querySnapshot = await getDocs(collection(db, 'main-components'));
+  //   querySnapshot.forEach((doc) => {
+  //     console.log(doc.data().landing_main_img);
+  //     if (doc.data().landing_main_img) {
+  //       setMainImage(doc.data().landing_main_img);
+  //     }
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    if (user) {
+      console.log(user);
+    }
+  }, [user]);
+  // console.log(scrollYValue);
 
   useEffect(() => {
     window.addEventListener(
@@ -130,14 +169,21 @@ function ParallaxLanding() {
 
         <MountainImg src={mountain} scrollvalue={scrollYValue}></MountainImg>
         <TreeImg src={tree} scrollvalue={scrollYValue}></TreeImg>
+        <BirdImg src={bird} scrollvalue={scrollYValue}></BirdImg>
       </SectionWrapper>
+
       <SubSection>
-        <ContentContainer></ContentContainer>
+        {/* <ContentContainer></ContentContainer> */}
         {/* <div className="content-images">
           <DescriptionText>FAVOURITE TRAVEL PLANS</DescriptionText>
           <DescriptionText>DRAG AND DROP YOUR EVENT</DescriptionText>
           <DescriptionText>EXPORT AS YOUR OWN CALENDAR</DescriptionText>
         </div> */}
+        <Login
+          setHasSignedIn={setHasSignedIn}
+          hasSignedIn={hasSignedIn}
+          setUser={setUser}
+        />
       </SubSection>
     </section>
   );
