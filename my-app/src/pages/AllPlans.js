@@ -33,11 +33,12 @@ const PlanCollectionWrapper = styled.div`
   box-sizing: content-box;
   flex-wrap: wrap;
   justify-content: flex-start;
-  /* transform: translate(10%, 0%); */
   .empty_notification {
     font-size: 20px;
   }
 `;
+
+//   /* transform: translate(10%, 0%); */
 
 // const MainImgContainer = styled.div`
 //   width: 100%;
