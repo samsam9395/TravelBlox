@@ -7,7 +7,7 @@ import bird from '../images/parallx_img_layers/bird.png';
 import { getDocs, collection } from 'firebase/firestore';
 import Login from './Login';
 import firebaseDB from '../utils/firebaseConfig';
-import { fonts } from '../styles/globalTheme';
+import { fonts, themeColours } from '../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -32,6 +32,7 @@ const MainTtitle = styled.div`
   color: white;
   z-index: 1;
   font-weight: 600;
+  text-shadow: 0 0 4px #ffffff;
 `;
 
 const BgImg = styled.img`
@@ -131,8 +132,10 @@ const ContentContainer = styled.div`
 
   .content_section {
     display: flex;
-    margin-bottom: 50px;
+    margin-bottom: 70px;
     height: 200px;
+    align-items: center;
+    justify-content: center;
   }
 
   .description_text_title {
@@ -140,13 +143,38 @@ const ContentContainer = styled.div`
     font-size: 4em;
     width: 500px;
     font-family: ${fonts.secondary_font};
+    position: relative;
+
+    .highlight {
+      background-color: #e7ac818f;
+      width: 50%;
+      height: 22%;
+      position: absolute;
+      bottom: 0;
+    }
   }
 
-  .description_text {
+  .mid_title {
+    text-align: center;
+    padding: 10px 20px;
+  }
+
+  .description_text_container {
+    width: 400px;
+
+    .description_text {
+      font-size: 1em;
+      text-align: start;
+
+      /* max-width: 80%; */
+    }
+  }
+
+  /* .description_text {
     font-size: 1em;
     text-align: start;
     width: 600px;
-  }
+  } */
 `;
 
 function ParallaxLanding({ user, setUser }) {
@@ -199,30 +227,44 @@ function ParallaxLanding({ user, setUser }) {
             <div className="description_text_title">
               DRAG {'\u0026'}
               <br /> DROP
+              <div className="highlight"></div>
             </div>
-            <div className="description_text">
-              Simply drag and drop timeblocks, and your travel schedule is good
-              to go!
+            <div className="description_text_container">
+              <div className="description_text">
+                Simply drag and drop timeblocks, and your travel schedule is
+                good to go!
+              </div>
             </div>
           </div>
 
           <div className="content_section">
-            <div className="description_text">
-              Wanting to travel, but not sure what attractions or places to go?
-              Discover travel experience and plans shared by others! Favourite
-              them, and customize it into your own!
+            <div className="description_text_container">
+              <div className="description_text">
+                Wanting to travel, but not sure what attractions or places to
+                go? Discover travel experience and plans shared by others!
+                Favourite them, and customize it into your own!
+              </div>
             </div>
+
+            <div className="description_text_title mid_title">
+              FAVOURITE {'\u0026'}
+              <br />
+              IMPORT
+              <div className="highlight" style={{ left: '25%' }}></div>
+            </div>
+          </div>
+
+          <div className="content_section">
             <div className="description_text_title">
-              FAVOURITE {'\u0026'} IMPORT
+              PLAN {'\u0026'} <br /> EXPORT
+              <div className="highlight"></div>
             </div>
-          </div>
-
-          <div className="content_section">
-            <div className="description_text_title">PLAN {'\u0026'} EXPORT</div>
-            <div className="description_text">
-              Satisfied with your travel plan? Export to your google calendar,
-              integrate it with your own personal timetable and ready for your
-              trip!
+            <div className="description_text_container">
+              <div className="description_text">
+                Satisfied with your travel plan? Export to your google calendar,
+                integrate it with your own personal timetable and ready for your
+                trip!
+              </div>
             </div>
           </div>
         </ContentContainer>
