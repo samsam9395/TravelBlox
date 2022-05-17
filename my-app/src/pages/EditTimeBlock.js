@@ -166,8 +166,6 @@ function EditTimeBlock(props) {
     timeBlockImage
   ) {
     // const location_img = location.photos[0].getUrl();
-    // console.log(location.name);
-    // console.log(111, location);
     if (location.geometry) {
       try {
         await setDoc(

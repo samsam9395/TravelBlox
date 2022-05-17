@@ -150,8 +150,6 @@ function AddNewTimeBlock(props) {
     location,
     timeBlockImage
   ) {
-    // console.log('db', 'plans', planDocRef, 'time_blocks');
-
     const timeBlockRef = doc(
       collection(db, 'plans', planDocRef, 'time_blocks')
     );
@@ -163,11 +161,11 @@ function AddNewTimeBlock(props) {
 
     try {
       await setDoc(timeBlockRef, {
+        // location: location,
         title: blockTitle,
         text: description,
         start: startTimeValue,
         end: endTimeValue,
-        // location: location,
         place_id: location.place_id,
         place_name: location.name,
         place_format_address: location.formatted_address,

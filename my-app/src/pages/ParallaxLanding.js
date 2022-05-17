@@ -9,7 +9,7 @@ import Login from './Login';
 import firebaseDB from '../utils/firebaseConfig';
 import { fonts, themeColours } from '../styles/globalTheme';
 
-const db = firebaseDB();
+// const db = firebaseDB();
 
 const SectionWrapper = styled.div`
   top: -80px;
@@ -101,7 +101,6 @@ const SubSection = styled.div`
     background: linear-gradient(to bottom, #161719 #e0b99f);
     z-index: 100;
   }
-  /* style={{background: "linear-gradient(#e66465, #9198e5);" }} */
 
   .subsection_container {
     display: flex;
@@ -169,12 +168,6 @@ const ContentContainer = styled.div`
       /* max-width: 80%; */
     }
   }
-
-  /* .description_text {
-    font-size: 1em;
-    text-align: start;
-    width: 600px;
-  } */
 `;
 
 function ParallaxLanding({ user, setUser }) {

@@ -4,7 +4,7 @@ import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
 import firebaseDB from '../utils/firebaseConfig';
-import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
+import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
 import { themeColours, LightOrangeBtn, fonts } from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
@@ -201,9 +201,6 @@ const PlanTitleText = styled.div`
   font-weight: 800;
   top: 25%;
   left: 0%;
-  /* top: 14%; */
-  /* left: 26%; */
-  /* transform: translate(-57%, -50%); */
   font-size: 4vw;
   letter-spacing: 3px;
   color: ${themeColours.dark_blue};
@@ -230,33 +227,33 @@ const BtnWrapper = styled.div`
   flex-direction: column;
 `;
 
-const FavFolderAutocompleteWrapper = styled.div`
-  position: absolute;
-  top: 45px;
-  left: 12px;
-  display: flex;
-  align-items: center;
-`;
+// const FavFolderAutocompleteWrapper = styled.div`
+//   position: absolute;
+//   top: 45px;
+//   left: 12px;
+//   display: flex;
+//   align-items: center;
+// `;
 
-const FavFolderAutocomplete = styled(TextField)({
-  '& label.Mui-focused': {
-    color: themeColours.light_orange,
-  },
-  '& .MuiInput-underline:after': {
-    borderBottomColor: themeColours.light_orange,
-  },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: themeColours,
-    },
-    '&:hover fieldset': {
-      borderColor: 'yellow',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: 'green',
-    },
-  },
-});
+// const FavFolderAutocomplete = styled(TextField)({
+//   '& label.Mui-focused': {
+//     color: themeColours.light_orange,
+//   },
+//   '& .MuiInput-underline:after': {
+//     borderBottomColor: themeColours.light_orange,
+//   },
+//   '& .MuiOutlinedInput-root': {
+//     '& fieldset': {
+//       borderColor: themeColours,
+//     },
+//     '&:hover fieldset': {
+//       borderColor: 'yellow',
+//     },
+//     '&.Mui-focused fieldset': {
+//       borderColor: 'green',
+//     },
+//   },
+// });
 
 const ColouredLine = ({ colour }) => (
   <hr
@@ -357,9 +354,8 @@ function StaticPlanDetail(props) {
   const [userImage, setUserImage] = useState(null);
   const [showFullImage, setShowFullImage] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
-  const [weatherReady, setWeatherReady] = useState(false);
 
-  const navTimelineRef = useRef(null);
+  // const navTimelineRef = useRef(null);
   const planImageRef = useRef(null);
 
   function toSiwtchTab(tabName, tabRef) {
@@ -401,7 +397,6 @@ function StaticPlanDetail(props) {
     if (currentUserEmail === author) {
       Swal.fire('Do not favourite your own plan!');
     } else if (selectFavFolder !== '') {
-      // console.log(selectFavFolder);
       const favRef = doc(
         db,
         'userId',
@@ -464,7 +459,6 @@ function StaticPlanDetail(props) {
     setMainImage(data.main_image);
     setStartDate(data.start_date);
     setEndDate(data.end_date);
-    // setHasVitied(data.visited);
     setAuthor(data.author);
   }, []);
 
@@ -521,7 +515,6 @@ function StaticPlanDetail(props) {
 
   if (itemEls.current.length > 0) {
     for (let ref of itemEls.current) {
-      // console.log(223, ref.current);
       if (ref.current === null) {
         let index = itemEls.current.indexOf(ref);
         itemEls.current.splice(index, 1);

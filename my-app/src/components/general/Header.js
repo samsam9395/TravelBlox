@@ -96,17 +96,20 @@ function Header() {
     ) {
       setStartScrollListen(true);
       setBackgroundColour('transparent');
+      setOnLandingPage(false);
+    } else if (window.location.pathname == '/') {
+      console.log('at home', true);
+      setOnLandingPage(true);
+      setBackgroundColour('transparent');
+      setStartScrollListen(false);
     } else {
       setStartScrollListen(false);
       setBackgroundColour('white');
+      setOnLandingPage(false);
     }
-    if (window.location.pathname == '/') {
-      console.log(true);
-      setOnLandingPage(true);
-      setStartScrollListen(false);
-    }
-    console.log(onLandingPage);
-    console.log(333, 'current  colour', backgroundColour, startScrollListen);
+    console.log(startScrollListen);
+    // console.log(onLandingPage);
+    // console.log(333, 'current  colour', backgroundColour, startScrollListen);
   }, [window.location.pathname]);
 
   return (

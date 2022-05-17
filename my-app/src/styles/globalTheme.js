@@ -27,7 +27,6 @@ export const fonts = {
 export const LightOrangeBtn = styled.button`
   letter-spacing: 1.5px;
   min-width: 100px;
-  /* padding: 10px 20px; */
   padding: ${(props) => props.padding || '10px 20px'};
   border-radius: 15px;
   border: none;

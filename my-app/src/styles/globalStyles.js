@@ -10,7 +10,6 @@ border: 0;
 font-family: 'Roboto', Helvetica, sans-serif;
 color: ${themeColours.dark_blue};
 scroll-behavior: smooth;
-/* overflow: hidden; */
 
 button{
   cursor: pointer;

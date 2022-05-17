@@ -95,7 +95,6 @@ const TopSectionWrapper = styled.div`
   .sparkle_left {
     position: absolute;
     width: 29px;
-    /* left: -414px; */
     top: 58%;
     left: 10%;
   }
@@ -103,8 +102,6 @@ const TopSectionWrapper = styled.div`
   .sparkle_left_small {
     position: absolute;
     width: 13px;
-    /* left: -391px;
-    bottom: -48px; */
     bottom: 21%;
     left: 15%;
   }
