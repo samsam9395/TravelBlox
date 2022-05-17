@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
-import TextField from '@mui/material/TextField';
 import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
-import { themeColours, LightOrangeBtn, fonts } from '../styles/globalTheme';
+import {
+  themeColours,
+  LightOrangeBtn,
+  fonts,
+  ContentWrapper,
+} from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
 import Timeline from '../components/DailyEventCard/Timeline';
 import DayCalendar from '../components/DailyEventCard/DayCalendar';
@@ -16,7 +20,6 @@ import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
 import FullLoading from '../components/general/FullLoading';
-import BeatLoader from 'react-spinners/BeatLoader';
 
 const db = firebaseDB();
 
@@ -66,7 +69,7 @@ const PlanInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-left: 20px;
+  padding-right: 20px;
   justify-content: center;
   flex-grow: 0;
 `;
@@ -199,9 +202,11 @@ const PlanTitleText = styled.div`
   font-family: 'Gellatio';
   position: absolute;
   font-weight: 800;
-  top: 25%;
+  /* top: 25%; */
   left: 0%;
-  font-size: 4vw;
+  /* font-size: 4vw; */
+  top: 60px;
+  font-size: clamp(1rem, 4vw, 3.7rem);
   letter-spacing: 3px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
@@ -529,7 +534,7 @@ function StaticPlanDetail(props) {
   }, [mainImage, authorName]);
 
   return (
-    <>
+    <ContentWrapper>
       <FullLoading opacity={loadindOpacity} />
       {showFullImage && (
         <ImageEnlarge
@@ -686,7 +691,7 @@ function StaticPlanDetail(props) {
         onClick={() => window.scrollTo({ top: 120, behavior: 'smooth' })}>
         ^Top
       </ToTopScroll>
-    </>
+    </ContentWrapper>
   );
 }
 export default StaticPlanDetail;

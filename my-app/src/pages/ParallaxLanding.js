@@ -13,9 +13,9 @@ import { fonts, themeColours } from '../styles/globalTheme';
 
 const SectionWrapper = styled.div`
   top: -80px;
-  left: -80px;
+  /* left: -80px; */
   height: 100vh;
-  width: 100vw;
+  /* width: 100vw; */
   /* left: -82px; */
   position: relative;
   /* background-color: #e0b99f; */
@@ -83,12 +83,12 @@ const BirdImg = styled.img`
 
 const SubSection = styled.div`
   height: 100vh;
-  width: 110vw;
-  left: -82px;
+  /* width: 100vw; */
+  /* left: -82px; */
   background: rgb(24, 24, 24);
   min-height: 100vh;
   z-index: 2;
-  position: absolute;
+  /* position: absolute; */
   background-color: #fff;
   top: 113%;
 
@@ -96,7 +96,7 @@ const SubSection = styled.div`
     content: '';
     position: absolute;
     bottom: 0;
-    width: 110vw;
+    /* width: 100vw; */
     height: 100px;
     background: linear-gradient(to bottom, #161719 #e0b99f);
     z-index: 100;
@@ -204,7 +204,7 @@ function ParallaxLanding({ user, setUser }) {
   });
 
   return (
-    <section>
+    <>
       <SectionWrapper>
         <MainTtitle>TRAVELBLOX</MainTtitle>
         <BgImg src={bg} scrollvalue={scrollYValue}></BgImg>
@@ -261,14 +261,13 @@ function ParallaxLanding({ user, setUser }) {
             </div>
           </div>
         </ContentContainer>
-
-        <Login
-          setHasSignedIn={setHasSignedIn}
-          hasSignedIn={hasSignedIn}
-          setUser={setUser}
-        />
       </SubSection>
-    </section>
+      <Login
+        setHasSignedIn={setHasSignedIn}
+        hasSignedIn={hasSignedIn}
+        setUser={setUser}
+      />
+    </>
   );
 }
 

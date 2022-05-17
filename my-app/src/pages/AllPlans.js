@@ -11,28 +11,27 @@ import {
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
-import { themeColours } from '../styles/globalTheme';
+import { themeColours, ContentWrapper } from '../styles/globalTheme';
 import FullLoading from '../components/general/FullLoading';
-import SkyMainImg from '../components/all_plan/SkyMainImg';
+import SkyMainImg from '../components/SkyMainImg';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
-const WidthWrapper = styled.div`
-  max-width: 105vw;
-  overflow-x: hidden;
-  margin-left: -80px;
-  margin-right: -80px;
+const AllPlansWrapper = styled.div`
+  padding: 10px 80px;
+  display: flex;
+  justify-content: center;
 `;
 
 const PlanCollectionWrapper = styled.div`
   display: flex;
   padding: 15px;
-  width: 100%;
   box-sizing: content-box;
   flex-wrap: wrap;
   justify-content: flex-start;
+  max-width: 1400px;
   .empty_notification {
     font-size: 20px;
   }
@@ -137,21 +136,22 @@ function Allplans(props) {
       {/* <WidthWrapper> */}
       <SkyMainImg setInputValue={setInputValue} inputValue={inputValue} />
       {/* </WidthWrapper> */}
-
-      <PlanCollectionWrapper>
-        {emptyMatch && (
-          <div className="empty_notification">
-            Oops, no results were found. Please try another search.
-          </div>
-        )}
-        {displayPlans.map((planInfo, index) => (
-          <PublicPlanCard
-            planInfo={planInfo}
-            key={index}
-            defaultImg={props.defaultImg}
-          />
-        ))}
-      </PlanCollectionWrapper>
+      <AllPlansWrapper>
+        <PlanCollectionWrapper>
+          {emptyMatch && (
+            <div className="empty_notification">
+              Oops, no results were found. Please try another search.
+            </div>
+          )}
+          {displayPlans.map((planInfo, index) => (
+            <PublicPlanCard
+              planInfo={planInfo}
+              key={index}
+              defaultImg={props.defaultImg}
+            />
+          ))}
+        </PlanCollectionWrapper>
+      </AllPlansWrapper>
     </>
   );
 }

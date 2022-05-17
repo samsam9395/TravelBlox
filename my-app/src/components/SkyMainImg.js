@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
-// import blueSky from '../../images/all_plan/blue_sky.jpg';
-import blueSky from '../../images/all_plan/orange_sky_brushed4.png';
-import { themeColours } from '../../styles/globalTheme';
+import blueSky from '../images/all_plan/orange_sky_brushed4.png';
+import { themeColours } from '../styles/globalTheme';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import cloudBigOne from '../../images/all_plan/cloud_1@4x.png';
-import cloudBigTwo from '../../images/all_plan/cloud_2@4x.png';
-import cloudBigThree from '../../images/all_plan/cloud_3@4x.png';
-import cloudSmallFive from '../../images/all_plan/cloud_5@4x.png';
-import cloudSmallFour from '../../images/all_plan/cloud_4@4x.png';
+import cloudBigOne from '../images/all_plan/cloud_1@4x.png';
+import cloudBigTwo from '../images/all_plan/cloud_2@4x.png';
+import cloudBigThree from '../images/all_plan/cloud_3@4x.png';
+import cloudSmallFive from '../images/all_plan/cloud_5@4x.png';
+import cloudSmallFour from '../images/all_plan/cloud_4@4x.png';
 
 const cloudAnimation = keyframes`
 0% {
@@ -101,12 +100,10 @@ const CloudsContainer = styled.div`
 `;
 
 const Wrapper = styled.div`
-  width: 105vw;
-  left: -100px;
+  max-width: 100vw;
+  /* left: -100px; */
   height: 530px;
-  /* top: -38px;
-  left: -100px;
-  height: 460px; */
+
   position: relative;
   display: flex;
   justify-content: center;
@@ -181,6 +178,9 @@ const SearchContainer = styled.div`
 
 const SearchInputMUI = styled(TextField)({
   'padding-left': '20px',
+  '& .MuiInput-placeholder': {
+    opacity: 1,
+  },
   '& .MuiInputBase-input': {
     color: 'black', // Text color
   },

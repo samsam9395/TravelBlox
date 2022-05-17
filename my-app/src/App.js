@@ -25,9 +25,9 @@ const db = firebaseDB();
 
 const ContentWrapper = styled.div`
   padding: 70px 80px 100px 80px;
+  overflow-x: hidden;
   min-height: 300px;
   /* overflow: hidden; */
-  overflow-x: hidden;
   /* overflow-y: scroll;  */
 `;
 
@@ -71,45 +71,45 @@ function App() {
     <>
       <GlobalStyle />
 
-      <ContentWrapper>
-        <Wrapper apiKey={ApiKey} libraries={['places']}>
-          <Routes>
-            {/* <Route
+      {/* <ContentWrapper> */}
+      <Wrapper apiKey={ApiKey} libraries={['places']}>
+        <Routes>
+          {/* <Route
               path="/"
               element={<LandingPage user={user} setUser={setUser} />}
             /> */}
-            <Route
-              path="/"
-              element={<ParallaxLanding user={user} setUser={setUser} />}
-            />
-            <Route
-              path="/edit-plan-detail/:planDocRef"
-              element={
-                <EditPlanDetail
-                  userId={user.email}
-                  favFolderNames={favFolderNames}
-                />
-              }
-            />
-            <Route
-              path="/new-plan/:currentUserId"
-              element={<AddNewPlan user={user} defaultImg={defaultImg} />}
-            />
-            <Route
-              path="/static-plan-detail/:planDocRef"
-              element={
-                <StaticPlanDetail favFolderNames={favFolderNames} user={user} />
-              }
-            />
+          <Route
+            path="/"
+            element={<ParallaxLanding user={user} setUser={setUser} />}
+          />
+          <Route
+            path="/edit-plan-detail/:planDocRef"
+            element={
+              <EditPlanDetail
+                userId={user.email}
+                favFolderNames={favFolderNames}
+              />
+            }
+          />
+          <Route
+            path="/new-plan/:currentUserId"
+            element={<AddNewPlan user={user} defaultImg={defaultImg} />}
+          />
+          <Route
+            path="/static-plan-detail/:planDocRef"
+            element={
+              <StaticPlanDetail favFolderNames={favFolderNames} user={user} />
+            }
+          />
 
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
-            <Route
-              path="/discover"
-              element={<Allplans defaultImg={defaultImg} user={user} />}
-            />
-          </Routes>
-        </Wrapper>
-      </ContentWrapper>
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
+          <Route
+            path="/discover"
+            element={<Allplans defaultImg={defaultImg} user={user} />}
+          />
+        </Routes>
+      </Wrapper>
+      {/* </ContentWrapper> */}
     </>
   );
 }

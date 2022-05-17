@@ -10,7 +10,12 @@ import { handleMainImageUpload } from '../utils/functionList';
 import UploadIcon from '@mui/icons-material/Upload';
 import { IconButton } from '@mui/material';
 
-import { themeColours, fonts, LightOrangeBtn } from '../styles/globalTheme';
+import {
+  themeColours,
+  fonts,
+  LightOrangeBtn,
+  ContentWrapper,
+} from '../styles/globalTheme';
 import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import sparkle from '../images/dashboard/spark.png';
@@ -20,18 +25,22 @@ import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
-const WidthWrapper = styled.div`
-  width: 100vw;
+const SvgWrapper = styled.div`
+  /* width: 100vw;
   height: 100vh;
   overflow-x: hidden;
   left: -80px;
   position: absolute;
   top: -10px;
+  padding: 70px 80px 100px 80px; */
+  position: fixed;
+  right: 20px;
+  top: 5px;
 
   .milktea_svg_long {
-    position: absolute;
-    right: -34px;
-    /* top: -45px; */
+    position: fixed;
+    right: -31px;
+    top: 53px;
   }
 `;
 
@@ -40,11 +49,15 @@ const UpperPartBackground = styled.div`
   border: none;
   width: 400px;
   height: 400px;
-  position: absolute;
+
   z-index: -100;
   border-radius: 50%;
-  right: -333px;
-  top: -209px;
+  /* position: absolute; */
+  /* right: -333px;
+  top: -209px; */
+  position: fixed;
+  right: -184px;
+  top: -145px;
 `;
 
 const Wrapper = styled.div`
@@ -406,11 +419,6 @@ function Dashboard(props) {
     }
   }, [props.user]);
 
-  // useEffect(async () => {
-  //   if (props.user.email) {
-  //   }
-  // }, [props.user.email]);
-
   useEffect(() => {
     if (uploadUserImg) {
       console.log('inside', userImage);
@@ -435,155 +443,156 @@ function Dashboard(props) {
   }
 
   return (
-    <Wrapper>
-      <FullLoading opacity={loadindOpacity} />
-      <WidthWrapper>
-        <UpperPartBackground></UpperPartBackground>
-        <YourSvg className="milktea_svg_long"></YourSvg>
-      </WidthWrapper>
+    <ContentWrapper>
+      <Wrapper>
+        <FullLoading opacity={loadindOpacity} />
+        <SvgWrapper>
+          <UpperPartBackground></UpperPartBackground>
+          <YourSvg className="milktea_svg_long"></YourSvg>
+        </SvgWrapper>
 
-      <TopSectionWrapper>
-        <img className="sparkle_left" src={sparkle} alt="" />
-        <img className="sparkle_left_small" src={sparkle} alt="" />
-        <img className="sparkle_right" src={sparkle} alt="" />
+        <TopSectionWrapper>
+          <img className="sparkle_left" src={sparkle} alt="" />
+          <img className="sparkle_left_small" src={sparkle} alt="" />
+          <img className="sparkle_right" src={sparkle} alt="" />
 
-        <UserInfoWrapper>
-          <UserAvatarUpload
-            onMouseEnter={() => setShowUserUploadIcon('visible')}
-            onMouseLeave={() => setShowUserUploadIcon('hidden')}>
-            <img className="user_img" src={userImage} alt="" />
+          <UserInfoWrapper>
+            <UserAvatarUpload
+              onMouseEnter={() => setShowUserUploadIcon('visible')}
+              onMouseLeave={() => setShowUserUploadIcon('hidden')}>
+              <img className="user_img" src={userImage} alt="" />
 
-            <label htmlFor="user_avatar_file" className="upload_avatar_icon">
-              <input
-                style={{ display: 'none' }}
-                accept="image/*"
-                id="user_avatar_file"
-                type="file"
-                onChange={(e) => {
-                  handleMainImageUpload(e, setUserImage, setUploadUserImg);
-                }}></input>
-              <IconButton
-                style={{
-                  visibility: showUserUploadIcon,
-                  // transition: 'opacity 5s',
-                }}
-                ref={uploadIconRef}
-                aria-label="upload picture"
-                component="div">
-                <UploadIcon style={{ color: themeColours.dark_blue }} />
-              </IconButton>
-            </label>
+              <label htmlFor="user_avatar_file" className="upload_avatar_icon">
+                <input
+                  style={{ display: 'none' }}
+                  accept="image/*"
+                  id="user_avatar_file"
+                  type="file"
+                  onChange={(e) => {
+                    handleMainImageUpload(e, setUserImage, setUploadUserImg);
+                  }}></input>
+                <IconButton
+                  style={{
+                    visibility: showUserUploadIcon,
+                    // transition: 'opacity 5s',
+                  }}
+                  ref={uploadIconRef}
+                  aria-label="upload picture"
+                  component="div">
+                  <UploadIcon style={{ color: themeColours.dark_blue }} />
+                </IconButton>
+              </label>
 
-            <div className="avatar_line"></div>
-          </UserAvatarUpload>
+              <div className="avatar_line"></div>
+            </UserAvatarUpload>
 
-          {/* <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} /> */}
-          <div className="user_info_container">
-            <div className="greeting">Hello!</div>
-            <div className="user_id">{userName}</div>
-            <div className="user_id">{currentUserId}</div>
-            <LogoutContainer
-              onClick={() => {
-                signOutFirebase();
-                navigate('/');
-              }}>
-              <LogoutIcon className="icon"></LogoutIcon> Logout
-            </LogoutContainer>
-          </div>
-        </UserInfoWrapper>
-        <LightOrangeBtn
-          style={{
-            width: 190,
-            height: 40,
-            fontSize: 18,
-            fontWeight: 600,
-          }}
-          onClick={() => {
-            setShowAddPlanPopup(true);
-          }}>
-          ADD NEW PLAN
-        </LightOrangeBtn>
-        <DisplaySwitch>
-          <div
-            className="plan_tab"
-            value="own_plan"
-            onClick={(e) => setDisplaySection(e.target.textContent)}>
-            My Plans
-          </div>
-          <div className="divider">|</div>
-          <div
-            className="plan_tab"
-            value="fav_plan"
-            onClick={(e) => setDisplaySection(e.target.textContent)}>
-            Favourite Plans
-          </div>
-        </DisplaySwitch>
-      </TopSectionWrapper>
-
-      {
-        showAddPlanPopUp && navigate(`/new-plan/${props.user.email}`)
-        //     , {
-        //     state: { favPlansIdList: favPlansIdList, user: props.user },
-        //     state: { user: props.user },
-        // })
-      }
-
-      {displaySection === 'My Plans' && (
-        <SectionContainer>
-          <div className="section_wrapper">
-            <div className="section_title">Plans</div>
-          </div>
-          <div className="sub_section">
-            <div className="sub_section_wrapper">
-              <div className="section_wrapper">
-                <div className="section_sub-title">My Plans</div>
-                <div className="dot"> {'\u00B7'} </div>
-                {ownPlansIdList && (
-                  <div className="item_amount">{ownPlansIdList.length}</div>
-                )}
-              </div>
+            <div className="user_info_container">
+              <div className="greeting">Hello!</div>
+              <div className="user_id">{userName}</div>
+              <div className="user_id">{currentUserId}</div>
+              <LogoutContainer
+                onClick={() => {
+                  signOutFirebase();
+                  navigate('/');
+                }}>
+                <LogoutIcon className="icon"></LogoutIcon> Logout
+              </LogoutContainer>
             </div>
+          </UserInfoWrapper>
+          <LightOrangeBtn
+            style={{
+              width: 190,
+              height: 40,
+              fontSize: 18,
+              fontWeight: 600,
+            }}
+            onClick={() => {
+              setShowAddPlanPopup(true);
+            }}>
+            ADD NEW PLAN
+          </LightOrangeBtn>
+          <DisplaySwitch>
+            <div
+              className="plan_tab"
+              value="own_plan"
+              onClick={(e) => setDisplaySection(e.target.textContent)}>
+              My Plans
+            </div>
+            <div className="divider">|</div>
+            <div
+              className="plan_tab"
+              value="fav_plan"
+              onClick={(e) => setDisplaySection(e.target.textContent)}>
+              Favourite Plans
+            </div>
+          </DisplaySwitch>
+        </TopSectionWrapper>
 
-            <PlanCollectionWrapper>
-              {showNoPlansText && (
-                <NoPlansText>
-                  <div className="title">
-                    You haven't created any travel plans yet.
-                  </div>
-                  <div className="instruction">
-                    Click on
-                    <div className="btn_cta">ADD NEW PLAN</div>
-                    to start one!
-                  </div>
-                </NoPlansText>
-              )}
-              {ownPlansIdList?.map((ownPlanId) => {
-                return (
-                  <SinglePlanContainer key={ownPlanId}>
-                    <OwnPlanCard
-                      userIdentity="author"
-                      ownPlanId={ownPlanId}
-                      key={ownPlanId}
-                      setOpenEditPopUp={setOpenEditPopUp}
-                      openEditPopUp={openEditPopUp}
-                    />
-                  </SinglePlanContainer>
-                );
-              })}
-            </PlanCollectionWrapper>
-          </div>
-        </SectionContainer>
-      )}
+        {
+          showAddPlanPopUp && navigate(`/new-plan/${props.user.email}`)
+          //     , {
+          //     state: { favPlansIdList: favPlansIdList, user: props.user },
+          //     state: { user: props.user },
+          // })
+        }
 
-      {displaySection === 'Favourite Plans' && (
-        <SectionContainer>
-          <div className="section_wrapper">
-            <div className="section_title">Favourites</div>
-          </div>
-          <FavouriteFolderBar currentUserId={currentUserId} />
-        </SectionContainer>
-      )}
-    </Wrapper>
+        {displaySection === 'My Plans' && (
+          <SectionContainer>
+            <div className="section_wrapper">
+              <div className="section_title">Plans</div>
+            </div>
+            <div className="sub_section">
+              <div className="sub_section_wrapper">
+                <div className="section_wrapper">
+                  <div className="section_sub-title">My Plans</div>
+                  <div className="dot"> {'\u00B7'} </div>
+                  {ownPlansIdList && (
+                    <div className="item_amount">{ownPlansIdList.length}</div>
+                  )}
+                </div>
+              </div>
+
+              <PlanCollectionWrapper>
+                {showNoPlansText && (
+                  <NoPlansText>
+                    <div className="title">
+                      You haven't created any travel plans yet.
+                    </div>
+                    <div className="instruction">
+                      Click on
+                      <div className="btn_cta">ADD NEW PLAN</div>
+                      to start one!
+                    </div>
+                  </NoPlansText>
+                )}
+                {ownPlansIdList?.map((ownPlanId) => {
+                  return (
+                    <SinglePlanContainer key={ownPlanId}>
+                      <OwnPlanCard
+                        userIdentity="author"
+                        ownPlanId={ownPlanId}
+                        key={ownPlanId}
+                        setOpenEditPopUp={setOpenEditPopUp}
+                        openEditPopUp={openEditPopUp}
+                      />
+                    </SinglePlanContainer>
+                  );
+                })}
+              </PlanCollectionWrapper>
+            </div>
+          </SectionContainer>
+        )}
+
+        {displaySection === 'Favourite Plans' && (
+          <SectionContainer>
+            <div className="section_wrapper">
+              <div className="section_title">Favourites</div>
+            </div>
+            <FavouriteFolderBar currentUserId={currentUserId} />
+          </SectionContainer>
+        )}
+      </Wrapper>
+    </ContentWrapper>
   );
 }
 

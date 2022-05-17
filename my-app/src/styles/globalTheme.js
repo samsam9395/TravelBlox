@@ -140,3 +140,13 @@ export const EditableMainImage = styled.img`
     width: 100%;
   }
 `;
+
+export const ContentWrapper = styled.div`
+  padding: 70px 80px 100px 80px;
+  overflow-x: hidden;
+  max-width: 1300px;
+  margin: auto;
+  /* min-height: 300px; */
+  /* overflow: hidden; */
+  /* overflow-y: scroll;  */
+`;
