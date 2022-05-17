@@ -28,6 +28,7 @@ const Wrapper = styled.div`
   margin-top: 150px;
   background-color: white;
   border-radius: 20px;
+  max-width: 100%;
 `;
 
 const ImageContainer = styled.div`

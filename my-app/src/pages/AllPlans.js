@@ -33,7 +33,7 @@ const PlanCollectionWrapper = styled.div`
   box-sizing: content-box;
   flex-wrap: wrap;
   justify-content: flex-start;
-  transform: translate(10%, 0%);
+  /* transform: translate(10%, 0%); */
   .empty_notification {
     font-size: 20px;
   }
