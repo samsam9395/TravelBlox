@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { doc, getDocs, collection, writeBatch } from 'firebase/firestore';
 import styled from 'styled-components';
-import firebaseDB from '../utils/firebaseConfig';
-import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
-import { getFavPlan } from '../utils/functionList';
+import firebaseDB from '../../utils/firebaseConfig';
+import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
+import { getFavPlan } from '../../utils/functionList';
 import Swal from 'sweetalert2';
 
 const db = firebaseDB();

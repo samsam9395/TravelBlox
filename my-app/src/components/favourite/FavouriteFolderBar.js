@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import FavFolder from './FavFolder';
-import { themeColours } from '../styles/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import AddIcon from '@mui/icons-material/Add';
 import { collection, setDoc, doc, onSnapshot } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseDB from '../../utils/firebaseConfig';
 import EditFavFolderSelector from './EditFavFolderSelector';
 import Swal from 'sweetalert2';
 

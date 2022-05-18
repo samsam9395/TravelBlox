@@ -15,12 +15,9 @@ import Allplans from './pages/AllPlans';
 import firebaseDB from './utils/firebaseConfig';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import { Wrapper } from '@googlemaps/react-wrapper';
-import { googleAPI } from './utils/credent';
 import ParallaxLanding from './pages/ParallaxLanding';
 import './styles/alertStyles.scss';
 import Swal from 'sweetalert2';
-
-const ApiKey = googleAPI();
 
 const db = firebaseDB();
 
@@ -64,7 +61,9 @@ function App() {
     <>
       <GlobalStyle />
 
-      <Wrapper apiKey={ApiKey} libraries={['places']}>
+      <Wrapper
+        apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+        libraries={['places']}>
         <Routes>
           <Route
             path="/"

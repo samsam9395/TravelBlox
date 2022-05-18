@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseDB from '../../utils/firebaseConfig';
 import {
   doc,
   collection,
@@ -92,8 +92,7 @@ function EditFavFolderSelector({
 
       try {
         await batch.commit();
-        setShowFavFolderEdit(false);
-        Swal.fire(`${favFolderName} is deleted!`);
+        return true;
       } catch (error) {
         console.log(error);
       }
@@ -106,7 +105,28 @@ function EditFavFolderSelector({
         <div
           className="options"
           onClick={() =>
-            deleteFavFolder(favFolderName, currentUserId, setShowFavFolderEdit)
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                if (
+                  deleteFavFolder(
+                    favFolderName,
+                    currentUserId,
+                    setShowFavFolderEdit
+                  )
+                ) {
+                  setShowFavFolderEdit(false);
+                  Swal.fire(`${favFolderName} is deleted!`);
+                }
+              }
+            })
           }>
           Delete
         </div>

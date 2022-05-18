@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import { TextField, IconButton } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Close from '@mui/icons-material/Close';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseDB from '../../utils/firebaseConfig';
 import { doc, setDoc, collection } from 'firebase/firestore';
-import DateTimeSelector from '../components/Input/DateTimeSelector';
-import AutoCompleteInput from '../components/AutoCompleteInput';
-import LocationCard from '../components/LocationCard';
-import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import DateTimeSelector from '../Input/DateTimeSelector';
+import AutoCompleteInput from '../AutoCompleteInput';
+import LocationCard from '../LocationCard';
+import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
-import { renameGoogleMaDataIntoFirebase } from '../utils/functionList';
+import { renameGoogleMaDataIntoFirebase } from '../../utils/functionList';
 
 const db = firebaseDB();
 

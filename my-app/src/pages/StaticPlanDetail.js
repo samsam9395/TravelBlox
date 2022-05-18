@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
-import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
+import DayBlockCard from '../components/daily_event_card/DayBlockCard';
 import firebaseDB from '../utils/firebaseConfig';
 import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
 import {
@@ -10,11 +10,11 @@ import {
   ContentWrapper,
 } from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
-import Timeline from '../components/DailyEventCard/Timeline';
-import DayCalendar from '../components/DailyEventCard/DayCalendar';
+import Timeline from '../components/daily_event_card/Timeline';
+import DayCalendar from '../components/daily_event_card/DayCalendar';
 import sunburst from '../images/static/sunburst_solid.png';
 import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
-import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
+import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import FullLoading from '../components/general/FullLoading';

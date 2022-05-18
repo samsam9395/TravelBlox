@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { TextField, IconButton, Box, Stack } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
 import '../styles/calendarStyle.scss';
-import PlanCalendar from './PlanCalendar';
-import AddNewTimeBlock from './AddNewTimeBlock';
-import EditTimeBlock from './EditTimeBlock';
+import PlanCalendar from '../components/timeblock/PlanCalendar';
+import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
+import EditTimeBlock from '../components/timeblock/EditTimeBlock';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,7 +19,7 @@ import {
   saveToDataBase,
   listenToSnapShot,
 } from '../utils/functionList';
-import FavFolderDropdown from '../favourite/FavFolderDropdown';
+import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
 import {
   themeColours,
   EditableMainImageContainer,

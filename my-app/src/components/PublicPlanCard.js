@@ -10,6 +10,8 @@ const SinglePlanContainer = styled.div`
   display: flex;
   align-items: center;
   margin: 10px;
+  flex-grow: 1;
+
   @media (max-width: 768px) {
     width: 100%;
   }

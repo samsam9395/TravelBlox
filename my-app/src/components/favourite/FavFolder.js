@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { getDocs, collection, query, where } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
-import OwnPlanCard from '../components/OwnPlanCard';
-import { themeColours, fonts } from '../styles/globalTheme';
+import firebaseDB from '../../utils/firebaseConfig';
+import OwnPlanCard from '../OwnPlanCard';
+import { themeColours, fonts } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 
