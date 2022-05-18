@@ -16,7 +16,7 @@ import {
   LightOrangeBtn,
   ContentWrapper,
 } from '../styles/globalTheme';
-import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
+import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import sparkle from '../images/dashboard/spark.png';
 import Swal from 'sweetalert2';

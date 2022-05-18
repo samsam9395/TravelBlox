@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import './../styles/calendarStyle.scss';
+import '../../styles/calendarStyle.scss';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
@@ -37,12 +37,10 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
 
   const handleSelectEvent = useCallback((event) => {
     if (event.status === 'imported') {
-      props.setCurrentSelectTimeId(event.id);
       props.setCurrentSelectTimeData(event);
       props.setShowEditPopUp(true);
     } else {
       props.setCurrentSelectTimeData(event);
-      props.setCurrentSelectTimeId(event.id);
       props.setShowEditPopUp(true);
     }
   });

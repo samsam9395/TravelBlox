@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { googleCalendarConfig } from '../../utils/credent';
 import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
 import { LightBlueBtn } from '../../styles/globalTheme';
@@ -15,7 +14,6 @@ ExportGCalendarBtn.propTypes = {
 };
 
 function ExportGCalendarBtn(props) {
-  const googleConfig = googleCalendarConfig();
   const [eventsToExport, setEventsToExport] = useState([]);
 
   useEffect(async () => {
@@ -56,10 +54,11 @@ function ExportGCalendarBtn(props) {
       const batch = gapi.client.newBatch();
 
       gapi.client.init({
-        apikey: googleConfig.API_KEY,
-        clientId: googleConfig.CLIENT_ID,
-        discoveryDocs: googleConfig.DISCOVERY_DOCS,
-        scope: googleConfig.SCOPES,
+        apikey: process.env.REACT_APP_GOOGLE_CALENDAR_CONFIG.API_KEY,
+        clientId: process.env.REACT_APP_GOOGLE_CALENDAR_CONFIG.CLIENT_ID,
+        discoveryDocs:
+          process.env.REACT_APP_GOOGLE_CALENDAR_CONFIG.DISCOVERY_DOCS,
+        scope: process.env.REACT_APP_GOOGLE_CALENDAR_CONFIG.SCOPES,
       });
 
       gapi.client.load('calendar', 'v3', () => console.log('bam! signed in '));

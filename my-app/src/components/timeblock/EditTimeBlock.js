@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { TextField, IconButton } from '@mui/material';
 import { Delete, Close, PhotoCamera } from '@mui/icons-material';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseDB from '../../utils/firebaseConfig';
 import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
-import DateTimeSelector from '../components/Input/DateTimeSelector';
-import AutoCompleteInput from '../components/AutoCompleteInput';
-import LocationCard from '../components/LocationCard';
-import '../styles/libraryStyles.scss';
-import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import DateTimeSelector from '../Input/DateTimeSelector';
+import AutoCompleteInput from '../AutoCompleteInput';
+import LocationCard from '../LocationCard';
+import '../../styles/libraryStyles.scss';
+import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import Swal from 'sweetalert2';
-import { renameGoogleMaDataIntoFirebase } from '../utils/functionList';
+import { renameGoogleMaDataIntoFirebase } from '../../utils/functionList';
 import PropTypes from 'prop-types';
 
 const BlackWrapper = styled.div`

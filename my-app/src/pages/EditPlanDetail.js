@@ -4,9 +4,9 @@ import { TextField, IconButton, Box } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { PhotoCamera } from '@mui/icons-material';
 import './../styles/calendarStyle.scss';
-import PlanCalendar from './PlanCalendar';
-import AddNewTimeBlock from './AddNewTimeBlock';
-import EditTimeBlock from './EditTimeBlock';
+import PlanCalendar from '../components/timeblock/PlanCalendar';
+import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
+import EditTimeBlock from '../components/timeblock/EditTimeBlock';
 import DatePicker from '../components/Input/DatePicker';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -31,7 +31,7 @@ import {
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import FullLoading from '../components/general/FullLoading';
-import FavFolderDropdown from '../favourite/FavFolderDropdown';
+import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
 import PropTypes from 'prop-types';
 
 const db = firebaseDB();
@@ -154,8 +154,7 @@ function EditPlanDetail(props) {
 
     try {
       await batch.commit();
-      Swal.fire('Successfully deleted!');
-      navigate('/dashboard');
+      return true;
     } catch (error) {
       console.log(error);
     }
@@ -367,7 +366,22 @@ function EditPlanDetail(props) {
         <PaleBtn
           variant="contained"
           onClick={() => {
-            deletePlan(planDocRef, currentUserId);
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                if (deletePlan(planDocRef, currentUserId)) {
+                  Swal.fire('Successfully deleted!');
+                  navigate('/dashboard');
+                }
+              }
+            });
           }}>
           Delete
         </PaleBtn>
