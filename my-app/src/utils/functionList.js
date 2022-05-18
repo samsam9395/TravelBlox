@@ -226,3 +226,20 @@ export async function getFavPlan(
 }
 
 /*=====  End of import section  ======*/
+
+export function renameGoogleMaDataIntoFirebase(location, placeId) {
+  return {
+    place_id: location.place_id || placeId,
+    place_name: location.name,
+    place_format_address: location.formatted_address,
+    place_img: location.mainImg || location.photos[0].getUrl() || '',
+    place_formatted_phone_number: location.formatted_phone_number || '',
+    place_international_phone_number: location.international_phone_number || '',
+    place_url: location.url,
+    rating: location.rating || '',
+    place_types: location.types || '',
+    place_lat: location.geometry.location.lat(),
+    place_lng: location.geometry.location.lng(),
+    place_types: location.types || '',
+  };
+}

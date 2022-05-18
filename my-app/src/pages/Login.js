@@ -158,7 +158,6 @@ function Login(props) {
         // console.log(user.accessToken);
         console.log(user);
         console.log('run this page once');
-        // alert(`Welcome! ${user.email}`);
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
         navigate('/discover');

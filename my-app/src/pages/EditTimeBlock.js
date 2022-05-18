@@ -11,6 +11,7 @@ import '../styles/libraryStyles.scss';
 import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
 import Swal from 'sweetalert2';
 import '../styles/alertStyles.scss';
+import { renameGoogleMaDataIntoFirebase } from '../utils/functionList';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -167,6 +168,11 @@ function EditTimeBlock(props) {
   ) {
     // const location_img = location.photos[0].getUrl();
     if (location.geometry) {
+      const googleLocationData = renameGoogleMaDataIntoFirebase(
+        location,
+        placeId
+      );
+
       try {
         await setDoc(
           timeBlockRef,
@@ -175,20 +181,21 @@ function EditTimeBlock(props) {
             text: description,
             start: startTimeValue,
             end: endTimeValue,
-            place_id: location.place_id || placeId,
-            place_name: location.name,
-            place_format_address: location.formatted_address,
+            // place_id: location.place_id || placeId,
+            // place_name: location.name,
+            // place_format_address: location.formatted_address,
             timeblock_img: timeBlockImage || '',
-            place_img: location.mainImg || location.photos[0].getUrl() || '',
-            place_formatted_phone_number: location.formatted_phone_number || '',
-            place_international_phone_number:
-              location.international_phone_number || '',
-            place_url: location.url,
-            rating: location.rating || '',
-            place_types: location.types || '',
-            place_lat: location.geometry.location.lat(),
-            place_lng: location.geometry.location.lng(),
-            place_types: location.types || '',
+            // place_img: location.mainImg || location.photos[0].getUrl() || '',
+            // place_formatted_phone_number: location.formatted_phone_number || '',
+            // place_international_phone_number:
+            //   location.international_phone_number || '',
+            // place_url: location.url,
+            // rating: location.rating || '',
+            // place_types: location.types || '',
+            // place_lat: location.geometry.location.lat(),
+            // place_lng: location.geometry.location.lng(),
+            // place_types: location.types || '',
+            ...googleLocationData,
             status: 'origin',
             id: props.currentSelectTimeId,
           },

@@ -296,6 +296,26 @@ function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
+const Tab = styled.div`
+  padding: 10px;
+  color: ${(props) => props.color || 'blue'};
+  /* ${(props) =>
+    props.active
+      ? {
+          color: themeColours.dark_blue,
+          fontWeight: 600,
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+        }
+      : {
+          color: 'rgb(0 33 58 / 70%)',
+          fontWeight: 'normal',
+          borderBottomWidth: 'none',
+          borderBottomStyle: 'none',
+          paddingBottom: 'none',
+        }}; */
+`;
+
 const SwitchTab = styled.div`
   display: flex;
   width: 500px;
@@ -304,10 +324,24 @@ const SwitchTab = styled.div`
   justify-content: space-evenly;
   align-items: center;
 
-  .tab {
+  /* .tab {
     padding: 10px;
-    color: rgb(0 33 58 / 60%);
-  }
+    ${(props) =>
+    props.active
+      ? {
+          color: themeColours.dark_blue,
+          fontWeight: 600,
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+        }
+      : {
+          color: 'rgb(0 33 58 / 70%)',
+          fontWeight: 'normal',
+          borderBottomWidth: 'none',
+          borderBottomStyle: 'none',
+          paddingBottom: 'none',
+        }};
+  } */
 
   .tab_calendar {
     color: ${themeColours.dark_blue};
@@ -365,27 +399,30 @@ function StaticPlanDetail(props) {
 
   function toSiwtchTab(tabName, tabRef) {
     for (let name of refNames) {
-      const styles = {
-        color: 'rgb(0 33 58 / 70%)',
-        fontWeight: 'normal',
-        borderBottomWidth: 'none',
-        borderBottomStyle: 'none',
-        paddingBottom: 'none',
-      };
+      // const styles = {
+      //   color: 'rgb(0 33 58 / 70%)',
+      //   fontWeight: 'normal',
+      //   borderBottomWidth: 'none',
+      //   borderBottomStyle: 'none',
+      //   paddingBottom: 'none',
+      // };
       if (name !== tabRef) {
-        Object.assign(name.current.style, styles);
+        // Object.assign(name.current.style, styles);
+        name.current.removeAttribute('active', 'active');
+        name.current.removeAttribute('color', 'red');
       }
     }
 
-    const styles = {
-      color: themeColours.dark_blue,
-      fontWeight: 600,
-      borderBottomWidth: '1px',
-      borderBottomStyle: 'solid',
-    };
+    // const styles = {
+    //   color: themeColours.dark_blue,
+    //   fontWeight: 600,
+    //   borderBottomWidth: '1px',
+    //   borderBottomStyle: 'solid',
+    // };
     setShowTab(tabName);
-
-    Object.assign(tabRef.current.style, styles);
+    tabRef.current.setAttribute('active', 'active');
+    tabRef.current.setAttribute('color', 'red');
+    // Object.assign(tabRef.current.style, styles);
   }
 
   // handleFavAction(collectionID, author)
@@ -614,7 +651,7 @@ function StaticPlanDetail(props) {
       <ColouredLine colour={'black'} />
 
       <SwitchTab>
-        <div
+        <Tab
           ref={navTabCalendar}
           className="tab tab_calendar"
           onClick={() => {
@@ -622,8 +659,9 @@ function StaticPlanDetail(props) {
             settopTimelineNav(true);
           }}>
           Calendar
-        </div>
-        <div
+        </Tab>
+        <Tab
+          // color="red"
           ref={navTabMap}
           className="tab "
           onClick={() => {
@@ -631,8 +669,8 @@ function StaticPlanDetail(props) {
             settopTimelineNav(false);
           }}>
           Map
-        </div>
-        <div
+        </Tab>
+        <Tab
           ref={navTabDay}
           className="tab"
           onClick={() => {
@@ -640,7 +678,7 @@ function StaticPlanDetail(props) {
             settopTimelineNav(false);
           }}>
           Day by Day
-        </div>
+        </Tab>
       </SwitchTab>
 
       <LowerContainer>
