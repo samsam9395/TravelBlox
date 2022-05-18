@@ -159,10 +159,7 @@ function AddNewTimeBlock(props) {
       console.log(location.photos[0].getUrl());
     }
     const location_img = location.photos[0].getUrl();
-    const googleLocationData = renameGoogleMaDataIntoFirebase(
-      location,
-      placeId
-    );
+    const googleLocationData = renameGoogleMaDataIntoFirebase(location);
     try {
       await setDoc(timeBlockRef, {
         // location: location,
