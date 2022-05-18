@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import EditPlanDetail from '../pages/EditPlanDetail';
-import CountrySelector from '../components/CountrySelector';
 
 const db = firebaseDB();
 
@@ -92,37 +90,22 @@ const PlanMainImageContainer = styled.div`
 // props.userIdentity
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
-  // const [currentPlanRef, setCurrentPlanRef] = useState(null);
   const [doImport, setDoimport] = useState(false);
   const planId = props.ownPlanId;
 
   const navigate = useNavigate();
 
-  // console.log(props.ownPlanId);
-
   const redirectToEdit = () => {
-    navigate(
-      `/edit-plan-detail/${planId}`
-      //  , {
-      //   state: {
-      //     from: 'dashboard',
-      //     planDocRef: planId,
-      //   },
-      //   }
-    );
+    navigate(`/edit-plan-detail/${planId}`);
   };
 
   const redirectToStatic = () => {
-    navigate(
-      `/static-plan-detail${planId}`
-      // , { state: { currentPlanRef:  } });
-    );
+    navigate(`/static-plan-detail${planId}`);
   };
 
   useEffect(async () => {
     const docSnap = await getDoc(doc(db, 'plans', planId));
 
-    // console.log(docSnap.data());
     setDocData(docSnap.data());
   }, [planId]);
 
@@ -132,14 +115,12 @@ function OwnPlanCard(props) {
       const importTimeBlocks = await getDocs(ref);
 
       importTimeBlocks.forEach((doc) => {
-        console.log(doc.data());
         return doc.data();
       });
     }
   }, [doImport]);
 
   function renderSwitch(identity) {
-    // console.log(identity);
     switch (identity) {
       case 'author':
         redirectToEdit();
@@ -170,19 +151,3 @@ function OwnPlanCard(props) {
 }
 
 export default OwnPlanCard;
-
-{
-  /* <div class="container">
-  <div class="content">
-    <a href="https://unsplash.com/photos/HkTMcmlMOUQ" target="_blank">
-      <div class="content-overlay"></div>
-      <img class="content-image" src="https://images.unsplash.com/photo-1433360405326-e50f909805b3?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&w=1080&fit=max&s=359e8e12304ffa04a38627a157fc3362">
-      
-      <div class="content-details fadeIn-bottom">
-        <h3 class="content-title">This is a title</h3>
-
-      </div>
-    </a>
-  </div>
-</div> */
-}

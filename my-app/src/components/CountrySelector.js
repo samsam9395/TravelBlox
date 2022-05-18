@@ -46,13 +46,10 @@ export default function CountrySelector(props) {
       onChange={(e) => {
         for (let country of countryList) {
           if (country.label === e.target.textContent) {
-            console.log(country);
             setDisplayValue(country);
             props.setCountry(country);
           }
         }
-        // console.log(e.target);
-        // props.setCountry(e.target.textContent || value);
       }}
       renderOption={(props, option) => (
         <Box
@@ -70,8 +67,7 @@ export default function CountrySelector(props) {
           inputProps={{
             ...params.inputProps,
           }}
-          autoComplete="off" // disable autocomplete and autofill
-          // value={country}
+          autoComplete="off"
           onChange={(e) => {
             props.setCountry(e.target.value);
           }}

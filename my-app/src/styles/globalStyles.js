@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { themeColours } from './globalTheme';
+import '../styles/alertStyles.scss';
 
 const GlobalStyle = createGlobalStyle`
 body {

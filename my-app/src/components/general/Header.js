@@ -89,16 +89,11 @@ function Header() {
   }, [startScrollListen]);
 
   useEffect(() => {
-    console.log(window.location.pathname);
-    if (
-      window.location.pathname == '/discover'
-      // || window.location.pathname == '/'
-    ) {
+    if (window.location.pathname == '/discover') {
       setStartScrollListen(true);
       setBackgroundColour('transparent');
       setOnLandingPage(false);
     } else if (window.location.pathname == '/') {
-      console.log('at home', true);
       setOnLandingPage(true);
       setBackgroundColour('transparent');
       setStartScrollListen(false);
@@ -107,9 +102,6 @@ function Header() {
       setBackgroundColour('white');
       setOnLandingPage(false);
     }
-    console.log(startScrollListen);
-    // console.log(onLandingPage);
-    // console.log(333, 'current  colour', backgroundColour, startScrollListen);
   }, [window.location.pathname]);
 
   return (

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
-import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
+import { TextField, IconButton, Box, Stack } from '@mui/material';
 import { PhotoCamera } from '@mui/icons-material';
 import '../styles/calendarStyle.scss';
 import PlanCalendar from './PlanCalendar';
@@ -9,7 +8,7 @@ import AddNewTimeBlock from './AddNewTimeBlock';
 import EditTimeBlock from './EditTimeBlock';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -19,7 +18,6 @@ import {
   addPlanToAllPlans,
   saveToDataBase,
   listenToSnapShot,
-  getFavPlan,
 } from '../utils/functionList';
 import FavFolderDropdown from '../favourite/FavFolderDropdown';
 import {
@@ -30,14 +28,12 @@ import {
   LightBlueBtn,
   PaleEmptyBtn,
 } from '../styles/globalTheme';
-import '../favourite/favDropDown.scss';
 import Swal from 'sweetalert2';
-import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
 const Wrapper = styled.div`
-  padding: 50px;
+  padding: 100px 50px;
   margin: auto;
 `;
 
@@ -86,7 +82,6 @@ const ButtonContainer = styled.div`
 `;
 
 async function addPlanToUserInfo(currentUserId, createPlanDocId) {
-  console.log('saving this docRef to firebase', createPlanDocId);
   try {
     const userInfoRef = doc(
       db,
@@ -103,23 +98,15 @@ async function addPlanToUserInfo(currentUserId, createPlanDocId) {
       },
       { merge: true }
     );
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 }
 
 const BottomBtnContainer = styled.div`
   display: flex;
   align-items: center;
-  /* justify-content: space-between; */
   height: 150px;
   margin-bottom: 30px;
   position: relative;
-  /* .left_btns {
-    display: flex;
-    align-items: center;
-    position: relative;
-  } */
 `;
 
 const CalendarColourBackground = styled.div`
@@ -138,7 +125,6 @@ const CalendarColourBackground = styled.div`
 function AddNewPlan(props) {
   const { currentUserId } = useParams();
   const [username, setUsername] = useState('');
-  // const location = useLocation();
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
   const [mainImage, setMainImage] = useState(null);
@@ -148,7 +134,6 @@ function AddNewPlan(props) {
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [hasCreatedCollection, setHasCreatedCollection] = useState(false);
-  // const [collectionRef, setCollectionRef] = useState(null);
   const [startDateValue, setStartDateValue] = useState(new Date());
   const [endDateValue, setEndDateValue] = useState(new Date());
   const [planDocRef, setPlanDocRef] = useState('');
@@ -176,7 +161,6 @@ function AddNewPlan(props) {
     }
 
     try {
-      // console.log(currentUserId);
       await setDoc(doc(db, 'plans', createPlanDocId), {
         author: currentUserId,
         author_name: username,
@@ -207,8 +191,6 @@ function AddNewPlan(props) {
 
   useEffect(() => {
     if (addedTimeBlock) {
-      console.log('addedTimeBlock is', addedTimeBlock);
-      console.log('onsnap open');
       listenToSnapShot(setMyEvents, planDocRef);
     }
   }, [addedTimeBlock]);
@@ -236,11 +218,11 @@ function AddNewPlan(props) {
       ) : null}
       {showEditPopUp ? (
         <EditTimeBlock
-          showEditPopUp={showEditPopUp}
+          // showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
-          collectionID={'plans'}
+          // collectionID={'plans'}
           planDocRef={planDocRef}
           status={'origin'}
         />
@@ -309,7 +291,7 @@ function AddNewPlan(props) {
                 id="icon-button-file"
                 type="file"
                 onChange={(e) => {
-                  handleMainImageUpload(e, setMainImage);
+                  handleMainImageUpload(e.target.files[0], setMainImage);
                 }}
               />
               <Box textAlign="center">
@@ -365,7 +347,6 @@ function AddNewPlan(props) {
               <LightBlueBtn
                 variant="contained"
                 onClick={() => {
-                  console.log(myEvents.length);
                   if (myEvents.length === 0) {
                     Swal.fire('Please create at least one event!');
                   } else {
@@ -396,7 +377,6 @@ function AddNewPlan(props) {
                 variant="contained"
                 onClick={() => {
                   if (startDateValue && endDateValue && planTitle) {
-                    console.log('going to create new plan');
                     createNewCollection(
                       startDateValue,
                       endDateValue,

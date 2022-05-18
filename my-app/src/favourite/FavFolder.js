@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { getDocs, getDoc, collection, query, where } from 'firebase/firestore';
+import { getDocs, collection, query, where } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
 import { themeColours, fonts } from '../styles/globalTheme';
@@ -49,8 +49,12 @@ const FavPlansWrapper = styled.div`
   margin-right: 30px;
 `;
 
-// selectedFolder={selectedFolder}
-// favFolderName={favFolderName} currentUserId={currentUserId}
+FavFolder.propTypes = {
+  selectedFolder: PropTypes.string,
+  favFolderName: PropTypes.string,
+  currentUserId: PropTypes.string,
+};
+
 export default function FavFolder({ selectedFolder, currentUserId }) {
   const [favPlansList, setFavlansList] = useState(null);
   const [isEmptyFolder, setIsEmptyFolder] = useState(false);
@@ -62,7 +66,6 @@ export default function FavFolder({ selectedFolder, currentUserId }) {
       const favPlansIdList = await getDocs(planQuery);
 
       if (favPlansIdList.docs.length === 0) {
-        console.log('No fav plans yet!');
         setIsEmptyFolder(true);
       } else {
         setIsEmptyFolder(false);

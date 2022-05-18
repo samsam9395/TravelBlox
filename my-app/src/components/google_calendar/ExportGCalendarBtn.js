@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
 import { googleCalendarConfig } from '../../utils/credent';
 import { getDocs, collection } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
 import { LightBlueBtn } from '../../styles/globalTheme';
+import Swal from 'sweetalert2';
 
 const db = firebaseDB();
 
-// planDocRef={planDocRef} planTitle={planTitle}
+ExportGCalendarBtn.propTypes = {
+  planDocRef: PropTypes.string,
+  planTitle: PropTypes.string,
+};
+
 function ExportGCalendarBtn(props) {
   const googleConfig = googleCalendarConfig();
   const [eventsToExport, setEventsToExport] = useState([]);
@@ -42,17 +48,11 @@ function ExportGCalendarBtn(props) {
     }));
 
     setEventsToExport(events);
-    // console.log(events);
   }, []);
 
   function handleExport() {
     const gapi = window.gapi;
-    console.log(window.gapi);
-
-    console.log(gapi);
-
     gapi.load('client:auth2', () => {
-      console.log('loaded client');
       const batch = gapi.client.newBatch();
 
       gapi.client.init({
@@ -77,11 +77,7 @@ function ExportGCalendarBtn(props) {
           });
 
           request.execute((calendar) => {
-            // console.log(calendar);
-
-            // adding events
             eventsToExport.forEach((event) => {
-              // console.log(event);
               const request = gapi.client.calendar.events.insert({
                 calendarId: calendar.id,
                 resource: event,
@@ -91,10 +87,10 @@ function ExportGCalendarBtn(props) {
             });
             try {
               batch.execute((newCalendar, res) => {
-                // console.log(Object.values(newCalendar)[0]);
                 window.open(Object.values(newCalendar)[0].result.htmlLink);
               });
             } catch (error) {
+              Swal.fire('Oops, something went wrong. Please try search again!');
               console.log(error);
             }
           });

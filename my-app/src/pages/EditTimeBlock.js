@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { TextField, Button, IconButton } from '@mui/material';
+import { TextField, IconButton } from '@mui/material';
 import { Delete, Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../utils/firebaseConfig';
-import { doc, setDoc, collection, getDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
 import '../styles/libraryStyles.scss';
 import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
 import Swal from 'sweetalert2';
-import '../styles/alertStyles.scss';
 import { renameGoogleMaDataIntoFirebase } from '../utils/functionList';
+import PropTypes from 'prop-types';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -63,16 +63,6 @@ const FormsContainer = styled.div`
 
 const db = firebaseDB();
 
-// const Input = styled('input')({
-//   display: 'none',
-// });
-
-// const TimeBlockImgContainer = styled.div`
-//   width: 100%;
-//   margin-top: 30px;
-//   margin-bottom: 30px;
-// `;
-
 const TimeblockImgUploadContainer = styled.div`
   width: 100%;
   max-height: 400px;
@@ -109,14 +99,12 @@ const TimeblockImgUploadContainer = styled.div`
 `;
 
 function handleImageUpload(e, setTimeBlockImage) {
-  // console.log(e.target.files[0]);
   const reader = new FileReader();
   if (e) {
     reader.readAsDataURL(e.target.files[0]);
   }
 
   reader.onload = function () {
-    // console.log(reader.result); //base64encoded string
     setTimeBlockImage(reader.result);
   };
   reader.onerror = function (error) {
@@ -124,16 +112,13 @@ function handleImageUpload(e, setTimeBlockImage) {
   };
 }
 
-// collectionID={collectionID}
-//planDocRef={planDocRef}
+EditTimeBlock.propTypes = {
+  planDocRef: PropTypes.string,
+  setShowEditPopUp: PropTypes.func,
+  currentSelectTimeData: PropTypes.string,
+  currentSelectTimeId: PropTypes.string,
+};
 
-// importData={importData}
-// showEditPopUp={showEditPopUp}
-// setShowEditPopUp={setShowEditPopUp}
-// currentSelectTimeData={currentSelectTimeData}
-// currentSelectTimeId={currentSelectTimeId}
-// collectionID={collectionID} <<< get rid of this
-// planDocRef={planDocRef}
 function EditTimeBlock(props) {
   const [initBlockData, setInitBlockData] = useState({});
   const [importBlockData, setImportBlockData] = useState({});
@@ -166,7 +151,6 @@ function EditTimeBlock(props) {
     location,
     timeBlockImage
   ) {
-    // const location_img = location.photos[0].getUrl();
     if (location.geometry) {
       const googleLocationData = renameGoogleMaDataIntoFirebase(
         location,
@@ -181,20 +165,7 @@ function EditTimeBlock(props) {
             text: description,
             start: startTimeValue,
             end: endTimeValue,
-            // place_id: location.place_id || placeId,
-            // place_name: location.name,
-            // place_format_address: location.formatted_address,
             timeblock_img: timeBlockImage || '',
-            // place_img: location.mainImg || location.photos[0].getUrl() || '',
-            // place_formatted_phone_number: location.formatted_phone_number || '',
-            // place_international_phone_number:
-            //   location.international_phone_number || '',
-            // place_url: location.url,
-            // rating: location.rating || '',
-            // place_types: location.types || '',
-            // place_lat: location.geometry.location.lat(),
-            // place_lng: location.geometry.location.lng(),
-            // place_types: location.types || '',
             ...googleLocationData,
             status: 'origin',
             id: props.currentSelectTimeId,
@@ -238,7 +209,6 @@ function EditTimeBlock(props) {
 
     if (timeBlockSnap.exists()) {
       const initialData = timeBlockSnap.data();
-      // console.log(initialData);
 
       if (setInitBlockData) {
         setInitBlockData(initialData);
@@ -258,7 +228,6 @@ function EditTimeBlock(props) {
     try {
       await deleteDoc(timeBlockRef);
       Swal.fire(`${blockTitle} is deleted!`);
-      console.log(blockTitle, props.currentSelectTimeId, 'is deleted!');
       setShowEditPopUp(false);
     } catch (error) {
       console.log(error);
@@ -268,23 +237,16 @@ function EditTimeBlock(props) {
   useEffect(() => {
     if (props.currentSelectTimeData.status === 'imported') {
       setImportBlockData(props.currentSelectTimeData);
-      // console.log(111, 'imported yes');
-      // setImportPlaceData(data);
     } else if (props.currentSelectTimeData.status === 'origin') {
-      // console.log('origin');
-      // console.log(props.currentSelectTimeData.id);
-
       retreiveFromDataBase(timeBlockRef, setInitBlockData);
     } else console.log('something wrong with edit-time-block');
   }, [props.currentSelectTimeData]);
 
   useEffect(() => {
     const data = importBlockData;
-    // console.log(555, importBlockData);
 
     setBlockTitle(data.title);
     setLocationName(data.place_name);
-    // setPlaceId(data.place_id);
     setStartTimeValue(data.start);
     setEndTimeValue(data.end);
     setLocation({
@@ -297,8 +259,6 @@ function EditTimeBlock(props) {
       mainImg: data.place_img || '',
       rating: data.rating || '',
       place_id: data.place_id,
-      // place_lat: data.place_lat || '',
-      // place_lnt: data.place_lnt || '',
     });
   }, [importBlockData]);
 
@@ -306,7 +266,6 @@ function EditTimeBlock(props) {
     const data = initBlockData;
 
     if (initBlockData) {
-      // console.log(333, initBlockData);
       setBlockTitle(data.title);
       setLocationName(data.place_name);
       setPlaceId(data.place_id);
@@ -320,14 +279,11 @@ function EditTimeBlock(props) {
         mainImg: data.place_img || '',
         rating: data.rating || '',
         place_id: data.place_id,
-        // place_lat: data.place_lat || '',
-        // place_lnt: data.place_lnt || '',
       });
       setDescription(data.text);
       setTimeBlockImage(data.timeblock_img);
       if (data.start) {
         setStartTimeValue(new Date(data.start.seconds * 1000));
-        // console.log(data.start.seconds);
       }
       if (data.end) {
         setEndTimeValue(new Date(data.end.seconds * 1000));
@@ -417,7 +373,6 @@ function EditTimeBlock(props) {
                   type="file"
                   id="imgupload"
                   onChange={(e) => {
-                    // console.log(e);
                     handleImageUpload(e, setTimeBlockImage);
                   }}
                 />

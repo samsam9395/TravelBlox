@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Box, CircularProgress } from '@mui/material';
-
 import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
 import DayMapCard from './DayMapCard';
-import DayCalendar from './DayCalendar';
 import Weather from '../weather/Weather';
 import { themeColours } from '../../styles/globalTheme';
-import BeatLoader from 'react-spinners/BeatLoader';
 
 const db = firebaseDB();
 
@@ -21,7 +17,6 @@ const MainWrapper = styled.div`
 const SingleDayWrapper = styled.div`
   display: flex;
   margin-bottom: 60px;
-  /* height: 2000px; */
 `;
 
 const LeftWrapper = styled.div`
@@ -29,7 +24,6 @@ const LeftWrapper = styled.div`
   flex-direction: column;
   margin-right: 35px;
   width: 750px;
-  /* flex-grow: 2; */
 `;
 
 const MapIndivWrapper = styled.div`
@@ -61,13 +55,6 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 30px;
-`;
-
-const DayScheduleContainer = styled.div`
-  min-height: 400px;
-  margin-bottom: 60px;
-  display: flex;
-  width: 100%;
 `;
 
 const TimeBlockImg = styled.img`
@@ -109,15 +96,11 @@ const EventContentText = styled.div`
 function addOneDay(date) {
   var result = new Date(date);
   result.setDate(result.getDate() + 1);
-  // console.log('next day is ', result);
   return result;
 }
 
 async function CalendarByDay(blocksListRef, currentDayDate) {
   const eventByDayList = [];
-
-  // console.log('10 is', currentDayDate); //111 currentDayDate is Tue Apr 26 2022 17:40:59 GMT+0800 (Taipei Standard Time)
-  // console.log('20 Next of CurrentDayDate is', addOneDay(currentDayDate)); //222 Next of CurrentDayDate is Wed Apr 27 2022 17:40:59 GMT+0800 (Taipei Standard Time)
 
   const q = query(
     blocksListRef,
@@ -130,7 +113,6 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
-      // console.log(333, doc);
       eventByDayList.push(doc.data());
     });
   } catch (error) {
@@ -166,7 +148,6 @@ function DayBlockCard(props) {
   useEffect(() => {
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
-        // console.log(eventList);
         setDayEvents(eventList);
         setHasReturned(true);
         if (eventList[0].place_lat) {
@@ -182,9 +163,7 @@ function DayBlockCard(props) {
   }, [props.currentDayDate]);
 
   useEffect(() => {
-    // console.log('dayEvents', dayEvents);
     dayEvents.forEach((block) => {
-      // console.log(block);
       setDayTimeBlocks((prev) => [
         ...prev,
         {
@@ -198,11 +177,8 @@ function DayBlockCard(props) {
       ]);
     });
   }, [hasReturned]);
-  //  console.log(11, result);
-  // console.log(dayEvents);
 
   function changeTimelineEnterColor(timelineRefArray, index) {
-    // console.log(timelineRefArray.current[0].current[index]);
     const enteredElement = timelineRefArray.current[0].current[index];
     enteredElement.style.borderRadius = '50%';
     enteredElement.style.backgroundColor = themeColours.light_blue;
@@ -236,12 +212,10 @@ function DayBlockCard(props) {
         <SingleDayWrapper>
           <LeftWrapper>
             {dayEvents.map((singleEvent, index) => {
-              // console.log('here', singleEvent.end.secodns); //single event end time
               return (
                 <ContentContainer key={index}>
                   <EventTitle>
                     {singleEvent.title.toUpperCase()}
-                    {/* <div>Place: {singleEvent.place_name}</div> */}
                     <div className="event_location">
                       Address: {singleEvent.place_format_address}
                     </div>
@@ -249,27 +223,12 @@ function DayBlockCard(props) {
                   <TimeBlockImg
                     src={singleEvent.timeblock_img}
                     alt="evernt_main_image"></TimeBlockImg>
-                  {/* <EventContentText className="content">
-                    {singleEvent.text.split('\n').map((it, i) => (
-                      <div key={'x' + i}>{it}</div>
-                    ))}
-                  </EventContentText> */}
                   <EventContentText style={{ whiteSpace: 'pre-wrap' }}>
                     {singleEvent.text}
                   </EventContentText>
                 </ContentContainer>
               );
             })}
-            {/* this renders duration text, but position need to be fixed
-          {
-            result?.map((res) => {
-              return res.map((e) => {
-                console.log(e);
-                console.log(33, e.duration.text);
-
-                return <h2>Duration is: {e.duration.text}</h2>;
-              });
-            })} */}
           </LeftWrapper>
           <RightWrapper>
             {lat && lng && <Weather lat={lat} lng={lng} />}
@@ -300,30 +259,6 @@ function DayBlockCard(props) {
       </MainWrapper>
     );
   }
-
-  // if (props.showTab === 'calendar') {
-  //   return (
-  //     <MainWrapper>
-  //       <SingleDayWrapper>
-  //         <CalendarIndiWrapper>
-  //           <DayScheduleContainer>
-  //             {hasReturned ? (
-  //               <DayCalendar
-  //                 currentDayDate={props.currentDayDate}
-  //                 dayTimeBlocks={dayTimeBlocks}
-  //                 showType={'day'}
-  //               />
-  //             ) : (
-  //               <Box sx={{ display: 'flex' }} align="center" justify="center">
-  //                 <CircularProgress size={14} sx={{ py: 2 }} />
-  //               </Box>
-  //             )}
-  //           </DayScheduleContainer>
-  //         </CalendarIndiWrapper>
-  //       </SingleDayWrapper>
-  //     </MainWrapper>
-  //   );
-  // }
 }
 
 export default DayBlockCard;

@@ -45,8 +45,6 @@ const pulse = keyframes`
 const Wrapper = styled.div`
   left: 0;
   top: 0;
-  /* width: 100vw;
-  height: 100vh; */
   position: fixed;
   background-color: white;
   z-index: 80;
@@ -111,10 +109,8 @@ function FullLoading({ opacity }) {
 
   useEffect(() => {
     if (opacity === 0) {
-      console.log('opacity changed!');
       const timeout = setTimeout(() => {
         setChangeDisplay(true);
-        console.log(222, 'set timedisplay');
       }, 1400);
 
       return () => {

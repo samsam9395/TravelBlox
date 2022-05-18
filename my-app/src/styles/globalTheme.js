@@ -1,22 +1,18 @@
 import styled from 'styled-components';
 
 export const themeColours = {
-  light_orange: '#e7ac81', //new
+  light_orange: '#e7ac81',
   darker_orange: '#bb8c6b',
   milktea: '#E4D1B9',
   pale: '#fceebf',
-  lighter_blue: 'hsl(184, 23%, 80%)', //new
-  light_blue: '#6ca5a9', //new
-  greyer_blue: '#6a8c8f', //new
-  // blue: '#0a97b7',
+  lighter_blue: 'hsl(184, 23%, 80%)',
+  light_blue: '#6ca5a9',
+  greyer_blue: '#6a8c8f',
   dark_blue: '#00213a',
   black: '#0E0E0F',
   light_grey: '#80808087',
   orange_grey: '#d9c1b0',
 };
-
-// ref url: https://colorpalettes.net/color-palette-2368/
-// dark blue here: https://colorpalettes.net/color-palette-3901/
 
 export const fonts = {
   main_font: 'Roboto',
@@ -146,7 +142,4 @@ export const ContentWrapper = styled.div`
   overflow-x: hidden;
   max-width: 1300px;
   margin: auto;
-  /* min-height: 300px; */
-  /* overflow: hidden; */
-  /* overflow-y: scroll;  */
 `;

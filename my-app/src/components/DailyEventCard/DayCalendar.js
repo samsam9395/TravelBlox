@@ -45,12 +45,7 @@ const SmallNotice = styled.div`
   margin: 50px 20px;
 `;
 
-export default function DayCalendar({
-  planDocRef,
-  currentDayDate,
-  dayTimeBlocks,
-  showType,
-}) {
+export default function DayCalendar({ planDocRef, currentDayDate }) {
   const localizer = momentLocalizer(moment);
   const [allPlansList, setAllPlansList] = useState([]);
 
@@ -59,11 +54,8 @@ export default function DayCalendar({
       const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
       const allTimeBlocks = await getDocs(blocksListRef);
-      // console.log(allTimeBlocks);
       allTimeBlocks.docs.forEach((e) => {
-        // console.log(e);
         const block = e.data();
-        // console.log(111, block);
         setAllPlansList((prev) => [
           ...prev,
           {
@@ -81,12 +73,7 @@ export default function DayCalendar({
     }
   }, []);
 
-  // console.log(allPlansList);
-
-  // console.log('currentDayDate', currentDayDate);
-
   const handleSelectEvent = useCallback((event) => {
-    // console.log(event);
     window.open(event.place_url, '_blank').focus();
   });
 
@@ -108,19 +95,6 @@ export default function DayCalendar({
           ) : (
             <BeatLoader color={themeColours.milktea} size={8}></BeatLoader>
           )}
-          {/*           
-          {allPlansList && currentDayDate && (
-            <Calendar
-              defaultDate={currentDayDate}
-              localizer={localizer}
-              events={allPlansList}
-              startAccessor="start"
-              endAccessor="end"
-              defaultView={Views.AGENDA}
-              onSelectEvent={handleSelectEvent}
-              // toolbar={false}
-            />
-          )} */}
         </DayScheduleContainer>
       </CalendarIndiWrapper>
       <SmallNotice>
@@ -129,21 +103,4 @@ export default function DayCalendar({
       </SmallNotice>
     </SingleDayWrapper>
   );
-
-  // if (showType === 'day') {
-  //   return (
-  //     <>
-  //       <DateTitle>{currentDayDate.toDateString()}</DateTitle>
-  //       <Calendar
-  //         defaultDate={currentDayDate}
-  //         localizer={localizer}
-  //         events={dayTimeBlocks}
-  //         startAccessor="start"
-  //         endAccessor="end"
-  //         defaultView={Views.DAY}
-  //         toolbar={false}
-  //       />
-  //     </>
-  //   );
-  // }
 }

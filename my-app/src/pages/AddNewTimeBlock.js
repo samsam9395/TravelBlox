@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import {
-  InputLabel,
-  TextField,
-  Button,
-  IconButton,
-  CardMedia,
-  Card,
-  Box,
-} from '@mui/material';
+import { TextField, IconButton } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Close from '@mui/icons-material/Close';
-import AddLocationIcon from '@mui/icons-material/AddLocation';
 import firebaseDB from '../utils/firebaseConfig';
-import { doc, setDoc, addDoc, collection, getDoc } from 'firebase/firestore';
+import { doc, setDoc, collection } from 'firebase/firestore';
 import DateTimeSelector from '../components/Input/DateTimeSelector';
 import AutoCompleteInput from '../components/AutoCompleteInput';
 import LocationCard from '../components/LocationCard';
 import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
 import Swal from 'sweetalert2';
-import '../styles/alertStyles.scss';
+import PropTypes from 'prop-types';
 import { renameGoogleMaDataIntoFirebase } from '../utils/functionList';
 
 const db = firebaseDB();
@@ -111,14 +102,12 @@ const TimeblockImgUploadContainer = styled.div`
 `;
 
 function handleImageUpload(e, setTimeBlockImage) {
-  console.log(e.target.files[0]);
   const reader = new FileReader();
   if (e) {
     reader.readAsDataURL(e.target.files[0]);
   }
 
   reader.onload = function () {
-    // console.log(reader.result); //base64encoded string
     setTimeBlockImage(reader.result);
   };
   reader.onerror = function (error) {
@@ -126,21 +115,18 @@ function handleImageUpload(e, setTimeBlockImage) {
   };
 }
 
+AddNewTimeBlock.propTypes = {
+  planDocRef: PropTypes.string,
+};
+
 // planDocRef={planDocRef}
 function AddNewTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startTimeValue, setStartTimeValue] = useState(props.startDateValue);
   const [endTimeValue, setEndTimeValue] = useState(props.startDateValue);
-  // const [initialTimeBlockData, setInitialTimeBlockData] = useState({});
   const [location, setLocation] = useState('');
   const [timeBlockImage, setTimeBlockImage] = useState('');
-
-  console.log(props.planDocRef);
-
-  // useEffect(() => {
-  //   console.log(location);
-  // }, [location]);
 
   async function addToDataBase(
     planDocRef,
@@ -155,33 +141,16 @@ function AddNewTimeBlock(props) {
       collection(db, 'plans', planDocRef, 'time_blocks')
     );
 
-    if (location) {
-      console.log(location.photos[0].getUrl());
-    }
-    const location_img = location.photos[0].getUrl();
     const googleLocationData = renameGoogleMaDataIntoFirebase(location);
     try {
       await setDoc(timeBlockRef, {
-        // location: location,
         title: blockTitle,
         text: description,
         start: startTimeValue,
         end: endTimeValue,
-
-        // place_id: location.place_id,
-        // place_name: location.name,
-        // place_format_address: location.formatted_address,
         id: timeBlockRef.id,
         timeblock_img: timeBlockImage || '',
-        // place_img: location_img || '', //location.mainImg || location.photos[0].getUrl()
-        // place_formatted_phone_number: location.formatted_phone_number || '',
-        // place_international_phone_number:
-        //   location.international_phone_number || '',
-        // place_url: location.url,
-        // place_rating: location.rating || '',
-        // place_types: location.types || '',
-        // place_lat: location.geometry.location.lat(),
-        // place_lng: location.geometry.location.lng(),
+
         ...googleLocationData,
         status: 'origin',
       });
@@ -226,7 +195,6 @@ function AddNewTimeBlock(props) {
               size="small"
               label="Title"
               variant="outlined"
-              // value={initialTimeBlockData.title}
               onChange={(e) => {
                 setBlockTitle(e.target.value);
               }}
@@ -268,7 +236,6 @@ function AddNewTimeBlock(props) {
                   type="file"
                   id="imgupload"
                   onChange={(e) => {
-                    // console.log(e);
                     handleImageUpload(e, setTimeBlockImage);
                   }}
                 />
@@ -285,34 +252,6 @@ function AddNewTimeBlock(props) {
                 You can upload an image for this time event.
               </div>
             </TimeblockImgUploadContainer>
-
-            {/* <ImageUploader>
-              <Card sx={{ width: 400 }}>
-                <CardMedia
-                  component="img"
-                  image={timeBlockImage}
-                  height="200"
-                />
-                <label htmlFor="icon-button-file">
-                  <Input
-                    accept="image/*"
-                    id="icon-button-file"
-                    type="file"
-                    onChange={(e) => {
-                      handleImageUpload(e, setTimeBlockImage);
-                    }}
-                  />
-                  <Box textAlign="center" fullwidth>
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="div">
-                      <PhotoCamera style={{ color: themeColours.light_blue }} />
-                    </IconButton>
-                  </Box>
-                </label>
-              </Card>
-            </ImageUploader> */}
           </FormsContainer>
           <LightOrangeBtn
             onClick={(e) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { TextField, Button, IconButton, Box, Stack } from '@mui/material';
+import { TextField, IconButton, Box } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { PhotoCamera } from '@mui/icons-material';
 import './../styles/calendarStyle.scss';
@@ -13,16 +13,13 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { doc, getDoc, writeBatch } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
 import {
   handleMainImageUpload,
-  addPlanToAllPlans,
   saveToDataBase,
   listenToSnapShot,
-  getFavPlan,
 } from '../utils/functionList';
-import FavFolderDropdown from '../favourite/FavFolderDropdown';
 import {
   themeColours,
   EditableMainImageContainer,
@@ -31,11 +28,11 @@ import {
   LightBlueBtn,
   PaleBtn,
 } from '../styles/globalTheme';
-import '../favourite/favDropDown.scss';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import '../styles/alertStyles.scss';
 import FullLoading from '../components/general/FullLoading';
+import FavFolderDropdown from '../favourite/FavFolderDropdown';
+import PropTypes from 'prop-types';
 
 const db = firebaseDB();
 
@@ -72,29 +69,11 @@ const CalendarContainer = styled.div`
   margin-top: 60px;
   margin-bottom: 30px;
   position: relative;
-
-  /* background-color: #fdf7e1; */
 `;
 
 const Input = styled('input')({
   display: 'none',
 });
-
-const TypeInput = styled.input`
-  width: 91%;
-  margin-left: 8px;
-  margin-bottom: 10px;
-  height: 56px;
-  padding-left: 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid ${themeColours.light_grey};
-
-  &:focus,
-  &:hover {
-    border-color: ${themeColours.light_orange};
-  }
-`;
 
 const BottomBtnContainer = styled.div`
   display: flex;
@@ -119,16 +98,12 @@ const BottomBtnContainer = styled.div`
   }
 `;
 
-const SelectImportDropdown = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  bottom: -60px;
-  left: 164px;
-`;
-// props
-// userId={user.email} favFolderNames={favFolderNames}
-//currentPlanRef
+EditTimeBlock.propTypes = {
+  userId: PropTypes.string,
+  favFolderNames: PropTypes.object,
+  currentPlanRef: PropTypes.string,
+};
+
 function EditPlanDetail(props) {
   const { planDocRef } = useParams();
   const [planAuthor, setPlanAuthor] = useState('');
@@ -139,7 +114,7 @@ function EditPlanDetail(props) {
   const [myEvents, setMyEvents] = useState([]);
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
-  const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
+  // const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [startDateValue, setStartDateValue] = useState(null);
   const [endDateValue, setEndDateValue] = useState(null);
   const [startInitDateValue, setStartInitDateValue] = useState(0);
@@ -151,27 +126,11 @@ function EditPlanDetail(props) {
   // import
   const [showFavPlans, setShowFavPlans] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState('');
-  const [importData, setImportData] = useState({});
+  // const [importData, setImportData] = useState({});
 
-  //React Route
   const currentUserId = props.userId;
-  // const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
   const navigate = useNavigate();
-
-  const redirectToStatic = () => {
-    navigate(
-      `/static-plan-detail${planDocRef}`
-      // , { state: { currentPlanRef:  } });
-    );
-
-    // navigate('/static-plan-detail', {
-    //   state: {
-    //     fromPage: 'editPlans',
-    //     planDocRef: planDocRef,
-    //   },
-    // });
-  };
 
   const redirectToDashboard = () => {
     navigate('/dashboard');
@@ -180,7 +139,6 @@ function EditPlanDetail(props) {
   async function deletePlan(planDocRef, currentUserId) {
     const batch = writeBatch(db);
     const plansRef = doc(db, 'plans', planDocRef);
-    // const plansTimeblockRef = doc(db, 'plans', planDocRef, 'time_blocks');
     const userInfoRef = doc(
       db,
       'userId',
@@ -192,7 +150,6 @@ function EditPlanDetail(props) {
 
     batch.delete(allPlansRef);
     batch.delete(plansRef);
-    // batch.delete(plansTimeblockRef);
     batch.delete(userInfoRef);
 
     try {
@@ -220,16 +177,26 @@ function EditPlanDetail(props) {
 
   useEffect(async () => {
     const docSnap = await getDoc(doc(db, 'plans', planDocRef));
-    setPlanAuthor(docSnap.data().author);
-    setCountry(docSnap.data().country);
-    setPlanTitle(docSnap.data().title);
-    setMainImage(docSnap.data().main_image);
+    const {
+      author,
+      country,
+      title,
+      main_image,
+      published,
+      start_date,
+      end_date,
+    } = docSnap.data();
 
-    setStartDateValue(new Date(docSnap.data().start_date.seconds * 1000));
-    setEndDateValue(new Date(docSnap.data().end_date.seconds * 1000));
+    setPlanAuthor(author);
+    setCountry(country);
+    setPlanTitle(title);
+    setMainImage(main_image);
+    setIsPublished(published);
+    setStartDateValue(new Date(start_date.seconds * 1000));
+    setEndDateValue(new Date(end_date.seconds * 1000));
 
-    setStartInitDateValue(new Date(docSnap.data().start_date.seconds * 1000));
-    setEndInitDateValue(new Date(docSnap.data().end_date.seconds * 1000));
+    setStartInitDateValue(new Date(start_date.seconds * 1000));
+    setEndInitDateValue(new Date(end_date.seconds * 1000));
   }, []);
 
   useEffect(async () => {
@@ -254,28 +221,19 @@ function EditPlanDetail(props) {
           endDateValue={endDateValue}
         />
       )}
-      {showEditPopUp ? (
+      {showEditPopUp && (
         <EditTimeBlock
-          importData={importData}
-          showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
-          currentSelectTimeId={currentSelectTimeId}
           planDocRef={planDocRef}
         />
-      ) : null}
+      )}
       <ArrowBackIosIcon
         className="hoverCursor"
         onClick={() => redirectToDashboard()}
       />
       <TopContainer>
         <TitleSection>
-          {/* <TypeInput
-            value={planTitle}
-            onChange={(e) => {
-              setPlanTitle(e.target.value);
-            }}
-            placeholder="Plan Title"></TypeInput> */}
           <TextField
             required
             sx={{
@@ -331,7 +289,7 @@ function EditPlanDetail(props) {
               id="icon-button-file"
               type="file"
               onChange={(e) => {
-                handleMainImageUpload(e, setMainImage);
+                handleMainImageUpload(e.target.files[0], setMainImage);
               }}
             />
             <Box textAlign="center">
@@ -349,20 +307,16 @@ function EditPlanDetail(props) {
       <ToggleAttractionSearch />
 
       <CalendarContainer>
-        {/* <div className="background_line"></div> */}
         <CalendarColourBackground></CalendarColourBackground>
-        {console.log(111, startDateValue, 'startDateValue')}
-        {startDateValue ? (
+        {startDateValue && (
           <PlanCalendar
-            setImportData={setImportData}
             setMyEvents={setMyEvents}
             myEvents={myEvents}
             setShowEditPopUp={setShowEditPopUp}
             setCurrentSelectTimeData={setCurrentSelectTimeData}
-            setCurrentSelectTimeId={setCurrentSelectTimeId}
             startDateValue={startDateValue}
           />
-        ) : null}
+        )}
       </CalendarContainer>
       <BottomBtnContainer>
         <div className="left_btns">
@@ -373,13 +327,7 @@ function EditPlanDetail(props) {
             }}>
             Add new event
           </LightBlueBtn>
-          {/* <LightBlueBtn
-            variant="contained"
-            onClick={() => setShowFavContainer(!showFavContainer)}>
-            Import Favourite
-          </LightBlueBtn> */}
 
-          {/* <div className="import_btn_wrapper"> */}
           <LightBlueBtn
             className="import_btn"
             onClick={() => setShowFavContainer(!showFavContainer)}>
@@ -388,8 +336,6 @@ function EditPlanDetail(props) {
 
           {showFavContainer && (
             <FavFolderDropdown
-              showFavPlans={showFavPlans}
-              selectedPlanId={selectedPlanId}
               planDocRef={planDocRef}
               startDateValue={startDateValue}
               currentUserId={currentUserId}
@@ -417,21 +363,6 @@ function EditPlanDetail(props) {
             }}>
             Save
           </LightBlueBtn>
-          {/* <Button
-            variant="contained"
-            onClick={() => {
-              addPlanToAllPlans(
-                currentUserId,
-                planDocRef,
-                planTitle,
-                mainImage,
-                country,
-                isPublished
-              );
-              redirectToStatic();
-            }}>
-            Publish
-          </Button> */}
         </div>
         <PaleBtn
           variant="contained"

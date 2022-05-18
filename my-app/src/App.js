@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalStyle from './styles/globalStyles';
 import { Routes, Route } from 'react-router-dom';
-import styled from 'styled-components';
-import LandingPage from './pages/LandingPage';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -19,17 +17,12 @@ import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { googleAPI } from './utils/credent';
 import ParallaxLanding from './pages/ParallaxLanding';
+import './styles/alertStyles.scss';
+import Swal from 'sweetalert2';
+
 const ApiKey = googleAPI();
 
 const db = firebaseDB();
-
-const ContentWrapper = styled.div`
-  padding: 70px 80px 100px 80px;
-  overflow-x: hidden;
-  min-height: 300px;
-  /* overflow: hidden; */
-  /* overflow-y: scroll;  */
-`;
 
 function App() {
   const [user, setUser] = useState('');
@@ -44,7 +37,7 @@ function App() {
         email: localStorage.getItem('userEmail'),
       });
     } else {
-      console.log('User has not signed in to app yet!');
+      Swal.fire('Please sign in first!');
       navigate('/');
     }
   }, [localStorage.getItem('accessToken')]);
@@ -71,13 +64,8 @@ function App() {
     <>
       <GlobalStyle />
 
-      {/* <ContentWrapper> */}
       <Wrapper apiKey={ApiKey} libraries={['places']}>
         <Routes>
-          {/* <Route
-              path="/"
-              element={<LandingPage user={user} setUser={setUser} />}
-            /> */}
           <Route
             path="/"
             element={<ParallaxLanding user={user} setUser={setUser} />}
@@ -109,7 +97,6 @@ function App() {
           />
         </Routes>
       </Wrapper>
-      {/* </ContentWrapper> */}
     </>
   );
 }

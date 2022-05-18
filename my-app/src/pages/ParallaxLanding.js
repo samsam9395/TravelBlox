@@ -4,21 +4,13 @@ import bg from '../images/parallx_img_layers/bg_full.png';
 import mountain from '../images/parallx_img_layers/mountain.png';
 import tree from '../images/parallx_img_layers/tree_long.png';
 import bird from '../images/parallx_img_layers/bird.png';
-import { getDocs, collection } from 'firebase/firestore';
 import Login from './Login';
-import firebaseDB from '../utils/firebaseConfig';
 import { fonts, themeColours } from '../styles/globalTheme';
-
-// const db = firebaseDB();
 
 const SectionWrapper = styled.div`
   top: -80px;
-  /* left: -80px; */
   height: 100vh;
-  /* width: 100vw; */
-  /* left: -82px; */
   position: relative;
-  /* background-color: #e0b99f; */
   background-color: #e0b99f;
   overflow: hidden;
 `;
@@ -65,7 +57,6 @@ const TreeImg = styled.img`
   z-index: -1;
   position: absolute;
   bottom: -96px;
-  /* bottom: ${(props) => `${props.scrollvalue * 0.5}px`}; */
   z-index: 2;
 `;
 
@@ -83,12 +74,9 @@ const BirdImg = styled.img`
 
 const SubSection = styled.div`
   height: 100vh;
-  /* width: 100vw; */
-  /* left: -82px; */
   background: rgb(24, 24, 24);
   min-height: 100vh;
   z-index: 2;
-  /* position: absolute; */
   background-color: #fff;
   top: 113%;
 
@@ -96,7 +84,6 @@ const SubSection = styled.div`
     content: '';
     position: absolute;
     bottom: 0;
-    /* width: 100vw; */
     height: 100px;
     background: linear-gradient(to bottom, #161719 #e0b99f);
     z-index: 100;
@@ -126,7 +113,6 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
   margin: auto;
 
   .content_section {
@@ -164,33 +150,13 @@ const ContentContainer = styled.div`
     .description_text {
       font-size: 1em;
       text-align: start;
-
-      /* max-width: 80%; */
     }
   }
 `;
 
 function ParallaxLanding({ user, setUser }) {
   const [scrollYValue, setscrollYValue] = useState(0);
-  // const [mainImage, setMainImage] = useState(null);
   const [hasSignedIn, setHasSignedIn] = useState(false);
-
-  // useEffect(async () => {
-  //   const querySnapshot = await getDocs(collection(db, 'main-components'));
-  //   querySnapshot.forEach((doc) => {
-  //     console.log(doc.data().landing_main_img);
-  //     if (doc.data().landing_main_img) {
-  //       setMainImage(doc.data().landing_main_img);
-  //     }
-  //   });
-  // }, []);
-
-  useEffect(() => {
-    if (user) {
-      console.log(user);
-    }
-  }, [user]);
-  // console.log(scrollYValue);
 
   useEffect(() => {
     window.addEventListener(

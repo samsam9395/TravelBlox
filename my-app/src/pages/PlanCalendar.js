@@ -26,8 +26,6 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
     []
   );
 
-  console.log(props.startDateValue);
-
   const moveEvent = ({ event, start, end }) => {
     const newEvents = props.myEvents.map((existingEvent) => {
       return existingEvent.id == event.id
@@ -39,25 +37,15 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
 
   const handleSelectEvent = useCallback((event) => {
     if (event.status === 'imported') {
-      console.log(event.status);
-      // console.log('okies');
-      console.log(event);
-      // console.log(event.id);
       props.setCurrentSelectTimeId(event.id);
       props.setCurrentSelectTimeData(event);
       props.setShowEditPopUp(true);
     } else {
-      console.log(event.status);
-      console.log(event);
       props.setCurrentSelectTimeData(event);
-      // console.log(event.id); //this is timeBlockId
       props.setCurrentSelectTimeId(event.id);
       props.setShowEditPopUp(true);
     }
   });
-
-  // console.log(props.myEvents);
-  // console.log('calendar start value', typeof props.startDateValue);
 
   return (
     props.startDateValue != 0 && (
@@ -65,17 +53,14 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
         startAccessor="start"
         endAccessor="end"
         dayLayoutAlgorithm={dayLayoutAlgorithm}
-        // defaultDate={moment().toDate()}
         defaultDate={props.startDateValue}
         defaultView={Views.WEEK}
         localizer={localizer}
         events={props.myEvents}
         onSelectEvent={handleSelectEvent}
-        //   onSelectSlot={handleSelectSlot}
         onEventDrop={moveEvent}
-        //   onEventResize={resizeEvent}
         scrollToTime={scrollToTime}
-        draggableAccessor={(event) => true}
+        draggableAccessor={true}
         selectable
         resizable
       />

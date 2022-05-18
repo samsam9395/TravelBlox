@@ -4,9 +4,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  signOut,
 } from 'firebase/auth';
-import { doc, getDoc, addDoc, setDoc, collection } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
@@ -14,7 +13,7 @@ import { VisibilityOff, Visibility } from '@mui/icons-material';
 import { InputAdornment } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import firebaseDB from '../utils/firebaseConfig';
-import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import { LightOrangeBtn } from '../styles/globalTheme';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
 
@@ -32,9 +31,9 @@ const Wrapper = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  width: 30%;
+  width: 300px;
   margin-right: 10px;
-  height: 100%;
+  height: 380px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -45,9 +44,9 @@ const LoginWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* padding-top: 30px; */
   padding-bottom: 50px;
-  height: 1000px;
+  width: 100%;
+  height: 420px;
 `;
 
 const Title = styled.div`
@@ -59,7 +58,7 @@ const Title = styled.div`
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: 20px 30px;
   width: 40%;
 `;
 
@@ -81,7 +80,6 @@ const SignUpSwitcher = styled.div`
   .click_here {
     color: #d06224;
     font-weight: 800;
-    /* width: 40px; */
     padding: 0 10px;
   }
 `;
@@ -96,7 +94,6 @@ async function signUP(email, password, username) {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         return user.email;
       })
@@ -118,14 +115,11 @@ async function signUP(email, password, username) {
         if (error.code === 'auth/email-already-in-use') {
           Swal.fire('Email already in use, please pick another one!');
         }
-        console.log(error.message);
-        console.log(error.code);
       });
   }
 }
 
 function Login(props) {
-  // const [hasSignedIn, setHasSignedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUserName] = useState('');
@@ -134,16 +128,13 @@ function Login(props) {
   const setIsNewUser = props.setIsNewUser;
   const navigate = useNavigate();
 
-  function logOn(email, password) {
+  function userLogIn(email, password) {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
       })
       .catch((error) => {
-        console.log(error.code);
-        console.log(error.message);
         if (error.message === 'EMAIL_NOT_FOUND') {
           Swal.fire('Email not found! Please check again!');
         }
@@ -153,11 +144,7 @@ function Login(props) {
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
       if (user) {
-        // console.log(user.accessToken);
-        console.log(user);
-        console.log('run this page once');
         localStorage.setItem('accessToken', user.accessToken);
         localStorage.setItem('userEmail', user.email);
         navigate('/discover');
@@ -206,7 +193,6 @@ function Login(props) {
                         <InputAdornment position="end">
                           <IconButton
                             onClick={() => setShowPassword(!showPassword)}
-                            //   onMouseDown={handleMouseDownPassword}
                             edge="end">
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
@@ -220,7 +206,9 @@ function Login(props) {
                   marginTop="20px"
                   onClick={() =>
                     email && password
-                      ? (logOn(email, password), setEmail(''), setPassword(''))
+                      ? (userLogIn(email, password),
+                        setEmail(''),
+                        setPassword(''))
                       : Swal.fire('please fill in both !')
                   }>
                   Login
@@ -271,6 +259,7 @@ function Login(props) {
                 <InputWrapper>
                   <TextField
                     required
+                    fullWidth
                     value={password}
                     label="password"
                     variant="outlined"
@@ -283,7 +272,6 @@ function Login(props) {
                         <InputAdornment position="end">
                           <IconButton
                             onClick={() => setShowPassword(!showPassword)}
-                            //   onMouseDown={handleMouseDownPassword}
                             edge="end">
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>

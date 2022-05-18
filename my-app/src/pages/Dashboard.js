@@ -20,19 +20,11 @@ import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import sparkle from '../images/dashboard/spark.png';
 import Swal from 'sweetalert2';
-import '../styles/alertStyles.scss';
 import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
 const SvgWrapper = styled.div`
-  /* width: 100vw;
-  height: 100vh;
-  overflow-x: hidden;
-  left: -80px;
-  position: absolute;
-  top: -10px;
-  padding: 70px 80px 100px 80px; */
   position: fixed;
   right: 20px;
   top: 5px;
@@ -52,9 +44,6 @@ const UpperPartBackground = styled.div`
 
   z-index: -100;
   border-radius: 50%;
-  /* position: absolute; */
-  /* right: -333px;
-  top: -209px; */
   position: fixed;
   right: -184px;
   top: -145px;
@@ -65,31 +54,31 @@ const Wrapper = styled.div`
   padding-top: 20px;
 `;
 
-const Sparkles = styled.div`
-  position: relative;
-  top: 50%;
-  right: 0;
+// const Sparkles = styled.div`
+//   position: relative;
+//   top: 50%;
+//   right: 0;
 
-  .sparkle_left {
-    position: absolute;
-    width: 29px;
-    left: -414px;
-  }
+//   .sparkle_left {
+//     position: absolute;
+//     width: 29px;
+//     left: -414px;
+//   }
 
-  .sparkle_left_small {
-    position: absolute;
-    width: 13px;
-    left: -391px;
-    bottom: -48px;
-  }
+//   .sparkle_left_small {
+//     position: absolute;
+//     width: 13px;
+//     left: -391px;
+//     bottom: -48px;
+//   }
 
-  .sparkle_right {
-    position: absolute;
-    width: 24px;
-    right: 200px;
-    top: -85px;
-  }
-`;
+//   .sparkle_right {
+//     position: absolute;
+//     width: 24px;
+//     right: 200px;
+//     top: -85px;
+//   }
+// `;
 
 const TopSectionWrapper = styled.div`
   background: rgba(76, 74, 74, 0.05);
@@ -130,13 +119,11 @@ const TopSectionWrapper = styled.div`
 const UserInfoWrapper = styled.div`
   padding-top: 20px;
   display: flex;
-  /* flex-direction: column; */
   align-items: center;
   height: 300px;
 
   .user_info_container {
     display: flex;
-    /* align-items: center; */
     flex-direction: column;
     margin-left: 30px;
   }
@@ -144,7 +131,6 @@ const UserInfoWrapper = styled.div`
   .greeting {
     text-align: center;
     display: flex;
-    /* margin-top: 20px; */
     margin-bottom: 20px;
     font-size: 30px;
     color: ${themeColours.light_orange};
@@ -183,8 +169,6 @@ const UserAvatarUpload = styled.div`
     position: absolute;
     left: -29px;
     top: -23px;
-    /* left: 14%;
-    top: 25%; */
     border: 1px solid ${themeColours.orange_grey};
     z-index: -10;
   }
@@ -396,7 +380,6 @@ function Dashboard(props) {
       const plansList = await getDocs(ref);
 
       if (plansList.docs.length === 0) {
-        console.log('No own plans yet!');
         setShowNoPlansText(true);
       } else {
         setShowNoPlansText(false);
@@ -405,7 +388,6 @@ function Dashboard(props) {
           list.push(plan.data().collection_id);
         });
 
-        console.log(333, list);
         setOwnPlansIdList(list);
       }
 
@@ -421,7 +403,6 @@ function Dashboard(props) {
 
   useEffect(() => {
     if (uploadUserImg) {
-      console.log('inside', userImage);
       saveImgToDataBase(userImage);
     }
   }, [uploadUserImg]);
@@ -469,7 +450,11 @@ function Dashboard(props) {
                   id="user_avatar_file"
                   type="file"
                   onChange={(e) => {
-                    handleMainImageUpload(e, setUserImage, setUploadUserImg);
+                    handleMainImageUpload(
+                      e.target.files[0],
+                      setUserImage,
+                      setUploadUserImg
+                    );
                   }}></input>
                 <IconButton
                   style={{
@@ -528,13 +513,7 @@ function Dashboard(props) {
           </DisplaySwitch>
         </TopSectionWrapper>
 
-        {
-          showAddPlanPopUp && navigate(`/new-plan/${props.user.email}`)
-          //     , {
-          //     state: { favPlansIdList: favPlansIdList, user: props.user },
-          //     state: { user: props.user },
-          // })
-        }
+        {showAddPlanPopUp && navigate(`/new-plan/${props.user.email}`)}
 
         {displaySection === 'My Plans' && (
           <SectionContainer>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { GetWeather } from '../../utils/api';
+import { getWeather } from '../../utils/api';
 import './weather.scss';
 import { themeColours, fonts } from '../../styles/globalTheme';
 import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
@@ -239,16 +239,10 @@ function Weather({ lat, lng }) {
   }
 
   useEffect(async () => {
-    // const data = await GetWeather(34.685109, 135.8048019);
+    const data = await getWeather(lat, lng);
 
-    console.log(111, lat, lng);
-    const data = await GetWeather(lat, lng);
-    // console.log(data.data.current);
-    // console.log(data.data.current.weather[0].main);
     setWeatherData(data.data);
   }, []);
-
-  // console.log(weatherData);
 
   return weatherData ? (
     <WeatherCard>
@@ -257,15 +251,6 @@ function Weather({ lat, lng }) {
         src={WatercolourBluePng}
         alt="current weather background"
       />
-      {/* <WatercolourBlue className="watercolour_background"></WatercolourBlue> */}
-      {/* <div className="right_side_text">
-          CURRENT WEATHER FOR THIS EVENT LOCATION
-        </div> */}
-      {/* <div className="empty_ellipse"></div>
-        <div className="empty_ellipse second"></div>
-        <div className="empty_ellipse third"></div>
-        <div className="empty_ellipse forth"></div>
-        <div className="empty_ellipse fifth"></div> */}
 
       <img
         className="golden_spark_simple_left"
@@ -319,8 +304,7 @@ function Weather({ lat, lng }) {
 
       <DailyWrapper>
         {weatherData.daily.map((e, index) => {
-          // console.log('a', new Date(e.dt * 1000).getDay());
-          // console.log('b', new Date(weatherData.current.dt * 1000).getDay());
+          e.log('b', new Date(weatherData.current.dt * 1000).getDay());
           if (
             new Date(e.dt * 1000).getDay() !=
               new Date(weatherData.current.dt * 1000).getDay() &&

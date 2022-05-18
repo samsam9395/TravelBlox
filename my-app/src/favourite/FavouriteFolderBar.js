@@ -5,18 +5,10 @@ import { themeColours } from '../styles/globalTheme';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import AddIcon from '@mui/icons-material/Add';
-import {
-  getDocs,
-  getDoc,
-  collection,
-  setDoc,
-  doc,
-  onSnapshot,
-} from 'firebase/firestore';
+import { collection, setDoc, doc, onSnapshot } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import EditFavFolderSelector from './EditFavFolderSelector';
 import Swal from 'sweetalert2';
-import '../styles/alertStyles.scss';
 
 const db = firebaseDB();
 
@@ -133,21 +125,6 @@ function FavouriteFolderBar({ currentUserId }) {
   const editPopRef = useRef();
   const renameInputRef = useRef([]);
 
-  //   async function saveRenameBlur(value, favFolderName, currentUserId) {
-  //     console.log(value.target.textContent);
-  //     console.log(favFolderName, currentUserId);
-  //       setRenameValue(value.target.textContent);
-
-  //       try {
-  //     setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
-  //       folder_name: newFolder,
-  //     });
-  //     alert('Folder added!');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   }
-
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -155,7 +132,6 @@ function FavouriteFolderBar({ currentUserId }) {
   }, [inputRef.current]);
 
   useEffect(() => {
-    // console.log('ref is', renameInputRef);
     if (showRenameBox !== null) {
       renameInputRef.current[favFolderEditIndex].focus();
     }
@@ -177,8 +153,6 @@ function FavouriteFolderBar({ currentUserId }) {
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
-      // If the menu is open and the clicked target is not within the menu,
-      // then close the menu
       if (
         showFavFolderEdit &&
         editPopRef.current &&
@@ -191,7 +165,6 @@ function FavouriteFolderBar({ currentUserId }) {
     document.addEventListener('mousedown', checkIfClickedOutside);
 
     return () => {
-      // Cleanup the event listener
       document.removeEventListener('mousedown', checkIfClickedOutside);
     };
   }, [showFavFolderEdit]);
@@ -217,9 +190,6 @@ function FavouriteFolderBar({ currentUserId }) {
 
       <FolderWrapper ref={editPopRef}>
         {favFolderNames?.map((favFolderName, index) => {
-          //   console.log(333, showRenameBox === index);
-          //   console.log(444, showRenameBox);
-
           return (
             <FolderContainer
               key={index}
@@ -250,9 +220,7 @@ function FavouriteFolderBar({ currentUserId }) {
                 )}
               </div>
               <div
-                // onBlur={(e) => saveRenameBlur(e, favFolderName, currentUserId)}
                 ref={(element) => (renameInputRef.current[index] = element)}
-                // contenteditable={showRenameBox === index ? 'true' : 'false'}
                 className="folder_name hoverCursor"
                 onClick={() => setSelectedFolder(favFolderName)}>
                 {favFolderName}
