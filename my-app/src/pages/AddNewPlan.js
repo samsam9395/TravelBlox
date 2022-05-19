@@ -12,7 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DatePicker from '../components/Input/DatePicker';
+import DatePicker from '../components/input/DatePicker';
 import {
   handleMainImageUpload,
   addPlanToAllPlans,

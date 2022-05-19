@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
+import PropTypes from 'prop-types';
 
 const db = firebaseDB();
 
@@ -13,6 +14,11 @@ const SinglePlanContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 1em 0;
+
+  @media (max-width: 768px) {
+    width: 350px;
+    height: 350px;
+  }
 `;
 
 const PlanTextContainer = styled.div`
@@ -85,6 +91,11 @@ const PlanMainImageContainer = styled.div`
     top: 100%;
   }
 `;
+
+OwnPlanCard.propTypes = {
+  ownPlanId: PropTypes.string,
+  userIdentity: PropTypes.string,
+};
 
 // props.ownPlanId
 // props.userIdentity

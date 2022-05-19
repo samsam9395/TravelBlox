@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import {
-  getDocs,
-  collection,
-  getDoc,
-  doc,
-  query,
-  where,
-} from 'firebase/firestore';
+import { getDocs, collection, query, where } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
 import FullLoading from '../components/general/FullLoading';
@@ -30,8 +22,12 @@ const PlanCollectionWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: flex-start;
   max-width: 1400px;
+  min-height: 450px;
+  align-items: center;
+
   .empty_notification {
     font-size: 20px;
+    padding: 0;
   }
 `;
 
@@ -44,7 +40,6 @@ function Allplans(props) {
   const [allPlansList, setAllPlansList] = useState([]);
   const [inputValue, setInputValue] = useState('');
 
-  const [discoverMainImg, setDiscoverMainImg] = useState('');
   const [emptyMatch, setEmptyMatch] = useState(false);
   const [displayPlans, setDisplayPlans] = useState([]);
 
@@ -60,19 +55,11 @@ function Allplans(props) {
     }
   }, []);
 
-  useEffect(async () => {
-    const discoverMainImg = await getDoc(
-      doc(db, 'main-components', 'discover_main_image')
-    );
-
-    setDiscoverMainImg(discoverMainImg.data().discover_main_image);
-  }, []);
-
   useEffect(() => {
-    if (discoverMainImg) {
+    if (allPlansList.length > 0) {
       setLoadindOpacity(0);
     }
-  }, [discoverMainImg]);
+  }, [allPlansList]);
 
   useEffect(() => {
     if (inputValue !== '') {

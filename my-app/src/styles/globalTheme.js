@@ -37,6 +37,13 @@ export const LightOrangeBtn = styled.button`
     cursor: pointer;
     background-color: ${themeColours.darker_orange};
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    letter-spacing: normal;
+    font-size: 12px;
+    padding: 10px;
+  }
 `;
 
 export const LightBlueBtn = styled.button`
@@ -54,6 +61,10 @@ export const LightBlueBtn = styled.button`
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.greyer_blue};
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 
@@ -142,4 +153,8 @@ export const ContentWrapper = styled.div`
   overflow-x: hidden;
   max-width: 1300px;
   margin: auto;
+
+  @media (max-width: 768px) {
+    padding: 80px 15px 80px 15px;
+  }
 `;

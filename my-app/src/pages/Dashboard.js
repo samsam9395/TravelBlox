@@ -34,6 +34,7 @@ const SvgWrapper = styled.div`
     right: -31px;
     top: 53px;
   }
+  z-index: -100;
 `;
 
 const UpperPartBackground = styled.div`
@@ -53,32 +54,6 @@ const Wrapper = styled.div`
   position: relative;
   padding-top: 20px;
 `;
-
-// const Sparkles = styled.div`
-//   position: relative;
-//   top: 50%;
-//   right: 0;
-
-//   .sparkle_left {
-//     position: absolute;
-//     width: 29px;
-//     left: -414px;
-//   }
-
-//   .sparkle_left_small {
-//     position: absolute;
-//     width: 13px;
-//     left: -391px;
-//     bottom: -48px;
-//   }
-
-//   .sparkle_right {
-//     position: absolute;
-//     width: 24px;
-//     right: 200px;
-//     top: -85px;
-//   }
-// `;
 
 const TopSectionWrapper = styled.div`
   background: rgba(76, 74, 74, 0.05);
@@ -114,6 +89,11 @@ const TopSectionWrapper = styled.div`
     top: 24%;
     left: 25%;
   }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding-bottom: 80px;
+  }
 `;
 
 const UserInfoWrapper = styled.div`
@@ -139,6 +119,11 @@ const UserInfoWrapper = styled.div`
 
   .user_id {
     color: ${themeColours.dark_blue};
+  }
+
+  @media (max-width: 768px) {
+    padding: 0;
+    height: 200px;
   }
 `;
 
@@ -267,6 +252,10 @@ const SinglePlanContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 768px) {
+    width: 350px;
+  }
 `;
 
 const NoPlansText = styled.div`
@@ -326,6 +315,9 @@ const DisplaySwitch = styled.div`
 
   .divider {
     color: ${themeColours.light_grey};
+  }
+  @media (max-width: 768px) {
+    width: 70%;
   }
 `;
 
@@ -459,7 +451,6 @@ function Dashboard(props) {
                 <IconButton
                   style={{
                     visibility: showUserUploadIcon,
-                    // transition: 'opacity 5s',
                   }}
                   ref={uploadIconRef}
                   aria-label="upload picture"

@@ -7,7 +7,7 @@ import './../styles/calendarStyle.scss';
 import PlanCalendar from '../components/timeblock/PlanCalendar';
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
 import EditTimeBlock from '../components/timeblock/EditTimeBlock';
-import DatePicker from '../components/Input/DatePicker';
+import DatePicker from '../components/input/DatePicker';
 import CountrySelector from '../components/CountrySelector';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';

@@ -31,6 +31,16 @@ const zoomInAnimation = keyframes`
   }
 `;
 
+const Wrapper = styled.div`
+  /* padding: 70px 80px 100px 80px; */
+  width: 90vw;
+  margin: auto;
+
+  @media (max-width: 768px) {
+    padding: 80px 20px 80px 10px;
+  }
+`;
+
 const UpperContainer = styled.div`
   display: flex;
   box-sizing: content-box;
@@ -52,6 +62,10 @@ const LowerContainer = styled.div`
   justify-content: center;
   box-sizing: content-box;
   width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const FavFolderWrapper = styled.div`
@@ -62,13 +76,18 @@ const FavFolderWrapper = styled.div`
 `;
 
 const PlanInfoWrapper = styled.div`
-  z-index: 10;
+  /* z-index: 10; */
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-right: 20px;
   justify-content: center;
   flex-grow: 0;
+
+  @media (max-width: 768px) {
+    padding-right: 10px;
+    width: 20%;
+  }
 `;
 
 const UserInfoContainer = styled.div`
@@ -114,7 +133,8 @@ const UserInfoContainer = styled.div`
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
-  width: 1000px;
+  /* max-width: 100%; */
+  /* flex-grow: 1; */
 `;
 
 const FavFolderDropDownOptions = styled.div`
@@ -188,22 +208,22 @@ const PlanMainImage = styled.div`
       cursor: pointer;
       animation-name: ${zoomInAnimation};
       animation-duration: 1.5s;
-      /* animation-iteration-count: infinite; */
     }
+  }
+
+  @media (max-width: 768px) {
+    width: 70%;
   }
 `;
 
 const PlanTitleText = styled.div`
   width: 55%;
-  z-index: 10;
   font-family: 'Gellatio';
   position: absolute;
   font-weight: 800;
-  /* top: 25%; */
   left: 0%;
-  /* font-size: 4vw; */
-  top: 60px;
-  font-size: clamp(1rem, 4vw, 3.7rem);
+  top: 20%;
+  font-size: clamp(35px, 3vw, 55px);
   letter-spacing: 3px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
@@ -214,10 +234,16 @@ const PlanTitleText = styled.div`
     letter-spacing: 1px;
     text-shadow: none;
     color: ${themeColours.pale};
-    font-size: 5.5vw;
+    font-size: clamp(1.5em, 4vw, 5vw);
     position: absolute;
     color: #fceebf;
     right: -44%;
+  }
+
+  @media (max-width: 768px) {
+    top: 35%;
+    width: 55%;
+    left: 3%;
   }
 `;
 
@@ -259,24 +285,22 @@ function loopThroughDays(startday, days) {
   }
   return scheduleTimestampList;
 }
-const activeTabStyle = css`
-  color: ${themeColours.dark_blue};
-  border-bottom: 1px solid ${themeColours.dark_blue};
-  font-weight: 600;
-`;
-
-const normalTabStyle = css`
-  color: rgb(0 33 58 / 70%);
-  padding-bottom: 'none';
-  font-weight: normal;
-`;
 
 const Tab = styled.div`
+  z-index: 5;
   padding: 10px;
-  ${(props) =>
+  /* ${(props) =>
     props.isCurrentActiveTab === props.tabName
-      ? activeTabStyle
-      : normalTabStyle};
+      ? css`
+          color: ${themeColours.dark_blue};
+          border-bottom: 1px solid ${themeColours.dark_blue};
+          font-weight: 600;
+        `
+      : css`
+          color: ${themeColours.light_grey};
+          padding-bottom: 'none';
+          font-weight: 'normal';
+        `}; */
 `;
 
 const SwitchTab = styled.div`
@@ -295,6 +319,10 @@ const SwitchTab = styled.div`
 
   &:hover {
     cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 
@@ -476,7 +504,7 @@ function StaticPlanDetail(props) {
   }, [mainImage, authorName]);
 
   return (
-    <ContentWrapper>
+    <Wrapper>
       <FullLoading opacity={loadindOpacity} />
       {showFullImage && (
         <ImageEnlarge
@@ -624,7 +652,6 @@ function StaticPlanDetail(props) {
             <DayCalendar
               planDocRef={planDocRef}
               currentDayDate={timestampList[0]}
-              // showType={'week'}
             />
           )}
         </PlanCardsWrapper>
@@ -634,7 +661,7 @@ function StaticPlanDetail(props) {
         onClick={() => window.scrollTo({ top: 120, behavior: 'smooth' })}>
         ^Top
       </ToTopScroll>
-    </ContentWrapper>
+    </Wrapper>
   );
 }
 export default StaticPlanDetail;

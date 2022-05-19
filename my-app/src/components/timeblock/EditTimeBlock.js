@@ -4,7 +4,7 @@ import { TextField, IconButton } from '@mui/material';
 import { Delete, Close, PhotoCamera } from '@mui/icons-material';
 import firebaseDB from '../../utils/firebaseConfig';
 import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
-import DateTimeSelector from '../Input/DateTimeSelector';
+import DateTimeSelector from '../input/DateTimeSelector';
 import AutoCompleteInput from '../AutoCompleteInput';
 import LocationCard from '../LocationCard';
 import '../../styles/libraryStyles.scss';

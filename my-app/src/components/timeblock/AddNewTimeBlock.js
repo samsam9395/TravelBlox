@@ -5,7 +5,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Close from '@mui/icons-material/Close';
 import firebaseDB from '../../utils/firebaseConfig';
 import { doc, setDoc, collection } from 'firebase/firestore';
-import DateTimeSelector from '../Input/DateTimeSelector';
+import DateTimeSelector from '../input/DateTimeSelector';
 import AutoCompleteInput from '../AutoCompleteInput';
 import LocationCard from '../LocationCard';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';

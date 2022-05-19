@@ -304,7 +304,6 @@ function Weather({ lat, lng }) {
 
       <DailyWrapper>
         {weatherData.daily.map((e, index) => {
-          e.log('b', new Date(weatherData.current.dt * 1000).getDay());
           if (
             new Date(e.dt * 1000).getDay() !=
               new Date(weatherData.current.dt * 1000).getDay() &&
