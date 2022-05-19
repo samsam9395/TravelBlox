@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
-import firebaseDB from '../../utils/firebaseConfig';
+import React, { useEffect, useRef, useState } from 'react';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+
 import DayMapCard from './DayMapCard';
 import Weather from '../weather/Weather';
+import firebaseDB from '../../utils/firebaseConfig';
+import styled from 'styled-components';
 import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();

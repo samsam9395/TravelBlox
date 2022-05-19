@@ -1,26 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import {
+  ContentWrapper,
+  LightOrangeBtn,
+  fonts,
+  themeColours,
+} from '../styles/globalTheme';
+import React, { useEffect, useRef, useState } from 'react';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import { getAuth, signOut } from 'firebase/auth';
+
+import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
+import FullLoading from '../components/general/FullLoading';
+import { IconButton } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import OwnPlanCard from '../components/OwnPlanCard';
+import Swal from 'sweetalert2';
+import UploadIcon from '@mui/icons-material/Upload';
+import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
+import firebaseDB from '../utils/firebaseConfig';
+import { handleMainImageUpload } from '../utils/functionList';
+import sparkle from '../images/dashboard/spark.png';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { getDocs, getDoc, collection, setDoc, doc } from 'firebase/firestore';
-import { getAuth, signOut } from 'firebase/auth';
-import firebaseDB from '../utils/firebaseConfig';
-import OwnPlanCard from '../components/OwnPlanCard';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { handleMainImageUpload } from '../utils/functionList';
-import UploadIcon from '@mui/icons-material/Upload';
-import { IconButton } from '@mui/material';
-
-import {
-  themeColours,
-  fonts,
-  LightOrangeBtn,
-  ContentWrapper,
-} from '../styles/globalTheme';
-import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
-import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
-import sparkle from '../images/dashboard/spark.png';
-import Swal from 'sweetalert2';
-import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 

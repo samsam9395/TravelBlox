@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+
 import { ReactComponent as CircularMoon } from '../../images/loading/circular_moon.svg';
 import GoldenPalmTreeWindow from '../../images/loading/golden_palm_window.png';
 import SimpleSparkle from '../../images/loading/simple_sparkle.png';

@@ -1,23 +1,24 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import GlobalStyle from './styles/globalStyles';
-import { Routes, Route } from 'react-router-dom';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import EditPlanDetail from './pages/EditPlanDetail';
-import StaticPlanDetail from './pages/StaticPlanDetail';
-import Dashboard from './pages/Dashboard';
+import './styles/alertStyles.scss';
+
+import { Route, Routes } from 'react-router-dom';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+
 import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
-
-import firebaseDB from './utils/firebaseConfig';
-import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
-import { Wrapper } from '@googlemaps/react-wrapper';
+import Dashboard from './pages/Dashboard';
+import EditPlanDetail from './pages/EditPlanDetail';
+import GlobalStyle from './styles/globalStyles';
 import ParallaxLanding from './pages/ParallaxLanding';
-import './styles/alertStyles.scss';
+import StaticPlanDetail from './pages/StaticPlanDetail';
 import Swal from 'sweetalert2';
+import { Wrapper } from '@googlemaps/react-wrapper';
+import firebaseDB from './utils/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
 

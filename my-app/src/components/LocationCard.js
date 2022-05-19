@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import StarRateIcon from '@mui/icons-material/StarRate';
+import React, { useEffect, useState } from 'react';
+
 import StarHalfIcon from '@mui/icons-material/StarHalf';
+import StarRateIcon from '@mui/icons-material/StarRate';
+import styled from 'styled-components';
 import { themeColours } from '../styles/globalTheme';
 
 const CardWrapper = styled.div`

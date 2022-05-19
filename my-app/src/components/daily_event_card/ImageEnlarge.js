@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+
 import Close from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
+import styled from 'styled-components';
 
 const Wrapper = styled.div`
   width: 100vw;

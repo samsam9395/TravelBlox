@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { getDocs, collection, query, where } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
-import PublicPlanCard from '../components/PublicPlanCard';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+
 import FullLoading from '../components/general/FullLoading';
-import SkyMainImg from '../components/SkyMainImg';
 import PropTypes from 'prop-types';
+import PublicPlanCard from '../components/PublicPlanCard';
+import SkyMainImg from '../components/SkyMainImg';
+import firebaseDB from '../utils/firebaseConfig';
+import styled from 'styled-components';
 
 const db = firebaseDB();
 

@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  getTravelLocation,
   getAttraction,
   getRestaurant,
+  getTravelLocation,
 } from '../../utils/api';
-import styled from 'styled-components';
+
 import AttractionCards from './AttractionCards';
-import RestaurantCard from './RestaurantCard';
-import { themeColours } from '../../styles/globalTheme';
 import HashLoader from 'react-spinners/HashLoader';
+import RestaurantCard from './RestaurantCard';
 import Swal from 'sweetalert2';
+import styled from 'styled-components';
+import { themeColours } from '../../styles/globalTheme';
 
 const MainWrapper = styled.div`
   margin-top: 30px;

@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import '../../styles/calendarStyle.scss';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
+
+import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
+import React, { useCallback, useMemo } from 'react';
+
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
-import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
-import PropTypes from 'prop-types';
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);

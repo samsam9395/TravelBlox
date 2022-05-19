@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { getWeather } from '../../utils/api';
 import './weather.scss';
-import { themeColours, fonts } from '../../styles/globalTheme';
-import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
-import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
+
+import React, { useEffect, useState } from 'react';
+import { fonts, themeColours } from '../../styles/globalTheme';
+
 import BeatLoader from 'react-spinners/BeatLoader';
+import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
+import { getWeather } from '../../utils/api';
+import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
+import styled from 'styled-components';
 
 const LoaderContainer = styled.div`
   width: 100%;

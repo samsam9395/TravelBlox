@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
-import { themeColours } from '../../styles/globalTheme';
+import React, { useEffect, useRef } from 'react';
+
 import styled from 'styled-components';
+import { themeColours } from '../../styles/globalTheme';
 
 const Container = styled.div`
   margin-right: 15px;

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+
+import PropTypes from 'prop-types';
+import firebaseDB from '../utils/firebaseConfig';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
-import PropTypes from 'prop-types';
 
 const db = firebaseDB();
 

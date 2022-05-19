@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
-import moment from 'moment';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
-import styled from 'styled-components';
-import { getDocs, collection } from 'firebase/firestore';
-import firebaseDB from '../../utils/firebaseConfig';
-import { themeColours } from '../../styles/globalTheme';
+
+import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
+import React, { useCallback, useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+
 import BeatLoader from 'react-spinners/BeatLoader';
+import firebaseDB from '../../utils/firebaseConfig';
+import moment from 'moment';
+import styled from 'styled-components';
+import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 

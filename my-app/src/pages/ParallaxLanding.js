@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import bg from '../images/parallx_img_layers/bg_full.png';
-import mountain from '../images/parallx_img_layers/mountain.png';
-import tree from '../images/parallx_img_layers/tree_long.png';
-import bird from '../images/parallx_img_layers/bird.png';
-import Login from './Login';
+import React, { useEffect, useState } from 'react';
 import { fonts, themeColours } from '../styles/globalTheme';
+
+import Login from './Login';
+import bg from '../images/parallx_img_layers/bg_full.png';
+import bird from '../images/parallx_img_layers/bird.png';
+import mountain from '../images/parallx_img_layers/mountain.png';
+import styled from 'styled-components';
+import tree from '../images/parallx_img_layers/tree_long.png';
 
 const SectionWrapper = styled.div`
   top: -80px;

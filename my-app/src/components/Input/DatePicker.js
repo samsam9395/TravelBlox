@@ -1,7 +1,9 @@
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+
+import { useEffect, useState } from 'react';
+
 import { DateRange } from 'react-date-range';
-import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 DatePicker.propTypes = {

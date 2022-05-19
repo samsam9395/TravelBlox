@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import AttractionInput from './AttractionInput';
+import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { themeColours, LightOrangeBtn } from '../../styles/globalTheme';
+
+import AttractionInput from './AttractionInput';
 
 const wiggleAnimation = keyframes`
  0% { transform: rotate(0deg); }

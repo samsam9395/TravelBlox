@@ -1,10 +1,10 @@
-import * as React from 'react';
-import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { themeColours } from '../../styles/globalTheme';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import PropTypes from 'prop-types';
+import React from 'react';
+import TextField from '@mui/material/TextField';
+import { themeColours } from '../../styles/globalTheme';
 
 DateTimeSelector.propTypes = {
   startTimeValue: PropTypes.string,

@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import firebaseDB from '../../utils/firebaseConfig';
+import React, { useEffect, useRef } from 'react';
 import {
-  doc,
   collection,
-  writeBatch,
+  doc,
   getDocs,
   query,
   where,
+  writeBatch,
 } from 'firebase/firestore';
+
 import Swal from 'sweetalert2';
+import firebaseDB from '../../utils/firebaseConfig';
+import styled from 'styled-components';
 
 const db = firebaseDB();
 

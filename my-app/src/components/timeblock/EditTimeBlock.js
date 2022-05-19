@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { TextField, IconButton } from '@mui/material';
-import { Delete, Close, PhotoCamera } from '@mui/icons-material';
-import firebaseDB from '../../utils/firebaseConfig';
-import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
-import DateTimeSelector from '../input/DateTimeSelector';
-import AutoCompleteInput from '../AutoCompleteInput';
-import LocationCard from '../LocationCard';
 import '../../styles/libraryStyles.scss';
+
+import { Close, Delete, PhotoCamera } from '@mui/icons-material';
+import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import Swal from 'sweetalert2';
-import { renameGoogleMaDataIntoFirebase } from '../../utils/functionList';
+import React, { useEffect, useState } from 'react';
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+
+import AutoCompleteInput from '../AutoCompleteInput';
+import DateTimeSelector from '../input/DateTimeSelector';
+import LocationCard from '../LocationCard';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
+import firebaseDB from '../../utils/firebaseConfig';
+import { renameGoogleMaDataIntoFirebase } from '../../utils/functionList';
+import styled from 'styled-components';
 
 const BlackWrapper = styled.div`
   position: fixed;

@@ -1,24 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
-import DayBlockCard from '../components/daily_event_card/DayBlockCard';
-import firebaseDB from '../utils/firebaseConfig';
-import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
-import {
-  themeColours,
-  LightOrangeBtn,
-  ContentWrapper,
-} from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
-import Timeline from '../components/daily_event_card/Timeline';
+
+import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import React, { useEffect, useRef, useState } from 'react';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import styled, { css, keyframes } from 'styled-components';
+
+import DayBlockCard from '../components/daily_event_card/DayBlockCard';
 import DayCalendar from '../components/daily_event_card/DayCalendar';
-import sunburst from '../images/static/sunburst_solid.png';
-import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
-import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
-import { useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
 import FullLoading from '../components/general/FullLoading';
+import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
+import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
+import Timeline from '../components/daily_event_card/Timeline';
+import firebaseDB from '../utils/firebaseConfig';
+import sunburst from '../images/static/sunburst_solid.png';
+import { useParams } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -32,7 +30,6 @@ const zoomInAnimation = keyframes`
 `;
 
 const Wrapper = styled.div`
-  /* padding: 70px 80px 100px 80px; */
   width: 90vw;
   margin: auto;
 

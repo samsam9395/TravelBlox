@@ -1,7 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 const SinglePlanWrapper = styled.div`
   flex-grow: 1;

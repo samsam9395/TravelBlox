@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+
+import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import { themeColours } from '../styles/globalTheme';
+
 // setCountry={setCountry} setIsLoading={setIsLoading}
 export default function CountrySelector(props) {
   // const [country, setCountry] = useState('');
