@@ -3,16 +3,27 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+const SinglePlanWrapper = styled.div`
+  flex-grow: 1;
+  margin: 10px;
+  width: 400px;
+
+  @media (max-width: 1470px) {
+    width: 300px;
+  }
+`;
+
 const SinglePlanContainer = styled.div`
-  width: 320px;
+  min-width: 300px;
+  max-width: 450px;
+  width: 100%;
   height: 320px;
   object-fit: contain;
   display: flex;
   align-items: center;
-  margin: 10px;
-  flex-grow: 1;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1470px) {
+    margin: auto;
     width: 100%;
   }
 `;
@@ -118,24 +129,26 @@ function PublicPlanCard(props) {
   };
 
   return (
-    <SinglePlanContainer onClick={() => redirectToStatic()}>
-      <PlanMainImageContainer>
-        <div className="content-overlay"></div>
-        <MainImage
-          src={props.planInfo.main_image || props.defaultImg}
-          alt="main image"></MainImage>
+    <SinglePlanWrapper>
+      <SinglePlanContainer onClick={() => redirectToStatic()}>
+        <PlanMainImageContainer>
+          <div className="content-overlay"></div>
+          <MainImage
+            src={props.planInfo.main_image || props.defaultImg}
+            alt="main image"></MainImage>
 
-        <PlanTextContainer className="content-details fadeIn-bottom">
-          <SinglePlanText>{props.planInfo.title}</SinglePlanText>
-          <div className="subInfo_container">
-            <div>Author: {props.planInfo.author}</div>
-            {props.planInfo.country && (
-              <div>Country: {props.planInfo.country['label']}</div>
-            )}
-          </div>
-        </PlanTextContainer>
-      </PlanMainImageContainer>
-    </SinglePlanContainer>
+          <PlanTextContainer className="content-details fadeIn-bottom">
+            <SinglePlanText>{props.planInfo.title}</SinglePlanText>
+            <div className="subInfo_container">
+              <div>Author: {props.planInfo.author}</div>
+              {props.planInfo.country && (
+                <div>Country: {props.planInfo.country['label']}</div>
+              )}
+            </div>
+          </PlanTextContainer>
+        </PlanMainImageContainer>
+      </SinglePlanContainer>
+    </SinglePlanWrapper>
   );
 }
 

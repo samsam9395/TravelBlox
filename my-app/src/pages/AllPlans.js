@@ -13,6 +13,7 @@ import firebaseDB from '../utils/firebaseConfig';
 import PublicPlanCard from '../components/PublicPlanCard';
 import FullLoading from '../components/general/FullLoading';
 import SkyMainImg from '../components/SkyMainImg';
+import PropTypes from 'prop-types';
 
 const db = firebaseDB();
 
@@ -34,7 +35,10 @@ const PlanCollectionWrapper = styled.div`
   }
 `;
 
-// defaultImg={defaultImg}
+Allplans.propTypes = {
+  defaultImg: PropTypes.string,
+};
+
 function Allplans(props) {
   const [loadindOpacity, setLoadindOpacity] = useState(1);
   const [allPlansList, setAllPlansList] = useState([]);
@@ -43,10 +47,8 @@ function Allplans(props) {
   const [discoverMainImg, setDiscoverMainImg] = useState('');
   const [emptyMatch, setEmptyMatch] = useState(false);
   const [displayPlans, setDisplayPlans] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(async () => {
-    // const allPlans = await getDocs(collection(db, 'allPlans'));
     const allPlansRef = collection(db, 'allPlans');
     const q = query(allPlansRef, where('published', '==', true));
     const allPlans = await getDocs(q);
