@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { getDocs, collection, query, where, orderBy } from 'firebase/firestore';
-import firebaseDB from '../../utils/firebaseConfig';
+import React, { useEffect, useRef, useState } from 'react';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+
 import DayMapCard from './DayMapCard';
 import Weather from '../weather/Weather';
+import firebaseDB from '../../utils/firebaseConfig';
+import styled from 'styled-components';
 import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
@@ -17,13 +18,21 @@ const MainWrapper = styled.div`
 const SingleDayWrapper = styled.div`
   display: flex;
   margin-bottom: 60px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const LeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 35px;
-  width: 750px;
+  max-width: 750px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-right: 20px;
+  }
 `;
 
 const MapIndivWrapper = styled.div`
@@ -38,17 +47,18 @@ const CalendarIndiWrapper = styled.div`
   height: 400px;
   display: flex;
   margin-right: 35px;
-  /* max-width: 750px; */
-  /* flex-grow: 2; */
 `;
 
 const RightWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  /* max-width: 300px; */
   margin-left: auto;
   width: 300px;
-  /* flex-grow: 1; */
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    margin: auto;
+  }
 `;
 
 const ContentContainer = styled.div`

@@ -1,38 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { TextField, IconButton, Box } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { PhotoCamera } from '@mui/icons-material';
 import './../styles/calendarStyle.scss';
-import PlanCalendar from '../components/timeblock/PlanCalendar';
-import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
-import EditTimeBlock from '../components/timeblock/EditTimeBlock';
-import DatePicker from '../components/Input/DatePicker';
-import CountrySelector from '../components/CountrySelector';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import { doc, getDoc, writeBatch } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
-import { useNavigate } from 'react-router-dom';
-import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
+
+import { Box, IconButton, TextField } from '@mui/material';
 import {
-  handleMainImageUpload,
-  saveToDataBase,
-  listenToSnapShot,
-} from '../utils/functionList';
-import {
-  themeColours,
-  EditableMainImageContainer,
   EditableMainImage,
+  EditableMainImageContainer,
   FlexColumnWrapper,
   LightBlueBtn,
   PaleBtn,
+  themeColours,
 } from '../styles/globalTheme';
-import { useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import FullLoading from '../components/general/FullLoading';
+import React, { useEffect, useState } from 'react';
+import { doc, getDoc, writeBatch } from 'firebase/firestore';
+import {
+  handleMainImageUpload,
+  listenToSnapShot,
+  saveToDataBase,
+} from '../utils/functionList';
+
+import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import CountrySelector from '../components/CountrySelector';
+import DatePicker from '../components/input/DatePicker';
+import EditTimeBlock from '../components/timeblock/EditTimeBlock';
 import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FullLoading from '../components/general/FullLoading';
+import { PhotoCamera } from '@mui/icons-material';
+import PlanCalendar from '../components/timeblock/PlanCalendar';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
+import Switch from '@mui/material/Switch';
+import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
+import firebaseDB from '../utils/firebaseConfig';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const db = firebaseDB();
 

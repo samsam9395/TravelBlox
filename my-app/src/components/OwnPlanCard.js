@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+
+import PropTypes from 'prop-types';
+import firebaseDB from '../utils/firebaseConfig';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
 
 const db = firebaseDB();
 
@@ -13,6 +15,11 @@ const SinglePlanContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 1em 0;
+
+  @media (max-width: 768px) {
+    width: 350px;
+    height: 350px;
+  }
 `;
 
 const PlanTextContainer = styled.div`
@@ -85,6 +92,11 @@ const PlanMainImageContainer = styled.div`
     top: 100%;
   }
 `;
+
+OwnPlanCard.propTypes = {
+  ownPlanId: PropTypes.string,
+  userIdentity: PropTypes.string,
+};
 
 // props.ownPlanId
 // props.userIdentity

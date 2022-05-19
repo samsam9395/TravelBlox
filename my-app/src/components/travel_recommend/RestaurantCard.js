@@ -1,6 +1,7 @@
+import './attractionCard.scss';
+
 import React from 'react';
 import styled from 'styled-components';
-import './attractionCard.scss';
 
 const Wrapper = styled.div`
   width: 400px;

@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import firebaseDB from '../../utils/firebaseConfig';
+import React, { useEffect, useRef } from 'react';
 import {
-  doc,
   collection,
-  writeBatch,
+  doc,
   getDocs,
   query,
   where,
+  writeBatch,
 } from 'firebase/firestore';
+
 import Swal from 'sweetalert2';
+import firebaseDB from '../../utils/firebaseConfig';
+import styled from 'styled-components';
 
 const db = firebaseDB();
 
@@ -27,19 +28,13 @@ const Wrapper = styled.div`
   position: absolute;
   right: -50px;
   top: 40px;
-  padding: 10px;
+  padding: 5px;
 
   .options {
-    background: rgba(255, 255, 255, 0.75);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
     padding: 5px;
-    margin-bottom: 3px;
 
     &:hover {
+      border-radius: 10px;
       background: rgba(85, 207, 214, 0.5);
       cursor: pointer;
     }
@@ -51,7 +46,6 @@ function EditFavFolderSelector({
   favFolderName,
   setShowFavFolderEdit,
   currentUserId,
-  setShowRenameBox,
   showRenameBox,
 }) {
   const renameInputRef = useRef(null);
@@ -62,11 +56,7 @@ function EditFavFolderSelector({
     }
   }, [showRenameBox, renameInputRef.current]);
 
-  async function deleteFavFolder(
-    favFolderName,
-    currentUserId,
-    setShowFavFolderEdit
-  ) {
+  async function deleteFavFolder(favFolderName, currentUserId) {
     const batch = writeBatch(db);
 
     if (favFolderName === 'default') {

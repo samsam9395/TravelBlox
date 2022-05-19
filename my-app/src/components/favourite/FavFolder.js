@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { getDocs, collection, query, where } from 'firebase/firestore';
-import firebaseDB from '../../utils/firebaseConfig';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { fonts, themeColours } from '../../styles/globalTheme';
+
 import OwnPlanCard from '../OwnPlanCard';
-import { themeColours, fonts } from '../../styles/globalTheme';
+import PropTypes from 'prop-types';
+import firebaseDB from '../../utils/firebaseConfig';
+import styled from 'styled-components';
 
 const db = firebaseDB();
 

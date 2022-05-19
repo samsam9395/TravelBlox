@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { TextField, IconButton, Box, Stack } from '@mui/material';
-import { PhotoCamera } from '@mui/icons-material';
 import '../styles/calendarStyle.scss';
-import PlanCalendar from '../components/timeblock/PlanCalendar';
-import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
-import EditTimeBlock from '../components/timeblock/EditTimeBlock';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
-import { useNavigate, useParams } from 'react-router-dom';
-import CountrySelector from '../components/CountrySelector';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DatePicker from '../components/Input/DatePicker';
+
+import { Box, IconButton, Stack, TextField } from '@mui/material';
 import {
-  handleMainImageUpload,
-  addPlanToAllPlans,
-  saveToDataBase,
-  listenToSnapShot,
-} from '../utils/functionList';
-import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
-import {
-  themeColours,
-  EditableMainImageContainer,
   EditableMainImage,
+  EditableMainImageContainer,
   FlexColumnWrapper,
   LightBlueBtn,
   PaleEmptyBtn,
+  themeColours,
 } from '../styles/globalTheme';
+import React, { useEffect, useState } from 'react';
+import {
+  addPlanToAllPlans,
+  handleMainImageUpload,
+  listenToSnapShot,
+  saveToDataBase,
+} from '../utils/functionList';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
+import CountrySelector from '../components/CountrySelector';
+import DatePicker from '../components/input/DatePicker';
+import EditTimeBlock from '../components/timeblock/EditTimeBlock';
+import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { PhotoCamera } from '@mui/icons-material';
+import PlanCalendar from '../components/timeblock/PlanCalendar';
 import Swal from 'sweetalert2';
+import Switch from '@mui/material/Switch';
+import firebaseDB from '../utils/firebaseConfig';
+import styled from 'styled-components';
 
 const db = firebaseDB();
 

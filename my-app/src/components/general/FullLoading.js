@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+
 import { ReactComponent as CircularMoon } from '../../images/loading/circular_moon.svg';
 import GoldenPalmTreeWindow from '../../images/loading/golden_palm_window.png';
 import SimpleSparkle from '../../images/loading/simple_sparkle.png';
@@ -61,15 +62,19 @@ const ElementContainer = styled.div`
   min-height: 700px;
   top: 30vh;
 
+  .palm_tree_moon_container {
+    display: flex;
+    position: relative;
+  }
+
   .svg_element {
     width: 100%;
-    position: absolute;
   }
 
   .circular_moon {
     position: absolute;
-    left: -60%;
-    top: -5%;
+    left: -58%;
+    top: -16%;
     width: 210%;
     animation: ${rotate} infinite 20s linear;
   }
@@ -87,10 +92,10 @@ const ElementContainer = styled.div`
   }
 
   .simple_sparkle_img_bottom {
-    width: 8%;
+    width: 10%;
     position: absolute;
-    bottom: -330px;
-    left: 130%;
+    top: 353px;
+    right: -66%;
     -webkit-animation: bmNaQt infinite 2s linear;
     animation: bmNaQt infinite 5s linear;
   }
@@ -101,6 +106,10 @@ const ElementContainer = styled.div`
     top: -50px;
     left: 175%;
     animation: ${pulse} infinite 3s linear;
+  }
+
+  @media (max-width: 1400px) {
+    width: 17%;
   }
 `;
 
@@ -122,13 +131,15 @@ function FullLoading({ opacity }) {
   return (
     <Wrapper opacity={opacity} changeDisplay={changeDisplay}>
       <ElementContainer>
-        <CircularMoon className="svg_element circular_moon"></CircularMoon>
-        <div className="svg_element">
-          <img
-            className="palm_tree_img"
-            src={GoldenPalmTreeWindow}
-            alt="Golden Palm Tree Window"
-          />
+        <div className="palm_tree_moon_container">
+          <CircularMoon className="svg_element circular_moon" />
+          <div className="svg_element">
+            <img
+              className="palm_tree_img"
+              src={GoldenPalmTreeWindow}
+              alt="Golden Palm Tree Window"
+            />
+          </div>
         </div>
 
         <div className="svg_element">

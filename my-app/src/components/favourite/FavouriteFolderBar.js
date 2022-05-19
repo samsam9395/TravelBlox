@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useRef, useState } from 'react';
+import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
+
+import AddIcon from '@mui/icons-material/Add';
+import EditFavFolderSelector from './EditFavFolderSelector';
 import FavFolder from './FavFolder';
-import { themeColours } from '../../styles/globalTheme';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import AddIcon from '@mui/icons-material/Add';
-import { collection, setDoc, doc, onSnapshot } from 'firebase/firestore';
-import firebaseDB from '../../utils/firebaseConfig';
-import EditFavFolderSelector from './EditFavFolderSelector';
 import Swal from 'sweetalert2';
+import firebaseDB from '../../utils/firebaseConfig';
+import styled from 'styled-components';
+import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 

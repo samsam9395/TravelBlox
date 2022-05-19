@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import 'sweetalert2/src/sweetalert2.scss';
+
+import React, { useEffect, useState } from 'react';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
-  getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  getAuth,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import { VisibilityOff, Visibility } from '@mui/icons-material';
-import { InputAdornment } from '@mui/material';
+
 import IconButton from '@mui/material/IconButton';
-import firebaseDB from '../utils/firebaseConfig';
+import { InputAdornment } from '@mui/material';
 import { LightOrangeBtn } from '../styles/globalTheme';
 import Swal from 'sweetalert2';
-import 'sweetalert2/src/sweetalert2.scss';
+import TextField from '@material-ui/core/TextField';
+import firebaseDB from '../utils/firebaseConfig';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
 

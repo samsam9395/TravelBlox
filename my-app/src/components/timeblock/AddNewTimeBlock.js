@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { TextField, IconButton } from '@mui/material';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import Close from '@mui/icons-material/Close';
-import firebaseDB from '../../utils/firebaseConfig';
-import { doc, setDoc, collection } from 'firebase/firestore';
-import DateTimeSelector from '../Input/DateTimeSelector';
-import AutoCompleteInput from '../AutoCompleteInput';
-import LocationCard from '../LocationCard';
+import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import Swal from 'sweetalert2';
+import React, { useState } from 'react';
+import { collection, doc, setDoc } from 'firebase/firestore';
+
+import AutoCompleteInput from '../AutoCompleteInput';
+import Close from '@mui/icons-material/Close';
+import DateTimeSelector from '../input/DateTimeSelector';
+import LocationCard from '../LocationCard';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
+import firebaseDB from '../../utils/firebaseConfig';
 import { renameGoogleMaDataIntoFirebase } from '../../utils/functionList';
+import styled from 'styled-components';
 
 const db = firebaseDB();
 

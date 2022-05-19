@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { getWeather } from '../../utils/api';
 import './weather.scss';
-import { themeColours, fonts } from '../../styles/globalTheme';
-import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
-import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
+
+import React, { useEffect, useState } from 'react';
+import { fonts, themeColours } from '../../styles/globalTheme';
+
 import BeatLoader from 'react-spinners/BeatLoader';
+import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
+import { getWeather } from '../../utils/api';
+import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
+import styled from 'styled-components';
 
 const LoaderContainer = styled.div`
   width: 100%;
@@ -113,6 +115,7 @@ const CurrentSection = styled.div`
     color: ${themeColours.light_orange};
     text-shadow: 2px 1px ${themeColours.dark_blue};
     font-family: ${fonts.secondary_font};
+    z-index: 1;
   }
   .mainText {
     font-weight: 800;
@@ -304,7 +307,6 @@ function Weather({ lat, lng }) {
 
       <DailyWrapper>
         {weatherData.daily.map((e, index) => {
-          e.log('b', new Date(weatherData.current.dt * 1000).getDay());
           if (
             new Date(e.dt * 1000).getDay() !=
               new Date(weatherData.current.dt * 1000).getDay() &&

@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { doc, getDocs, collection, writeBatch } from 'firebase/firestore';
-import styled from 'styled-components';
-import firebaseDB from '../../utils/firebaseConfig';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import { getFavPlan } from '../../utils/functionList';
+import React, { useEffect, useRef, useState } from 'react';
+import { collection, doc, getDocs, writeBatch } from 'firebase/firestore';
+
 import Swal from 'sweetalert2';
+import firebaseDB from '../../utils/firebaseConfig';
+import { getFavPlan } from '../../utils/functionList';
+import styled from 'styled-components';
 
 const db = firebaseDB();
 
