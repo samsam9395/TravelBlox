@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import logo from '../../images/main-logo.png';
+import logo from '../../images/main-logo-transparent.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { themeColours } from '../../styles/globalTheme';
 
@@ -11,34 +11,37 @@ const Wrapper = styled.div`
   width: 100%;
   position: fixed;
   top: 0;
-  background-color: white;
-  border-bottom: 2px solid ${themeColours.pale};
-  padding: 0 24px;
+  background-color: ${(props) => props.backgroundcolour};
+  border-bottom: ${(props) =>
+    props.backgroundcolour === 'white'
+      ? `2px solid ${themeColours.pale}`
+      : 'none'};
+  padding: 0px 40px;
   z-index: 100;
 `;
 
-const NavLink = styled.div`
-  &:active,
-  &:visited {
-    text-decoration: none;
-  }
-  width: 80px;
-`;
-
-const TestLink = styled(Link)`
+const SubNavLink = styled(Link)`
   text-decoration: none;
-  color: ${themeColours.dark_blue};
+  font-weight: 600;
+  color: ${(props) =>
+    props.backgroundcolour === 'transparent'
+      ? 'white'
+      : themeColours.dark_blue};
+  text-shadow: ${(props) =>
+    props.backgroundcolour === 'transparent' ? '2px 3px 0 #7A7A7A' : 'none'};
+  width: 80px;
+
   &:active {
     text-decoration: none;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
   &:visited {
     text-decoration: none;
-    color: inherit;
+    color: 'red';
   }
   &:hover {
     cursor: pointer;
-    color: ${themeColours.orange};
+    color: ${themeColours.light_orange};
   }
 `;
 
@@ -52,26 +55,67 @@ const Logo = styled.div`
 const NavLinkWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 30px;
+  justify-content: flex-end;
 `;
+
 function Header() {
   const navigate = useNavigate();
+  const [backgroundColour, setBackgroundColour] = useState('transparent');
+  const [startScrollListen, setStartScrollListen] = useState(true);
+  const [onLandingPage, setOnLandingPage] = useState(false);
+
+  useEffect(() => {
+    var scrollTrigger = 60;
+
+    window.onscroll = function () {
+      if (startScrollListen) {
+        if (
+          window.scrollY >= scrollTrigger ||
+          window.pageYOffset >= scrollTrigger
+        ) {
+          setBackgroundColour('white');
+        }
+
+        if (window.scrollY == 0) {
+          //user scrolled to the top of the page
+          setBackgroundColour('transparent');
+        }
+      } else if (onLandingPage) {
+        setBackgroundColour('transparent');
+      } else {
+        setBackgroundColour('white');
+      }
+    };
+  }, [startScrollListen]);
+
+  useEffect(() => {
+    if (window.location.pathname == '/discover') {
+      setStartScrollListen(true);
+      setBackgroundColour('transparent');
+      setOnLandingPage(false);
+    } else if (window.location.pathname == '/') {
+      setOnLandingPage(true);
+      setBackgroundColour('transparent');
+      setStartScrollListen(false);
+    } else {
+      setStartScrollListen(false);
+      setBackgroundColour('white');
+      setOnLandingPage(false);
+    }
+  }, [window.location.pathname]);
 
   return (
-    <Wrapper>
+    <Wrapper backgroundcolour={backgroundColour}>
       <Logo
         className="hoverCursor"
         onClick={() => navigate('/discover')}></Logo>
       <NavLinkWrapper>
-        <NavLink>
-          <TestLink to="/">Home</TestLink>
-        </NavLink>
-        <NavLink>
-          <TestLink to="/discover">Discover</TestLink>
-        </NavLink>
-        <NavLink>
-          <TestLink to="/dashboard">Dashboard</TestLink>
-        </NavLink>
+        <SubNavLink backgroundcolour={backgroundColour} to="/discover">
+          Discover
+        </SubNavLink>
+        <SubNavLink backgroundcolour={backgroundColour} to="/dashboard">
+          Dashboard
+        </SubNavLink>
       </NavLinkWrapper>
     </Wrapper>
   );

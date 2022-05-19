@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  GetTravelLocation,
-  GetAttraction,
-  GetRestaurant,
+  getTravelLocation,
+  getAttraction,
+  getRestaurant,
 } from '../../utils/api';
 import styled from 'styled-components';
 import AttractionCards from './AttractionCards';
 import RestaurantCard from './RestaurantCard';
 import { themeColours } from '../../styles/globalTheme';
 import HashLoader from 'react-spinners/HashLoader';
+import Swal from 'sweetalert2';
 
 const MainWrapper = styled.div`
   margin-top: 30px;
@@ -88,7 +89,7 @@ function AttractionInput({ showRecommends, setShowRecommends }) {
 
   useEffect(() => {
     if (attractionList === undefined || restaurantList === undefined) {
-      alert('Please try search again!');
+      Swal.fire('Please try search again!');
     }
   }, [attractionList, restaurantList]);
 
@@ -103,21 +104,16 @@ function AttractionInput({ showRecommends, setShowRecommends }) {
         />
         <SearchBtn
           onClick={async () => {
-            console.log('clicked', autoInput);
             setLoading(true);
             setShowRecommends(true);
-            const geoId = await GetTravelLocation(autoInput);
-            const attractionList = await GetAttraction(geoId);
-            const resList = await GetRestaurant(geoId);
+            const geoId = await getTravelLocation(autoInput);
+            const attractionList = await getAttraction(geoId);
+            const resList = await getRestaurant(geoId);
 
             if (attractionList && resList) {
               setLoading(false);
             }
-
-            console.log(222, attractionList);
             setAttractionList(attractionList);
-
-            console.log(333, resList);
             setRestaurantList(resList);
           }}>
           Search Attraction and Restaurants by City

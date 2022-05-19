@@ -4,6 +4,13 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { themeColours } from '../../styles/globalTheme';
+import PropTypes from 'prop-types';
+
+DateTimeSelector.propTypes = {
+  startTimeValue: PropTypes.string,
+  endTimeValue: PropTypes.string,
+  setEndTimeValue: PropTypes.func,
+};
 
 export default function DateTimeSelector(props) {
   return (
@@ -24,7 +31,6 @@ export default function DateTimeSelector(props) {
         label="Start Time"
         value={props.startTimeValue}
         onChange={(newValue) => {
-          console.log(newValue);
           props.setStartTimeValue(newValue);
         }}
       />
@@ -44,7 +50,6 @@ export default function DateTimeSelector(props) {
         label="End Time"
         value={props.endTimeValue}
         onChange={(newValue) => {
-          console.log(newValue);
           props.setEndTimeValue(newValue);
         }}
       />

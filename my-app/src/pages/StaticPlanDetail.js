@@ -1,21 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { doc, getDoc, collection, setDoc, getDocs } from 'firebase/firestore';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import DayBlockCard from '../components/DailyEventCard/DayBlockCard';
-import { useLocation } from 'react-router-dom';
+import DayBlockCard from '../components/daily_event_card/DayBlockCard';
 import firebaseDB from '../utils/firebaseConfig';
-import ExportGCalendarBtn from '../components/GoogleCalendar/ExportGCalendarBtn';
-import { themeColours, LightOrangeBtn } from '../styles/globalTheme';
+import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
+import {
+  themeColours,
+  LightOrangeBtn,
+  ContentWrapper,
+} from '../styles/globalTheme';
 import '../styles/libraryStyles.scss';
-import Timeline from '../components/DailyEventCard/Timeline';
-import UserAvatar from '../components/user/Avatar';
-import CheckIcon from '@mui/icons-material/Check';
-import DayCalendar from '../components/DailyEventCard/DayCalendar';
+import Timeline from '../components/daily_event_card/Timeline';
+import DayCalendar from '../components/daily_event_card/DayCalendar';
 import sunburst from '../images/static/sunburst_solid.png';
 import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
-import ImageEnlarge from '../components/DailyEventCard/ImageEnlarge';
+import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
+import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import FullLoading from '../components/general/FullLoading';
+import PropTypes from 'prop-types';
 
 const db = firebaseDB();
 
@@ -30,26 +33,11 @@ const zoomInAnimation = keyframes`
 
 const UpperContainer = styled.div`
   display: flex;
-  /* flex-direction: column; */
-  /* justify-content: space-between; */
   box-sizing: content-box;
   width: 100%;
   height: 500px;
   margin-bottom: 30px;
   position: relative;
-
-  /* .leaf_shadow {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    left: -102px;
-    width: 119%;
-    height: 110%;
-    top: -50px;
-    z-index: 5;
-    border-radius: 10px;
-  } */
 
   .milktea_svg_left {
     position: absolute;
@@ -78,7 +66,7 @@ const PlanInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-left: 20px;
+  padding-right: 20px;
   justify-content: center;
   flex-grow: 0;
 `;
@@ -88,20 +76,32 @@ const UserInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-size: 14px;
 
   .user_info_title {
     text-align: center;
     display: flex;
     margin-top: 20px;
-    color: ${themeColours.dark_blue};
+    color: ${themeColours.light_grey};
     flex-direction: column;
     font-weight: 600;
+    font-style: italic;
   }
 
-  .authorId {
+  .author_name {
+    font-style: normal;
+    font-weight: 600;
+    margin: 10px 0 5px 0;
+    letter-spacing: 1px;
+    color: ${themeColours.darker_orange};
+  }
+
+  .author_id {
+    font-style: normal;
     color: ${themeColours.dark_blue};
-    font-weight: 400;
+    font-weight: 200;
     padding-left: 10px;
+    font-size: 12px;
   }
 
   .user_img {
@@ -120,13 +120,14 @@ const PlanCardsWrapper = styled.div`
 const FavFolderDropDownOptions = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 5px 15px;
+  padding: 10px 15px;
   position: absolute;
   width: 90%;
-  top: 44px;
+  top: 33px;
   left: 10px;
-  background-color: white;
+  color: white;
   border-radius: 0 0 10px 10px;
+  background-color: ${themeColours.light_orange};
 
   .folder_option {
     padding: 5px;
@@ -173,9 +174,6 @@ const PlanMainImageContainer = styled.div`
 const PlanMainImage = styled.div`
   width: 445px;
   height: 100%;
-  /* width: 300px;
-  height: 300px; */
-
   opacity: 100%;
   border-radius: 15px;
   position: relative;
@@ -187,9 +185,6 @@ const PlanMainImage = styled.div`
     object-fit: cover;
     border-radius: 500px 500px 0 0;
     &:hover {
-      /* object-fit: contain; */
-      /* transition: 0.7s; */
-      /* background-color: red; */
       cursor: pointer;
       animation-name: ${zoomInAnimation};
       animation-duration: 1.5s;
@@ -204,12 +199,11 @@ const PlanTitleText = styled.div`
   font-family: 'Gellatio';
   position: absolute;
   font-weight: 800;
-  top: 25%;
+  /* top: 25%; */
   left: 0%;
-  /* top: 14%; */
-  /* left: 26%; */
-  /* transform: translate(-57%, -50%); */
-  font-size: 4vw;
+  /* font-size: 4vw; */
+  top: 60px;
+  font-size: clamp(1rem, 4vw, 3.7rem);
   letter-spacing: 3px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
@@ -235,34 +229,6 @@ const BtnWrapper = styled.div`
   flex-direction: column;
 `;
 
-const FavFolderAutocompleteWrapper = styled.div`
-  position: absolute;
-  top: 45px;
-  left: 12px;
-  display: flex;
-  align-items: center;
-`;
-
-const FavFolderAutocomplete = styled(TextField)({
-  '& label.Mui-focused': {
-    color: themeColours.light_orange,
-  },
-  '& .MuiInput-underline:after': {
-    borderBottomColor: themeColours.light_orange,
-  },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: themeColours,
-    },
-    '&:hover fieldset': {
-      borderColor: 'yellow',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: 'green',
-    },
-  },
-});
-
 const ColouredLine = ({ colour }) => (
   <hr
     style={{
@@ -276,28 +242,42 @@ const ColouredLine = ({ colour }) => (
 function addDays(date, days) {
   var result = new Date(date);
   result.setDate(result.getDate() + days);
-  // console.log('777, nextday is ', result);
   return result;
 }
 
 function loopThroughDays(startday, days) {
   const scheduleTimestampList = [];
   const lastDay = addDays(startday, days);
-  // console.log(111, startday);
-  // console.log(222, lastDay);
 
   for (let i = 0; i <= days; i++) {
     const nextday = addDays(startday, i);
     scheduleTimestampList.push(nextday);
-    // console.log(scheduleTimestampList);
 
     if (nextday === lastDay) {
-      console.log('reached last day');
       break;
     }
   }
   return scheduleTimestampList;
 }
+const activeTabStyle = css`
+  color: ${themeColours.dark_blue};
+  border-bottom: 1px solid ${themeColours.dark_blue};
+  font-weight: 600;
+`;
+
+const normalTabStyle = css`
+  color: rgb(0 33 58 / 70%);
+  padding-bottom: 'none';
+  font-weight: normal;
+`;
+
+const Tab = styled.div`
+  padding: 10px;
+  ${(props) =>
+    props.isCurrentActiveTab === props.tabName
+      ? activeTabStyle
+      : normalTabStyle};
+`;
 
 const SwitchTab = styled.div`
   display: flex;
@@ -307,16 +287,10 @@ const SwitchTab = styled.div`
   justify-content: space-evenly;
   align-items: center;
 
-  .tab {
-    padding: 10px;
-    color: rgb(0 33 58 / 60%);
-  }
-
-  .tab_map {
+  .tab_calendar {
     color: ${themeColours.dark_blue};
     font-weight: 600;
     border-bottom: 1px solid ${themeColours.dark_blue};
-    /* border-bottom-style: ; */
   }
 
   &:hover {
@@ -329,28 +303,26 @@ const ToTopScroll = styled.div`
   font-family: 'Oswald', sans-serif;
   font-size: 14px;
   float: right;
-  /* position: absolute;
-  bottom: 0; */
 `;
-//user={user}
+
+StaticPlanDetail.propTypes = {
+  user: PropTypes.object,
+};
+
 function StaticPlanDetail(props) {
+  const { planDocRef } = useParams();
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
-  const [hasVisited, setHasVitied] = useState(true);
   const [author, setAuthor] = useState('');
+  const [authorName, setAuthorName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [numberofDays, setNumberofDays] = useState(0);
   const [timestampList, setTimestampList] = useState([]);
   const [showfavDropDown, setShowFavDropDown] = useState(false);
-  const [selectedFavFolder, setSelectedFavFolder] = useState('');
-  const [showTab, setShowTab] = useState('route');
+
   const [stopTimelineNav, settopTimelineNav] = useState(false);
-
-  const location = useLocation();
-  const planDocRef = location.state.planDocRef;
-
   const planCollectionRef = doc(db, 'plans', planDocRef);
   const itemEls = useRef(new Array());
   const timelineRefArray = useRef(new Array());
@@ -358,40 +330,16 @@ function StaticPlanDetail(props) {
   const navTabDay = useRef(null);
   const navTabMap = useRef(null);
   const navTabCalendar = useRef(null);
-  const refNames = [navTabDay, navTabMap, navTabCalendar];
+
   const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
+
   const [userImage, setUserImage] = useState(null);
   const [showFullImage, setShowFullImage] = useState(false);
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
+  const [showTab, setShowTab] = useState('calendar');
 
-  const navTimelineRef = useRef(null);
   const planImageRef = useRef(null);
 
-  function toSiwtchTab(tabName, tabRef) {
-    for (let name of refNames) {
-      const styles = {
-        color: 'rgb(0 33 58 / 70%)',
-        fontWeight: 'normal',
-        borderBottomWidth: 'none',
-        borderBottomStyle: 'none',
-        paddingBottom: 'none',
-      };
-      if (name !== tabRef) {
-        Object.assign(name.current.style, styles);
-      }
-    }
-
-    const styles = {
-      color: themeColours.dark_blue,
-      fontWeight: 600,
-      borderBottomWidth: '1px',
-      borderBottomStyle: 'solid',
-    };
-    setShowTab(tabName);
-
-    Object.assign(tabRef.current.style, styles);
-  }
-
-  // handleFavAction(collectionID, author)
   async function handleFavAction(
     planDocRef,
     author,
@@ -400,11 +348,9 @@ function StaticPlanDetail(props) {
     setShowFavDropDown
   ) {
     const currentUserEmail = props.user.email;
-
     if (currentUserEmail === author) {
-      alert('Do not favourite your own plan!');
+      Swal.fire('Do not favourite your own plan!');
     } else if (selectFavFolder !== '') {
-      // console.log(selectFavFolder);
       const favRef = doc(
         db,
         'userId',
@@ -420,12 +366,21 @@ function StaticPlanDetail(props) {
           fav_plan_title: planTitle,
         });
         setShowFavDropDown(false);
-        alert('Successfully favourite this plan!');
+
+        Swal.fire({
+          title: 'Successfully favourite this plan',
+          width: 600,
+          text: 'You can now import this schedule to your own travel plans!',
+          confirmButtonText: 'OK',
+          // confirmButtonColor: '#e7ac81',
+          focusConfirm: 'false',
+        });
+        // Swal.fire('Successfully favourite this plan!');
       } catch (error) {
         console.log(error);
       }
     } else {
-      alert('Please select a folder!');
+      Swal.fire('Please select a folder!');
     }
   }
 
@@ -440,7 +395,6 @@ function StaticPlanDetail(props) {
 
       try {
         const list = await getDocs(favFolderRef);
-        list.docs.map((e) => console.log(222, e.data()));
         setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
       } catch (error) {
         console.log(error);
@@ -451,14 +405,12 @@ function StaticPlanDetail(props) {
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);
     const data = docSnap.data();
-    console.log(data);
 
     setPlanTitle(data.title);
     setCountry(data.country);
     setMainImage(data.main_image);
     setStartDate(data.start_date);
     setEndDate(data.end_date);
-    setHasVitied(data.visited);
     setAuthor(data.author);
   }, []);
 
@@ -467,6 +419,7 @@ function StaticPlanDetail(props) {
       try {
         const userDoc = await getDoc(doc(db, 'userId', author));
         setUserImage(userDoc.data().userImage);
+        setAuthorName(userDoc.data().username);
       } catch (error) {
         console.log(error);
       }
@@ -480,8 +433,6 @@ function StaticPlanDetail(props) {
     setNumberofDays(nofDays);
   }, [endDate, startDate]);
 
-  // console.log('numberofDays should not change', numberofDays);
-
   useEffect(() => {
     if (loopThroughDays(startDate.seconds * 1000, numberofDays).length === 0) {
       setTimestampList(loopThroughDays(startDate.seconds * 1000, 0));
@@ -493,8 +444,6 @@ function StaticPlanDetail(props) {
   const FavFolderRef = useRef();
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
-      // If the menu is open and the clicked target is not within the menu,
-      // then close the menu
       if (
         showfavDropDown &&
         FavFolderRef.current &&
@@ -507,14 +456,12 @@ function StaticPlanDetail(props) {
     document.addEventListener('mousedown', checkIfClickedOutside);
 
     return () => {
-      // Cleanup the event listener
       document.removeEventListener('mousedown', checkIfClickedOutside);
     };
   }, [showfavDropDown]);
 
   if (itemEls.current.length > 0) {
     for (let ref of itemEls.current) {
-      // console.log(223, ref.current);
       if (ref.current === null) {
         let index = itemEls.current.indexOf(ref);
         itemEls.current.splice(index, 1);
@@ -522,12 +469,15 @@ function StaticPlanDetail(props) {
     }
   }
 
-  // console.log(777, itemEls);
-  // console.log(888, itemEls.current[0]);
-  // console.log(999, itemEls.current.length);
+  useEffect(() => {
+    if (mainImage && authorName && timestampList.length !== 0) {
+      setLoadindOpacity(0);
+    }
+  }, [mainImage, authorName]);
 
   return (
-    <>
+    <ContentWrapper>
+      <FullLoading opacity={loadindOpacity} />
       {showFullImage && (
         <ImageEnlarge
           mainImage={mainImage}
@@ -535,8 +485,6 @@ function StaticPlanDetail(props) {
         />
       )}
       <UpperContainer>
-        {/* <img className="leaf_shadow" src={leafShadow} alt="" /> */}
-
         <MilkTeaLeftCurveLine className="milktea_svg_left"></MilkTeaLeftCurveLine>
         <PlanMainImageContainer>
           <PlanMainImage className="overlay" ref={planImageRef}>
@@ -559,17 +507,20 @@ function StaticPlanDetail(props) {
         <PlanInfoWrapper>
           <UserInfoContainer>
             <img className="user_img" src={userImage} alt="" />
-            {/* <UserAvatar currentUserId={author} fromLocate={'static'} /> */}
+
             <div className="user_info_title">
               Planned by:
-              <div className="authorId">{author}</div>
+              {authorName && <div className="author_name">{authorName}</div>}
+              <div className="author_id">{author}</div>
             </div>
           </UserInfoContainer>
 
           <BtnWrapper>
             <FavFolderWrapper>
               <LightOrangeBtn
-                style={{ width: 195 }}
+                padding="10px"
+                fontSize="14px"
+                width="165px"
                 onClick={() => setShowFavDropDown(!showfavDropDown)}>
                 Favourite this plan
               </LightOrangeBtn>
@@ -579,7 +530,6 @@ function StaticPlanDetail(props) {
                     <div
                       key={index}
                       className="folder_option"
-                      // onClick={() => console.log()}
                       onClick={() =>
                         handleFavAction(
                           planDocRef,
@@ -603,39 +553,44 @@ function StaticPlanDetail(props) {
       <ColouredLine colour={'black'} />
 
       <SwitchTab>
-        <div
-          ref={navTabMap}
-          className="tab tab_map"
-          onClick={() => {
-            toSiwtchTab('route', navTabMap);
-            settopTimelineNav(false);
-          }}>
-          Map
-        </div>
-        <div
-          ref={navTabDay}
-          className="tab"
-          onClick={() => {
-            toSiwtchTab('dayByday', navTabDay);
-            settopTimelineNav(false);
-          }}>
-          Day by Day
-        </div>
-        <div
+        <Tab
+          tabName="calendar"
           ref={navTabCalendar}
           className="tab"
+          isCurrentActiveTab={showTab}
           onClick={() => {
-            toSiwtchTab('calendar', navTabCalendar);
+            setShowTab('calendar');
             settopTimelineNav(true);
           }}>
           Calendar
-        </div>
+        </Tab>
+        <Tab
+          tabName="route"
+          ref={navTabMap}
+          className="tab "
+          isCurrentActiveTab={showTab}
+          onClick={() => {
+            setShowTab('route');
+            settopTimelineNav(false);
+          }}>
+          Map
+        </Tab>
+        <Tab
+          tabName="dayByday"
+          ref={navTabDay}
+          className="tab"
+          isCurrentActiveTab={showTab}
+          onClick={() => {
+            setShowTab('dayByday');
+            settopTimelineNav(false);
+          }}>
+          Day by Day
+        </Tab>
       </SwitchTab>
 
       <LowerContainer>
         {stopTimelineNav ? (
           <Timeline
-            // ref={navTimelineRef}
             NumofDays={timestampList.length}
             RefList={itemEls}
             timelineRefArray={timelineRefArray}
@@ -643,7 +598,6 @@ function StaticPlanDetail(props) {
           />
         ) : (
           <Timeline
-            // ref={navTimelineRef}
             NumofDays={timestampList.length}
             RefList={itemEls}
             timelineRefArray={timelineRefArray}
@@ -666,7 +620,7 @@ function StaticPlanDetail(props) {
                 />
               );
             })}
-          {showTab === 'calendar' && (
+          {showTab === 'calendar' && timestampList[0] != 'Invalid Date' && (
             <DayCalendar
               planDocRef={planDocRef}
               currentDayDate={timestampList[0]}
@@ -680,7 +634,7 @@ function StaticPlanDetail(props) {
         onClick={() => window.scrollTo({ top: 120, behavior: 'smooth' })}>
         ^Top
       </ToTopScroll>
-    </>
+    </ContentWrapper>
   );
 }
 export default StaticPlanDetail;

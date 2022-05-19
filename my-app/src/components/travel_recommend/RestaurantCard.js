@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import './attractionCard.scss';
 
@@ -9,7 +9,6 @@ const Wrapper = styled.div`
 
 function RestaurantCard({ place }) {
   if (place.name && place.ranking) {
-    // console.log(place);
     let descriptionTen = [];
     const descriptonSplit = place.description.split(' ');
 
@@ -18,12 +17,6 @@ function RestaurantCard({ place }) {
         descriptionTen.push(`${descriptonSplit[i]} `);
       }
     }
-    // {
-    //   place.cuisine && console.log(44, place.cuisine);
-    // }
-    // {
-    //   place.awards && console.log(55, place.awards);
-    // }
 
     return (
       <Wrapper>

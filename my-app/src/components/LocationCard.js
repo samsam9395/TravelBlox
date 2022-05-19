@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
+import { themeColours } from '../styles/globalTheme';
 
 const CardWrapper = styled.div`
   width: 100%;
@@ -43,7 +44,7 @@ const InfoTitle = styled.div`
 `;
 
 const ATag = styled.a`
-  color: orange;
+  color: ${themeColours.light_orange};
   font-weight: 800;
   font-style: oblique;
   text-decoration: none;
@@ -52,15 +53,21 @@ const ATag = styled.a`
   &:visited {
     text-decoration: none;
   }
+
+  &:hover {
+    background-color: ${themeColours.light_blue};
+    padding-right: 5px;
+  }
 `;
 
 const Tag = styled.div`
   /* min-width: 60px; */
   border-radius: 15px;
   border: none;
-  background-color: yellowgreen;
+  background-color: ${themeColours.lighter_blue};
   padding: 5px 12px;
   margin: 3px 5px;
+  font-size: 12px;
 `;
 
 const StarContainer = styled.div`
@@ -81,8 +88,6 @@ export default function LocationCard(props) {
   }, [props]);
 
   useEffect(() => {
-    // console.log(location);
-
     if (location.mainImg) {
       setMainImg(location.mainImg);
     } else if (location.photos) {
@@ -113,14 +118,14 @@ export default function LocationCard(props) {
             {location.formatted_address || location.place_format_address}
           </InfoContainer>
 
-          {location.formatted_phone_number ||
-            (location.place_formatted_phone_number && (
-              <InfoContainer>
-                <InfoTitle>Contact number: </InfoTitle>
-                {location.formatted_phone_number ||
-                  location.place_formatted_phone_number}
-              </InfoContainer>
-            ))}
+          {(location.formatted_phone_number ||
+            location.place_formatted_phone_number) && (
+            <InfoContainer>
+              <InfoTitle>Contact number: </InfoTitle>
+              {location.formatted_phone_number ||
+                location.place_formatted_phone_number}
+            </InfoContainer>
+          )}
 
           {location.international_phone_number && (
             <InfoContainer>

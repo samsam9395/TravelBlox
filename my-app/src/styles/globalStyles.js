@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { themeColours } from './globalTheme';
+import '../styles/alertStyles.scss';
 
 const GlobalStyle = createGlobalStyle`
 body {
@@ -10,7 +11,6 @@ border: 0;
 font-family: 'Roboto', Helvetica, sans-serif;
 color: ${themeColours.dark_blue};
 scroll-behavior: smooth;
-/* overflow: hidden; */
 
 button{
   cursor: pointer;

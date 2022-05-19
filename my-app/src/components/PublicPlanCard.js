@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const SinglePlanContainer = styled.div`
-  width: 300px;
-  height: 300px;
+  width: 320px;
+  height: 320px;
   object-fit: contain;
   display: flex;
   align-items: center;
   margin: 10px;
+  flex-grow: 1;
+
   @media (max-width: 768px) {
     width: 100%;
   }
@@ -48,19 +51,13 @@ const SinglePlanText = styled.div`
   top: 45%;
 `;
 
-// const SinglePlanSubInfo = styled.div`
-//   color: #fff;
-//   font-size: 0.8em;
-//   position: relative;
-//   top: 60%;
-// `;
-
 const PlanMainImageContainer = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
   margin: auto;
   overflow: hidden;
+  border-radius: 10px;
 
   .content-overlay {
     background: rgba(0, 0, 0, 0.7);
@@ -108,18 +105,16 @@ const PlanMainImageContainer = styled.div`
   }
 `;
 
-//planInfo={planInfo}
-// defaultImg={props.defaultImg }
+PublicPlanCard.propTypes = {
+  planInfo: PropTypes.string,
+  defaultImg: PropTypes.string,
+};
+
 function PublicPlanCard(props) {
   const navigate = useNavigate();
 
   const redirectToStatic = () => {
-    navigate('/static-plan-detail', {
-      state: {
-        fromPage: 'allPlans',
-        planDocRef: props.planInfo.plan_doc_ref,
-      },
-    });
+    navigate(`/static-plan-detail/${props.planInfo.plan_doc_ref}`);
   };
 
   return (

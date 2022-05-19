@@ -1,6 +1,5 @@
 import {
   doc,
-  getDoc,
   getDocs,
   query,
   where,
@@ -8,25 +7,27 @@ import {
   collection,
   setDoc,
   writeBatch,
-  deleteDoc,
 } from 'firebase/firestore';
 import firebaseDB from '../utils/firebaseConfig';
-
+import Swal from 'sweetalert2';
 const db = firebaseDB();
 
-export function handleMainImageUpload(e, setMainImage) {
-  console.log(e.target.files[0]);
+export function handleMainImageUpload(imgFile, setMainImage, setUploadUserImg) {
   const reader = new FileReader();
-  if (e) {
-    reader.readAsDataURL(e.target.files[0]);
+  if (imgFile) {
+    reader.readAsDataURL(imgFile);
   }
 
   reader.onload = function () {
-    // console.log(reader.result); //base64encoded string
     setMainImage(reader.result);
+    if (setUploadUserImg) {
+      setUploadUserImg(true);
+    }
+    return reader.result;
   };
   reader.onerror = function (error) {
     console.log('Error: ', error);
+    return null;
   };
 }
 
@@ -68,8 +69,6 @@ export async function saveToDataBase(
   endDateValue,
   isPublished
 ) {
-  console.log(200, planDocRef);
-
   const batch = writeBatch(db);
 
   myEvents.forEach((singleEvent) => {
@@ -105,7 +104,7 @@ export async function saveToDataBase(
 
   try {
     await batch.commit();
-    alert('Successfully saved!');
+    Swal.fire('Successfully saved!');
     return true;
   } catch (error) {
     console.log(error.message);
@@ -114,9 +113,7 @@ export async function saveToDataBase(
 }
 
 export function deleteBlockInMylist(prev, id) {
-  const indexOfObject = prev.findIndex((timeblock) => {
-    return timeblock.id === id;
-  });
+  const indexOfObject = prev.findIndex((timeblock) => timeblock.id === id);
   let updateList = prev.splice(indexOfObject, 1);
 
   return prev;
@@ -128,8 +125,6 @@ export async function listenToSnapShot(setMyEvents, planDocRef) {
   onSnapshot(blocksListRef, (doc) => {
     doc.docChanges().forEach((change) => {
       if (change.type === 'added') {
-        // console.log(myEvents);
-        // console.log(change.doc.data());
         setMyEvents((prev) => [
           ...prev,
           {
@@ -151,7 +146,6 @@ export async function listenToSnapShot(setMyEvents, planDocRef) {
         ]);
       }
       if (change.type === 'modified') {
-        console.log('Modified time: ', change.doc.data());
         const id = change.doc.data().id;
         setMyEvents((prev) => [
           ...deleteBlockInMylist(prev, id),
@@ -174,17 +168,12 @@ export async function listenToSnapShot(setMyEvents, planDocRef) {
         ]);
       }
       if (change.type === 'removed') {
-        console.log('Removed time: ', change.doc.data());
         const id = change.doc.data().id;
         setMyEvents((prev) => [...deleteBlockInMylist(prev, id)]);
       }
     });
   });
 }
-
-/*=============================================
-=            import section            =
-=============================================*/
 
 export async function getFavPlan(
   folderName,
@@ -196,26 +185,32 @@ export async function getFavPlan(
 
   try {
     const plansList = await getDocs(planQuery);
-
-    console.log(11, plansList);
-    console.log(
-      22,
-      plansList.docs.map((e) => e.data().fav_plan_title)
-    );
-
     const list = plansList.docs.map((e) => e.data());
 
     if (list.length === 0) {
       console.log('No fav plans yet!');
       setFavPlansNameList('');
     } else {
-      console.log(33, list);
       setFavPlansNameList(list);
-      // return list;
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-/*=====  End of import section  ======*/
+export function renameGoogleMaDataIntoFirebase(location, placeId) {
+  return {
+    place_id: location.place_id || placeId,
+    place_name: location.name,
+    place_format_address: location.formatted_address,
+    place_img: location.mainImg || location.photos[0].getUrl() || '',
+    place_formatted_phone_number: location.formatted_phone_number || '',
+    place_international_phone_number: location.international_phone_number || '',
+    place_url: location.url,
+    rating: location.rating || '',
+    place_types: location.types || '',
+    place_lat: location.geometry.location.lat(),
+    place_lng: location.geometry.location.lng(),
+    place_types: location.types || '',
+  };
+}

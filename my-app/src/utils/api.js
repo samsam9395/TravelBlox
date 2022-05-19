@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-export const GetTravelLocation = async (autoInput) => {
+export const getTravelLocation = async (autoInput) => {
   const URL =
     'https://travel-advisor.p.rapidapi.com/locations/v2/auto-complete';
 
-  console.log(autoInput);
   const options = {
     params: { query: autoInput, lang: 'en_US', units: 'km' },
     headers: {
@@ -24,7 +23,7 @@ export const GetTravelLocation = async (autoInput) => {
   }
 };
 
-export const GetAttraction = async (geoId) => {
+export const getAttraction = async (geoId) => {
   const URL = 'https://travel-advisor.p.rapidapi.com/attractions/list';
   const options = {
     params: {
@@ -45,7 +44,6 @@ export const GetAttraction = async (geoId) => {
     const {
       data: { data },
     } = await axios.get(URL, options);
-    console.log(data);
 
     return data;
   } catch (error) {
@@ -53,7 +51,7 @@ export const GetAttraction = async (geoId) => {
   }
 };
 
-export const GetRestaurant = async (geoId) => {
+export const getRestaurant = async (geoId) => {
   const URL = 'https://travel-advisor.p.rapidapi.com/restaurants/list';
   const options = {
     params: {
@@ -75,7 +73,6 @@ export const GetRestaurant = async (geoId) => {
     const {
       data: { data },
     } = await axios.get(URL, options);
-    // console.log(33, data);
 
     return data;
   } catch (error) {
@@ -83,12 +80,11 @@ export const GetRestaurant = async (geoId) => {
   }
 };
 
-export const GetWeather = async (lat, lon) => {
+export const getWeather = async (lat, lon) => {
   const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude={minutely,alerts,hourly}&units=metric&appid=6060e464dec17a57b82e0889afbad877`;
 
   try {
     const data = await axios.get(URL);
-    console.log(22, data);
 
     return data;
   } catch (error) {

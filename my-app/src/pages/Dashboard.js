@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import { getDocs, getDoc, collection, setDoc, doc } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import firebaseDB from '../utils/firebaseConfig';
 import OwnPlanCard from '../components/OwnPlanCard';
-import FavPlanCard from '../components/PublicPlanCard';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { handleMainImageUpload } from '../utils/functionList';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -16,49 +14,25 @@ import {
   themeColours,
   fonts,
   LightOrangeBtn,
-  OrangeBtn,
-  PaleBtn,
+  ContentWrapper,
 } from '../styles/globalTheme';
-import UserAvatar from '../components/user/Avatar';
-import FavouriteFolderBar from '../favourite/FavouriteFolderBar';
+import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import sparkle from '../images/dashboard/spark.png';
+import Swal from 'sweetalert2';
+import FullLoading from '../components/general/FullLoading';
 
 const db = firebaseDB();
 
-const Wrapper = styled.div`
-  position: relative;
+const SvgWrapper = styled.div`
+  position: fixed;
+  right: 20px;
+  top: 5px;
 
   .milktea_svg_long {
-    position: absolute;
-    right: -144px;
-    top: -45px;
-  }
-`;
-
-const Sparkles = styled.div`
-  position: relative;
-  top: 50%;
-  right: 0;
-
-  .sparkle_left {
-    position: absolute;
-    width: 29px;
-    left: -414px;
-  }
-
-  .sparkle_left_small {
-    position: absolute;
-    width: 13px;
-    left: -391px;
-    bottom: -48px;
-  }
-
-  .sparkle_right {
-    position: absolute;
-    width: 24px;
-    right: 200px;
-    top: -85px;
+    position: fixed;
+    right: -31px;
+    top: 53px;
   }
 `;
 
@@ -67,12 +41,44 @@ const UpperPartBackground = styled.div`
   border: none;
   width: 400px;
   height: 400px;
-  position: absolute;
+
   z-index: -100;
   border-radius: 50%;
-  right: -333px;
-  top: -209px;
+  position: fixed;
+  right: -184px;
+  top: -145px;
 `;
+
+const Wrapper = styled.div`
+  position: relative;
+  padding-top: 20px;
+`;
+
+// const Sparkles = styled.div`
+//   position: relative;
+//   top: 50%;
+//   right: 0;
+
+//   .sparkle_left {
+//     position: absolute;
+//     width: 29px;
+//     left: -414px;
+//   }
+
+//   .sparkle_left_small {
+//     position: absolute;
+//     width: 13px;
+//     left: -391px;
+//     bottom: -48px;
+//   }
+
+//   .sparkle_right {
+//     position: absolute;
+//     width: 24px;
+//     right: 200px;
+//     top: -85px;
+//   }
+// `;
 
 const TopSectionWrapper = styled.div`
   background: rgba(76, 74, 74, 0.05);
@@ -91,7 +97,6 @@ const TopSectionWrapper = styled.div`
   .sparkle_left {
     position: absolute;
     width: 29px;
-    /* left: -414px; */
     top: 58%;
     left: 10%;
   }
@@ -99,8 +104,6 @@ const TopSectionWrapper = styled.div`
   .sparkle_left_small {
     position: absolute;
     width: 13px;
-    /* left: -391px;
-    bottom: -48px; */
     bottom: 21%;
     left: 15%;
   }
@@ -116,13 +119,11 @@ const TopSectionWrapper = styled.div`
 const UserInfoWrapper = styled.div`
   padding-top: 20px;
   display: flex;
-  /* flex-direction: column; */
   align-items: center;
   height: 300px;
 
   .user_info_container {
     display: flex;
-    /* align-items: center; */
     flex-direction: column;
     margin-left: 30px;
   }
@@ -130,7 +131,6 @@ const UserInfoWrapper = styled.div`
   .greeting {
     text-align: center;
     display: flex;
-    /* margin-top: 20px; */
     margin-bottom: 20px;
     font-size: 30px;
     color: ${themeColours.light_orange};
@@ -169,8 +169,6 @@ const UserAvatarUpload = styled.div`
     position: absolute;
     left: -29px;
     top: -23px;
-    /* left: 14%;
-    top: 25%; */
     border: 1px solid ${themeColours.orange_grey};
     z-index: -10;
   }
@@ -310,6 +308,7 @@ const DisplaySwitch = styled.div`
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 
   .plan_tab {
+    min-width: 50%;
     text-align: center;
     flex-grow: 1;
     padding: 14px 24px;
@@ -324,6 +323,10 @@ const DisplaySwitch = styled.div`
       cursor: pointer;
     }
   }
+
+  .divider {
+    color: ${themeColours.light_grey};
+  }
 `;
 
 function signOutFirebase() {
@@ -334,9 +337,9 @@ function signOutFirebase() {
       if (localStorage.getItem('accessToken')) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('userEmail');
-        alert('You have been signed out!');
+        Swal.fire('You have been signed out!');
       } else {
-        alert('You were not signed in!');
+        Swal.fire('You were not signed in!');
       }
     })
     .catch((error) => {
@@ -348,19 +351,27 @@ function signOutFirebase() {
 function Dashboard(props) {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
+  const [userName, setUserName] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
   const [showNoPlansText, setShowNoPlansText] = useState(false);
   const [displaySection, setDisplaySection] = useState('My Plans');
   const [userImage, setUserImage] = useState(null);
   const [showUserUploadIcon, setShowUserUploadIcon] = useState('hidden');
-
+  const [uploadUserImg, setUploadUserImg] = useState(false);
+  const [loadindOpacity, setLoadindOpacity] = useState(1);
   const navigate = useNavigate();
   const uploadIconRef = useRef(null);
 
+  useEffect(() => {
+    if (userName) {
+      setLoadindOpacity(0);
+    }
+  }, [userName]);
+
   useEffect(async () => {
     if (!props.user) {
-      alert('Please login first!');
+      Swal.fire('Please login first!');
       navigate('/');
     } else {
       setCurrentUserId(props.user.email);
@@ -369,7 +380,6 @@ function Dashboard(props) {
       const plansList = await getDocs(ref);
 
       if (plansList.docs.length === 0) {
-        console.log('No own plans yet!');
         setShowNoPlansText(true);
       } else {
         setShowNoPlansText(false);
@@ -378,23 +388,24 @@ function Dashboard(props) {
           list.push(plan.data().collection_id);
         });
 
-        console.log(333, list);
         setOwnPlansIdList(list);
       }
 
       try {
         const userDoc = await getDoc(doc(db, 'userId', props.user.email));
         setUserImage(userDoc.data().userImage);
+        setUserName(userDoc.data().username);
       } catch (error) {
         console.log(error);
       }
     }
   }, [props.user]);
 
-  useEffect(async () => {
-    if (props.user.email) {
+  useEffect(() => {
+    if (uploadUserImg) {
+      saveImgToDataBase(userImage);
     }
-  }, [props.user.email]);
+  }, [uploadUserImg]);
 
   function saveImgToDataBase(userImage) {
     try {
@@ -406,158 +417,161 @@ function Dashboard(props) {
         { merge: true }
       );
 
-      alert('Saved your image!');
+      Swal.fire('Saved your image!');
     } catch (error) {
       console.log(error);
     }
   }
 
   return (
-    <Wrapper>
-      <UpperPartBackground></UpperPartBackground>
-      <YourSvg className="milktea_svg_long"></YourSvg>
+    <ContentWrapper>
+      <Wrapper>
+        <FullLoading opacity={loadindOpacity} />
+        <SvgWrapper>
+          <UpperPartBackground></UpperPartBackground>
+          <YourSvg className="milktea_svg_long"></YourSvg>
+        </SvgWrapper>
 
-      <TopSectionWrapper>
-        <img className="sparkle_left" src={sparkle} alt="" />
-        <img className="sparkle_left_small" src={sparkle} alt="" />
-        <img className="sparkle_right" src={sparkle} alt="" />
+        <TopSectionWrapper>
+          <img className="sparkle_left" src={sparkle} alt="" />
+          <img className="sparkle_left_small" src={sparkle} alt="" />
+          <img className="sparkle_right" src={sparkle} alt="" />
 
-        <UserInfoWrapper>
-          <UserAvatarUpload
-            onMouseEnter={() => setShowUserUploadIcon('visible')}
-            onMouseLeave={() => setShowUserUploadIcon('hidden')}>
-            <img className="user_img" src={userImage} alt="" />
+          <UserInfoWrapper>
+            <UserAvatarUpload
+              onMouseEnter={() => setShowUserUploadIcon('visible')}
+              onMouseLeave={() => setShowUserUploadIcon('hidden')}>
+              <img className="user_img" src={userImage} alt="" />
 
-            <label htmlFor="user_avatar_file" className="upload_avatar_icon">
-              <input
-                style={{ display: 'none' }}
-                accept="image/*"
-                id="user_avatar_file"
-                type="file"
-                onChange={(e) => {
-                  handleMainImageUpload(e, setUserImage);
-                  if (userImage) {
-                    saveImgToDataBase(userImage);
-                  }
-                }}></input>
-              <IconButton
-                style={{
-                  visibility: showUserUploadIcon,
-                  // transition: 'opacity 5s',
-                }}
-                ref={uploadIconRef}
-                aria-label="upload picture"
-                component="div">
-                <UploadIcon style={{ color: themeColours.dark_blue }} />
-              </IconButton>
-            </label>
+              <label htmlFor="user_avatar_file" className="upload_avatar_icon">
+                <input
+                  style={{ display: 'none' }}
+                  accept="image/*"
+                  id="user_avatar_file"
+                  type="file"
+                  onChange={(e) => {
+                    handleMainImageUpload(
+                      e.target.files[0],
+                      setUserImage,
+                      setUploadUserImg
+                    );
+                  }}></input>
+                <IconButton
+                  style={{
+                    visibility: showUserUploadIcon,
+                    // transition: 'opacity 5s',
+                  }}
+                  ref={uploadIconRef}
+                  aria-label="upload picture"
+                  component="div">
+                  <UploadIcon style={{ color: themeColours.dark_blue }} />
+                </IconButton>
+              </label>
 
-            <div className="avatar_line"></div>
-          </UserAvatarUpload>
+              <div className="avatar_line"></div>
+            </UserAvatarUpload>
 
-          {/* <UserAvatar currentUserId={currentUserId} fromLocate={'dashboard'} /> */}
-          <div className="user_info_container">
-            <div className="greeting">Hello!</div>
-            <div className="user_id">{currentUserId}</div>
-            <LogoutContainer
-              onClick={() => {
-                signOutFirebase();
-                navigate('/');
-              }}>
-              <LogoutIcon className="icon"></LogoutIcon> Logout
-            </LogoutContainer>
-          </div>
-        </UserInfoWrapper>
-        <LightOrangeBtn
-          style={{
-            width: 190,
-            height: 40,
-            fontSize: 18,
-            fontWeight: 600,
-          }}
-          onClick={() => {
-            setShowAddPlanPopup(true);
-          }}>
-          ADD NEW PLAN
-        </LightOrangeBtn>
-        <DisplaySwitch>
-          <div
-            className="plan_tab"
-            value="own_plan"
-            onClick={(e) => setDisplaySection(e.target.textContent)}>
-            My Plans
-          </div>
-          <div
-            className="plan_tab"
-            value="fav_plan"
-            onClick={(e) => setDisplaySection(e.target.textContent)}>
-            Favourite Plans
-          </div>
-        </DisplaySwitch>
-      </TopSectionWrapper>
-
-      {showAddPlanPopUp &&
-        navigate('/add-new-plan', {
-          // state: { favPlansIdList: favPlansIdList, user: props.user },
-          state: { user: props.user },
-        })}
-
-      {displaySection === 'My Plans' && (
-        <SectionContainer>
-          <div className="section_wrapper">
-            <div className="section_title">Plans</div>
-          </div>
-          <div className="sub_section">
-            <div className="sub_section_wrapper">
-              <div className="section_wrapper">
-                <div className="section_sub-title">My Plans</div>
-                <div className="dot"> {'\u00B7'} </div>
-                {ownPlansIdList && (
-                  <div className="item_amount">{ownPlansIdList.length}</div>
-                )}
-              </div>
+            <div className="user_info_container">
+              <div className="greeting">Hello!</div>
+              <div className="user_id">{userName}</div>
+              <div className="user_id">{currentUserId}</div>
+              <LogoutContainer
+                onClick={() => {
+                  signOutFirebase();
+                  navigate('/');
+                }}>
+                <LogoutIcon className="icon"></LogoutIcon> Logout
+              </LogoutContainer>
             </div>
+          </UserInfoWrapper>
+          <LightOrangeBtn
+            style={{
+              width: 190,
+              height: 40,
+              fontSize: 18,
+              fontWeight: 600,
+            }}
+            onClick={() => {
+              setShowAddPlanPopup(true);
+            }}>
+            ADD NEW PLAN
+          </LightOrangeBtn>
+          <DisplaySwitch>
+            <div
+              className="plan_tab"
+              value="own_plan"
+              onClick={(e) => setDisplaySection(e.target.textContent)}>
+              My Plans
+            </div>
+            <div className="divider">|</div>
+            <div
+              className="plan_tab"
+              value="fav_plan"
+              onClick={(e) => setDisplaySection(e.target.textContent)}>
+              Favourite Plans
+            </div>
+          </DisplaySwitch>
+        </TopSectionWrapper>
 
-            <PlanCollectionWrapper>
-              {showNoPlansText && (
-                <NoPlansText>
-                  <div className="title">
-                    You haven't created any travel plans yet.
-                  </div>
-                  <div className="instruction">
-                    Click on
-                    <div className="btn_cta">ADD NEW PLAN</div>
-                    to start one!
-                  </div>
-                </NoPlansText>
-              )}
-              {ownPlansIdList?.map((ownPlanId) => {
-                return (
-                  <SinglePlanContainer key={ownPlanId}>
-                    <OwnPlanCard
-                      userIdentity="author"
-                      ownPlanId={ownPlanId}
-                      key={ownPlanId}
-                      setOpenEditPopUp={setOpenEditPopUp}
-                      openEditPopUp={openEditPopUp}
-                    />
-                  </SinglePlanContainer>
-                );
-              })}
-            </PlanCollectionWrapper>
-          </div>
-        </SectionContainer>
-      )}
+        {showAddPlanPopUp && navigate(`/new-plan/${props.user.email}`)}
 
-      {displaySection === 'Favourite Plans' && (
-        <SectionContainer>
-          <div className="section_wrapper">
-            <div className="section_title">Favourites</div>
-          </div>
-          <FavouriteFolderBar currentUserId={currentUserId} />
-        </SectionContainer>
-      )}
-    </Wrapper>
+        {displaySection === 'My Plans' && (
+          <SectionContainer>
+            <div className="section_wrapper">
+              <div className="section_title">Plans</div>
+            </div>
+            <div className="sub_section">
+              <div className="sub_section_wrapper">
+                <div className="section_wrapper">
+                  <div className="section_sub-title">My Plans</div>
+                  <div className="dot"> {'\u00B7'} </div>
+                  {ownPlansIdList && (
+                    <div className="item_amount">{ownPlansIdList.length}</div>
+                  )}
+                </div>
+              </div>
+
+              <PlanCollectionWrapper>
+                {showNoPlansText && (
+                  <NoPlansText>
+                    <div className="title">
+                      You haven't created any travel plans yet.
+                    </div>
+                    <div className="instruction">
+                      Click on
+                      <div className="btn_cta">ADD NEW PLAN</div>
+                      to start one!
+                    </div>
+                  </NoPlansText>
+                )}
+                {ownPlansIdList?.map((ownPlanId) => {
+                  return (
+                    <SinglePlanContainer key={ownPlanId}>
+                      <OwnPlanCard
+                        userIdentity="author"
+                        ownPlanId={ownPlanId}
+                        key={ownPlanId}
+                        setOpenEditPopUp={setOpenEditPopUp}
+                        openEditPopUp={openEditPopUp}
+                      />
+                    </SinglePlanContainer>
+                  );
+                })}
+              </PlanCollectionWrapper>
+            </div>
+          </SectionContainer>
+        )}
+
+        {displaySection === 'Favourite Plans' && (
+          <SectionContainer>
+            <div className="section_wrapper">
+              <div className="section_title">Favourites</div>
+            </div>
+            <FavouriteFolderBar currentUserId={currentUserId} />
+          </SectionContainer>
+        )}
+      </Wrapper>
+    </ContentWrapper>
   );
 }
 

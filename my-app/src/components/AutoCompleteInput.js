@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TextField } from '@mui/material';
-import { Wrapper } from '@googlemaps/react-wrapper';
-import { googleAPI } from '../utils/credent';
 import { themeColours } from '../styles/globalTheme';
-const ApiKey = googleAPI();
 
 function SearchInput(props) {
   const [inputLocationValue, setInputLocationValue] = useState('');
 
   const ref = useRef(null);
-  // const [location, setLocation] = useState('');
 
   useEffect(() => {
     if (ref.current) {
@@ -47,13 +43,11 @@ function SearchInput(props) {
 
 function AutoCompleteInput(props) {
   return (
-    // <Wrapper apiKey={ApiKey} libraries={['places']}>
     <SearchInput
       setLocation={props.setLocation}
       locationName={props.locationName || ''}
       placeId={props.placeId}
     />
-    // </Wrapper>
   );
 }
 

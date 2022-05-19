@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { GetWeather } from '../../utils/api';
+import { getWeather } from '../../utils/api';
 import './weather.scss';
 import { themeColours, fonts } from '../../styles/globalTheme';
 import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
-import asset1 from '../../images/static/Asset1.png';
-import { ReactComponent as WatercolourBlue } from '../../images/static/watercolour_blue2.svg';
+import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
+import BeatLoader from 'react-spinners/BeatLoader';
+
+const LoaderContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .loader {
+    margin: auto;
+    transform: translate(-50%, -50%);
+  }
+`;
 
 const WeatherCard = styled.div`
   max-width: 300px;
@@ -17,10 +28,10 @@ const WeatherCard = styled.div`
   position: relative;
 
   .watercolour_background {
-    width: 86%;
+    width: 95%;
     position: absolute;
-    top: 22px;
-    right: 11%;
+    top: 20px;
+    right: 1%;
     transform: rotate(344deg);
   }
 
@@ -193,11 +204,11 @@ const AnimationContainer = styled.div`
   margin: -65px -360px; */
 `;
 
-const OuterDeco = styled.div`
-  width: 257px;
-  height: 300px;
-  border-radius: 70px 0 70px 0;
-`;
+// const OuterDeco = styled.div`
+//   width: 257px;
+//   height: 300px;
+//   border-radius: 70px 0 70px 0;
+// `;
 
 function Weather({ lat, lng }) {
   const [weatherData, setWeatherData] = useState(null);
@@ -228,111 +239,103 @@ function Weather({ lat, lng }) {
   }
 
   useEffect(async () => {
-    // const data = await GetWeather(34.685109, 135.8048019);
+    const data = await getWeather(lat, lng);
 
-    console.log(111, lat, lng);
-    const data = await GetWeather(lat, lng);
-    // console.log(data.data.current);
-    // console.log(data.data.current.weather[0].main);
     setWeatherData(data.data);
   }, []);
 
-  // console.log(weatherData);
+  return weatherData ? (
+    <WeatherCard>
+      <img
+        className="watercolour_background"
+        src={WatercolourBluePng}
+        alt="current weather background"
+      />
 
-  return (
-    weatherData && (
-      <WeatherCard>
-        <WatercolourBlue className="watercolour_background"></WatercolourBlue>
-        <div className="right_side_text">
-          CURRENT WEATHER FOR THIS EVENT LOCATION
-        </div>
-        <div className="empty_ellipse"></div>
-        <div className="empty_ellipse second"></div>
-        <div className="empty_ellipse third"></div>
-        <div className="empty_ellipse forth"></div>
-        <div className="empty_ellipse fifth"></div>
+      <img
+        className="golden_spark_simple_left"
+        src={goldenSparkSimple}
+        alt="golden sparkle"
+      />
+      <img
+        className="golden_spark_simple_right"
+        src={goldenSparkSimple}
+        alt="golden sparkle"
+      />
 
-        <img
-          className="golden_spark_simple_left"
-          src={goldenSparkSimple}
-          alt="golden sparkle"
-        />
-        <img
-          className="golden_spark_simple_right"
-          src={goldenSparkSimple}
-          alt="golden sparkle"
-        />
-
-        <CurrentSection>
-          <AnimationContainer>
-            {currentWeather(weatherData.current.weather[0].main)}
-          </AnimationContainer>
-          <div className="todayDate">
-            {new Date(weatherData.current.dt * 1000).toLocaleString(undefined, {
-              month: 'short',
-              day: 'numeric',
-            })}
-          </div>
-          <div className="mainText">
-            {weatherData.current.weather[0].description}
-          </div>
-
-          <SubInfoWrapper>
-            <SubInfoTitle styled={{ gridArea: 1 / 1 / 2 / 2 }}>
-              Temperature:
-              <div className="highlighter"></div>
-            </SubInfoTitle>
-            <SubInfoContainer styled={{ gridArea: 1 / 2 / 2 / 3 }}>
-              {weatherData.current.temp} {'\u2103'}
-            </SubInfoContainer>
-            <SubInfoTitle styled={{ gridArea: 2 / 1 / 3 / 2 }}>
-              Feels like:
-              <div className="highlighter"></div>
-            </SubInfoTitle>
-            <SubInfoContainer styled={{ gridArea: 2 / 2 / 3 / 3 }}>
-              {weatherData.current.feels_like} {'\u2103'}
-            </SubInfoContainer>
-            <SubInfoTitle styled={{ gridArea: 3 / 1 / 4 / 2 }}>
-              Humidity:
-              <div className="highlighter"></div>
-            </SubInfoTitle>
-            <SubInfoContainer styled={{ gridArea: 3 / 2 / 4 / 3 }}>
-              {weatherData.current.humidity} %
-            </SubInfoContainer>
-          </SubInfoWrapper>
-        </CurrentSection>
-
-        <DailyWrapper>
-          {weatherData.daily.map((e, index) => {
-            // console.log('a', new Date(e.dt * 1000).getDay());
-            // console.log('b', new Date(weatherData.current.dt * 1000).getDay());
-
-            if (
-              new Date(e.dt * 1000).getDay() !=
-                new Date(weatherData.current.dt * 1000).getDay() &&
-              index < 6
-            ) {
-              return (
-                <DailyContainer key={index}>
-                  <DailyDate>
-                    {new Date(e.dt * 1000).toLocaleString(undefined, {
-                      day: 'numeric',
-                    })}
-                  </DailyDate>
-                  <DailyIconContainer>
-                    <DailyIcon
-                      src={`${getIcon(e.weather[0].icon)}`}></DailyIcon>
-                  </DailyIconContainer>
-                  <DailyTempText>
-                    {Math.trunc(e.temp.day)} {'\u2103'}
-                  </DailyTempText>
-                </DailyContainer>
-              );
-            }
+      <CurrentSection>
+        <AnimationContainer>
+          {currentWeather(weatherData.current.weather[0].main)}
+        </AnimationContainer>
+        <div className="todayDate">
+          {new Date(weatherData.current.dt * 1000).toLocaleString(undefined, {
+            month: 'short',
+            day: 'numeric',
           })}
-        </DailyWrapper>
-      </WeatherCard>
-    )
+        </div>
+        <div className="mainText">
+          {weatherData.current.weather[0].description}
+        </div>
+
+        <SubInfoWrapper>
+          <SubInfoTitle styled={{ gridArea: 1 / 1 / 2 / 2 }}>
+            Temperature:
+            <div className="highlighter"></div>
+          </SubInfoTitle>
+          <SubInfoContainer styled={{ gridArea: 1 / 2 / 2 / 3 }}>
+            {weatherData.current.temp} {'\u2103'}
+          </SubInfoContainer>
+          <SubInfoTitle styled={{ gridArea: 2 / 1 / 3 / 2 }}>
+            Feels like:
+            <div className="highlighter"></div>
+          </SubInfoTitle>
+          <SubInfoContainer styled={{ gridArea: 2 / 2 / 3 / 3 }}>
+            {weatherData.current.feels_like} {'\u2103'}
+          </SubInfoContainer>
+          <SubInfoTitle styled={{ gridArea: 3 / 1 / 4 / 2 }}>
+            Humidity:
+            <div className="highlighter"></div>
+          </SubInfoTitle>
+          <SubInfoContainer styled={{ gridArea: 3 / 2 / 4 / 3 }}>
+            {weatherData.current.humidity} %
+          </SubInfoContainer>
+        </SubInfoWrapper>
+      </CurrentSection>
+
+      <DailyWrapper>
+        {weatherData.daily.map((e, index) => {
+          e.log('b', new Date(weatherData.current.dt * 1000).getDay());
+          if (
+            new Date(e.dt * 1000).getDay() !=
+              new Date(weatherData.current.dt * 1000).getDay() &&
+            index < 6
+          ) {
+            return (
+              <DailyContainer key={index}>
+                <DailyDate>
+                  {new Date(e.dt * 1000).toLocaleString(undefined, {
+                    day: 'numeric',
+                  })}
+                </DailyDate>
+                <DailyIconContainer>
+                  <DailyIcon src={`${getIcon(e.weather[0].icon)}`}></DailyIcon>
+                </DailyIconContainer>
+                <DailyTempText>
+                  {Math.trunc(e.temp.day)} {'\u2103'}
+                </DailyTempText>
+              </DailyContainer>
+            );
+          }
+        })}
+      </DailyWrapper>
+    </WeatherCard>
+  ) : (
+    <LoaderContainer>
+      <BeatLoader
+        className="loader"
+        color={themeColours.milktea}
+        size={8}></BeatLoader>
+    </LoaderContainer>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import './attractionCard.scss';
 
@@ -9,7 +9,6 @@ const Wrapper = styled.div`
 
 function AttractionCards({ place }) {
   if (place.name && place.ranking) {
-    // console.log(place);
     let descriptionTen = [];
     const descriptonSplit = place.description.split('.');
     for (let i = 0; i < 1; i++) {

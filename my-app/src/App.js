@@ -1,12 +1,7 @@
-// import './App.scss';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalStyle from './styles/globalStyles';
-import Header from './components/general/Header';
-import Footer from './components/general/Footer';
 import { Routes, Route } from 'react-router-dom';
-import styled from 'styled-components';
-import LandingPage from './pages/LandingPage';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -20,15 +15,11 @@ import Allplans from './pages/AllPlans';
 import firebaseDB from './utils/firebaseConfig';
 import { getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import { Wrapper } from '@googlemaps/react-wrapper';
-import { googleAPI } from './utils/credent';
-const ApiKey = googleAPI();
+import ParallaxLanding from './pages/ParallaxLanding';
+import './styles/alertStyles.scss';
+import Swal from 'sweetalert2';
 
 const db = firebaseDB();
-
-const ContentWrapper = styled.div`
-  padding: 100px 80px 150px 80px;
-  overflow: hidden;
-`;
 
 function App() {
   const [user, setUser] = useState('');
@@ -38,13 +29,12 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
-      // setCanRedirect(true);
       setUser({
         accessToken: localStorage.getItem('accessToken'),
         email: localStorage.getItem('userEmail'),
       });
     } else {
-      console.log('User has not signed in to app yet!');
+      Swal.fire('Please sign in first!');
       navigate('/');
     }
   }, [localStorage.getItem('accessToken')]);
@@ -70,42 +60,42 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <ContentWrapper>
-        <Wrapper apiKey={ApiKey} libraries={['places']}>
-          <Routes>
-            <Route
-              path="/"
-              element={<LandingPage user={user} setUser={setUser} />}
-            />
-            <Route
-              path="/edit-plan-detail"
-              element={
-                <EditPlanDetail
-                  userId={user.email}
-                  favFolderNames={favFolderNames}
-                />
-              }
-            />
-            <Route
-              path="/add-new-plan"
-              element={<AddNewPlan user={user} defaultImg={defaultImg} />}
-            />
-            <Route
-              path="/static-plan-detail"
-              element={
-                <StaticPlanDetail favFolderNames={favFolderNames} user={user} />
-              }
-            />
 
-            {/* <Route path="/autocomplete" element={<AutoCompleteInput />} /> */}
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
-            <Route
-              path="/discover"
-              element={<Allplans defaultImg={defaultImg} />}
-            />
-          </Routes>
-        </Wrapper>
-      </ContentWrapper>
+      <Wrapper
+        apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+        libraries={['places']}>
+        <Routes>
+          <Route
+            path="/"
+            element={<ParallaxLanding user={user} setUser={setUser} />}
+          />
+          <Route
+            path="/edit-plan-detail/:planDocRef"
+            element={
+              <EditPlanDetail
+                userId={user.email}
+                favFolderNames={favFolderNames}
+              />
+            }
+          />
+          <Route
+            path="/new-plan/:currentUserId"
+            element={<AddNewPlan user={user} defaultImg={defaultImg} />}
+          />
+          <Route
+            path="/static-plan-detail/:planDocRef"
+            element={
+              <StaticPlanDetail favFolderNames={favFolderNames} user={user} />
+            }
+          />
+
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
+          <Route
+            path="/discover"
+            element={<Allplans defaultImg={defaultImg} user={user} />}
+          />
+        </Routes>
+      </Wrapper>
     </>
   );
 }
