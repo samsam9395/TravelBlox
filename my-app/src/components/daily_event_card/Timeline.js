@@ -20,6 +20,7 @@ const DayBox = styled.div`
   font-family: 'Oswald', sans-serif;
   position: sticky;
   height: 200px;
+  width: 100px;
 
   @media (max-width: 768px) {
     margin-top: 30px;

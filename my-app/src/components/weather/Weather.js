@@ -115,6 +115,7 @@ const CurrentSection = styled.div`
     color: ${themeColours.light_orange};
     text-shadow: 2px 1px ${themeColours.dark_blue};
     font-family: ${fonts.secondary_font};
+    z-index: 1;
   }
   .mainText {
     font-weight: 800;

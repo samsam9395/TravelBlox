@@ -32,6 +32,7 @@ const zoomInAnimation = keyframes`
 const Wrapper = styled.div`
   width: 90vw;
   margin: auto;
+  padding: 100px 0;
 
   @media (max-width: 768px) {
     padding: 80px 20px 80px 10px;
@@ -69,11 +70,9 @@ const FavFolderWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  /* margin-bottom: 30px; */
 `;
 
 const PlanInfoWrapper = styled.div`
-  /* z-index: 10; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,8 +129,6 @@ const UserInfoContainer = styled.div`
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
-  /* max-width: 100%; */
-  /* flex-grow: 1; */
 `;
 
 const FavFolderDropDownOptions = styled.div`
@@ -159,7 +156,6 @@ const PlanMainImageContainer = styled.div`
   width: 80%;
   height: 100%;
   position: relative;
-  /* overflow: hidden; */
   border-radius: 10px;
   align-items: center;
   display: flex;

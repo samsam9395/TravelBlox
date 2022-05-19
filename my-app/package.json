@@ -58,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.15.0",
     "file-loader": "^6.2.0",
     "react-app-rewired": "^2.2.1"
   }

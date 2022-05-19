@@ -117,7 +117,7 @@ const PlanMainImageContainer = styled.div`
 `;
 
 PublicPlanCard.propTypes = {
-  planInfo: PropTypes.string,
+  planInfo: PropTypes.object,
   defaultImg: PropTypes.string,
 };
 
