@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
 DatePicker.propTypes = {
   setStartDateValue: PropTypes.func,
   setEndDateValue: PropTypes.func,
-  startDateValue: PropTypes.string,
-  endDateValue: PropTypes.string,
-  endInitDateValue: PropTypes.string,
-  startInitDateValue: PropTypes.string,
+  startDateValue: PropTypes.instanceOf(Date),
+  endDateValue: PropTypes.instanceOf(Date),
+  endInitDateValue: PropTypes.number || PropTypes.instanceOf(Date),
+  startInitDateValue: PropTypes.number || PropTypes.instanceOf(Date),
 };
 
 // setStartDateValue={setStartDateValue}

@@ -147,6 +147,7 @@ function AddNewPlan(props) {
 
   const [showFavContainer, setShowFavContainer] = useState(false);
   const navigate = useNavigate();
+
   const createNewCollection = async (
     startDateValue,
     endDateValue,
@@ -191,9 +192,9 @@ function AddNewPlan(props) {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (addedTimeBlock) {
-      listenToSnapShot(setMyEvents, planDocRef);
+      listenToSnapShot(planDocRef, setMyEvents);
     }
   }, [addedTimeBlock]);
 

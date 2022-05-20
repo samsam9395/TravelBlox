@@ -327,7 +327,7 @@ const ToTopScroll = styled.div`
 `;
 
 StaticPlanDetail.propTypes = {
-  user: PropTypes.object,
+  user: PropTypes.string,
 };
 
 function StaticPlanDetail(props) {

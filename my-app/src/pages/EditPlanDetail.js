@@ -195,7 +195,9 @@ function EditPlanDetail(props) {
   }, []);
 
   useEffect(async () => {
-    listenToSnapShot(setMyEvents, planDocRef);
+    listenToSnapShot(planDocRef, setMyEvents);
+    // const newEventList = await listenToSnapShot(planDocRef);
+    // setMyEvents(newEventList);
   }, []);
 
   useEffect(() => {

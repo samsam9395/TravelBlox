@@ -170,7 +170,6 @@ function EditTimeBlock(props) {
             timeblock_img: timeBlockImage || '',
             ...googleLocationData,
             status: 'origin',
-            id: props.currentSelectTimeId,
           },
           {
             merge: true,
@@ -192,7 +191,6 @@ function EditTimeBlock(props) {
             end: endTimeValue,
             timeblock_img: timeBlockImage || '',
             status: 'origin',
-            id: props.currentSelectTimeId,
           },
           {
             merge: true,

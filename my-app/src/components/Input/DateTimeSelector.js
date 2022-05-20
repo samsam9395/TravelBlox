@@ -7,8 +7,8 @@ import TextField from '@mui/material/TextField';
 import { themeColours } from '../../styles/globalTheme';
 
 DateTimeSelector.propTypes = {
-  startTimeValue: PropTypes.string,
-  endTimeValue: PropTypes.string,
+  startTimeValue: PropTypes.instanceOf(Date),
+  endTimeValue: PropTypes.instanceOf(Date),
   setEndTimeValue: PropTypes.func,
 };
 
