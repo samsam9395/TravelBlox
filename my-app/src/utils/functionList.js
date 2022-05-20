@@ -1,34 +1,32 @@
 import {
+  collection,
   doc,
   getDocs,
-  query,
-  where,
   onSnapshot,
-  collection,
+  query,
   setDoc,
+  where,
   writeBatch,
 } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
+
 import Swal from 'sweetalert2';
+import firebaseDB from '../utils/firebaseConfig';
+
 const db = firebaseDB();
 
-export function handleMainImageUpload(imgFile, setMainImage, setUploadUserImg) {
+export async function uploadImagePromise(imgFile) {
   const reader = new FileReader();
-  if (imgFile) {
-    reader.readAsDataURL(imgFile);
-  }
+  reader.readAsDataURL(imgFile);
 
-  reader.onload = function () {
-    setMainImage(reader.result);
-    if (setUploadUserImg) {
-      setUploadUserImg(true);
-    }
-    return reader.result;
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-    return null;
-  };
+  return new Promise((resolve, reject) => {
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = (error) => {
+      reject(error);
+    };
+  });
 }
 
 export async function addPlanToAllPlans(

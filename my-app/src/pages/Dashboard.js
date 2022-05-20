@@ -17,9 +17,9 @@ import Swal from 'sweetalert2';
 import UploadIcon from '@mui/icons-material/Upload';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import firebaseDB from '../utils/firebaseConfig';
-import { handleMainImageUpload } from '../utils/functionList';
 import sparkle from '../images/dashboard/spark.png';
 import styled from 'styled-components';
+import { uploadImagePromise } from '../utils/functionList';
 import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
@@ -350,7 +350,6 @@ function Dashboard(props) {
   const [displaySection, setDisplaySection] = useState('My Plans');
   const [userImage, setUserImage] = useState(null);
   const [showUserUploadIcon, setShowUserUploadIcon] = useState('hidden');
-  const [uploadUserImg, setUploadUserImg] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
   const navigate = useNavigate();
   const uploadIconRef = useRef(null);
@@ -392,12 +391,6 @@ function Dashboard(props) {
       }
     }
   }, [props.user]);
-
-  useEffect(() => {
-    if (uploadUserImg) {
-      saveImgToDataBase(userImage);
-    }
-  }, [uploadUserImg]);
 
   function saveImgToDataBase(userImage) {
     try {
@@ -441,12 +434,12 @@ function Dashboard(props) {
                   accept="image/*"
                   id="user_avatar_file"
                   type="file"
-                  onChange={(e) => {
-                    handleMainImageUpload(
-                      e.target.files[0],
-                      setUserImage,
-                      setUploadUserImg
+                  onChange={async (e) => {
+                    const imageFile = await uploadImagePromise(
+                      e.target.files[0]
                     );
+                    setUserImage(imageFile);
+                    saveImgToDataBase(imageFile);
                   }}></input>
                 <IconButton
                   style={{

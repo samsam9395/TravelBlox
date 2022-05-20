@@ -12,9 +12,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import {
   addPlanToAllPlans,
-  handleMainImageUpload,
   listenToSnapShot,
   saveToDataBase,
+  uploadImagePromise,
 } from '../utils/functionList';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -292,8 +292,9 @@ function AddNewPlan(props) {
                 accept="image/*"
                 id="icon-button-file"
                 type="file"
-                onChange={(e) => {
-                  handleMainImageUpload(e.target.files[0], setMainImage);
+                onChange={async (e) => {
+                  const imageFile = await uploadImagePromise(e.target.files[0]);
+                  setMainImage(imageFile);
                 }}
               />
               <Box textAlign="center">

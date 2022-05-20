@@ -12,9 +12,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { doc, getDoc, writeBatch } from 'firebase/firestore';
 import {
-  handleMainImageUpload,
   listenToSnapShot,
   saveToDataBase,
+  uploadImagePromise,
 } from '../utils/functionList';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
@@ -116,7 +116,6 @@ function EditPlanDetail(props) {
   const [myEvents, setMyEvents] = useState([]);
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
-  // const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [startDateValue, setStartDateValue] = useState(null);
   const [endDateValue, setEndDateValue] = useState(null);
   const [startInitDateValue, setStartInitDateValue] = useState(0);
@@ -124,11 +123,6 @@ function EditPlanDetail(props) {
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
-
-  // import
-  const [showFavPlans, setShowFavPlans] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState('');
-  // const [importData, setImportData] = useState({});
 
   const currentUserId = props.userId;
 
@@ -289,8 +283,9 @@ function EditPlanDetail(props) {
               accept="image/*"
               id="icon-button-file"
               type="file"
-              onChange={(e) => {
-                handleMainImageUpload(e.target.files[0], setMainImage);
+              onChange={async (e) => {
+                const imageFile = await uploadImagePromise(e.target.files[0]);
+                setMainImage(imageFile);
               }}
             />
             <Box textAlign="center">
