@@ -72,7 +72,6 @@ export const OrangeBtn = styled.button`
   letter-spacing: 1.5px;
   min-width: 100px;
   padding: ${(props) => props.padding || '10px 20px'};
-  /* padding: 10px 20px; */
   border-radius: 15px;
   border: none;
   background-color: ${themeColours.light_orange};
@@ -114,6 +113,9 @@ export const PaleEmptyBtn = styled.button`
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.pale};
+  }
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 

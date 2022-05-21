@@ -1,7 +1,7 @@
 import '../styles/libraryStyles.scss';
 
 import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import styled, { css, keyframes } from 'styled-components';
 
@@ -14,6 +14,7 @@ import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_l
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Timeline from '../components/daily_event_card/Timeline';
+import { UserContext } from '../App';
 import firebaseDB from '../utils/firebaseConfig';
 import sunburst from '../images/static/sunburst_solid.png';
 import { useParams } from 'react-router-dom';
@@ -282,7 +283,7 @@ function loopThroughDays(startday, days) {
 const Tab = styled.div`
   z-index: 5;
   padding: 10px;
-  /* ${(props) =>
+  ${(props) =>
     props.isCurrentActiveTab === props.tabName
       ? css`
           color: ${themeColours.dark_blue};
@@ -293,7 +294,7 @@ const Tab = styled.div`
           color: ${themeColours.light_grey};
           padding-bottom: 'none';
           font-weight: 'normal';
-        `}; */
+        `};
 `;
 
 const SwitchTab = styled.div`
@@ -326,11 +327,8 @@ const ToTopScroll = styled.div`
   float: right;
 `;
 
-StaticPlanDetail.propTypes = {
-  user: PropTypes.string,
-};
-
-function StaticPlanDetail(props) {
+function StaticPlanDetail() {
+  const userInfo = useContext(UserContext);
   const { planDocRef } = useParams();
   const [mainImage, setMainImage] = useState(null);
   const [planTitle, setPlanTitle] = useState('');
@@ -368,14 +366,13 @@ function StaticPlanDetail(props) {
     planTitle,
     setShowFavDropDown
   ) {
-    const currentUserEmail = props.user.email;
-    if (currentUserEmail === author) {
+    if (userInfo.userEmail === author) {
       Swal.fire('Do not favourite your own plan!');
     } else if (selectFavFolder !== '') {
       const favRef = doc(
         db,
         'userId',
-        currentUserEmail,
+        userInfo.userEmail,
         'fav_plans',
         planDocRef
       );
@@ -393,10 +390,8 @@ function StaticPlanDetail(props) {
           width: 600,
           text: 'You can now import this schedule to your own travel plans!',
           confirmButtonText: 'OK',
-          // confirmButtonColor: '#e7ac81',
           focusConfirm: 'false',
         });
-        // Swal.fire('Successfully favourite this plan!');
       } catch (error) {
         console.log(error);
       }
@@ -406,11 +401,11 @@ function StaticPlanDetail(props) {
   }
 
   useEffect(async () => {
-    if (props.user) {
+    if (userInfo) {
       const favFolderRef = collection(
         db,
         'userId',
-        props.user.email,
+        userInfo.userEmail,
         'fav_folders'
       );
 
@@ -421,7 +416,7 @@ function StaticPlanDetail(props) {
         console.log(error);
       }
     }
-  }, [props.user]);
+  }, [userInfo]);
 
   useEffect(async () => {
     const docSnap = await getDoc(planCollectionRef);

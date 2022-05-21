@@ -1,6 +1,6 @@
 import 'sweetalert2/src/sweetalert2.scss';
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   createUserWithEmailAndPassword,
@@ -15,6 +15,7 @@ import { InputAdornment } from '@mui/material';
 import { LightOrangeBtn } from '../styles/globalTheme';
 import Swal from 'sweetalert2';
 import TextField from '@material-ui/core/TextField';
+import { UserContext } from '../App';
 import firebaseDB from '../utils/firebaseConfig';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -97,22 +98,32 @@ async function signUP(email, password, username) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        return user.email;
+        console.log(222, user);
+        return user;
       })
-      .then((emailId) => {
-        setDoc(doc(db, 'userId', emailId), {
-          id: emailId,
+      .then((user) => {
+        setDoc(doc(db, 'userId', user.email), {
+          id: user.email,
           username: username,
           userImage:
             'https://is4-ssl.mzstatic.com/image/thumb/Purple125/v4/79/77/67/7977678c-89be-76ff-b9f3-cdc560170cb6/source/256x256bb.jpg',
+          uid: user.uid,
         });
-        return emailId;
+        return user.email;
       })
       .then((emailId) => {
         setDoc(doc(db, 'userId', emailId, 'fav_folders', 'default'), {
           folder_name: 'default',
         });
       })
+      .then(() =>
+        Swal.fire({
+          timer: 1500,
+          showConfirmButton: false,
+          icon: 'success',
+          title: 'You are now ready to start planning!',
+        })
+      )
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {
           Swal.fire('Email already in use, please pick another one!');
@@ -121,20 +132,19 @@ async function signUP(email, password, username) {
   }
 }
 
-function Login(props) {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUserName] = useState('');
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const setIsNewUser = props.setIsNewUser;
-  const navigate = useNavigate();
 
   function userLogIn(email, password) {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        Swal.fire('Welcome back!', user.email);
       })
       .catch((error) => {
         if (error.message === 'EMAIL_NOT_FOUND') {
@@ -142,19 +152,6 @@ function Login(props) {
         }
       });
   }
-
-  useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        localStorage.setItem('accessToken', user.accessToken);
-        localStorage.setItem('userEmail', user.email);
-        navigate('/discover');
-      } else {
-        console.log('not logged in');
-      }
-    });
-  }, []);
 
   return (
     <>
@@ -290,8 +287,7 @@ function Login(props) {
                       ? (signUP(email, password, username),
                         setEmail(''),
                         setPassword(''),
-                        setUserName(''),
-                        setIsNewUser)
+                        setUserName(''))
                       : Swal.fire('please fill in both !')
                   }>
                   Sign Up

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { fonts, themeColours } from '../styles/globalTheme';
 
 import Login from './Login';
+import { UserContext } from '../App';
 import bg from '../images/parallx_img_layers/bg_full.png';
 import bird from '../images/parallx_img_layers/bird.png';
 import mountain from '../images/parallx_img_layers/mountain.png';
@@ -153,9 +154,14 @@ const ContentContainer = styled.div`
       text-align: start;
     }
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 0 15px;
+  }
 `;
 
-function ParallaxLanding({ user, setUser }) {
+function ParallaxLanding() {
   const [scrollYValue, setscrollYValue] = useState(0);
   const [hasSignedIn, setHasSignedIn] = useState(false);
 
@@ -229,11 +235,7 @@ function ParallaxLanding({ user, setUser }) {
           </div>
         </ContentContainer>
       </SubSection>
-      <Login
-        setHasSignedIn={setHasSignedIn}
-        hasSignedIn={hasSignedIn}
-        setUser={setUser}
-      />
+      <Login />
     </>
   );
 }
