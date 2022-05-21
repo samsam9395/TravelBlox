@@ -1,26 +1,8 @@
-import 'sweetalert2/src/sweetalert2.scss';
+import React, { useState } from 'react';
 
-import React, { useContext, useEffect, useState } from 'react';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-
-import IconButton from '@mui/material/IconButton';
-import { InputAdornment } from '@mui/material';
-import { LightOrangeBtn } from '../styles/globalTheme';
-import Swal from 'sweetalert2';
-import TextField from '@material-ui/core/TextField';
-import { UserContext } from '../App';
-import firebaseDB from '../utils/firebaseConfig';
+import SignInForm from '../components/login/SignInForm';
+import SignUpForm from '../components/login/SignUpForm';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-
-const db = firebaseDB();
 
 const Wrapper = styled.div`
   height: 400px;
@@ -52,85 +34,12 @@ const LoginWrapper = styled.div`
   height: 420px;
 `;
 
-const Title = styled.div`
-  font-size: 20px;
-  font-weight: 800;
-  margin-bottom: 15px;
-`;
-
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px 30px;
   width: 40%;
 `;
-
-const InputWrapper = styled.div`
-  margin-top: 20px;
-`;
-
-const SignUpSwitcher = styled.div`
-  font-size: 14px;
-  letter-spacing: 1.5px;
-  display: flex;
-  flex-direction: column;
-
-  .signSection {
-    display: flex;
-    margin-top: 5px;
-  }
-
-  .click_here {
-    color: #d06224;
-    font-weight: 800;
-    padding: 0 10px;
-  }
-`;
-
-async function signUP(email, password, username) {
-  const docRef = doc(db, 'userId', email);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    Swal.fire('You are a member already!');
-  } else {
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(222, user);
-        return user;
-      })
-      .then((user) => {
-        setDoc(doc(db, 'userId', user.email), {
-          id: user.email,
-          username: username,
-          userImage:
-            'https://is4-ssl.mzstatic.com/image/thumb/Purple125/v4/79/77/67/7977678c-89be-76ff-b9f3-cdc560170cb6/source/256x256bb.jpg',
-          uid: user.uid,
-        });
-        return user.email;
-      })
-      .then((emailId) => {
-        setDoc(doc(db, 'userId', emailId, 'fav_folders', 'default'), {
-          folder_name: 'default',
-        });
-      })
-      .then(() =>
-        Swal.fire({
-          timer: 1500,
-          showConfirmButton: false,
-          icon: 'success',
-          title: 'You are now ready to start planning!',
-        })
-      )
-      .catch((error) => {
-        if (error.code === 'auth/email-already-in-use') {
-          Swal.fire('Email already in use, please pick another one!');
-        }
-      });
-  }
-}
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -139,20 +48,6 @@ function Login() {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  function userLogIn(email, password) {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        Swal.fire('Welcome back!', user.email);
-      })
-      .catch((error) => {
-        if (error.message === 'EMAIL_NOT_FOUND') {
-          Swal.fire('Email not found! Please check again!');
-        }
-      });
-  }
-
   return (
     <>
       <Wrapper>
@@ -160,153 +55,29 @@ function Login() {
           <ImageContainer></ImageContainer>
           <InputContainer>
             {!showSignUp ? (
-              <>
-                <Title>Welcome Back!</Title>
-                <InputWrapper>
-                  <TextField
-                    required
-                    fullWidth
-                    value={email}
-                    label="email"
-                    size="small"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                  />
-                </InputWrapper>
-                <InputWrapper>
-                  <TextField
-                    fullWidth
-                    required
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    label="password"
-                    variant="outlined"
-                    size="small"
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end">
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </InputWrapper>
-                <LightOrangeBtn
-                  marginBottom="20px"
-                  marginTop="20px"
-                  onClick={() =>
-                    email && password
-                      ? (userLogIn(email, password),
-                        setEmail(''),
-                        setPassword(''))
-                      : Swal.fire('please fill in both !')
-                  }>
-                  Login
-                </LightOrangeBtn>
-                <SignUpSwitcher>
-                  Doesn't have an account yet?
-                  <div className="signSection">
-                    Sign up
-                    <div
-                      className="click_here hoverCursor"
-                      onClick={() => {
-                        setShowSignUp(!showSignUp);
-                      }}>
-                      here!
-                    </div>
-                  </div>
-                </SignUpSwitcher>
-              </>
+              <SignInForm
+                setEmail={setEmail}
+                setPassword={setPassword}
+                setShowPassword={setShowPassword}
+                setShowSignUp={setShowSignUp}
+                email={email}
+                password={password}
+                showPassword={showPassword}
+                showSignUp={showSignUp}
+              />
             ) : (
-              <>
-                <Title>Start your journey!</Title>
-                <InputWrapper>
-                  <TextField
-                    required
-                    fullWidth
-                    value={email}
-                    label="email"
-                    size="small"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                  />
-                </InputWrapper>
-                <InputWrapper>
-                  <TextField
-                    required
-                    fullWidth
-                    value={username}
-                    label="username"
-                    size="small"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setUserName(e.target.value);
-                    }}
-                  />
-                </InputWrapper>
-                <InputWrapper>
-                  <TextField
-                    required
-                    fullWidth
-                    value={password}
-                    label="password"
-                    variant="outlined"
-                    size="small"
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end">
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </InputWrapper>
-                <LightOrangeBtn
-                  marginBottom="20px"
-                  marginTop="20px"
-                  onClick={() =>
-                    email && password && username
-                      ? (signUP(email, password, username),
-                        setEmail(''),
-                        setPassword(''),
-                        setUserName(''))
-                      : Swal.fire('please fill in both !')
-                  }>
-                  Sign Up
-                </LightOrangeBtn>
-
-                <SignUpSwitcher>
-                  Already has an account?
-                  <div className="signSection">
-                    Sign in
-                    <div
-                      className="click_here hoverCursor"
-                      onClick={() => {
-                        setShowSignUp(!showSignUp);
-                      }}>
-                      here!
-                    </div>
-                  </div>
-                </SignUpSwitcher>
-              </>
+              <SignUpForm
+                setEmail={setEmail}
+                setPassword={setPassword}
+                setUserName={setUserName}
+                setShowPassword={setShowPassword}
+                setShowSignUp={setShowSignUp}
+                email={email}
+                password={password}
+                username={username}
+                showPassword={showPassword}
+                showSignUp={showSignUp}
+              />
             )}
           </InputContainer>
         </LoginWrapper>

@@ -3,16 +3,12 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './styles/alertStyles.scss';
+import 'sweetalert2/src/sweetalert2.scss';
 
-import { Route, Router, Routes } from 'react-router-dom';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { Route, Routes } from 'react-router-dom';
 import { createContext, useEffect, useState } from 'react';
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
@@ -21,7 +17,6 @@ import EditPlanDetail from './pages/EditPlanDetail';
 import GlobalStyle from './styles/globalStyles';
 import ParallaxLanding from './pages/ParallaxLanding';
 import StaticPlanDetail from './pages/StaticPlanDetail';
-import Swal from 'sweetalert2';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import firebaseDB from './utils/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
@@ -59,37 +54,35 @@ function App() {
   }, []);
 
   return (
-    <>
-      <UserContext.Provider value={userInfo}>
-        <GlobalStyle />
+    <UserContext.Provider value={userInfo}>
+      <GlobalStyle />
 
-        <Wrapper
-          apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
-          libraries={['places']}>
-          <Routes>
-            <Route path="/" element={<ParallaxLanding />} />
-            <Route
-              path="/edit-plan-detail/:planDocRef"
-              element={<EditPlanDetail />}
-            />
-            <Route
-              path="/new-plan"
-              element={<AddNewPlan defaultImg={defaultImg} />}
-            />
-            <Route
-              path="/static-plan-detail/:planDocRef"
-              element={<StaticPlanDetail />}
-            />
+      <Wrapper
+        apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+        libraries={['places']}>
+        <Routes>
+          <Route path="/" element={<ParallaxLanding />} />
+          <Route
+            path="/edit-plan-detail/:planDocRef"
+            element={<EditPlanDetail />}
+          />
+          <Route
+            path="/new-plan"
+            element={<AddNewPlan defaultImg={defaultImg} />}
+          />
+          <Route
+            path="/static-plan-detail/:planDocRef"
+            element={<StaticPlanDetail />}
+          />
 
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route
-              path="/discover"
-              element={<Allplans defaultImg={defaultImg} />}
-            />
-          </Routes>
-        </Wrapper>
-      </UserContext.Provider>
-    </>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/discover"
+            element={<Allplans defaultImg={defaultImg} />}
+          />
+        </Routes>
+      </Wrapper>
+    </UserContext.Provider>
   );
 }
 
