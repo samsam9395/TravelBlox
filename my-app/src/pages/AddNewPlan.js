@@ -9,15 +9,14 @@ import {
   PaleEmptyBtn,
   themeColours,
 } from '../styles/globalTheme';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   addPlanToAllPlans,
-  handleMainImageUpload,
   listenToSnapShot,
   saveToDataBase,
+  uploadImagePromise,
 } from '../utils/functionList';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
 import CountrySelector from '../components/CountrySelector';
@@ -27,10 +26,13 @@ import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { PhotoCamera } from '@mui/icons-material';
 import PlanCalendar from '../components/timeblock/PlanCalendar';
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Switch from '@mui/material/Switch';
+import { UserContext } from '../App';
 import firebaseDB from '../utils/firebaseConfig';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -122,10 +124,11 @@ const CalendarColourBackground = styled.div`
   position: absolute;
 `;
 
-// defaultImg={defaultImg}
-// user={user} accessToken, email
+AddNewPlan.propTypes = {
+  defaultImg: PropTypes.string,
+};
+
 function AddNewPlan(props) {
-  const { currentUserId } = useParams();
   const [username, setUsername] = useState('');
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -141,12 +144,13 @@ function AddNewPlan(props) {
   const [planDocRef, setPlanDocRef] = useState('');
   const [addedTimeBlock, setAddedTimeBlock] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
-  const [favPlansNameList, setFavPlansNameList] = useState(null);
-  const [showFavPlans, setShowFavPlans] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState('');
 
   const [showFavContainer, setShowFavContainer] = useState(false);
   const navigate = useNavigate();
+
+  const userInfo = useContext(UserContext);
+
   const createNewCollection = async (
     startDateValue,
     endDateValue,
@@ -164,7 +168,7 @@ function AddNewPlan(props) {
 
     try {
       await setDoc(doc(db, 'plans', createPlanDocId), {
-        author: currentUserId,
+        author: userInfo.userEmail,
         author_name: username,
         start_date: startDateValue,
         end_date: endDateValue,
@@ -176,10 +180,10 @@ function AddNewPlan(props) {
 
       setHasCreatedCollection(true);
 
-      addPlanToUserInfo(props.user.email, createPlanDocId);
+      addPlanToUserInfo(userInfo.userEmail, createPlanDocId);
 
       addPlanToAllPlans(
-        props.user.email,
+        userInfo.userEmail,
         createPlanDocId,
         planTitle,
         mainImage,
@@ -191,44 +195,40 @@ function AddNewPlan(props) {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (addedTimeBlock) {
-      listenToSnapShot(setMyEvents, planDocRef);
+      listenToSnapShot(planDocRef, setMyEvents);
     }
   }, [addedTimeBlock]);
 
   useEffect(async () => {
-    if (currentUserId) {
-      const userDoc = await getDoc(doc(db, 'userId', currentUserId));
+    if (userInfo.userEmail) {
+      const userDoc = await getDoc(doc(db, 'userId', userInfo.userEmail));
       if (userDoc.data().username) {
         setUsername(userDoc.data().username);
       }
     }
-  }, [currentUserId]);
+  }, [userInfo.userEmail]);
 
   return (
     <Wrapper>
-      {showPopUp ? (
+      {showPopUp && (
         <AddNewTimeBlock
-          setShowPopUp={setShowPopUp}
-          showPopUp={showPopUp}
-          collectionID={'plans'}
+          closePopUp={() => setShowPopUp(false)}
           planDocRef={planDocRef}
           setAddedTimeBlock={setAddedTimeBlock}
           startDateValue={startDateValue}
         />
-      ) : null}
-      {showEditPopUp ? (
+      )}
+      {showEditPopUp && (
         <EditTimeBlock
-          // showEditPopUp={showEditPopUp}
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
-          // collectionID={'plans'}
           planDocRef={planDocRef}
           status={'origin'}
         />
-      ) : null}
+      )}
       <>
         {!hasCreatedCollection && (
           <InstructionText>
@@ -292,8 +292,9 @@ function AddNewPlan(props) {
                 accept="image/*"
                 id="icon-button-file"
                 type="file"
-                onChange={(e) => {
-                  handleMainImageUpload(e.target.files[0], setMainImage);
+                onChange={async (e) => {
+                  const imageFile = await uploadImagePromise(e.target.files[0]);
+                  setMainImage(imageFile);
                 }}
               />
               <Box textAlign="center">
@@ -336,13 +337,11 @@ function AddNewPlan(props) {
 
               {showFavContainer && (
                 <FavFolderDropdown
-                  showFavPlans={showFavPlans}
-                  favPlansNameList={favPlansNameList}
                   setSelectedPlanId={setSelectedPlanId}
                   selectedPlanId={selectedPlanId}
                   planDocRef={planDocRef}
                   startDateValue={startDateValue}
-                  currentUserId={currentUserId}
+                  currentUserId={userInfo.userEmail}
                 />
               )}
 
@@ -374,27 +373,25 @@ function AddNewPlan(props) {
           </>
         ) : (
           <ButtonContainer>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <LightBlueBtn
-                variant="contained"
-                onClick={() => {
-                  if (startDateValue && endDateValue && planTitle) {
-                    createNewCollection(
-                      startDateValue,
-                      endDateValue,
-                      planTitle,
-                      mainImage
-                    );
-                  } else {
-                    Swal.fire('Please provide the required fields!');
-                  }
-                }}>
-                All Set
-              </LightBlueBtn>
-              <PaleEmptyBtn onClick={() => navigate('/dashboard')}>
-                Nah create later
-              </PaleEmptyBtn>
-            </Stack>
+            <LightBlueBtn
+              variant="contained"
+              onClick={() => {
+                if (startDateValue && endDateValue && planTitle) {
+                  createNewCollection(
+                    startDateValue,
+                    endDateValue,
+                    planTitle,
+                    mainImage
+                  );
+                } else {
+                  Swal.fire('Please provide the required fields!');
+                }
+              }}>
+              All Set
+            </LightBlueBtn>
+            <PaleEmptyBtn onClick={() => navigate('/dashboard')}>
+              Nah create later
+            </PaleEmptyBtn>
           </ButtonContainer>
         )}
       </>

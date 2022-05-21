@@ -1,39 +1,37 @@
 import {
+  collection,
   doc,
   getDocs,
-  query,
-  where,
   onSnapshot,
-  collection,
+  query,
   setDoc,
+  where,
   writeBatch,
 } from 'firebase/firestore';
-import firebaseDB from '../utils/firebaseConfig';
+
 import Swal from 'sweetalert2';
+import firebaseDB from '../utils/firebaseConfig';
+
 const db = firebaseDB();
 
-export function handleMainImageUpload(imgFile, setMainImage, setUploadUserImg) {
+export async function uploadImagePromise(imgFile) {
   const reader = new FileReader();
-  if (imgFile) {
-    reader.readAsDataURL(imgFile);
-  }
+  reader.readAsDataURL(imgFile);
 
-  reader.onload = function () {
-    setMainImage(reader.result);
-    if (setUploadUserImg) {
-      setUploadUserImg(true);
-    }
-    return reader.result;
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-    return null;
-  };
+  return new Promise((resolve, reject) => {
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = (error) => {
+      reject(error);
+    };
+  });
 }
 
 export async function addPlanToAllPlans(
   currentUserId,
-  planDocRef, //createPlanDocId for add-new-plan
+  planDocRef,
   planTitle,
   mainImage,
   country,
@@ -112,66 +110,45 @@ export async function saveToDataBase(
   }
 }
 
-export function deleteBlockInMylist(prev, id) {
-  const indexOfObject = prev.findIndex((timeblock) => timeblock.id === id);
-  let updateList = prev.splice(indexOfObject, 1);
-
-  return prev;
-}
-
-export async function listenToSnapShot(setMyEvents, planDocRef) {
+export async function listenToSnapShot(planDocRef, handleSnapShotData) {
   const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
 
-  onSnapshot(blocksListRef, (doc) => {
-    doc.docChanges().forEach((change) => {
-      if (change.type === 'added') {
-        setMyEvents((prev) => [
-          ...prev,
-          {
-            start: new Date(change.doc.data().start.seconds * 1000),
-            end: new Date(change.doc.data().end.seconds * 1000),
-            title: change.doc.data().title,
-            id: change.doc.data().id,
-            status: change.doc.data().status || '',
-            place_format_address: change.doc.data().place_format_address,
-            place_name: change.doc.data().place_name,
-            place_id: change.doc.data().place_id,
-            place_img: change.doc.data().place_img || '',
-            place_url: change.doc.data().place_url,
-            place_types: change.doc.data().place_types || '',
-            place_formatted_phone_number:
-              change.doc.data().place_formatted_phone_number || '',
-            rating: change.doc.data().rating || '',
-          },
-        ]);
-      }
-      if (change.type === 'modified') {
-        const id = change.doc.data().id;
-        setMyEvents((prev) => [
-          ...deleteBlockInMylist(prev, id),
-          {
-            start: new Date(change.doc.data().start.seconds * 1000),
-            end: new Date(change.doc.data().end.seconds * 1000),
-            title: change.doc.data().title,
-            id: change.doc.data().id,
-            status: change.doc.data().status || '',
-            place_format_address: change.doc.data().place_format_address,
-            place_name: change.doc.data().place_name,
-            place_id: change.doc.data().place_id,
-            place_img: change.doc.data().place_img || '',
-            place_url: change.doc.data().place_url,
-            place_types: change.doc.data().place_types || '',
-            place_formatted_phone_number:
-              change.doc.data().place_formatted_phone_number || '',
-            rating: change.doc.data().rating || '',
-          },
-        ]);
-      }
-      if (change.type === 'removed') {
-        const id = change.doc.data().id;
-        setMyEvents((prev) => [...deleteBlockInMylist(prev, id)]);
-      }
+  onSnapshot(blocksListRef, (docs) => {
+    const newEventList = Object.keys(docs.docs).map((e) => {
+      const {
+        start,
+        end,
+        title,
+        id,
+        status,
+        place_format_address,
+        place_name,
+        place_id,
+        place_img,
+        place_url,
+        place_types,
+        place_formatted_phone_number,
+        rating,
+      } = docs.docs[e].data();
+
+      return {
+        start: new Date(start.seconds * 1000),
+        end: new Date(end.seconds * 1000),
+        title: title,
+        id,
+        status: status || '',
+        place_format_address,
+        place_name,
+        place_id,
+        place_img: place_img || '',
+        place_url,
+        place_types: place_types || '',
+        place_formatted_phone_number: place_formatted_phone_number || '',
+        rating: rating || '',
+      };
     });
+
+    handleSnapShotData(newEventList);
   });
 }
 

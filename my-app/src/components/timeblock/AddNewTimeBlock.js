@@ -57,16 +57,6 @@ const FormsContainer = styled.div`
   overflow: auto;
 `;
 
-const ImageUploader = styled.div`
-  min-height: 50px;
-  padding-bottom: 30px;
-  margin-bottom: 10px;
-`;
-
-const Input = styled('input')({
-  display: 'none',
-});
-
 const TimeblockImgUploadContainer = styled.div`
   width: 100%;
   max-height: 400px;
@@ -118,9 +108,10 @@ function handleImageUpload(e, setTimeBlockImage) {
 
 AddNewTimeBlock.propTypes = {
   planDocRef: PropTypes.string,
+  closePopUp: PropTypes.func,
+  startDateValue: PropTypes.instanceOf(Date),
 };
 
-// planDocRef={planDocRef}
 function AddNewTimeBlock(props) {
   const [blockTitle, setBlockTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -156,7 +147,7 @@ function AddNewTimeBlock(props) {
         status: 'origin',
       });
 
-      props.setShowPopUp(false);
+      props.closePopUp();
       Swal.fire('Successfully added!');
     } catch (error) {
       if (
@@ -180,7 +171,7 @@ function AddNewTimeBlock(props) {
             <CloseBtn
               aria-label="close"
               onClick={() => {
-                props.setShowPopUp(false);
+                props.closePopUp();
               }}>
               <Close />
             </CloseBtn>

@@ -3,10 +3,12 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './styles/alertStyles.scss';
+import 'sweetalert2/src/sweetalert2.scss';
 
 import { Route, Routes } from 'react-router-dom';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 import AddNewPlan from './pages/AddNewPlan';
 import Allplans from './pages/AllPlans';
@@ -15,40 +17,30 @@ import EditPlanDetail from './pages/EditPlanDetail';
 import GlobalStyle from './styles/globalStyles';
 import ParallaxLanding from './pages/ParallaxLanding';
 import StaticPlanDetail from './pages/StaticPlanDetail';
-import Swal from 'sweetalert2';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import firebaseDB from './utils/firebaseConfig';
-import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
 
+export const UserContext = createContext();
+
 function App() {
-  const [user, setUser] = useState('');
-  const [favFolderNames, setFavFolderNames] = useState(null);
   const [defaultImg, setDefaultImg] = useState('');
-  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setUser({
-        accessToken: localStorage.getItem('accessToken'),
-        email: localStorage.getItem('userEmail'),
-      });
-    } else {
-      Swal.fire('Please sign in first!');
-      navigate('/');
-    }
-  }, [localStorage.getItem('accessToken')]);
-
-  useEffect(async () => {
-    if (user) {
-      const favFolderRef = collection(db, 'userId', user.email, 'fav_folders');
-      const doc = await getDocs(favFolderRef);
-      const list = doc.docs.map((e) => e.data().folder_name);
-
-      setFavFolderNames(list);
-    }
-  }, [user]);
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserInfo({
+          userToken: user.accessToken,
+          userEmail: user.email,
+        });
+      } else {
+        console.log('not logged in');
+      }
+    });
+  }, []);
 
   useEffect(async () => {
     const docSnap = await getDoc(
@@ -59,45 +51,35 @@ function App() {
   }, []);
 
   return (
-    <>
+    <UserContext.Provider value={userInfo}>
       <GlobalStyle />
 
       <Wrapper
         apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
         libraries={['places']}>
         <Routes>
-          <Route
-            path="/"
-            element={<ParallaxLanding user={user} setUser={setUser} />}
-          />
+          <Route path="/" element={<ParallaxLanding />} />
           <Route
             path="/edit-plan-detail/:planDocRef"
-            element={
-              <EditPlanDetail
-                userId={user.email}
-                favFolderNames={favFolderNames}
-              />
-            }
+            element={<EditPlanDetail />}
           />
           <Route
-            path="/new-plan/:currentUserId"
-            element={<AddNewPlan user={user} defaultImg={defaultImg} />}
+            path="/new-plan"
+            element={<AddNewPlan defaultImg={defaultImg} />}
           />
           <Route
             path="/static-plan-detail/:planDocRef"
-            element={
-              <StaticPlanDetail favFolderNames={favFolderNames} user={user} />
-            }
+            element={<StaticPlanDetail />}
           />
 
-          <Route path="/dashboard" element={<Dashboard user={user} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route
             path="/discover"
-            element={<Allplans defaultImg={defaultImg} user={user} />}
+            element={<Allplans defaultImg={defaultImg} />}
           />
         </Routes>
       </Wrapper>
-    </>
+    </UserContext.Provider>
   );
 }
 

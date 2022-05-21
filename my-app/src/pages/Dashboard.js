@@ -4,7 +4,7 @@ import {
   fonts,
   themeColours,
 } from '../styles/globalTheme';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 
@@ -15,11 +15,12 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import OwnPlanCard from '../components/OwnPlanCard';
 import Swal from 'sweetalert2';
 import UploadIcon from '@mui/icons-material/Upload';
+import { UserContext } from '../App';
 import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
 import firebaseDB from '../utils/firebaseConfig';
-import { handleMainImageUpload } from '../utils/functionList';
 import sparkle from '../images/dashboard/spark.png';
 import styled from 'styled-components';
+import { uploadImagePromise } from '../utils/functionList';
 import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
@@ -326,23 +327,15 @@ function signOutFirebase() {
 
   signOut(auth)
     .then(() => {
-      if (localStorage.getItem('accessToken')) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('userEmail');
-        Swal.fire('You have been signed out!');
-      } else {
-        Swal.fire('You were not signed in!');
-      }
+      Swal.fire('You were signed out!');
     })
     .catch((error) => {
       console.log(error);
     });
 }
 
-// user={user}
-function Dashboard(props) {
+function Dashboard() {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState('');
   const [userName, setUserName] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
@@ -350,10 +343,11 @@ function Dashboard(props) {
   const [displaySection, setDisplaySection] = useState('My Plans');
   const [userImage, setUserImage] = useState(null);
   const [showUserUploadIcon, setShowUserUploadIcon] = useState('hidden');
-  const [uploadUserImg, setUploadUserImg] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
   const navigate = useNavigate();
   const uploadIconRef = useRef(null);
+
+  const userInfo = useContext(UserContext);
 
   useEffect(() => {
     if (userName) {
@@ -362,13 +356,11 @@ function Dashboard(props) {
   }, [userName]);
 
   useEffect(async () => {
-    if (!props.user) {
+    if (!userInfo) {
       Swal.fire('Please login first!');
       navigate('/');
     } else {
-      setCurrentUserId(props.user.email);
-
-      const ref = collection(db, 'userId', props.user.email, 'own_plans');
+      const ref = collection(db, 'userId', userInfo.userEmail, 'own_plans');
       const plansList = await getDocs(ref);
 
       if (plansList.docs.length === 0) {
@@ -384,25 +376,19 @@ function Dashboard(props) {
       }
 
       try {
-        const userDoc = await getDoc(doc(db, 'userId', props.user.email));
+        const userDoc = await getDoc(doc(db, 'userId', userInfo.userEmail));
         setUserImage(userDoc.data().userImage);
         setUserName(userDoc.data().username);
       } catch (error) {
         console.log(error);
       }
     }
-  }, [props.user]);
-
-  useEffect(() => {
-    if (uploadUserImg) {
-      saveImgToDataBase(userImage);
-    }
-  }, [uploadUserImg]);
+  }, []);
 
   function saveImgToDataBase(userImage) {
     try {
       setDoc(
-        doc(db, 'userId', currentUserId),
+        doc(db, 'userId', userInfo.userEmail),
         {
           userImage: userImage,
         },
@@ -441,12 +427,12 @@ function Dashboard(props) {
                   accept="image/*"
                   id="user_avatar_file"
                   type="file"
-                  onChange={(e) => {
-                    handleMainImageUpload(
-                      e.target.files[0],
-                      setUserImage,
-                      setUploadUserImg
+                  onChange={async (e) => {
+                    const imageFile = await uploadImagePromise(
+                      e.target.files[0]
                     );
+                    setUserImage(imageFile);
+                    saveImgToDataBase(imageFile);
                   }}></input>
                 <IconButton
                   style={{
@@ -465,7 +451,7 @@ function Dashboard(props) {
             <div className="user_info_container">
               <div className="greeting">Hello!</div>
               <div className="user_id">{userName}</div>
-              <div className="user_id">{currentUserId}</div>
+              <div className="user_id">{userInfo?.userEmail}</div>
               <LogoutContainer
                 onClick={() => {
                   signOutFirebase();
@@ -504,7 +490,7 @@ function Dashboard(props) {
           </DisplaySwitch>
         </TopSectionWrapper>
 
-        {showAddPlanPopUp && navigate(`/new-plan/${props.user.email}`)}
+        {showAddPlanPopUp && navigate('/new-plan')}
 
         {displaySection === 'My Plans' && (
           <SectionContainer>
@@ -558,7 +544,7 @@ function Dashboard(props) {
             <div className="section_wrapper">
               <div className="section_title">Favourites</div>
             </div>
-            <FavouriteFolderBar currentUserId={currentUserId} />
+            <FavouriteFolderBar currentUserId={userInfo.userEmail} />
           </SectionContainer>
         )}
       </Wrapper>

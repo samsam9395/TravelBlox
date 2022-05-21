@@ -9,12 +9,12 @@ import {
   PaleBtn,
   themeColours,
 } from '../styles/globalTheme';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { doc, getDoc, writeBatch } from 'firebase/firestore';
 import {
-  handleMainImageUpload,
   listenToSnapShot,
   saveToDataBase,
+  uploadImagePromise,
 } from '../utils/functionList';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
@@ -27,10 +27,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FullLoading from '../components/general/FullLoading';
 import { PhotoCamera } from '@mui/icons-material';
 import PlanCalendar from '../components/timeblock/PlanCalendar';
-import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Switch from '@mui/material/Switch';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
+import { UserContext } from '../App';
 import firebaseDB from '../utils/firebaseConfig';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -100,13 +100,7 @@ const BottomBtnContainer = styled.div`
   }
 `;
 
-EditTimeBlock.propTypes = {
-  userId: PropTypes.string,
-  favFolderNames: PropTypes.object,
-  currentPlanRef: PropTypes.string,
-};
-
-function EditPlanDetail(props) {
+function EditPlanDetail() {
   const { planDocRef } = useParams();
   const [planAuthor, setPlanAuthor] = useState('');
   const [planTitle, setPlanTitle] = useState('');
@@ -116,7 +110,6 @@ function EditPlanDetail(props) {
   const [myEvents, setMyEvents] = useState([]);
   const [showEditPopUp, setShowEditPopUp] = useState(false);
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
-  // const [currentSelectTimeId, setCurrentSelectTimeId] = useState('');
   const [startDateValue, setStartDateValue] = useState(null);
   const [endDateValue, setEndDateValue] = useState(null);
   const [startInitDateValue, setStartInitDateValue] = useState(0);
@@ -125,18 +118,8 @@ function EditPlanDetail(props) {
   const [isPublished, setIsPublished] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
 
-  // import
-  const [showFavPlans, setShowFavPlans] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState('');
-  // const [importData, setImportData] = useState({});
-
-  const currentUserId = props.userId;
-
+  const currentUserId = useContext(UserContext)?.userEmail;
   const navigate = useNavigate();
-
-  const redirectToDashboard = () => {
-    navigate('/dashboard');
-  };
 
   async function deletePlan(planDocRef, currentUserId) {
     const batch = writeBatch(db);
@@ -164,9 +147,9 @@ function EditPlanDetail(props) {
 
   useEffect(() => {
     if (planAuthor) {
-      if (localStorage.getItem('userEmail')) {
-        if (localStorage.getItem('userEmail') !== planAuthor) {
-          Swal.fire('You can only edit your own plan!');
+      if (currentUserId) {
+        if (currentUserId !== planAuthor) {
+          Swal.fire('You do not have authority to edit this plan!');
           navigate('/dashboard');
         }
       } else {
@@ -174,7 +157,7 @@ function EditPlanDetail(props) {
         navigate('/');
       }
     }
-  }, [localStorage.getItem('userEmail'), planAuthor]);
+  }, [planAuthor]);
 
   useEffect(async () => {
     const docSnap = await getDoc(doc(db, 'plans', planDocRef));
@@ -201,7 +184,9 @@ function EditPlanDetail(props) {
   }, []);
 
   useEffect(async () => {
-    listenToSnapShot(setMyEvents, planDocRef);
+    listenToSnapShot(planDocRef, setMyEvents);
+    // const newEventList = await listenToSnapShot(planDocRef);
+    // setMyEvents(newEventList);
   }, []);
 
   useEffect(() => {
@@ -215,23 +200,21 @@ function EditPlanDetail(props) {
       <FullLoading opacity={loadindOpacity} />
       {showPopUp && (
         <AddNewTimeBlock
-          setShowPopUp={setShowPopUp}
-          showPopUp={showPopUp}
+          closePopUp={() => setShowPopUp(false)}
           planDocRef={planDocRef}
           startDateValue={startDateValue}
-          endDateValue={endDateValue}
         />
       )}
       {showEditPopUp && (
         <EditTimeBlock
-          setShowEditPopUp={setShowEditPopUp}
+          closePopUp={() => setShowEditPopUp(false)}
           currentSelectTimeData={currentSelectTimeData}
           planDocRef={planDocRef}
         />
       )}
       <ArrowBackIosIcon
         className="hoverCursor"
-        onClick={() => redirectToDashboard()}
+        onClick={() => navigate('/dashboard')}
       />
       <TopContainer>
         <TitleSection>
@@ -289,8 +272,9 @@ function EditPlanDetail(props) {
               accept="image/*"
               id="icon-button-file"
               type="file"
-              onChange={(e) => {
-                handleMainImageUpload(e.target.files[0], setMainImage);
+              onChange={async (e) => {
+                const imageFile = await uploadImagePromise(e.target.files[0]);
+                setMainImage(imageFile);
               }}
             />
             <Box textAlign="center">

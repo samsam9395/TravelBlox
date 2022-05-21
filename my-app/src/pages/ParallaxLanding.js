@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { fonts, themeColours } from '../styles/globalTheme';
+import React, { useContext, useEffect, useState } from 'react';
 
 import Login from './Login';
+import { UserContext } from '../App';
 import bg from '../images/parallx_img_layers/bg_full.png';
 import bird from '../images/parallx_img_layers/bird.png';
+import { fonts } from '../styles/globalTheme';
 import mountain from '../images/parallx_img_layers/mountain.png';
 import styled from 'styled-components';
 import tree from '../images/parallx_img_layers/tree_long.png';
+import { useNavigate } from 'react-router-dom';
 
 const SectionWrapper = styled.div`
   top: -80px;
@@ -28,14 +30,17 @@ const MainTtitle = styled.div`
   text-shadow: 0 0 4px #ffffff;
 `;
 
-const BgImg = styled.img`
+const BgImg = styled.img.attrs(({ rightValue }) => ({
+  style: {
+    right: rightValue * 0.5 + 'px',
+  },
+}))`
   width: 300%;
   position: absolute;
   height: 100%;
   object-fit: cover;
   top: 0;
   position: absolute;
-  right: ${(props) => `${props.scrollvalue * 0.5}px`};
 `;
 
 const MountainImg = styled.img`
@@ -153,11 +158,18 @@ const ContentContainer = styled.div`
       text-align: start;
     }
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 0 15px;
+  }
 `;
 
-function ParallaxLanding({ user, setUser }) {
+function ParallaxLanding() {
   const [scrollYValue, setscrollYValue] = useState(0);
-  const [hasSignedIn, setHasSignedIn] = useState(false);
+
+  const userInfo = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.addEventListener(
@@ -168,7 +180,13 @@ function ParallaxLanding({ user, setUser }) {
       },
       []
     );
-  });
+  }, []);
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/discover');
+    }
+  }, [userInfo]);
 
   return (
     <>
@@ -229,11 +247,7 @@ function ParallaxLanding({ user, setUser }) {
           </div>
         </ContentContainer>
       </SubSection>
-      <Login
-        setHasSignedIn={setHasSignedIn}
-        hasSignedIn={hasSignedIn}
-        setUser={setUser}
-      />
+      <Login />
     </>
   );
 }

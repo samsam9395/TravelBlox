@@ -116,9 +116,8 @@ function handleImageUpload(e, setTimeBlockImage) {
 
 EditTimeBlock.propTypes = {
   planDocRef: PropTypes.string,
-  setShowEditPopUp: PropTypes.func,
-  currentSelectTimeData: PropTypes.string,
-  currentSelectTimeId: PropTypes.string,
+  closePopUp: PropTypes.func,
+  currentSelectTimeData: PropTypes.object,
 };
 
 function EditTimeBlock(props) {
@@ -170,13 +169,14 @@ function EditTimeBlock(props) {
             timeblock_img: timeBlockImage || '',
             ...googleLocationData,
             status: 'origin',
-            id: props.currentSelectTimeId,
           },
           {
             merge: true,
           }
         );
-        props.setShowEditPopUp(false);
+
+        props.closePopUp();
+
         Swal.fire('Successfully updated!');
       } catch (error) {
         console.log(error);
@@ -192,16 +192,18 @@ function EditTimeBlock(props) {
             end: endTimeValue,
             timeblock_img: timeBlockImage || '',
             status: 'origin',
-            id: props.currentSelectTimeId,
           },
           {
             merge: true,
           }
         );
-        props.setShowEditPopUp(false);
+
+        props.closePopUp();
+
         Swal.fire('Successfully updated!');
       } catch (error) {
         console.log(error);
+        Swal.fire('Something went wrong, please try again!');
       }
     }
   }
@@ -222,17 +224,13 @@ function EditTimeBlock(props) {
     }
   }
 
-  async function deleteFromDataBase(
-    timeBlockRef,
-    blockTitle,
-    setShowEditPopUp
-  ) {
+  async function deleteFromDataBase(timeBlockRef) {
     try {
       await deleteDoc(timeBlockRef);
-      Swal.fire(`${blockTitle} is deleted!`);
-      setShowEditPopUp(false);
+      return true;
     } catch (error) {
       console.log(error);
+      Swal.fire('Something went wrong, please try again!');
     }
   }
 
@@ -300,19 +298,31 @@ function EditTimeBlock(props) {
           <ButtonContainer>
             <DeleteBtn
               aria-label="delete"
-              onClick={() =>
-                deleteFromDataBase(
-                  timeBlockRef,
-                  blockTitle,
-                  props.setShowEditPopUp
-                )
-              }>
+              onClick={() => {
+                Swal.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!',
+                  backdrop: false,
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    if (deleteFromDataBase(timeBlockRef, blockTitle)) {
+                      props.closePopUp();
+                      Swal.fire(`${blockTitle} is deleted!`);
+                    }
+                  }
+                });
+              }}>
               <Delete />
             </DeleteBtn>
             <CloseBtn
               aria-label="close"
               onClick={() => {
-                props.setShowEditPopUp(false);
+                props.closePopUp();
               }}>
               <Close />
             </CloseBtn>
