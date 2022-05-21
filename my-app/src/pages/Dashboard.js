@@ -451,7 +451,7 @@ function Dashboard() {
             <div className="user_info_container">
               <div className="greeting">Hello!</div>
               <div className="user_id">{userName}</div>
-              <div className="user_id">{userInfo.userEmail}</div>
+              <div className="user_id">{userInfo?.userEmail}</div>
               <LogoutContainer
                 onClick={() => {
                   signOutFirebase();

@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { fonts, themeColours } from '../styles/globalTheme';
 
 import Login from './Login';
 import { UserContext } from '../App';
 import bg from '../images/parallx_img_layers/bg_full.png';
 import bird from '../images/parallx_img_layers/bird.png';
+import { fonts } from '../styles/globalTheme';
 import mountain from '../images/parallx_img_layers/mountain.png';
 import styled from 'styled-components';
 import tree from '../images/parallx_img_layers/tree_long.png';
+import { useNavigate } from 'react-router-dom';
 
 const SectionWrapper = styled.div`
   top: -80px;
@@ -29,14 +30,17 @@ const MainTtitle = styled.div`
   text-shadow: 0 0 4px #ffffff;
 `;
 
-const BgImg = styled.img`
+const BgImg = styled.img.attrs(({ rightValue }) => ({
+  style: {
+    right: rightValue * 0.5 + 'px',
+  },
+}))`
   width: 300%;
   position: absolute;
   height: 100%;
   object-fit: cover;
   top: 0;
   position: absolute;
-  right: ${(props) => `${props.scrollvalue * 0.5}px`};
 `;
 
 const MountainImg = styled.img`
@@ -163,7 +167,9 @@ const ContentContainer = styled.div`
 
 function ParallaxLanding() {
   const [scrollYValue, setscrollYValue] = useState(0);
-  const [hasSignedIn, setHasSignedIn] = useState(false);
+
+  const userInfo = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.addEventListener(
@@ -174,7 +180,13 @@ function ParallaxLanding() {
       },
       []
     );
-  });
+  }, []);
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/discover');
+    }
+  }, [userInfo]);
 
   return (
     <>

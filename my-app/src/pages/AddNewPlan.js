@@ -127,7 +127,7 @@ const CalendarColourBackground = styled.div`
 AddNewPlan.propTypes = {
   defaultImg: PropTypes.string,
 };
-// defaultImg={defaultImg}
+
 function AddNewPlan(props) {
   const [username, setUsername] = useState('');
   const [planTitle, setPlanTitle] = useState('');
@@ -212,17 +212,15 @@ function AddNewPlan(props) {
 
   return (
     <Wrapper>
-      {showPopUp ? (
+      {showPopUp && (
         <AddNewTimeBlock
-          setShowPopUp={setShowPopUp}
-          showPopUp={showPopUp}
-          collectionID={'plans'}
+          closePopUp={() => setShowPopUp(false)}
           planDocRef={planDocRef}
           setAddedTimeBlock={setAddedTimeBlock}
           startDateValue={startDateValue}
         />
-      ) : null}
-      {showEditPopUp ? (
+      )}
+      {showEditPopUp && (
         <EditTimeBlock
           setShowEditPopUp={setShowEditPopUp}
           currentSelectTimeData={currentSelectTimeData}
@@ -230,7 +228,7 @@ function AddNewPlan(props) {
           planDocRef={planDocRef}
           status={'origin'}
         />
-      ) : null}
+      )}
       <>
         {!hasCreatedCollection && (
           <InstructionText>

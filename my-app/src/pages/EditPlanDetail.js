@@ -118,12 +118,8 @@ function EditPlanDetail() {
   const [isPublished, setIsPublished] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
 
-  const currentUserId = useContext(UserContext).userEmail;
+  const currentUserId = useContext(UserContext)?.userEmail;
   const navigate = useNavigate();
-
-  const redirectToDashboard = () => {
-    navigate('/dashboard');
-  };
 
   async function deletePlan(planDocRef, currentUserId) {
     const batch = writeBatch(db);
@@ -204,23 +200,21 @@ function EditPlanDetail() {
       <FullLoading opacity={loadindOpacity} />
       {showPopUp && (
         <AddNewTimeBlock
-          setShowPopUp={setShowPopUp}
-          showPopUp={showPopUp}
+          closePopUp={() => setShowPopUp(false)}
           planDocRef={planDocRef}
           startDateValue={startDateValue}
-          endDateValue={endDateValue}
         />
       )}
       {showEditPopUp && (
         <EditTimeBlock
-          setShowEditPopUp={setShowEditPopUp}
+          closePopUp={() => setShowEditPopUp(false)}
           currentSelectTimeData={currentSelectTimeData}
           planDocRef={planDocRef}
         />
       )}
       <ArrowBackIosIcon
         className="hoverCursor"
-        onClick={() => redirectToDashboard()}
+        onClick={() => navigate('/dashboard')}
       />
       <TopContainer>
         <TitleSection>
