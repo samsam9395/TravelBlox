@@ -270,3 +270,24 @@ export async function signInProvider(e, providerPlatform) {
     }
   }
 }
+
+export function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+export function loopThroughDays(startday, days) {
+  const scheduleTimestampList = [];
+  const lastDay = addDays(startday, days);
+
+  for (let i = 0; i <= days; i++) {
+    const nextday = addDays(startday, i);
+    scheduleTimestampList.push(nextday);
+
+    if (nextday === lastDay) {
+      break;
+    }
+  }
+  return scheduleTimestampList;
+}

@@ -11,11 +11,11 @@ import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn
 import FullLoading from '../components/general/FullLoading';
 import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
 import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
-import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Timeline from '../components/daily_event_card/Timeline';
 import { UserContext } from '../App';
 import firebaseDB from '../utils/firebaseConfig';
+import { loopThroughDays } from '../utils/functionList';
 import sunburst from '../images/static/sunburst_solid.png';
 import { useParams } from 'react-router-dom';
 
@@ -67,7 +67,7 @@ const LowerContainer = styled.div`
   }
 `;
 
-const FavFolderWrapper = styled.div`
+const FavouriteFolderWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -132,7 +132,7 @@ const PlanCardsWrapper = styled.div`
   margin-top: 50px;
 `;
 
-const FavFolderDropDownOptions = styled.div`
+const FavouriteFolderDropDownOptions = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px 15px;
@@ -259,27 +259,6 @@ const ColouredLine = ({ colour }) => (
   />
 );
 
-function addDays(date, days) {
-  var result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
-function loopThroughDays(startday, days) {
-  const scheduleTimestampList = [];
-  const lastDay = addDays(startday, days);
-
-  for (let i = 0; i <= days; i++) {
-    const nextday = addDays(startday, i);
-    scheduleTimestampList.push(nextday);
-
-    if (nextday === lastDay) {
-      break;
-    }
-  }
-  return scheduleTimestampList;
-}
-
 const Tab = styled.div`
   z-index: 5;
   padding: 10px;
@@ -350,7 +329,8 @@ function StaticPlanDetail() {
   const navTabMap = useRef(null);
   const navTabCalendar = useRef(null);
 
-  const [dropDownFavFolderOption, setDropDownFavFolderOption] = useState([]);
+  const [dropDownFavouriteFolderOption, setDropDownFavouriteFolderOption] =
+    useState([]);
 
   const [userImage, setUserImage] = useState(null);
   const [showFullImage, setShowFullImage] = useState(false);
@@ -359,7 +339,7 @@ function StaticPlanDetail() {
 
   const planImageRef = useRef(null);
 
-  async function handleFavAction(
+  async function handleFavouriteAction(
     planDocRef,
     author,
     selectFavFolder,
@@ -411,7 +391,9 @@ function StaticPlanDetail() {
 
       try {
         const list = await getDocs(favFolderRef);
-        setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
+        setDropDownFavouriteFolderOption(
+          list.docs.map((e) => e.data().folder_name)
+        );
       } catch (error) {
         console.log(error);
       }
@@ -532,7 +514,7 @@ function StaticPlanDetail() {
           </UserInfoContainer>
 
           <BtnWrapper>
-            <FavFolderWrapper>
+            <FavouriteFolderWrapper>
               <LightOrangeBtn
                 padding="10px"
                 fontSize="14px"
@@ -541,13 +523,13 @@ function StaticPlanDetail() {
                 Favourite this plan
               </LightOrangeBtn>
               {showfavDropDown && (
-                <FavFolderDropDownOptions>
-                  {dropDownFavFolderOption?.map((folderName, index) => (
+                <FavouriteFolderDropDownOptions>
+                  {dropDownFavouriteFolderOption?.map((folderName, index) => (
                     <div
                       key={index}
                       className="folder_option"
                       onClick={() =>
-                        handleFavAction(
+                        handleFavouriteAction(
                           planDocRef,
                           author,
                           folderName,
@@ -558,9 +540,9 @@ function StaticPlanDetail() {
                       {folderName}
                     </div>
                   ))}
-                </FavFolderDropDownOptions>
+                </FavouriteFolderDropDownOptions>
               )}
-            </FavFolderWrapper>
+            </FavouriteFolderWrapper>
             <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
           </BtnWrapper>
         </PlanInfoWrapper>
