@@ -15,6 +15,7 @@ import Allplans from './pages/AllPlans';
 import Dashboard from './pages/Dashboard';
 import EditPlanDetail from './pages/EditPlanDetail';
 import GlobalStyle from './styles/globalStyles';
+import PageNotFound from './pages/PageNotFound';
 import ParallaxLanding from './pages/ParallaxLanding';
 import StaticPlanDetail from './pages/StaticPlanDetail';
 import { Wrapper } from '@googlemaps/react-wrapper';
@@ -77,6 +78,7 @@ function App() {
             path="/discover"
             element={<Allplans defaultImg={defaultImg} />}
           />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Wrapper>
     </UserContext.Provider>
