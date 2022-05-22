@@ -5,14 +5,17 @@ import SignUpForm from '../components/login/SignUpForm';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  height: 400px;
   display: flex;
   flex-direction: column;
   z-index: 4;
-  margin-top: 150px;
+  margin: 130px 0;
   background-color: white;
   border-radius: 20px;
   max-width: 100%;
+
+  @media (max-width: 768px) {
+    margin: 30px 0;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -28,10 +31,14 @@ const ImageContainer = styled.div`
 const LoginWrapper = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
   padding-bottom: 50px;
   width: 100%;
-  height: 420px;
+  min-height: 300px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -39,6 +46,9 @@ const InputContainer = styled.div`
   flex-direction: column;
   padding: 20px 30px;
   width: 40%;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 function Login() {
@@ -58,25 +68,23 @@ function Login() {
               <SignInForm
                 setEmail={setEmail}
                 setPassword={setPassword}
-                setShowPassword={setShowPassword}
-                setShowSignUp={setShowSignUp}
+                toggleShowPassword={() => setShowPassword(!showPassword)}
+                toggleShowSignUp={() => setShowSignUp(!showSignUp)}
                 email={email}
                 password={password}
                 showPassword={showPassword}
-                showSignUp={showSignUp}
               />
             ) : (
               <SignUpForm
                 setEmail={setEmail}
                 setPassword={setPassword}
                 setUserName={setUserName}
-                setShowPassword={setShowPassword}
-                setShowSignUp={setShowSignUp}
+                toggleShowPassword={() => setShowPassword(!showPassword)}
+                toggleShowSignUp={() => setShowSignUp(!showSignUp)}
                 email={email}
+                showPassword={showPassword}
                 password={password}
                 username={username}
-                showPassword={showPassword}
-                showSignUp={showSignUp}
               />
             )}
           </InputContainer>

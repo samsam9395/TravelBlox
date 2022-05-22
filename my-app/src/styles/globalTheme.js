@@ -24,7 +24,7 @@ export const LightOrangeBtn = styled.button`
   letter-spacing: 1.5px;
   min-width: 100px;
   padding: ${(props) => props.padding || '10px 20px'};
-  border-radius: 15px;
+  border-radius: ${(props) => props.radius || '15px'};
   border: none;
   background-color: ${themeColours.light_orange};
   margin-top: ${(props) => props.marginTop};

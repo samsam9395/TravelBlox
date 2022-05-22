@@ -1,4 +1,11 @@
 import {
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  getAdditionalUserInfo,
+  getAuth,
+  signInWithPopup,
+} from 'firebase/auth';
+import {
   collection,
   doc,
   getDocs,
@@ -190,4 +197,76 @@ export function renameGoogleMaDataIntoFirebase(location, placeId) {
     place_lng: location.geometry.location.lng(),
     place_types: location.types || '',
   };
+}
+
+export function addNewUserToDataBase(user, providerPlatform, username) {
+  try {
+    setDoc(doc(db, 'userId', user.email), {
+      id: user.email,
+      username: username || user.displayName,
+      userImage:
+        user.photoURL ||
+        'https://is4-ssl.mzstatic.com/image/thumb/Purple125/v4/79/77/67/7977678c-89be-76ff-b9f3-cdc560170cb6/source/256x256bb.jpg',
+      uid: user.uid,
+      providerPlatform: providerPlatform,
+    });
+    setDoc(doc(db, 'userId', user.email, 'fav_folders', 'default'), {
+      folder_name: 'My Default',
+    });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+export async function signInProvider(e, providerPlatform) {
+  console.log(providerPlatform);
+  let provider;
+  e.preventDefault();
+  const auth = getAuth();
+
+  if (providerPlatform === 'google') {
+    provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account',
+    });
+  }
+
+  if (providerPlatform === 'facebook') {
+    provider = new FacebookAuthProvider();
+    provider.setCustomParameters({
+      display: 'popup',
+    });
+  }
+
+  try {
+    console.log(provider);
+    const result = await signInWithPopup(auth, provider);
+
+    if (
+      getAdditionalUserInfo(result).isNewUser === true &&
+      provider === 'google'
+    ) {
+      addNewUserToDataBase(result.user, 'google');
+    }
+
+    if (
+      getAdditionalUserInfo(result).isNewUser === true &&
+      provider === 'facebook'
+    ) {
+      addNewUserToDataBase(result.user, 'facebook');
+    }
+  } catch (error) {
+    const errorCode = error.code;
+    const email = error.customData.email;
+    if (errorCode === 'auth/account-exists-with-different-credential') {
+      Swal.fire(
+        `Your email ${email} has signed in with another social provider already!`
+      );
+    } else if (error.code === 'auth/email-already-in-use') {
+      Swal.fire('Email already in use, please pick another one!');
+    }
+  }
 }

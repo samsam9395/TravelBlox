@@ -1,13 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.2547420f.css",
-    "main.js": "/static/js/main.e814c044.js",
+    "main.css": "/static/css/main.6f21ae90.css",
+    "main.js": "/static/js/main.912db2a1.js",
     "static/media/mountain.png": "/static/media/mountain.0b00c560341208140ea6.png",
     "static/media/bg_full.png": "/static/media/bg_full.dc812393a7245aabc8f8.png",
     "static/media/orange_sky_brushed4.png": "/static/media/orange_sky_brushed4.3307ffdafb4cc04c224c.png",
     "static/media/tree_long.png": "/static/media/tree_long.38caa0bf9cd5032e020d.png",
     "static/media/GellatioPersonalUse-4BZjl.ttf": "/static/media/GellatioPersonalUse-4BZjl.7e835f6c974240f98f89.ttf",
+    "static/media/space_bg.png": "/static/media/space_bg.df8fadabcb03b9262aba.png",
     "static/media/golden_palm_window.png": "/static/media/golden_palm_window.cb5990a8a5e64a7c5b34.png",
+    "static/media/astronaut_mono.png": "/static/media/astronaut_mono.82aef26266b78b291060.png",
     "static/media/cloud_2@4x.png": "/static/media/cloud_2@4x.202f46e5e2e0dea1698e.png",
     "static/media/cloud_1@4x.png": "/static/media/cloud_1@4x.4d44f493c7322b7d23f1.png",
     "static/media/cloud_3@4x.png": "/static/media/cloud_3@4x.86c8e4b0ae66e9c0abae.png",
@@ -19,6 +21,7 @@
     "static/media/spark.png": "/static/media/spark.81c73642422a6c2f46cb.png",
     "static/media/watercolour_blue2.png": "/static/media/watercolour_blue2.85693a58e47031f406b4.png",
     "static/media/cloud_4@4x.png": "/static/media/cloud_4@4x.35dea80dd1dac4932ef9.png",
+    "static/media/google.png": "/static/media/google.4e4e29450907975f4c9f.png",
     "static/media/roboto-latin-500-normal.woff2": "/static/media/roboto-latin-500-normal.869888415d0b1a99ae5c.woff2",
     "static/media/roboto-latin-700-normal.woff2": "/static/media/roboto-latin-700-normal.0682ca7f74351d42bf73.woff2",
     "static/media/roboto-latin-300-normal.woff2": "/static/media/roboto-latin-300-normal.0109a2ace896a506a0aa.woff2",
@@ -53,11 +56,11 @@
     "index.html": "/index.html",
     "static/media/right_milktea_curve_line.svg": "/static/media/right_milktea_curve_line.de516e603a909ec5bda50f510a92a9f9.svg",
     "static/media/milktea_line_left.svg": "/static/media/milktea_line_left.a4df300c05f830907e4b3acfdf0f5637.svg",
-    "main.2547420f.css.map": "/static/css/main.2547420f.css.map",
-    "main.e814c044.js.map": "/static/js/main.e814c044.js.map"
+    "main.6f21ae90.css.map": "/static/css/main.6f21ae90.css.map",
+    "main.912db2a1.js.map": "/static/js/main.912db2a1.js.map"
   },
   "entrypoints": [
-    "static/css/main.2547420f.css",
-    "static/js/main.e814c044.js"
+    "static/css/main.6f21ae90.css",
+    "static/js/main.912db2a1.js"
   ]
 }

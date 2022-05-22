@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
 
-import { getDocs, collection } from 'firebase/firestore';
-import firebaseDB from '../../utils/firebaseConfig';
 import { LightBlueBtn } from '../../styles/globalTheme';
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
+import firebaseDB from '../../utils/firebaseConfig';
 
 const db = firebaseDB();
 
@@ -57,7 +57,7 @@ function ExportGCalendarBtn(props) {
         apikey: process.env.REACT_APP_GOOGLE_CALENDAR_API_KEY,
         clientId: process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID,
         discoveryDocs: process.env.REACT_APP_GOOGLE_CALENDAR_DISCOVERY_DOCS,
-        scope: process.env.REACT_APP_GOOGLE_CALENDAR_SCOPES,
+        scope: process.env.REACT_APP_GOOGLE_CALENDAR_SCOPE,
       });
 
       gapi.client.load('calendar', 'v3', () => console.log('bam! signed in '));

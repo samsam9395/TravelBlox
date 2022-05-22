@@ -325,12 +325,14 @@ const DisplaySwitch = styled.div`
 function signOutFirebase() {
   const auth = getAuth();
 
-  signOut(auth)
+  return signOut(auth)
     .then(() => {
       Swal.fire('You were signed out!');
+      return true;
     })
     .catch((error) => {
       console.log(error);
+      return false;
     });
 }
 
@@ -454,8 +456,10 @@ function Dashboard() {
               <div className="user_id">{userInfo?.userEmail}</div>
               <LogoutContainer
                 onClick={() => {
-                  signOutFirebase();
-                  navigate('/');
+                  if (signOutFirebase()) {
+                    navigate('/');
+                  }
+                  console.log(signOutFirebase());
                 }}>
                 <LogoutIcon className="icon"></LogoutIcon> Logout
               </LogoutContainer>

@@ -1,14 +1,16 @@
 import { InputWrapper, SignUpSwitcher, Title } from './loginUIStyles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 import IconButton from '@mui/material/IconButton';
 import { InputAdornment } from '@mui/material';
 import { LightOrangeBtn } from '../../styles/globalTheme';
+import PropTypes from 'prop-types';
 import React from 'react';
 import Swal from 'sweetalert2';
 import TextField from '@material-ui/core/TextField';
+import { addNewUserToDataBase } from '../../utils/functionList';
 import firebaseDB from '../../utils/firebaseConfig';
 
 async function signUp(email, password, username) {
@@ -19,55 +21,40 @@ async function signUp(email, password, username) {
     Swal.fire('You are a member already!');
   } else {
     const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(222, user);
-        return user;
-      })
-      .then((user) => {
-        setDoc(doc(db, 'userId', user.email), {
-          id: user.email,
-          username: username,
-          userImage:
-            'https://is4-ssl.mzstatic.com/image/thumb/Purple125/v4/79/77/67/7977678c-89be-76ff-b9f3-cdc560170cb6/source/256x256bb.jpg',
-          uid: user.uid,
-        });
-        return user.email;
-      })
-      .then((emailId) => {
-        setDoc(doc(db, 'userId', emailId, 'fav_folders', 'default'), {
-          folder_name: 'default',
-        });
-      })
-      .then(() =>
-        Swal.fire({
-          timer: 1500,
-          showConfirmButton: false,
-          icon: 'success',
-          title: 'You are now ready to start planning!',
-        })
-      )
-      .catch((error) => {
-        if (error.code === 'auth/email-already-in-use') {
-          Swal.fire('Email already in use, please pick another one!');
-        }
-      });
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    addNewUserToDataBase(userCredential.user, 'firebase_native', username);
   }
 }
 
 const db = firebaseDB();
+
+SignUpForm.propTypes = {
+  setEmail: PropTypes.func,
+  setPassword: PropTypes.func,
+  setUserName: PropTypes.func,
+  toggleShowPassword: PropTypes.func,
+  toggleShowSignUp: PropTypes.func,
+  email: PropTypes.string,
+  password: PropTypes.string,
+  username: PropTypes.string,
+  showPassword: PropTypes.func,
+};
+
 function SignUpForm({
   setEmail,
   setPassword,
   setUserName,
-  setShowPassword,
-  setShowSignUp,
+  toggleShowPassword,
+  toggleShowSignUp,
   email,
   password,
   username,
   showPassword,
-  showSignUp,
 }) {
   return (
     <>
@@ -113,9 +100,7 @@ function SignUpForm({
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end">
+                <IconButton onClick={() => toggleShowPassword()} edge="end">
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -143,9 +128,7 @@ function SignUpForm({
           Sign in
           <div
             className="click_here hoverCursor"
-            onClick={() => {
-              setShowSignUp(!showSignUp);
-            }}>
+            onClick={() => toggleShowSignUp()}>
             here!
           </div>
         </div>

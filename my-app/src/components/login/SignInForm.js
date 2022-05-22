@@ -1,10 +1,12 @@
-import { InputWrapper, SignUpSwitcher, Title } from './loginUIStyles';
+import { Divider, InputWrapper, SignUpSwitcher, Title } from './loginUIStyles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
+import GoogleLogin from './SocialProviderLogin';
 import IconButton from '@mui/material/IconButton';
 import { InputAdornment } from '@mui/material';
 import { LightOrangeBtn } from '../../styles/globalTheme';
+import PropTypes from 'prop-types';
 import React from 'react';
 import Swal from 'sweetalert2';
 import TextField from '@material-ui/core/TextField';
@@ -23,15 +25,24 @@ function userLogIn(email, password) {
     });
 }
 
+SignInForm.propTypes = {
+  setEmail: PropTypes.func,
+  setPassword: PropTypes.func,
+  toggleShowPassword: PropTypes.func,
+  toggleShowSignUp: PropTypes.func,
+  email: PropTypes.string,
+  password: PropTypes.string,
+  showPassword: PropTypes.func,
+};
+
 function SignInForm({
   setEmail,
   setPassword,
-  setShowPassword,
-  setShowSignUp,
+  toggleShowPassword,
+  toggleShowSignUp,
   email,
   password,
   showPassword,
-  showSignUp,
 }) {
   return (
     <>
@@ -64,9 +75,7 @@ function SignInForm({
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end">
+                <IconButton onClick={() => toggleShowPassword()} edge="end">
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -77,6 +86,8 @@ function SignInForm({
       <LightOrangeBtn
         marginBottom="20px"
         marginTop="20px"
+        padding="15px"
+        radius="20px"
         onClick={() =>
           email && password
             ? (userLogIn(email, password), setEmail(''), setPassword(''))
@@ -84,15 +95,18 @@ function SignInForm({
         }>
         Login
       </LightOrangeBtn>
+      <Divider>
+        {' '}
+        {'\u2E3B'} or {'\u2E3B'}{' '}
+      </Divider>
+      <GoogleLogin />
       <SignUpSwitcher>
         Doesn't have an account yet?
         <div className="signSection">
           Sign up
           <div
             className="click_here hoverCursor"
-            onClick={() => {
-              setShowSignUp(!showSignUp);
-            }}>
+            onClick={() => toggleShowSignUp()}>
             here!
           </div>
         </div>

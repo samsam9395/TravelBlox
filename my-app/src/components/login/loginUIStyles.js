@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { themeColours } from '../../styles/globalTheme';
 
 export const Title = styled.div`
   font-size: 20px;
@@ -33,4 +34,10 @@ export const SignUpSwitcher = styled.div`
     font-weight: 800;
     padding: 0 10px;
   }
+`;
+
+export const Divider = styled.div`
+  margin: auto;
+  color: ${themeColours.light_grey};
+  padding: 10px 0;
 `;
