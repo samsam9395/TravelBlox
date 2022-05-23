@@ -43,7 +43,7 @@ const MapIndivWrapper = styled.div`
   overflow: hidden;
 
   @media (max-width: 768px) {
-    min-width: 300px;
+    max-width: 100%;
   }
 `;
 
@@ -135,8 +135,8 @@ DayBlockCard.propTypes = {
   planDocRef: PropTypes.string,
   index: PropTypes.number,
   showTab: PropTypes.string,
-  itemEls: PropTypes.instanceOf(Element),
-  timelineRefArray: PropTypes.instanceOf(Element),
+  itemEls: PropTypes.object,
+  timelineRefArray: PropTypes.object,
 };
 
 function DayBlockCard(props) {

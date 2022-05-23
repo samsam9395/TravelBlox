@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   padding: 100px 0;
 
   @media (max-width: 768px) {
-    padding: 80px 20px 80px 10px;
+    padding: 80px 15px 80px 15px;
   }
 `;
 
@@ -130,6 +130,11 @@ const UserInfoContainer = styled.div`
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
+  max-width: 90%;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const FavouriteFolderDropDownOptions = styled.div`

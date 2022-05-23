@@ -16,47 +16,18 @@ const MapContainer = styled.div`
 
 const PanelContainer = styled.div`
   max-width: 250px;
-  /* min-height: 300px; */
   margin-bottom: 0 30px;
   margin-left: 15px;
-  /* max-height: 100%; */
   overflow: auto;
   height: 100%;
   box-sizing: border-box;
 `;
 
-const Marker = (position) => {
-  const [marker, setMarker] = React.useState();
-
-  React.useEffect(() => {
-    if (!marker) {
-      setMarker(new window.google.maps.Marker());
-    }
-
-    // remove marker from map on unmount
-    return () => {
-      if (marker) {
-        marker.setMap(null);
-      }
-    };
-  }, [marker]);
-
-  React.useEffect(() => {
-    if (marker) {
-      marker.setOptions(position);
-    }
-  }, [marker, position]);
-  return null;
-};
-
 DayMapCard.propTypes = {
-  dayEvents: PropTypes.object,
+  dayEvents: PropTypes.array,
 };
 
-// dayEvents={dayEvents}
 function DayMapCard(props) {
-  const [hasMarker, setHasMarker] = useState(false);
-  const [markerPosition, setMarkerPosition] = useState('');
   const sideRouteRef = useRef(null);
 
   const [map, setMap] = useState();
@@ -89,9 +60,6 @@ function DayMapCard(props) {
       const directionsRenderer = new window.google.maps.DirectionsRenderer();
 
       if (placeIdList && placeIdList.length === 1) {
-        setMarkerPosition({ placeId: placeIdList[0] });
-        map.setZoom(5);
-
         const directionsRequest = {
           origin: { placeId: placeIdList[0] },
           destination: { placeId: placeIdList.at(-1) },
@@ -106,8 +74,6 @@ function DayMapCard(props) {
             directionsRenderer.setDirections(result);
           } else console.log('something wrong');
         });
-
-        setHasMarker(true);
       }
 
       if (placeIdList && placeIdList.length === 2) {
@@ -123,11 +89,11 @@ function DayMapCard(props) {
         directionsService.route(directionsRequest).then((result) => {
           if (result.status === 'OK') {
             directionsRenderer.setDirections(result);
-            const travelDuration = result.routes.map((e) => {
-              return e.legs;
-            });
+            // const travelDuration = result.routes.map((e) => {
+            //   return e.legs;
+            // });
 
-            props.setResult(travelDuration);
+            // props.setResult(travelDuration);
             directionsRenderer.setPanel(document.getElementById('sidebar'));
           } else console.log('something wrong');
         });
@@ -158,11 +124,11 @@ function DayMapCard(props) {
           if (result.status === 'OK') {
             directionsRenderer.setDirections(result);
 
-            const travelDuration = result.routes.map((e) => {
-              return e.legs;
-            });
+            // const travelDuration = result.routes.map((e) => {
+            //   return e.legs;
+            // });
 
-            props.setResult(travelDuration);
+            // props.setResult(travelDuration);
             directionsRenderer.setPanel(sideRouteRef.current);
           } else console.log('something wrong');
         });
@@ -183,7 +149,7 @@ function DayMapCard(props) {
           />
         </MapContainer>
       )}
-      {hasMarker && <Marker position={markerPosition} />}
+      {/* {hasMarker && <Marker position={markerPosition} />} */}
 
       <PanelContainer id="sidebar" ref={sideRouteRef}></PanelContainer>
     </DayMapContainer>

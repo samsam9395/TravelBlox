@@ -10,6 +10,16 @@
   font-weight: 600;
 }
 
+@media (max-width: 768px) {
+  .rbc-toolbar {
+    flex-direction: column;
+  }
+
+  .rbc-toolbar-label {
+    padding: 15px 10px !important;
+  }
+}
+
 .rbc-agenda-time-cell {
   color: #e7ac81;
 }
