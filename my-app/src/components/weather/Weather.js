@@ -163,10 +163,7 @@ const SubInfoTitle = styled.div`
 const DailyWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
-  /* background: ${themeColours.light_blue}; */
   padding: 10px 0;
-  /* border-radius: 0 0 10px 10px; */
-
   border: 2px solid #e7ac81;
   border-radius: 0 0 70px 0;
   border-top: 0;
@@ -201,17 +198,7 @@ const DailyDate = styled.div`
 const AnimationContainer = styled.div`
   width: 100%;
   height: 110px;
-  /* position: absolute; */
-  /* left: 50%;
-  top: 50%;
-  margin: -65px -360px; */
 `;
-
-// const OuterDeco = styled.div`
-//   width: 257px;
-//   height: 300px;
-//   border-radius: 70px 0 70px 0;
-// `;
 
 function Weather({ lat, lng }) {
   const [weatherData, setWeatherData] = useState(null);
@@ -224,7 +211,6 @@ function Weather({ lat, lng }) {
     switch (status) {
       case 'Clouds':
         return <div className="cloudy"></div>;
-        break;
       case 'Rain':
         return <div className="rainy"></div>;
       case 'Thunderstorm':
@@ -237,7 +223,6 @@ function Weather({ lat, lng }) {
         return <div className="snowy"></div>;
       default:
         return <div className="rainbow"></div>;
-        break;
     }
   }
 

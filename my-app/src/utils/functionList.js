@@ -8,6 +8,7 @@ import {
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -290,4 +291,22 @@ export function loopThroughDays(startday, days) {
     }
   }
   return scheduleTimestampList;
+}
+
+export async function deletePlan(planDocRef, currentUserId) {
+  const batch = writeBatch(db);
+  const plansRef = doc(db, 'plans', planDocRef);
+  const userInfoRef = doc(db, 'userId', currentUserId, 'own_plans', planDocRef);
+  const allPlansRef = doc(db, 'allPlans', planDocRef);
+
+  batch.delete(allPlansRef);
+  batch.delete(plansRef);
+  batch.delete(userInfoRef);
+
+  try {
+    await batch.commit();
+    return true;
+  } catch (error) {
+    console.log(error);
+  }
 }

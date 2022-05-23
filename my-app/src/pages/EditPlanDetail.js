@@ -10,12 +10,13 @@ import {
   themeColours,
 } from '../styles/globalTheme';
 import React, { useContext, useEffect, useState } from 'react';
-import { doc, getDoc, writeBatch } from 'firebase/firestore';
 import {
+  deletePlan,
   listenToSnapShot,
   saveToDataBase,
   uploadImagePromise,
 } from '../utils/functionList';
+import { doc, getDoc } from 'firebase/firestore';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -121,30 +122,6 @@ function EditPlanDetail() {
   const currentUserId = useContext(UserContext)?.userEmail;
   const navigate = useNavigate();
 
-  async function deletePlan(planDocRef, currentUserId) {
-    const batch = writeBatch(db);
-    const plansRef = doc(db, 'plans', planDocRef);
-    const userInfoRef = doc(
-      db,
-      'userId',
-      currentUserId,
-      'own_plans',
-      planDocRef
-    );
-    const allPlansRef = doc(db, 'allPlans', planDocRef);
-
-    batch.delete(allPlansRef);
-    batch.delete(plansRef);
-    batch.delete(userInfoRef);
-
-    try {
-      await batch.commit();
-      return true;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
     if (planAuthor) {
       if (currentUserId) {
@@ -185,8 +162,6 @@ function EditPlanDetail() {
 
   useEffect(async () => {
     listenToSnapShot(planDocRef, setMyEvents);
-    // const newEventList = await listenToSnapShot(planDocRef);
-    // setMyEvents(newEventList);
   }, []);
 
   useEffect(() => {
@@ -297,7 +272,7 @@ function EditPlanDetail() {
           <PlanCalendar
             setMyEvents={setMyEvents}
             myEvents={myEvents}
-            setShowEditPopUp={setShowEditPopUp}
+            toggleShowEditPopUp={() => setShowEditPopUp(true)}
             setCurrentSelectTimeData={setCurrentSelectTimeData}
             startDateValue={startDateValue}
           />

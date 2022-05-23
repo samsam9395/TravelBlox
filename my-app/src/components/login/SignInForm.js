@@ -32,7 +32,7 @@ SignInForm.propTypes = {
   toggleShowSignUp: PropTypes.func,
   email: PropTypes.string,
   password: PropTypes.string,
-  showPassword: PropTypes.func,
+  showPassword: PropTypes.bool,
 };
 
 function SignInForm({

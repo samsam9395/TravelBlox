@@ -78,7 +78,6 @@ function Header() {
         }
 
         if (window.scrollY == 0) {
-          //user scrolled to the top of the page
           setBackgroundColour('transparent');
         }
       } else if (onLandingPage) {

@@ -186,21 +186,21 @@ const SearchInputMUI = styled(TextField)({
     opacity: 1,
   },
   '& .MuiInputBase-input': {
-    color: 'black', // Text color
+    color: 'black',
   },
   '& .MuiInput-underline:before': {
-    borderBottomColor: '#fff8', // Semi-transparent underline
+    borderBottomColor: '#fff8',
   },
   '& .MuiInput-underline:hover:after': {
-    borderBottomColor: themeColours.light_blue, // Solid underline on hover
+    borderBottomColor: themeColours.light_blue,
   },
   '& .MuiInput-underline:after': {
-    borderBottomColor: themeColours.light_blue, // Solid underline on focus
+    borderBottomColor: themeColours.light_blue,
   },
   '.css-1a1fmpi-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled):before':
     {
       borderBottomColor: '#fff8',
-    }, //.css-1a1fmpi-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled):before
+    },
 });
 
 function SkyMainImg({ inputValue, setInputValue }) {

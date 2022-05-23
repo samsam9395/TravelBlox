@@ -12,15 +12,9 @@ import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 
-const DateTitle = styled.div`
-  font-weight: 600;
-  font-size: 14px;
-`;
-
 const SingleDayWrapper = styled.div`
   display: flex;
   margin-bottom: 60px;
-  /* height: 2000px; */
   flex-direction: column;
 `;
 
@@ -28,10 +22,7 @@ const CalendarIndiWrapper = styled.div`
   width: 100%;
   height: 500px;
   display: flex;
-
   margin-right: 35px;
-  /* max-width: 750px; */
-  /* flex-grow: 2; */
 `;
 
 const DayScheduleContainer = styled.div`
@@ -92,7 +83,6 @@ export default function DayCalendar({ planDocRef, currentDayDate }) {
               endAccessor="end"
               defaultView={Views.WEEK}
               onSelectEvent={handleSelectEvent}
-              // toolbar={false}
             />
           ) : (
             <BeatLoader color={themeColours.milktea} size={8}></BeatLoader>

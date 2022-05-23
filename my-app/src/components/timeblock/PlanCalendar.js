@@ -11,13 +11,13 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
 
-// setImportData={setImportData}
-// setMyEvents={setMyEvents}
-// myEvents={myEvents}
-// setShowEditPopUp={setShowEditPopUp}
-// setCurrentSelectTimeData={setCurrentSelectTimeData}
-// setCurrentSelectTimeId={setCurrentSelectTimeId}
-// startDateValue={startDateValue}
+PlanCalendar.propTypes = {
+  myEvents: PropTypes.string,
+  startDateValue: PropTypes.string,
+  setMyEvents: PropTypes.func,
+  setCurrentSelectTimeData: PropTypes.func,
+};
+
 function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
   //resize and dragable
   const { defaultDate, scrollToTime } = useMemo(
@@ -38,13 +38,8 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
   };
 
   const handleSelectEvent = useCallback((event) => {
-    if (event.status === 'imported') {
-      props.setCurrentSelectTimeData(event);
-      props.setShowEditPopUp(true);
-    } else {
-      props.setCurrentSelectTimeData(event);
-      props.setShowEditPopUp(true);
-    }
+    props.setCurrentSelectTimeData(event);
+    props.toggleShowEditPopUp();
   });
 
   return (

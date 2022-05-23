@@ -10,9 +10,6 @@
   height: 140px;
   width: 20px;
   margin-left: 45%;
-  // position: absolute;
-  // left: 90px;
-  // top: 20px;
 }
 .sunny:before {
   background: -webkit-linear-gradient(
@@ -61,10 +58,6 @@
   width: 50px;
   margin-left: 27%;
   margin-top: 20%;
-  // margin-left: -77px;
-  // position: relative;
-  // left: 255px;
-  // top: 70px;
 }
 .cloudy:after {
   animation: cloudy_shadow 5s ease-in-out infinite;
@@ -74,7 +67,6 @@
   height: 15px;
   width: 120px;
   opacity: 0.2;
-  // position: relative;
   left: 5px;
   bottom: -60px;
   transform: scale(0.7);
@@ -103,9 +95,6 @@
   width: 50px;
   margin-left: 27%;
   margin-top: 20%;
-  // position: absolute;
-  // left: 427px;
-  // top: 70px;
 }
 .rainy:after {
   animation: rainy_shadow 5s ease-in-out infinite 1s;
@@ -115,7 +104,6 @@
   height: 15px;
   width: 120px;
   opacity: 0.2;
-  // position: absolute;
   left: 5px;
   bottom: -60px;
   transform: scale(0.7);
@@ -196,9 +184,6 @@
   width: 70px;
   margin-left: 37%;
   margin-top: 20%;
-  // position: absolute;
-  // left: 610px;
-  // top: 71px;
   transform: rotate(40deg);
 }
 .rainbow:after {
@@ -209,7 +194,6 @@
   opacity: 0.2;
   height: 15px;
   width: 120px;
-  // position: absolute;
   bottom: -23px;
   left: 17px;
   transform: rotate(-40deg);
@@ -244,7 +228,6 @@
   width: 4px;
   margin-left: -10px;
   opacity: 1;
-  // position: absolute;
   left: 777px;
   top: 150px;
 }
@@ -255,8 +238,6 @@
   content: '';
   height: 100px;
   width: 100px;
-  // position: absolute;
-  // top: -106px;
   transform: rotate(-5deg);
   transform-origin: 0 50%;
 }
@@ -290,9 +271,6 @@
   width: 50px;
   margin-left: 27%;
   margin-top: 20%;
-  // position: absolute;
-  // left: 947px;
-  // top: 70px;
 }
 .stormy:after {
   animation: stormy_shadow 5s ease-in-out infinite;
@@ -302,7 +280,6 @@
   height: 15px;
   width: 120px;
   opacity: 0.2;
-  // position: absolute;
   left: 5px;
   bottom: -60px;
   transform: scale(0.7);
@@ -317,9 +294,6 @@
   display: block;
   height: 0;
   width: 0;
-  // position: absolute;
-  // left: 57px;
-  // top: 70px;
   margin-left: 40px;
   margin-top: 33%;
   transform: rotate(14deg);
@@ -367,9 +341,6 @@
   width: 50px;
   margin-left: 27%;
   margin-top: 20%;
-  // position: absolute;
-  // left: 1112px;
-  // top: 70px;
 }
 .snowy:after {
   animation: snowy_shadow 5s ease-in-out infinite 1s;
@@ -379,7 +350,6 @@
   height: 15px;
   width: 120px;
   opacity: 0.2;
-  // position: absolute;
   left: 8px;
   bottom: -60px;
   transform: scale(0.7);
@@ -449,30 +419,3 @@
       #eeeeee 90px 35px;
   }
 }
-
-// body {
-//   font-family: sans-serif;
-//   background: #00bbff;
-//   margin: 0;
-// }
-// h1 {
-//   text-align: center;
-//   font-weight: 400;
-//   position: absolute;
-//   width: 100%;
-//   font-size: 15px;
-//   top: 50%;
-//   margin-top: -130px;
-//   opacity: 0.6;
-//   letter-spacing: 6px;
-// }
-
-// .container {
-//   transform: scale(0.9);
-//   width: 210px;
-//   position: absolute;
-//   height: 210px;
-//   left: 50%;
-//   top: 50%;
-//   margin: -65px -360px;
-// }

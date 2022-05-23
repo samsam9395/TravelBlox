@@ -49,8 +49,6 @@ function Allplans(props) {
   const userInfo = useContext(UserContext);
   const navigate = useNavigate();
 
-  console.log(userInfo);
-
   useEffect(() => {
     if (!userInfo) {
       navigate('/');

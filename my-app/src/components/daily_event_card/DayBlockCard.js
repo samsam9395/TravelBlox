@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 
 import DayMapCard from './DayMapCard';
+import PropTypes from 'prop-types';
 import Weather from '../weather/Weather';
 import firebaseDB from '../../utils/firebaseConfig';
 import styled from 'styled-components';
@@ -37,16 +38,13 @@ const LeftWrapper = styled.div`
 
 const MapIndivWrapper = styled.div`
   display: flex;
-  width: 100%;
+  width: 900px;
   height: 400px;
   overflow: hidden;
-`;
 
-const CalendarIndiWrapper = styled.div`
-  width: 100%;
-  height: 400px;
-  display: flex;
-  margin-right: 35px;
+  @media (max-width: 768px) {
+    min-width: 300px;
+  }
 `;
 
 const RightWrapper = styled.div`
@@ -132,17 +130,17 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
   return eventByDayList;
 }
 
-// timelineRefArray={timelineRefArray}
-// itemEls={itemEls}
-// currentDayDate={day}
-// planDocRef={planDocRef}
-// index={index}
-// showTab={showTab}
+DayBlockCard.propTypes = {
+  currentDayDate: PropTypes.instanceOf(Date),
+  planDocRef: PropTypes.string,
+  index: PropTypes.number,
+  showTab: PropTypes.string,
+  itemEls: PropTypes.instanceOf(Element),
+  timelineRefArray: PropTypes.instanceOf(Element),
+};
+
 function DayBlockCard(props) {
   const [dayEvents, setDayEvents] = useState([]);
-  const [hasReturned, setHasReturned] = useState(false);
-  const [dayTimeBlocks, setDayTimeBlocks] = useState([]);
-  const [result, setResult] = useState(null);
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
 
@@ -159,7 +157,6 @@ function DayBlockCard(props) {
     CalendarByDay(blocksListRef, props.currentDayDate)
       .then((eventList) => {
         setDayEvents(eventList);
-        setHasReturned(true);
         if (eventList[0].place_lat) {
           setLat(eventList[0].place_lat);
           setLng(eventList[0].place_lng);
@@ -171,22 +168,6 @@ function DayBlockCard(props) {
         console.log(error);
       });
   }, [props.currentDayDate]);
-
-  useEffect(() => {
-    dayEvents.forEach((block) => {
-      setDayTimeBlocks((prev) => [
-        ...prev,
-        {
-          start: new Date(block.start.seconds * 1000),
-          end: new Date(block.end.seconds * 1000),
-          title: block.title,
-          id: block.id,
-          address: block.address,
-          text: block.text,
-        },
-      ]);
-    });
-  }, [hasReturned]);
 
   function changeTimelineEnterColor(timelineRefArray, index) {
     const enteredElement = timelineRefArray.current[0].current[index];
@@ -263,7 +244,7 @@ function DayBlockCard(props) {
         </DayTitle>
         <SingleDayWrapper>
           <MapIndivWrapper>
-            <DayMapCard dayEvents={dayEvents} setResult={setResult} />
+            <DayMapCard dayEvents={dayEvents} />
           </MapIndivWrapper>
         </SingleDayWrapper>
       </MainWrapper>

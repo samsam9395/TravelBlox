@@ -88,7 +88,6 @@ function Timeline({ NumofDays, RefList, timelineRefArray, stopTimelineNav }) {
   }, []);
 
   return (
-    // <Container>
     <DayBox>
       <Day>Day</Day>
       {[...Array(NumofDays)].map((e, index) => (
@@ -108,7 +107,6 @@ function Timeline({ NumofDays, RefList, timelineRefArray, stopTimelineNav }) {
         </NumberofDay>
       ))}
     </DayBox>
-    // </Container>
   );
 }
 

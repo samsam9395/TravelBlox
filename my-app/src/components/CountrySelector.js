@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
+import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import { themeColours } from '../styles/globalTheme';
 
-// setCountry={setCountry} setIsLoading={setIsLoading}
+CountrySelector.propTypes = {
+  setCountry: PropTypes.func,
+  country: PropTypes.object,
+  planTitle: PropTypes.string,
+};
+
 export default function CountrySelector(props) {
-  // const [country, setCountry] = useState('');
   const [countryList, setCountryList] = useState([{ label: '' }]);
   const [displayValue, setDisplayValue] = useState({});
 

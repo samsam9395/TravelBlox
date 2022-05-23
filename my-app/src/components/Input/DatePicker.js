@@ -15,12 +15,6 @@ DatePicker.propTypes = {
   startInitDateValue: PropTypes.number || PropTypes.instanceOf(Date),
 };
 
-// setStartDateValue={setStartDateValue}
-// setEndDateValue={setEndDateValue}
-// startDateValue={startDateValue}
-// endDateValue={endDateValue}
-// endInitDateValue={endInitDateValue}
-// startInitDateValue={startInitDateValue}
 function DatePicker(props) {
   const [state, setState] = useState([
     {
