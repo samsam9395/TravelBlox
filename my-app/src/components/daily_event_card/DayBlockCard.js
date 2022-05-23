@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { fonts, themeColours } from '../../styles/globalTheme';
 
 import DayMapCard from './DayMapCard';
 import PropTypes from 'prop-types';
 import Weather from '../weather/Weather';
 import firebaseDB from '../../utils/firebaseConfig';
 import styled from 'styled-components';
-import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -74,7 +74,7 @@ const DayTitle = styled.div`
   scroll-margin-top: 65px;
   font-size: 36px;
   font-weight: 600;
-  font-family: 'Oswald', sans-serif;
+  font-family: ${fonts.secondary_font}, sans-serif;
   margin-bottom: 50px;
   color: ${themeColours.light_orange};
   display: flex;

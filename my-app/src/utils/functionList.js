@@ -22,7 +22,7 @@ import firebaseDB from '../utils/firebaseConfig';
 
 const db = firebaseDB();
 
-export async function uploadImagePromise(imgFile) {
+export function uploadImagePromise(imgFile) {
   const reader = new FileReader();
   reader.readAsDataURL(imgFile);
 

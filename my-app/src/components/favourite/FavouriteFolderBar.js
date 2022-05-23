@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { fonts, themeColours } from '../../styles/globalTheme';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditFavFolderSelector from './EditFavFolderSelector';
@@ -9,7 +10,6 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
 import styled from 'styled-components';
-import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
 
@@ -65,7 +65,7 @@ const FolderContainer = styled.div`
   .new_folder_name_input {
     width: 60%;
     font-size: 22px;
-    font-family: 'Oswald', sans-serif;
+    font-family: ${fonts.secondary_font}, sans-serif;
     text-align: center;
     border: 0;
     border-bottom: 1px solid grey;
@@ -93,7 +93,7 @@ const AddNewPlanButton = styled.button`
   border: none;
   background-color: ${themeColours.light_blue};
   border-radius: 15px;
-  font-family: 'Oswald', sans-serif;
+  font-family: ${fonts.secondary_font}, sans-serif;
   font-size: 20px;
   color: white;
   &:hover {

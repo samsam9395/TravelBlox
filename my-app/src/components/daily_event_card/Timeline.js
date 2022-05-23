@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import { fonts, themeColours } from '../../styles/globalTheme';
 
 import styled from 'styled-components';
-import { themeColours } from '../../styles/globalTheme';
 
 const Container = styled.div`
   margin-right: 15px;
@@ -17,7 +17,7 @@ const DayBox = styled.div`
   align-items: flex-start;
   font-size: 20px;
   letter-spacing: 0.4px;
-  font-family: 'Oswald', sans-serif;
+  font-family: ${fonts.secondary_font}, sans-serif;
   position: sticky;
   height: 200px;
   width: 100px;

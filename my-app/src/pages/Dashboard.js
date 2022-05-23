@@ -189,7 +189,7 @@ const LogoutContainer = styled.div`
 const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  font-family: 'Oswald', sans-serif;
+  font-family: ${fonts.secondary_font}, sans-serif;
 
   .section_wrapper {
     display: flex;

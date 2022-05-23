@@ -1,6 +1,6 @@
 import '../styles/libraryStyles.scss';
 
-import { LightOrangeBtn, themeColours } from '../styles/globalTheme';
+import { LightOrangeBtn, fonts, themeColours } from '../styles/globalTheme';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import styled, { css, keyframes } from 'styled-components';
@@ -217,18 +217,19 @@ const PlanMainImage = styled.div`
 
 const PlanTitleText = styled.div`
   width: 55%;
-  font-family: 'Gellatio';
+  font-family: ${fonts.handwriting}, ${fonts.main_font};
   position: absolute;
-  font-weight: 800;
   left: 0%;
   top: 20%;
-  font-size: clamp(35px, 3vw, 55px);
-  letter-spacing: 3px;
+  /* font-size: clamp(95px, 5vw, 105px); */
+  /* font-size: clamp(129px, 5vw, 105px); */
+  font-size: clamp(60px, 4vw, 105px);
+  letter-spacing: 5px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
 
   .location_text {
-    font-family: 'Gellatio';
+    font-family: ${fonts.handwriting}, ${fonts.main_font};
     font-weight: 400;
     letter-spacing: 1px;
     text-shadow: none;
@@ -306,7 +307,7 @@ const SwitchTab = styled.div`
 
 const ToTopScroll = styled.div`
   letter-spacing: 3px;
-  font-family: 'Oswald', sans-serif;
+  font-family: ${fonts.secondary_font}, ${fonts.main_font}, sans-serif;
   font-size: 14px;
   float: right;
 `;

@@ -17,7 +17,7 @@ export const themeColours = {
 export const fonts = {
   main_font: 'Roboto',
   secondary_font: 'Oswald',
-  handwriting: 'Gellatio',
+  handwriting: 'Nafasyah',
 };
 
 export const LightOrangeBtn = styled.button`
@@ -30,7 +30,7 @@ export const LightOrangeBtn = styled.button`
   margin-top: ${(props) => props.marginTop};
   margin-bottom: ${(props) => props.marginBottom};
   color: white;
-  font-family: 'Roboto', sans-serif;
+  font-family: ${fonts.main_font}, sans-serif;
   font-size: ${(props) => props.fontSize || '14px'};
   width: ${(props) => props.width || 'auto'};
   &:hover {
@@ -55,7 +55,7 @@ export const LightBlueBtn = styled.button`
   background-color: ${themeColours.light_blue};
   margin: 5px;
   color: white;
-  font-family: 'Roboto', sans-serif;
+  font-family: ${fonts.main_font}, sans-serif;
   font-size: ${(props) => props.fontSize || '14px'};
   width: ${(props) => props.width || 'auto'};
   &:hover {
@@ -76,7 +76,7 @@ export const PaleBtn = styled.button`
   border: none;
   background-color: ${themeColours.pale};
   margin: 5px;
-  font-family: 'Roboto', sans-serif;
+  font-family: ${fonts.main_font}, sans-serif;
   font-size: 16px;
   &:hover {
     cursor: pointer;
@@ -92,7 +92,7 @@ export const PaleEmptyBtn = styled.button`
   border: 2px solid ${themeColours.pale};
   background-color: white;
   margin: 5px;
-  font-family: 'Roboto', sans-serif;
+  font-family: ${fonts.main_font}, sans-serif;
   font-size: 16px;
   color: ${themeColours.light_grey};
   &:hover {
