@@ -11,8 +11,14 @@ DatePicker.propTypes = {
   setEndDateValue: PropTypes.func,
   startDateValue: PropTypes.instanceOf(Date),
   endDateValue: PropTypes.instanceOf(Date),
-  endInitDateValue: PropTypes.number || PropTypes.instanceOf(Date),
-  startInitDateValue: PropTypes.number || PropTypes.instanceOf(Date),
+  endInitDateValue: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.instanceOf(Date),
+  ]),
+  startInitDateValue: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.instanceOf(Date),
+  ]),
 };
 
 function DatePicker(props) {

@@ -113,8 +113,8 @@ function EditPlanDetail() {
   const [currentSelectTimeData, setCurrentSelectTimeData] = useState('');
   const [startDateValue, setStartDateValue] = useState(null);
   const [endDateValue, setEndDateValue] = useState(null);
-  const [startInitDateValue, setStartInitDateValue] = useState(0);
-  const [endInitDateValue, setEndInitDateValue] = useState(0);
+  const [startInitDateValue, setStartInitDateValue] = useState(null);
+  const [endInitDateValue, setEndInitDateValue] = useState(null);
   const [showFavContainer, setShowFavContainer] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);

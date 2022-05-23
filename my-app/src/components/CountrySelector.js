@@ -8,7 +8,7 @@ import { themeColours } from '../styles/globalTheme';
 
 CountrySelector.propTypes = {
   setCountry: PropTypes.func,
-  country: PropTypes.object,
+  country: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   planTitle: PropTypes.string,
 };
 

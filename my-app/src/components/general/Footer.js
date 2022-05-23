@@ -6,8 +6,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  /* position: fixed; */
-  /* bottom: 0; */
   background-color: black;
   color: white;
   height: 60px;
@@ -20,12 +18,6 @@ const Title = styled.div`
   letter-spacing: 2px;
   margin-bottom: 10px;
 `;
-
-// const SubTitle = styled.div`
-//   font-size: 12px;
-//   text-align: center;
-//   margin-bottom: 30px;
-// `;
 
 const Rights = styled.div`
   font-size: 12px;

@@ -98,8 +98,6 @@ OwnPlanCard.propTypes = {
   userIdentity: PropTypes.string,
 };
 
-// props.ownPlanId
-// props.userIdentity
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
   const [doImport, setDoimport] = useState(false);

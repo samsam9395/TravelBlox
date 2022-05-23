@@ -45,7 +45,6 @@ export default function DayCalendar({ planDocRef, currentDayDate }) {
   useEffect(async () => {
     if (planDocRef) {
       const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
-
       const allTimeBlocks = await getDocs(blocksListRef);
       allTimeBlocks.docs.forEach((e) => {
         const block = e.data();
