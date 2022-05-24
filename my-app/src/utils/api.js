@@ -91,3 +91,25 @@ export const getWeather = async (lat, lon) => {
     console.log(error);
   }
 };
+
+export async function getGooglePlaceDetail(placeId, ref) {
+  console.log(ref);
+  if (ref) {
+    const service = new window.google.maps.places.PlacesService(ref);
+
+    var request = {
+      placeId: 'ChIJN1t_tDeuEmsRUsoyG83frY4',
+      fields: ['name', 'rating', 'formatted_phone_number', 'geometry'],
+    };
+
+    console.log(33, service.getDetails());
+    service.getDetails(request, (place, status) => {
+      if (
+        status === window.google.maps.places.PlacesServiceStatus.OK &&
+        place
+      ) {
+        console.log(place);
+      }
+    });
+  }
+}

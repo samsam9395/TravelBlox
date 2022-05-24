@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { checkImg, getGooglePlaceDetail } from '../utils/api';
 
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import StarRateIcon from '@mui/icons-material/StarRate';
@@ -7,7 +8,6 @@ import { themeColours } from '../styles/globalTheme';
 
 const CardWrapper = styled.div`
   width: 100%;
-  /* max-width: 500px; */
   max-height: 500px;
   display: flex;
   flex-direction: row;
@@ -62,7 +62,6 @@ const ATag = styled.a`
 `;
 
 const Tag = styled.div`
-  /* min-width: 60px; */
   border-radius: 15px;
   border: none;
   background-color: ${themeColours.lighter_blue};
@@ -77,11 +76,28 @@ const StarContainer = styled.div`
   padding: 0 10px;
 `;
 
+const getPlaceDetails = () => {
+  let map = new window.google.maps.Map(document.createElement('div'));
+  return new Promise(function (resolve, reject) {
+    let placesService = new window.google.maps.places.PlacesService(map);
+    placesService.getDetails(
+      {
+        placeId: 'ChIJUZ-WfXKpQjQR0j4ggToD89A',
+        fields: ['photos'],
+      },
+      (place) => {
+        resolve(place);
+        console.log(place);
+      }
+    );
+  });
+};
+
 export default function LocationCard(props) {
   const [mainImg, setMainImg] = useState('');
   const [locationTypes, setLocationTypes] = useState([]);
   const [location, setLocation] = useState({});
-
+  const ref = useRef(null);
   useEffect(() => {
     if (props.location) {
       setLocation(props.location);
@@ -89,10 +105,17 @@ export default function LocationCard(props) {
   }, [props]);
 
   useEffect(() => {
+    console.log(44, location);
+    // checkImg(location.mainImg);
+
+    getPlaceDetails();
+
     if (location.mainImg) {
+      console.log('111, location mainImg', location.mainImg);
       setMainImg(location.mainImg);
     } else if (location.photos) {
       setMainImg(location.photos[0].getUrl());
+      console.log('url of img', location.photos[0].getUrl());
     } else if (location.place_img) {
       setMainImg(location.place_img);
       setLocationTypes(location.place_types);
@@ -103,11 +126,18 @@ export default function LocationCard(props) {
     }
   }, [location]);
 
+  useEffect(async () => {
+    const data = await fetch(
+      `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=Aap_uEA7vb0DDYVJWEaX3O-AtYp77AaswQKSGtDaimt3gt7QCNpdjp1BkdM6acJ96xTec3tsV_ZJNL_JP-lqsVxydG3nh739RE_hepOOL05tfJh2_ranjMadb3VoBYFvF0ma6S24qZ6QJUuV6sSRrhCskSBP5C1myCzsebztMfGvm7ij3gZT&key=AIzaSyAclJIAm-8LUEgGfbnL4fS9KiIHbg1ZR8k`
+    );
+
+    console.log(333, data);
+  }, []);
+
   return (
     Object.keys(location).length !== 0 && (
-      <CardWrapper>
+      <CardWrapper ref={ref}>
         <MainImage src={mainImg}></MainImage>
-
         <InfoWrapper>
           <InfoContainer>
             <InfoTitle>Name:</InfoTitle>

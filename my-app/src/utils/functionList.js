@@ -196,7 +196,6 @@ export function renameGoogleMaDataIntoFirebase(location, placeId) {
     place_types: location.types || '',
     place_lat: location.geometry.location.lat(),
     place_lng: location.geometry.location.lng(),
-    place_types: location.types || '',
   };
 }
 
@@ -309,4 +308,21 @@ export async function deletePlan(planDocRef, currentUserId) {
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function getAutoCompleteData(
+  autocompleteInputRef,
+  handleDataCallback
+) {
+  const autocomplete = new window.google.maps.places.Autocomplete(
+    autocompleteInputRef
+  );
+  autocomplete.addListener('place_changed', () => {
+    const place = autocomplete.getPlace();
+    console.log(12, place);
+    handleDataCallback(place);
+  });
+
+  const place2 = autocomplete.getPlace();
+  console.log(12, place2);
 }
