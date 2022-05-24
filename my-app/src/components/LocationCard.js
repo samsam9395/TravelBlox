@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { checkImg, getGooglePlaceDetail } from '../utils/api';
 
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import StarRateIcon from '@mui/icons-material/StarRate';
@@ -7,7 +8,6 @@ import { themeColours } from '../styles/globalTheme';
 
 const CardWrapper = styled.div`
   width: 100%;
-  /* max-width: 500px; */
   max-height: 500px;
   display: flex;
   flex-direction: row;
@@ -62,7 +62,6 @@ const ATag = styled.a`
 `;
 
 const Tag = styled.div`
-  /* min-width: 60px; */
   border-radius: 15px;
   border: none;
   background-color: ${themeColours.lighter_blue};
@@ -81,7 +80,7 @@ export default function LocationCard(props) {
   const [mainImg, setMainImg] = useState('');
   const [locationTypes, setLocationTypes] = useState([]);
   const [location, setLocation] = useState({});
-
+  const ref = useRef(null);
   useEffect(() => {
     if (props.location) {
       setLocation(props.location);
@@ -89,10 +88,15 @@ export default function LocationCard(props) {
   }, [props]);
 
   useEffect(() => {
+    console.log(44, location);
+    checkImg(location.mainImg);
+
     if (location.mainImg) {
+      console.log('111, location mainImg', location.mainImg);
       setMainImg(location.mainImg);
     } else if (location.photos) {
       setMainImg(location.photos[0].getUrl());
+      console.log('url of img', location.photos[0].getUrl());
     } else if (location.place_img) {
       setMainImg(location.place_img);
       setLocationTypes(location.place_types);
@@ -103,11 +107,15 @@ export default function LocationCard(props) {
     }
   }, [location]);
 
+  // useEffect(() => {
+  //   getGooglePlaceDetail(ref.current);
+  // }, [ref.current]);
+  // console.log(ref);
+
   return (
     Object.keys(location).length !== 0 && (
-      <CardWrapper>
+      <CardWrapper ref={ref}>
         <MainImage src={mainImg}></MainImage>
-
         <InfoWrapper>
           <InfoContainer>
             <InfoTitle>Name:</InfoTitle>

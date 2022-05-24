@@ -1,23 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
+import { getAutoCompleteData } from '../utils/functionList';
 import { themeColours } from '../styles/globalTheme';
+
+SearchInput.propTypes = {
+  setLocation: PropTypes.func,
+  locationName: PropTypes.string,
+};
 
 function SearchInput(props) {
   const [inputLocationValue, setInputLocationValue] = useState('');
 
   const ref = useRef(null);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (ref.current) {
-      const autocomplete = new window.google.maps.places.Autocomplete(
-        ref.current
+      const googleLocationData = await getAutoCompleteData(
+        ref.current,
+        props.setLocation
       );
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        props.setLocation(place);
-        setInputLocationValue(place.name);
-      });
+      props.setLocation(googleLocationData);
+      setInputLocationValue(googleLocationData.name);
     }
   }, [ref, props.setLocation]);
 

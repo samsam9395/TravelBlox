@@ -91,3 +91,37 @@ export const getWeather = async (lat, lon) => {
     console.log(error);
   }
 };
+
+export async function getGooglePlaceDetail(placeId, ref) {
+  console.log(ref);
+  if (ref) {
+    const service = new window.google.maps.places.PlacesService(ref);
+
+    var request = {
+      placeId: 'ChIJN1t_tDeuEmsRUsoyG83frY4',
+      fields: ['name', 'rating', 'formatted_phone_number', 'geometry'],
+    };
+
+    console.log(33, service.getDetails());
+    service.getDetails(request, (place, status) => {
+      if (
+        status === window.google.maps.places.PlacesServiceStatus.OK &&
+        place
+      ) {
+        console.log(place);
+      }
+    });
+  }
+}
+
+export async function checkImg(imgURL) {
+  try {
+    const data = await axios.get(
+      'https://maps.googleapis.com/maps/api/place/js/PhotoService.GetPhoto?1sAap_uEAWXzkWzauzq6gWK4qHHXeNp8WxkAgYSLcqMrqYgYUV7f1n3xF2LqgYBg-622BG9JS0BC-bY8uF9G06Tv5rjB9jgCH9IaDISa06tysSuFqk860bXm37s2ah1tXLywaK7DECBHb9mGDcNoIpF423dYJMEJZCmx-eqNs-nQZZRqsRUZEQ&3u6528&5m1&2e1&callback=none&key=AIzaSyAclJIAm-8LUEgGfbnL4fS9KiIHbg1ZR8k&token=73573'
+    );
+    console.log(555, data);
+  } catch (error) {
+    console.log(555, error.code);
+    console.log(555, error);
+  }
+}
