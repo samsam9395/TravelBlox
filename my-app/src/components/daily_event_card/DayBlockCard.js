@@ -38,7 +38,8 @@ const LeftWrapper = styled.div`
 
 const MapIndivWrapper = styled.div`
   display: flex;
-  width: 900px;
+  max-width: 900px;
+  width: 100%;
   height: 400px;
   overflow: hidden;
 

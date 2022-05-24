@@ -130,7 +130,7 @@ const UserInfoContainer = styled.div`
 
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
-  max-width: 90%;
+  width: 100%;
 
   @media (max-width: 768px) {
     max-width: 100%;
@@ -216,14 +216,12 @@ const PlanMainImage = styled.div`
 `;
 
 const PlanTitleText = styled.div`
-  width: 55%;
   font-family: ${fonts.handwriting}, ${fonts.main_font};
+  width: 55%;
   position: absolute;
-  left: 0%;
-  top: 20%;
-  /* font-size: clamp(95px, 5vw, 105px); */
-  /* font-size: clamp(129px, 5vw, 105px); */
-  font-size: clamp(60px, 4vw, 105px);
+  left: 2%;
+  top: -3%;
+  font-size: clamp(55px, 4vw, 105px);
   letter-spacing: 5px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
@@ -238,6 +236,7 @@ const PlanTitleText = styled.div`
     position: absolute;
     color: #fceebf;
     right: -44%;
+    text-shadow: 2px 1px ${themeColours.light_grey};
   }
 
   @media (max-width: 768px) {
