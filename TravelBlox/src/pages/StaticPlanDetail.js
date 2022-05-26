@@ -10,7 +10,7 @@ import DayCalendar from '../components/daily_event_card/DayCalendar';
 import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
 import FullLoading from '../components/general/FullLoading';
 import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
-import { ReactComponent as MilkTeaLeftCurveLine } from '../images/milktea_line_left.svg';
+import { ReactComponent as MilkTeaLeftCurveLineSVG } from '../images/static/milktea_line_left.svg';
 import Swal from 'sweetalert2';
 import Timeline from '../components/daily_event_card/Timeline';
 import { UserContext } from '../App';
@@ -47,13 +47,13 @@ const UpperContainer = styled.div`
   height: 500px;
   margin-bottom: 30px;
   position: relative;
+`;
 
-  .milktea_svg_left {
-    position: absolute;
-    right: 119px;
-    top: -150px;
-    z-index: -10;
-  }
+const MilkTeaLeftCurveLine = styled(MilkTeaLeftCurveLineSVG)`
+  position: absolute;
+  right: 119px;
+  top: -150px;
+  z-index: -10;
 `;
 
 const LowerContainer = styled.div`
@@ -488,7 +488,7 @@ function StaticPlanDetail() {
         />
       )}
       <UpperContainer>
-        <MilkTeaLeftCurveLine className="milktea_svg_left"></MilkTeaLeftCurveLine>
+        <MilkTeaLeftCurveLine />
         <PlanMainImageContainer>
           <PlanMainImage className="overlay" ref={planImageRef}>
             <img

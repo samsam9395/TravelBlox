@@ -5,37 +5,35 @@ import {
   themeColours,
 } from '../styles/globalTheme';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 
 import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
 import FullLoading from '../components/general/FullLoading';
 import { IconButton } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutMUIIcon from '@mui/icons-material/Logout';
+import { ReactComponent as MilkteaCurveLineSVG } from '../images/dashboard/right_milktea_curve_line.svg';
 import OwnPlanCard from '../components/dashboard/OwnPlanCard';
 import Swal from 'sweetalert2';
 import UploadIcon from '@mui/icons-material/Upload';
 import { UserContext } from '../App';
-import { ReactComponent as YourSvg } from '../images/right_milktea_curve_line.svg';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseService from '../utils/fireabaseService';
 import sparkle from '../images/dashboard/spark.png';
 import styled from 'styled-components';
 import { uploadImagePromise } from '../utils/functionList';
 import { useNavigate } from 'react-router-dom';
-
-const db = firebaseDB();
 
 const SvgWrapper = styled.div`
   position: fixed;
   right: 20px;
   top: 5px;
 
-  .milktea_svg_long {
-    position: fixed;
-    right: -31px;
-    top: 53px;
-  }
   z-index: -100;
+`;
+
+const MilkteaCurveLine = styled(MilkteaCurveLineSVG)`
+  position: fixed;
+  right: -31px;
+  top: 53px;
 `;
 
 const UpperPartBackground = styled.div`
@@ -70,31 +68,29 @@ const TopSectionWrapper = styled.div`
   position: relative;
   margin-bottom: 100px;
 
-  .sparkle_left {
-    position: absolute;
-    width: 29px;
-    top: 58%;
-    left: 10%;
-  }
-
-  .sparkle_left_small {
-    position: absolute;
-    width: 13px;
-    bottom: 21%;
-    left: 15%;
-  }
-
-  .sparkle_right {
-    position: absolute;
-    width: 24px;
-    top: 24%;
-    left: 25%;
-  }
-
   @media (max-width: 768px) {
     flex-direction: column;
     padding-bottom: 80px;
   }
+`;
+
+const SparkleLeft = styled.img`
+  position: absolute;
+  width: 29px;
+  top: 58%;
+  left: 10%;
+`;
+const SparkleLeftSmall = styled.img`
+  position: absolute;
+  width: 13px;
+  bottom: 21%;
+  left: 15%;
+`;
+const SparkleRight = styled.img`
+  position: absolute;
+  width: 24px;
+  top: 24%;
+  left: 25%;
 `;
 
 const UserInfoWrapper = styled.div`
@@ -103,29 +99,37 @@ const UserInfoWrapper = styled.div`
   align-items: center;
   height: 300px;
 
-  .user_info_container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 30px;
-  }
-
-  .greeting {
-    text-align: center;
-    display: flex;
-    margin-bottom: 20px;
-    font-size: 30px;
-    color: ${themeColours.light_orange};
-    font-weight: 600;
-  }
-
-  .user_id {
-    color: ${themeColours.dark_blue};
-  }
-
   @media (max-width: 768px) {
     padding: 0;
     height: 200px;
   }
+`;
+
+const UserInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+`;
+const Greeting = styled.div`
+  text-align: center;
+  display: flex;
+  margin-bottom: 20px;
+  font-size: 30px;
+  color: ${themeColours.light_orange};
+  font-weight: 600;
+`;
+
+const UserBasicInfo = styled.div`
+  color: ${themeColours.dark_blue};
+`;
+
+const UserImg = styled.img`
+  display: block;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: cover;
 `;
 
 const UserAvatarUpload = styled.div`
@@ -134,41 +138,28 @@ const UserAvatarUpload = styled.div`
   border-radius: 50%;
   background-color: grey;
   position: relative;
+`;
 
-  img {
-    display: none;
+const UserAvatarUploadIcon = styled.label`
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: rgb(0 0 0 / 12%);
   }
+`;
 
-  img[src] {
-    display: block;
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
-    border: none;
-    object-fit: cover;
-  }
-
-  .avatar_line {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    position: absolute;
-    left: -29px;
-    top: -23px;
-    border: 1px solid ${themeColours.orange_grey};
-    z-index: -10;
-  }
-
-  .upload_avatar_icon {
-    position: absolute;
-    bottom: 0;
-    right: -10px;
-    border-radius: 50%;
-
-    &:hover {
-      background-color: rgb(0 0 0 / 12%);
-    }
-  }
+const AvatarDecorateLine = styled.div`
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  position: absolute;
+  left: -29px;
+  top: -23px;
+  border: 1px solid ${themeColours.orange_grey};
+  z-index: -10;
 `;
 
 const LogoutContainer = styled.div`
@@ -180,10 +171,15 @@ const LogoutContainer = styled.div`
   &:hover {
     cursor: pointer;
   }
+`;
 
-  .icon {
-    margin-right: 5px;
-  }
+const LogoutIcon = styled(LogoutMUIIcon)`
+  margin-right: 5px;
+`;
+
+const SectionWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const SectionContainer = styled.div`
@@ -297,28 +293,30 @@ const DisplaySwitch = styled.div`
   bottom: -24px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 
-  .plan_tab {
-    min-width: 50%;
-    text-align: center;
-    flex-grow: 1;
-    padding: 14px 24px;
-    height: 100%;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      background-color: #dfd8d887;
-      cursor: pointer;
-    }
-  }
-
   .divider {
     color: ${themeColours.light_grey};
   }
   @media (max-width: 768px) {
     width: 70%;
+  }
+`;
+
+const Divider = styled.div``;
+
+const PlanTab = styled.div`
+  min-width: 50%;
+  text-align: center;
+  flex-grow: 1;
+  padding: 14px 24px;
+  height: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #dfd8d887;
+    cursor: pointer;
   }
 `;
 
@@ -362,68 +360,42 @@ function Dashboard() {
       Swal.fire('Please login first!');
       navigate('/');
     } else {
-      const ref = collection(db, 'userId', userInfo.userEmail, 'own_plans');
-      const plansList = await getDocs(ref);
-
-      if (plansList.docs.length === 0) {
-        setShowNoPlansText(true);
-      } else {
+      if (firebaseService.getOwnPlans(userInfo.userEmail)) {
         setShowNoPlansText(false);
-        const list = [];
-        plansList.forEach((plan) => {
-          list.push(plan.data().collection_id);
-        });
-
-        setOwnPlansIdList(list);
+        setOwnPlansIdList();
+      } else {
+        setShowNoPlansText(true);
       }
 
-      try {
-        const userDoc = await getDoc(doc(db, 'userId', userInfo.userEmail));
-        setUserImage(userDoc.data().userImage);
-        setUserName(userDoc.data().username);
-      } catch (error) {
-        console.log(error);
-      }
+      const userBasicInfo = await firebaseService.getUserBasicInfo(
+        userInfo.userEmail
+      );
+      setUserImage(userBasicInfo.userImage);
+      setUserName(userBasicInfo.username);
     }
   }, []);
-
-  function saveImgToDataBase(userImage) {
-    try {
-      setDoc(
-        doc(db, 'userId', userInfo.userEmail),
-        {
-          userImage: userImage,
-        },
-        { merge: true }
-      );
-
-      Swal.fire('Saved your image!');
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   return (
     <ContentWrapper>
       <Wrapper>
         <FullLoading opacity={loadindOpacity} />
         <SvgWrapper>
-          <UpperPartBackground></UpperPartBackground>
-          <YourSvg className="milktea_svg_long"></YourSvg>
+          <UpperPartBackground />
+          <MilkteaCurveLine />
         </SvgWrapper>
 
         <TopSectionWrapper>
-          <img className="sparkle_left" src={sparkle} alt="" />
-          <img className="sparkle_left_small" src={sparkle} alt="" />
-          <img className="sparkle_right" src={sparkle} alt="" />
+          <SparkleLeft src={sparkle} alt="decorate sparkle" />
+          <SparkleLeftSmall src={sparkle} alt="decorate sparkle" />
+          <SparkleRight src={sparkle} alt="decorate sparkle" />
 
           <UserInfoWrapper>
             <UserAvatarUpload
               onMouseEnter={() => setShowUserUploadIcon('visible')}
               onMouseLeave={() => setShowUserUploadIcon('hidden')}>
-              <img className="user_img" src={userImage} alt="" />
+              <UserImg src={userImage} alt="user image" />
 
-              <label htmlFor="user_avatar_file" className="upload_avatar_icon">
+              <UserAvatarUploadIcon htmlFor="user_avatar_file">
                 <input
                   style={{ display: 'none' }}
                   accept="image/*"
@@ -434,7 +406,10 @@ function Dashboard() {
                       e.target.files[0]
                     );
                     setUserImage(imageFile);
-                    saveImgToDataBase(imageFile);
+                    firebaseService.saveImgToDataBase(
+                      imageFile,
+                      userInfo.userEmail
+                    );
                   }}></input>
                 <IconButton
                   style={{
@@ -445,15 +420,15 @@ function Dashboard() {
                   component="div">
                   <UploadIcon style={{ color: themeColours.dark_blue }} />
                 </IconButton>
-              </label>
+              </UserAvatarUploadIcon>
 
-              <div className="avatar_line"></div>
+              <AvatarDecorateLine />
             </UserAvatarUpload>
 
-            <div className="user_info_container">
-              <div className="greeting">Hello!</div>
-              <div className="user_id">{userName}</div>
-              <div className="user_id">{userInfo?.userEmail}</div>
+            <UserInfoContainer>
+              <Greeting>Hello!</Greeting>
+              <UserBasicInfo>{userName}</UserBasicInfo>
+              <UserBasicInfo>{userInfo?.userEmail}</UserBasicInfo>
               <LogoutContainer
                 onClick={() => {
                   if (signOutFirebase()) {
@@ -461,9 +436,9 @@ function Dashboard() {
                   }
                   console.log(signOutFirebase());
                 }}>
-                <LogoutIcon className="icon"></LogoutIcon> Logout
+                <LogoutIcon></LogoutIcon> Logout
               </LogoutContainer>
-            </div>
+            </UserInfoContainer>
           </UserInfoWrapper>
           <LightOrangeBtn
             style={{
@@ -478,19 +453,17 @@ function Dashboard() {
             ADD NEW PLAN
           </LightOrangeBtn>
           <DisplaySwitch>
-            <div
-              className="plan_tab"
+            <PlanTab
               value="own_plan"
               onClick={(e) => setDisplaySection(e.target.textContent)}>
               My Plans
-            </div>
+            </PlanTab>
             <div className="divider">|</div>
-            <div
-              className="plan_tab"
+            <PlanTab
               value="fav_plan"
               onClick={(e) => setDisplaySection(e.target.textContent)}>
               Favourite Plans
-            </div>
+            </PlanTab>
           </DisplaySwitch>
         </TopSectionWrapper>
 
@@ -498,9 +471,10 @@ function Dashboard() {
 
         {displaySection === 'My Plans' && (
           <SectionContainer>
-            <div className="section_wrapper">
+            <SectionWrapper>
               <div className="section_title">Plans</div>
-            </div>
+            </SectionWrapper>
+
             <div className="sub_section">
               <div className="sub_section_wrapper">
                 <div className="section_wrapper">

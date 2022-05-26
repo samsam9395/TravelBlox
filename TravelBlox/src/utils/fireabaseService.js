@@ -324,6 +324,44 @@ const firebaseService = {
       return allPlans.docs.map((e) => e.data());
     }
   },
+  async getOwnPlans(userEmail) {
+    const ref = collection(db, 'userId', userEmail, 'own_plans');
+    const plansList = await getDocs(ref);
+
+    if (plansList.docs.length === 0) {
+      return false;
+    } else {
+      const list = [];
+      plansList.forEach((plan) => {
+        list.push(plan.data().collection_id);
+      });
+
+      return list;
+    }
+  },
+  async getUserBasicInfo(userEmail) {
+    try {
+      const userDoc = await getDoc(doc(db, 'userId', userEmail));
+      return userDoc.data();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  saveImgToDataBase(userImage, userEmail) {
+    try {
+      setDoc(
+        doc(db, 'userId', userEmail),
+        {
+          userImage: userImage,
+        },
+        { merge: true }
+      );
+
+      Swal.fire('Saved your image!');
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
 export default firebaseService;
