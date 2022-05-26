@@ -39,14 +39,14 @@ const TopContainer = styled.div`
   align-items: center;
 `;
 
+const TitleInstructionText = styled.div`
+  color: ${themeColours.light_grey};
+  font-size: 12px;
+`;
+
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
-
-  .instruction_text {
-    color: ${themeColours.light_grey};
-    font-size: 12px;
-  }
 `;
 
 const CalendarContainer = styled.div`
@@ -123,11 +123,11 @@ function AddNewPlan(props) {
 
   const userInfo = useContext(UserContext);
 
-  useEffect(() => {
-    if (addedTimeBlock) {
-      firebaseService.listenToSnapShot(planDocRef, setMyEvents);
-    }
-  }, [addedTimeBlock]);
+  // useEffect(() => {
+  //   if (addedTimeBlock) {
+  //     firebaseService.listenToSnapShot(planDocRef, setMyEvents);
+  //   }
+  // }, [addedTimeBlock]);
 
   useEffect(() => {
     if (userInfo.userEmail) {
@@ -198,9 +198,9 @@ function AddNewPlan(props) {
                   }
                   label="Published"
                 />
-                <div className="instruction_text">
+                <TitleInstructionText>
                   Checking this will make your travel plan public to others.
-                </div>
+                </TitleInstructionText>
               </>
             )}
           </TitleSection>
@@ -212,7 +212,7 @@ function AddNewPlan(props) {
               </EditableMainImageContainer>
             )}
 
-            <label htmlFor="icon-button-file" className="upload_icon">
+            <label htmlFor="icon-button-file">
               <Input
                 accept="image/*"
                 id="icon-button-file"
@@ -301,25 +301,27 @@ function AddNewPlan(props) {
           <ButtonContainer>
             <LightBlueBtn
               variant="contained"
-              onClick={() => {
+              onClick={async () => {
                 if (startDateValue && endDateValue && planTitle) {
                   if (mainImage === null || '') {
-                    mainImage = firebaseService.getDefaultImg();
-                  }
+                    const defaultImg = await firebaseService.getDefaultImg();
+                    setMainImage(defaultImg);
 
-                  if (
-                    firebaseService.createNewCollection(
-                      userInfo,
-                      username,
-                      startDateValue,
-                      endDateValue,
-                      planTitle,
-                      mainImage,
-                      country,
-                      isPublished
-                    )
-                  ) {
-                    setHasCreatedCollection(true);
+                    console.log(11, data);
+
+                    // if (
+                    //   firebaseService.createNewCollection(
+                    //     userInfo,
+                    //     username,
+                    //     startDateValue,
+                    //     endDateValue,
+                    //     planTitle,
+                    //     mainImage,
+                    //     country,
+                    //     isPublished
+                    //   )
+                    // ) {
+                    //   setHasCreatedCollection(true);
                   }
                 } else {
                   Swal.fire('Please provide the required fields!');
