@@ -1,0 +1,28 @@
+$light_orange: #e7ac81 !default;
+$darker_orange: #bb8c6b;
+$milktea: #e4d1b9;
+$pale: #fceebf !default;
+$lighter_blue: hsl(184, 23%, 80%) !default;
+$light_blue: #6ca5a9 !default;
+$light_grey: #80808087;
+$orange_grey: #d9c1b0;
+$dark_blue: #00213a !default;
+$my_black: #0e0e0f !default;
+
+.adp-placemark {
+  background: hsl(184, 23%, 80%) !important;
+  border: none !important;
+  border-radius: 10px;
+}
+
+.rdrStartEdge,
+.rdrInRange,
+.rdrEndEdge {
+  color: $light_orange !important;
+}
+
+.rdrDayToday {
+  ::after {
+    background: $light_blue;
+  }
+}
