@@ -1,7 +1,5 @@
 import { InputWrapper, SignUpSwitcher, Title } from './loginUIStyles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
 
 import IconButton from '@mui/material/IconButton';
 import { InputAdornment } from '@mui/material';
@@ -10,28 +8,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Swal from 'sweetalert2';
 import TextField from '@material-ui/core/TextField';
-import { addNewUserToDataBase } from '../../utils/functionList';
-import firebaseDB from '../../utils/firebaseConfig';
-
-async function signUp(email, password, username) {
-  const docRef = doc(db, 'userId', email);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    Swal.fire('You are a member already!');
-  } else {
-    const auth = getAuth();
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    addNewUserToDataBase(userCredential.user, 'firebase_native', username);
-  }
-}
-
-const db = firebaseDB();
+import firebaseService from '../../utils/fireabaseService';
 
 SignUpForm.propTypes = {
   setEmail: PropTypes.func,
@@ -113,7 +90,7 @@ function SignUpForm({
         marginTop="20px"
         onClick={() =>
           email && password && username
-            ? (signUp(email, password, username),
+            ? (firebaseService.signUp(email, password, username),
               setEmail(''),
               setPassword(''),
               setUserName(''))

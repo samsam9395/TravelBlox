@@ -1,16 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
 
 import FullLoading from '../components/general/FullLoading';
 import PropTypes from 'prop-types';
 import PublicPlanCard from '../components/discover/PublicPlanCard';
 import SkyMainImg from '../components/discover/SkyMainImg';
 import { UserContext } from '../App';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseService from '../utils/fireabaseService';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const db = firebaseDB();
 
 const AllPlansWrapper = styled.div`
   padding: 10px 80px;
@@ -56,15 +53,9 @@ function Allplans(props) {
   }, [userInfo]);
 
   useEffect(async () => {
-    const allPlansRef = collection(db, 'allPlans');
-    const q = query(allPlansRef, where('published', '==', true));
-    const allPlans = await getDocs(q);
-
-    if (allPlans.docs.length === 0) {
-    } else {
-      setAllPlansList(allPlans.docs.map((e) => e.data()));
-      setDisplayPlans(allPlans.docs.map((e) => e.data()));
-    }
+    const publishedPlans = await firebaseService.getPublishedPlans();
+    setAllPlansList(publishedPlans);
+    setDisplayPlans(publishedPlans);
   }, []);
 
   useEffect(() => {

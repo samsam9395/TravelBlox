@@ -8,8 +8,9 @@ import FavFolder from './FavouriteFolder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PropTypes from 'prop-types';
-import { addNewFavouriteFolder } from '../../utils/functionList';
+import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
+import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
 
 const db = firebaseDB();
@@ -235,8 +236,16 @@ function FavouriteFolderBar({ currentUserId }) {
               <button
                 className="new_folder_name_confirmBtn"
                 onClick={(e) => {
-                  addNewFavouriteFolder(currentUserId, newFolderName);
-                  setShowAddNewFolder(false);
+                  if (
+                    firebaseService.addNewFavouriteFolder(
+                      currentUserId,
+                      newFolderName
+                    )
+                  ) {
+                    Swal.fire('Folder added!');
+                    setShowAddNewFolder(false);
+                  }
+                  Swal.fire('Oops, something went wrong, please try again!');
                 }}>
                 Create
               </button>
