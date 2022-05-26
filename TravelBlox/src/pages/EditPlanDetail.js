@@ -10,13 +10,6 @@ import {
   themeColours,
 } from '../styles/globalTheme';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  deletePlan,
-  listenToSnapShot,
-  saveToDataBase,
-  uploadImagePromise,
-} from '../utils/functionList';
-import { doc, getDoc } from 'firebase/firestore';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -32,12 +25,11 @@ import Swal from 'sweetalert2';
 import Switch from '@mui/material/Switch';
 import ToggleAttractionSearch from '../components/travel_recommend/ToggleAttraction';
 import { UserContext } from '../App';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseService from '../utils/fireabaseService';
 import styled from 'styled-components';
+import { uploadImagePromise } from '../utils/functionList';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-
-const db = firebaseDB();
 
 const Wrapper = styled.div`
   padding: 50px;
@@ -137,7 +129,6 @@ function EditPlanDetail() {
   }, [planAuthor]);
 
   useEffect(async () => {
-    const docSnap = await getDoc(doc(db, 'plans', planDocRef));
     const {
       author,
       country,
@@ -146,7 +137,7 @@ function EditPlanDetail() {
       published,
       start_date,
       end_date,
-    } = docSnap.data();
+    } = await firebaseService.getEditDetailData(planDocRef);
 
     setPlanAuthor(author);
     setCountry(country);
@@ -158,10 +149,8 @@ function EditPlanDetail() {
 
     setStartInitDateValue(new Date(start_date.seconds * 1000));
     setEndInitDateValue(new Date(end_date.seconds * 1000));
-  }, []);
 
-  useEffect(async () => {
-    listenToSnapShot(planDocRef, setMyEvents);
+    firebaseService.listenToSnapShot(planDocRef, setMyEvents);
   }, []);
 
   useEffect(() => {
@@ -306,16 +295,20 @@ function EditPlanDetail() {
           <LightBlueBtn
             onClick={() => {
               try {
-                saveToDataBase(
-                  myEvents,
-                  planTitle,
-                  country,
-                  mainImage,
-                  planDocRef,
-                  startDateValue,
-                  endDateValue,
-                  isPublished
-                );
+                if (
+                  firebaseService.saveToDataBase(
+                    myEvents,
+                    planTitle,
+                    country,
+                    mainImage,
+                    planDocRef,
+                    startDateValue,
+                    endDateValue,
+                    isPublished
+                  )
+                ) {
+                  Swal.fire('Successfully saved!');
+                }
               } catch (error) {
                 console.log(error);
                 Swal.fire('Oops!Something went wrong, please try again!');
@@ -337,7 +330,7 @@ function EditPlanDetail() {
               confirmButtonText: 'Yes, delete it!',
             }).then((result) => {
               if (result.isConfirmed) {
-                if (deletePlan(planDocRef, currentUserId)) {
+                if (firebaseService.deletePlan(planDocRef, currentUserId)) {
                   Swal.fire('Successfully deleted!');
                   navigate('/dashboard');
                 }

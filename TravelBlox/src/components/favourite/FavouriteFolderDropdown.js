@@ -4,7 +4,7 @@ import { collection, doc, getDocs, writeBatch } from 'firebase/firestore';
 
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
-import { getFavPlan } from '../../utils/functionList';
+import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
 
 const db = firebaseDB();
@@ -188,7 +188,7 @@ function FavFolderDropdown({
             className="folder_option"
             onClick={(e) => {
               setShowSecondLayer(true);
-              getFavPlan(
+              firebaseService.getFavPlan(
                 e.target.textContent,
                 currentUserId,
                 setFavPlansNameList

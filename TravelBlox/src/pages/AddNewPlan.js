@@ -1,6 +1,6 @@
 import '../styles/calendarStyle.scss';
 
-import { Box, IconButton, Stack, TextField } from '@mui/material';
+import { Box, IconButton, TextField } from '@mui/material';
 import {
   EditableMainImage,
   EditableMainImageContainer,
@@ -10,13 +10,6 @@ import {
   themeColours,
 } from '../styles/globalTheme';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  addPlanToAllPlans,
-  listenToSnapShot,
-  saveToDataBase,
-  uploadImagePromise,
-} from '../utils/functionList';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
 import CountrySelector from '../components/timeblock/CountrySelector';
@@ -30,11 +23,10 @@ import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Switch from '@mui/material/Switch';
 import { UserContext } from '../App';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseService from '../utils/fireabaseService';
 import styled from 'styled-components';
+import { uploadImagePromise } from '../utils/functionList';
 import { useNavigate } from 'react-router-dom';
-
-const db = firebaseDB();
 
 const Wrapper = styled.div`
   padding: 100px 50px;
@@ -85,26 +77,6 @@ const ButtonContainer = styled.div`
   justify-content: center;
 `;
 
-async function addPlanToUserInfo(currentUserId, createPlanDocId) {
-  try {
-    const userInfoRef = doc(
-      db,
-      'userId',
-      currentUserId,
-      'own_plans',
-      createPlanDocId
-    );
-
-    await setDoc(
-      userInfoRef,
-      {
-        collection_id: createPlanDocId,
-      },
-      { merge: true }
-    );
-  } catch (error) {}
-}
-
 const BottomBtnContainer = styled.div`
   display: flex;
   align-items: center;
@@ -151,62 +123,15 @@ function AddNewPlan(props) {
 
   const userInfo = useContext(UserContext);
 
-  const createNewCollection = async (
-    startDateValue,
-    endDateValue,
-    planTitle,
-    mainImage
-  ) => {
-    const currentTimeMilli = new Date().getTime();
-    const createPlanDocId = `plan${currentTimeMilli}`;
-    setPlanDocRef(createPlanDocId);
-
-    if (mainImage === null || '') {
-      mainImage = props.defaultImg;
-      setMainImage(props.defaultImg);
-    }
-
-    try {
-      await setDoc(doc(db, 'plans', createPlanDocId), {
-        author: userInfo.userEmail,
-        author_name: username,
-        start_date: startDateValue,
-        end_date: endDateValue,
-        title: planTitle,
-        main_image: mainImage,
-        published: false,
-        planDocRef: createPlanDocId,
-      });
-
-      setHasCreatedCollection(true);
-
-      addPlanToUserInfo(userInfo.userEmail, createPlanDocId);
-
-      addPlanToAllPlans(
-        userInfo.userEmail,
-        createPlanDocId,
-        planTitle,
-        mainImage,
-        country,
-        isPublished
-      );
-    } catch (e) {
-      console.error('Error adding document: ', e);
-    }
-  };
-
-  useEffect(async () => {
+  useEffect(() => {
     if (addedTimeBlock) {
-      listenToSnapShot(planDocRef, setMyEvents);
+      firebaseService.listenToSnapShot(planDocRef, setMyEvents);
     }
   }, [addedTimeBlock]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (userInfo.userEmail) {
-      const userDoc = await getDoc(doc(db, 'userId', userInfo.userEmail));
-      if (userDoc.data().username) {
-        setUsername(userDoc.data().username);
-      }
+      setUsername(firebaseService.getUserName(userInfo.userEmail));
     }
   }, [userInfo.userEmail]);
 
@@ -352,7 +277,7 @@ function AddNewPlan(props) {
                     Swal.fire('Please create at least one event!');
                   } else {
                     if (
-                      saveToDataBase(
+                      firebaseService.saveToDataBase(
                         myEvents,
                         planTitle,
                         country,
@@ -363,6 +288,7 @@ function AddNewPlan(props) {
                         isPublished
                       )
                     ) {
+                      Swal.fire('Successfully saved!');
                       navigate('/dashboard');
                     }
                   }
@@ -377,12 +303,24 @@ function AddNewPlan(props) {
               variant="contained"
               onClick={() => {
                 if (startDateValue && endDateValue && planTitle) {
-                  createNewCollection(
-                    startDateValue,
-                    endDateValue,
-                    planTitle,
-                    mainImage
-                  );
+                  if (mainImage === null || '') {
+                    mainImage = firebaseService.getDefaultImg();
+                  }
+
+                  if (
+                    firebaseService.createNewCollection(
+                      userInfo,
+                      username,
+                      startDateValue,
+                      endDateValue,
+                      planTitle,
+                      mainImage,
+                      country,
+                      isPublished
+                    )
+                  ) {
+                    setHasCreatedCollection(true);
+                  }
                 } else {
                   Swal.fire('Please provide the required fields!');
                 }
