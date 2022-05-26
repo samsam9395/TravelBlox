@@ -66,7 +66,7 @@ export default function FavouriteFolder({ selectedFolder, currentUserId }) {
       const planQuery = query(favRef, where('infolder', '==', selectedFolder));
       const favPlansIdList = await getDocs(planQuery);
 
-      if (favPlansIdList.docs.length === 0) {
+      if (favPlansIdList.docs.length === 0 && selectedFolder !== null) {
         setIsEmptyFolder(true);
       } else {
         setIsEmptyFolder(false);

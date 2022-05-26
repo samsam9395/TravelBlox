@@ -24,11 +24,11 @@ const PlanCollectionWrapper = styled.div`
   max-width: 1400px;
   min-height: 450px;
   align-items: center;
+`;
 
-  .empty_notification {
-    font-size: 20px;
-    padding: 0;
-  }
+const EmptyNotification = styled.div`
+  font-size: 20px;
+  padding: 0;
 `;
 
 Allplans.propTypes = {
@@ -98,9 +98,9 @@ function Allplans(props) {
       <AllPlansWrapper>
         <PlanCollectionWrapper>
           {emptyMatch && (
-            <div className="empty_notification">
+            <EmptyNotification>
               Oops, no results were found. Please try another search.
-            </div>
+            </EmptyNotification>
           )}
           {displayPlans.map((planInfo, index) => (
             <PublicPlanCard
