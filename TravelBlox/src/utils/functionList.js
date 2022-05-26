@@ -8,6 +8,7 @@ import {
 
 import Swal from 'sweetalert2';
 import firebaseService from './fireabaseService';
+import { googleServices } from './api';
 
 export function uploadImagePromise(imgFile) {
   const reader = new FileReader();
@@ -163,5 +164,25 @@ export function createLocationKeyPairs(data, renewGoolgeImg) {
       rating: data.rating || '',
       place_id: data.place_id,
     };
+  }
+}
+
+export async function checkGoogleImgExpirationDate(data, timeBlockRef) {
+  if (calculateIfGoogleImgExpired(data.timeEdited.seconds * 1000)) {
+    const renewGoolgeImg = await googleServices.getlaceDetail(data.place_id);
+
+    console.log(11, renewGoolgeImg.photos[0].getUrl());
+    const locationInfo = createLocationKeyPairs(
+      data,
+      renewGoolgeImg.photos[0].getUrl()
+    );
+
+    firebaseService.updateExpiredGoogleImgToDataBase(
+      timeBlockRef,
+      renewGoolgeImg.photos[0].getUrl()
+    );
+    return locationInfo;
+  } else {
+    return createLocationKeyPairs(data);
   }
 }

@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -17,6 +18,7 @@ import {
 
 import Swal from 'sweetalert2';
 import firebaseDB from './firebaseConfig';
+import { renameGoogleMaDataIntoFirebase } from './functionList';
 
 const db = firebaseDB();
 
@@ -366,7 +368,7 @@ const firebaseService = {
       console.log(error);
     }
   },
-  signOutFirebase() {
+  async signOutFirebase() {
     const auth = getAuth();
 
     return signOut(auth)
@@ -377,6 +379,102 @@ const firebaseService = {
         console.log(error);
         return false;
       });
+  },
+  async updateExpiredGoogleImgToDataBase(timeBlockRef, renewGoogleImgUrl) {
+    await setDoc(
+      timeBlockRef,
+      {
+        timeEdited: new Date(),
+        place_img: renewGoogleImgUrl,
+      },
+      {
+        merge: true,
+      }
+    );
+  },
+  async updateToDataBase(
+    timeBlockRef,
+    blockTitle,
+    description,
+    startTimeValue,
+    endTimeValue,
+    location,
+    timeBlockImage,
+    placeId
+  ) {
+    if (location.geometry) {
+      const googleLocationData = renameGoogleMaDataIntoFirebase(
+        location,
+        placeId
+      );
+
+      try {
+        await setDoc(
+          timeBlockRef,
+          {
+            title: blockTitle,
+            text: description,
+            start: startTimeValue,
+            end: endTimeValue,
+            timeblock_img: timeBlockImage || '',
+            ...googleLocationData,
+            status: 'origin',
+            timeEdited: new Date(),
+          },
+          {
+            merge: true,
+          }
+        );
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+    } else {
+      try {
+        await setDoc(
+          timeBlockRef,
+          {
+            title: blockTitle,
+            text: description,
+            start: startTimeValue,
+            end: endTimeValue,
+            timeblock_img: timeBlockImage || '',
+            status: 'origin',
+            timeEdited: new Date(),
+            place_img: location.mainImg || '',
+          },
+          {
+            merge: true,
+          }
+        );
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+    }
+  },
+  async deleteTimeBlockFromDataBase(timeBlockRef) {
+    try {
+      await deleteDoc(timeBlockRef);
+      return true;
+    } catch (error) {
+      console.log(error);
+      Swal.fire('Something went wrong, please try again!');
+    }
+  },
+  async retreiveFromDataBase(timeBlockRef) {
+    const timeBlockSnap = await getDoc(timeBlockRef);
+
+    if (timeBlockSnap.exists()) {
+      const initialData = timeBlockSnap.data();
+
+      return initialData;
+    } else {
+      console.log('No such document!');
+      return '';
+    }
   },
 };
 

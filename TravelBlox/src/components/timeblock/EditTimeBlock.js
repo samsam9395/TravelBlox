@@ -5,19 +5,18 @@ import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import React, { useEffect, useState } from 'react';
 import {
-  calculateIfGoogleImgExpired,
+  checkGoogleImgExpirationDate,
   createLocationKeyPairs,
-  renameGoogleMaDataIntoFirebase,
 } from '../../utils/functionList';
-import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 
 import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import DateTimeSelector from '../input/DateTimeSelector';
 import LocationCard from '../timeblock/LocationCard';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
+import { doc } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
-import { googleServices } from '../../utils/api';
+import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
 
 const BlackWrapper = styled.div`
@@ -148,145 +147,39 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.id
   );
 
-  async function updateExpiredGoogleImgToDataBase(
-    timeBlockRef,
-    renewGoogleImgUrl
-  ) {
-    await setDoc(
-      timeBlockRef,
-      {
-        timeEdited: new Date(),
-        place_img: renewGoogleImgUrl,
-      },
-      {
-        merge: true,
-      }
-    );
-  }
-
-  async function updateToDataBase(
-    timeBlockRef,
-    blockTitle,
-    description,
-    startTimeValue,
-    endTimeValue,
-    location,
-    timeBlockImage
-  ) {
-    console.log(33, location);
-    if (location.geometry) {
-      console.log('has geomery');
-      const googleLocationData = renameGoogleMaDataIntoFirebase(
-        location,
-        placeId
-      );
-
-      try {
-        await setDoc(
-          timeBlockRef,
-          {
-            title: blockTitle,
-            text: description,
-            start: startTimeValue,
-            end: endTimeValue,
-            timeblock_img: timeBlockImage || '',
-            ...googleLocationData,
-            status: 'origin',
-            timeEdited: new Date(),
-          },
-          {
-            merge: true,
-          }
-        );
-
-        props.closePopUp();
-
-        Swal.fire('Successfully updated!');
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      console.log('NOT has geomery');
-      try {
-        await setDoc(
-          timeBlockRef,
-          {
-            title: blockTitle,
-            text: description,
-            start: startTimeValue,
-            end: endTimeValue,
-            timeblock_img: timeBlockImage || '',
-            status: 'origin',
-            timeEdited: new Date(),
-            place_img: location.mainImg || '',
-          },
-          {
-            merge: true,
-          }
-        );
-
-        props.closePopUp();
-
-        Swal.fire('Successfully updated!');
-      } catch (error) {
-        console.log(error);
-        Swal.fire('Something went wrong, please try again!');
-      }
-    }
-  }
-
-  async function retreiveFromDataBase(timeBlockRef, setInitBlockData) {
-    const timeBlockSnap = await getDoc(timeBlockRef);
-
-    if (timeBlockSnap.exists()) {
-      const initialData = timeBlockSnap.data();
-      console.log('333 initialData', initialData);
-      if (setInitBlockData) {
-        setInitBlockData(initialData);
-      }
-
-      return initialData;
-    } else {
-      console.log('No such document!');
-    }
-  }
-
-  async function deleteFromDataBase(timeBlockRef) {
-    try {
-      await deleteDoc(timeBlockRef);
-      return true;
-    } catch (error) {
-      console.log(error);
-      Swal.fire('Something went wrong, please try again!');
-    }
-  }
-
-  useEffect(() => {
+  useEffect(async () => {
     if (props.currentSelectTimeData.status === 'imported') {
       setImportBlockData(props.currentSelectTimeData);
     } else if (props.currentSelectTimeData.status === 'origin') {
-      retreiveFromDataBase(timeBlockRef, setInitBlockData);
+      const originTimeBlockData = await firebaseService.retreiveFromDataBase(
+        timeBlockRef
+      );
+
+      setInitBlockData(originTimeBlockData);
     } else console.log('something wrong with edit-time-block');
   }, [props.currentSelectTimeData]);
 
-  useEffect(() => {
+  useEffect(async () => {
     const data = importBlockData;
 
     setBlockTitle(data.title);
     setLocationName(data.place_name);
     setStartTimeValue(data.start);
     setEndTimeValue(data.end);
-    setLocation({
-      name: data.place_name,
-      formatted_address: data.place_format_address,
-      formatted_phone_number: data.place_formatted_phone_number || '',
-      international_phone_number: data.place_international_phone_number || '',
-      url: data.place_url,
-      place_types: data.types || '',
-      mainImg: data.place_img || '',
-      rating: data.rating || '',
-      place_id: data.place_id,
-    });
+
+    if (data.timeEdited) {
+      const imgExpiration = await checkGoogleImgExpirationDate(
+        data,
+        timeBlockRef
+      );
+
+      console.log('imgExpiration', imgExpiration);
+      setLocation(imgExpiration);
+    } else {
+      setLocation({
+        ...createLocationKeyPairs(data),
+      });
+    }
   }, [importBlockData]);
 
   useEffect(async () => {
@@ -306,25 +199,15 @@ function EditTimeBlock(props) {
       }
 
       if (data.timeEdited) {
-        if (calculateIfGoogleImgExpired(data.timeEdited.seconds * 1000)) {
-          const renewGoolgeImg = await googleServices.getlaceDetail(
-            data.place_id
-          );
-
-          console.log(11, renewGoolgeImg.photos[0].getUrl());
-          const locationInfo = createLocationKeyPairs(
-            data,
-            renewGoolgeImg.photos[0].getUrl()
-          );
-          setLocation(locationInfo);
-          updateExpiredGoogleImgToDataBase(
-            timeBlockRef,
-            renewGoolgeImg.photos[0].getUrl()
-          );
-        } else {
-          const locationInfo = createLocationKeyPairs(data);
-          setLocation(locationInfo);
-        }
+        const imgExpiration = await checkGoogleImgExpirationDate(
+          data,
+          timeBlockRef
+        );
+        setLocation(imgExpiration);
+      } else {
+        setLocation({
+          ...createLocationKeyPairs(data),
+        });
       }
     }
   }, [initBlockData]);
@@ -348,7 +231,12 @@ function EditTimeBlock(props) {
                   backdrop: false,
                 }).then((result) => {
                   if (result.isConfirmed) {
-                    if (deleteFromDataBase(timeBlockRef, blockTitle)) {
+                    if (
+                      firebaseService.deleteTimeBlockFromDataBase(
+                        timeBlockRef,
+                        blockTitle
+                      )
+                    ) {
                       props.closePopUp();
                       Swal.fire(`${blockTitle} is deleted!`);
                     }
@@ -453,19 +341,22 @@ function EditTimeBlock(props) {
                 startTimeValue &&
                 endTimeValue
               ) {
-                try {
-                  updateToDataBase(
+                if (
+                  firebaseService.updateToDataBase(
                     timeBlockRef,
                     blockTitle,
                     description,
                     startTimeValue,
                     endTimeValue,
                     location,
-                    timeBlockImage
-                  );
-                } catch (error) {
+                    timeBlockImage,
+                    placeId
+                  )
+                ) {
+                  props.closePopUp();
+                  Swal.fire('Successfully updated!');
+                } else {
                   Swal.fire('Something went wrong, please try again!');
-                  console.log(error);
                 }
               } else {
                 Swal.fire('Please check your inputs!');
