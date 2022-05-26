@@ -3,11 +3,12 @@ import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
 
 import AddIcon from '@mui/icons-material/Add';
-import EditFavFolderSelector from './EditFavFolderSelector';
-import FavFolder from './FavFolder';
+import EditFavouriteFolderSelector from './EditFavouriteFolderSelector';
+import FavFolder from './FavouriteFolder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import { addNewFavouriteFolder } from '../../utils/functionList';
 import firebaseDB from '../../utils/firebaseConfig';
 import styled from 'styled-components';
 
@@ -101,16 +102,9 @@ const AddNewPlanButton = styled.button`
   }
 `;
 
-function addNewFavFolder(currentUserId, newFolder) {
-  try {
-    setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
-      folder_name: newFolder,
-    });
-    Swal.fire('Folder added!');
-  } catch (error) {
-    console.log(error);
-  }
-}
+FavouriteFolderBar.propTypes = {
+  currentUserId: PropTypes.string,
+};
 
 function FavouriteFolderBar({ currentUserId }) {
   const [showAddNewFolder, setShowAddNewFolder] = useState(false);
@@ -120,7 +114,6 @@ function FavouriteFolderBar({ currentUserId }) {
   const [showFavFolderEdit, setShowFavFolderEdit] = useState(false);
   const [favFolderEditIndex, setFavFolderEditIndex] = useState(null);
   const [showRenameBox, setShowRenameBox] = useState(null);
-  const [renameValue, setRenameValue] = useState('');
 
   const inputRef = useRef();
   const editPopRef = useRef();
@@ -209,7 +202,7 @@ function FavouriteFolderBar({ currentUserId }) {
                   }></MoreHorizIcon>
 
                 {showFavFolderEdit && (
-                  <EditFavFolderSelector
+                  <EditFavouriteFolderSelector
                     index={index}
                     favFolderEditIndex={favFolderEditIndex}
                     favFolderName={favFolderName}
@@ -242,7 +235,7 @@ function FavouriteFolderBar({ currentUserId }) {
               <button
                 className="new_folder_name_confirmBtn"
                 onClick={(e) => {
-                  addNewFavFolder(currentUserId, newFolderName);
+                  addNewFavouriteFolder(currentUserId, newFolderName);
                   setShowAddNewFolder(false);
                 }}>
                 Create

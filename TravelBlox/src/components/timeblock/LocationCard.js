@@ -4,7 +4,7 @@ import StarHalfIcon from '@mui/icons-material/StarHalf';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import { googleServices } from '../utils/api';
 import styled from 'styled-components';
-import { themeColours } from '../styles/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 
 const CardWrapper = styled.div`
   width: 100%;

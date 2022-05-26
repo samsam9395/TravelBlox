@@ -20,10 +20,10 @@ import { doc, getDoc } from 'firebase/firestore';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import CountrySelector from '../components/CountrySelector';
+import CountrySelector from '../components/timeblock/CountrySelector';
 import DatePicker from '../components/input/DatePicker';
 import EditTimeBlock from '../components/timeblock/EditTimeBlock';
-import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
+import FavFolderDropdown from '../components/favourite/FavouriteFolderDropdown';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FullLoading from '../components/general/FullLoading';
 import { PhotoCamera } from '@mui/icons-material';

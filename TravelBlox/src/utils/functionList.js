@@ -326,6 +326,7 @@ export async function getAutoCompleteData(
   const place2 = autocomplete.getPlace();
   console.log(12, place2);
 }
+<<<<<<< HEAD
 export function calculateIfGoogleImgExpired(dateEdited) {
   const currentTime = new Date();
   const expirationTime = new Date(dateEdited).setDate(
@@ -368,3 +369,17 @@ export function createLocationKeyPairs(data, renewGoolgeImg) {
     };
   }
 }
+||||||| parent of ac30bec (rename outer and inner folder, organize source folder structures)
+=======
+
+export function addNewFavouriteFolder(currentUserId, newFolder) {
+  try {
+    setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
+      folder_name: newFolder,
+    });
+    Swal.fire('Folder added!');
+  } catch (error) {
+    console.log(error);
+  }
+}
+>>>>>>> ac30bec (rename outer and inner folder, organize source folder structures)

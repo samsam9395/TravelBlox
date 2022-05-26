@@ -3,13 +3,13 @@ import styled, { keyframes } from 'styled-components';
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
-import blueSky from '../images/all_plan/orange_sky_brushed4.png';
-import cloudBigOne from '../images/all_plan/cloud_1@4x.png';
-import cloudBigThree from '../images/all_plan/cloud_3@4x.png';
-import cloudBigTwo from '../images/all_plan/cloud_2@4x.png';
-import cloudSmallFive from '../images/all_plan/cloud_5@4x.png';
-import cloudSmallFour from '../images/all_plan/cloud_4@4x.png';
-import { themeColours } from '../styles/globalTheme';
+import blueSky from '../../images/all_plan/orange_sky_brushed4.png';
+import cloudBigOne from '../../images/all_plan/cloud_1@4x.png';
+import cloudBigThree from '../../images/all_plan/cloud_3@4x.png';
+import cloudBigTwo from '../../images/all_plan/cloud_2@4x.png';
+import cloudSmallFive from '../../images/all_plan/cloud_5@4x.png';
+import cloudSmallFour from '../../images/all_plan/cloud_4@4x.png';
+import { themeColours } from '../../styles/globalTheme';
 
 const cloudAnimation = keyframes`
 0% {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
 
-import OwnPlanCard from '../OwnPlanCard';
+import OwnPlanCard from '../dashboard/OwnPlanCard';
 import PropTypes from 'prop-types';
 import firebaseDB from '../../utils/firebaseConfig';
 import styled from 'styled-components';
@@ -50,13 +50,13 @@ const FavPlansWrapper = styled.div`
   margin-right: 30px;
 `;
 
-FavFolder.propTypes = {
+FavouriteFolder.propTypes = {
   selectedFolder: PropTypes.string,
   favFolderName: PropTypes.string,
   currentUserId: PropTypes.string,
 };
 
-export default function FavFolder({ selectedFolder, currentUserId }) {
+export default function FavouriteFolder({ selectedFolder, currentUserId }) {
   const [favPlansList, setFavlansList] = useState(null);
   const [isEmptyFolder, setIsEmptyFolder] = useState(false);
 

@@ -12,7 +12,7 @@ import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
 import FullLoading from '../components/general/FullLoading';
 import { IconButton } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import OwnPlanCard from '../components/OwnPlanCard';
+import OwnPlanCard from '../components/dashboard/OwnPlanCard';
 import Swal from 'sweetalert2';
 import UploadIcon from '@mui/icons-material/Upload';
 import { UserContext } from '../App';

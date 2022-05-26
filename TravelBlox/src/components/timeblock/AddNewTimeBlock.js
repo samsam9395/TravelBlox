@@ -3,10 +3,10 @@ import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import React, { useState } from 'react';
 import { collection, doc, setDoc } from 'firebase/firestore';
 
-import AutoCompleteInput from '../AutoCompleteInput';
+import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import Close from '@mui/icons-material/Close';
 import DateTimeSelector from '../input/DateTimeSelector';
-import LocationCard from '../LocationCard';
+import LocationCard from '../timeblock/LocationCard';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';

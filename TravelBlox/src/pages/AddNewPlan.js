@@ -19,10 +19,10 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
-import CountrySelector from '../components/CountrySelector';
+import CountrySelector from '../components/timeblock/CountrySelector';
 import DatePicker from '../components/input/DatePicker';
 import EditTimeBlock from '../components/timeblock/EditTimeBlock';
-import FavFolderDropdown from '../components/favourite/FavFolderDropdown';
+import FavFolderDropdown from '../components/favourite/FavouriteFolderDropdown';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { PhotoCamera } from '@mui/icons-material';
 import PlanCalendar from '../components/timeblock/PlanCalendar';

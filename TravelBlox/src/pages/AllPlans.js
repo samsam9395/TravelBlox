@@ -3,8 +3,8 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 
 import FullLoading from '../components/general/FullLoading';
 import PropTypes from 'prop-types';
-import PublicPlanCard from '../components/PublicPlanCard';
-import SkyMainImg from '../components/SkyMainImg';
+import PublicPlanCard from '../components/discover/PublicPlanCard';
+import SkyMainImg from '../components/discover/SkyMainImg';
 import { UserContext } from '../App';
 import firebaseDB from '../utils/firebaseConfig';
 import styled from 'styled-components';
