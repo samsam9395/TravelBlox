@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 
 import PropTypes from 'prop-types';
-import firebaseDB from '../utils/firebaseConfig';
+import firebaseDB from '../../utils/firebaseConfig';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 

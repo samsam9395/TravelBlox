@@ -326,3 +326,14 @@ export async function getAutoCompleteData(
   const place2 = autocomplete.getPlace();
   console.log(12, place2);
 }
+
+export function addNewFavouriteFolder(currentUserId, newFolder) {
+  try {
+    setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
+      folder_name: newFolder,
+    });
+    Swal.fire('Folder added!');
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -4,7 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
-import { themeColours } from '../styles/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 
 CountrySelector.propTypes = {
   setCountry: PropTypes.func,

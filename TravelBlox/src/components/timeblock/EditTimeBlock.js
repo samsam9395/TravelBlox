@@ -6,9 +6,9 @@ import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import React, { useEffect, useState } from 'react';
 import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 
-import AutoCompleteInput from '../AutoCompleteInput';
+import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import DateTimeSelector from '../input/DateTimeSelector';
-import LocationCard from '../LocationCard';
+import LocationCard from '../timeblock/LocationCard';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';

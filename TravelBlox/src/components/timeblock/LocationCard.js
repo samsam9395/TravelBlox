@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { checkImg, getGooglePlaceDetail } from '../utils/api';
 
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import StarRateIcon from '@mui/icons-material/StarRate';
 import styled from 'styled-components';
-import { themeColours } from '../styles/globalTheme';
+import { themeColours } from '../../styles/globalTheme';
 
 const CardWrapper = styled.div`
   width: 100%;
