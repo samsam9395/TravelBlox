@@ -21,7 +21,8 @@ function SearchInput(props) {
         ref.current,
         props.setLocation
       );
-      props.setLocation(googleLocationData);
+      props.setLocation(77, googleLocationData);
+
       setInputLocationValue(googleLocationData.name);
     }
   }, [ref, props.setLocation]);

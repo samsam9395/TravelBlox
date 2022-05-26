@@ -307,7 +307,7 @@ function AddNewPlan(props) {
                     const defaultImg = await firebaseService.getDefaultImg();
                     setMainImage(defaultImg);
 
-                    console.log(11, data);
+                    console.log(11, defaultImg);
 
                     // if (
                     //   firebaseService.createNewCollection(

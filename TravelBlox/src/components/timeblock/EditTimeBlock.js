@@ -148,7 +148,23 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.id
   );
 
-  async function UpdateToDataBase(
+  async function updateExpiredGoogleImgToDataBase(
+    timeBlockRef,
+    renewGoogleImgUrl
+  ) {
+    await setDoc(
+      timeBlockRef,
+      {
+        timeEdited: new Date(),
+        place_img: renewGoogleImgUrl,
+      },
+      {
+        merge: true,
+      }
+    );
+  }
+
+  async function updateToDataBase(
     timeBlockRef,
     blockTitle,
     description,
@@ -159,6 +175,7 @@ function EditTimeBlock(props) {
   ) {
     console.log(33, location);
     if (location.geometry) {
+      console.log('has geomery');
       const googleLocationData = renameGoogleMaDataIntoFirebase(
         location,
         placeId
@@ -189,6 +206,7 @@ function EditTimeBlock(props) {
         console.log(error);
       }
     } else {
+      console.log('NOT has geomery');
       try {
         await setDoc(
           timeBlockRef,
@@ -222,7 +240,7 @@ function EditTimeBlock(props) {
 
     if (timeBlockSnap.exists()) {
       const initialData = timeBlockSnap.data();
-
+      console.log('333 initialData', initialData);
       if (setInitBlockData) {
         setInitBlockData(initialData);
       }
@@ -299,6 +317,10 @@ function EditTimeBlock(props) {
             renewGoolgeImg.photos[0].getUrl()
           );
           setLocation(locationInfo);
+          updateExpiredGoogleImgToDataBase(
+            timeBlockRef,
+            renewGoolgeImg.photos[0].getUrl()
+          );
         } else {
           const locationInfo = createLocationKeyPairs(data);
           setLocation(locationInfo);
@@ -393,7 +415,11 @@ function EditTimeBlock(props) {
 
             <TimeblockImgUploadContainer>
               {timeBlockImage && (
-                <img src={timeBlockImage} alt="" className="upload_image" />
+                <img
+                  src={timeBlockImage}
+                  alt="upload image"
+                  className="upload_image"
+                />
               )}
               <label htmlFor="imgupload">
                 <input
@@ -428,7 +454,7 @@ function EditTimeBlock(props) {
                 endTimeValue
               ) {
                 try {
-                  UpdateToDataBase(
+                  updateToDataBase(
                     timeBlockRef,
                     blockTitle,
                     description,

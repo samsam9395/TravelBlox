@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import PropTypes from 'prop-types';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import StarRateIcon from '@mui/icons-material/StarRate';
-import { googleServices } from '../utils/api';
 import styled from 'styled-components';
 import { themeColours } from '../../styles/globalTheme';
 
@@ -76,6 +76,10 @@ const StarContainer = styled.div`
   padding: 0 10px;
 `;
 
+LocationCard.propTypes = {
+  location: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+};
+
 export default function LocationCard(props) {
   const [mainImg, setMainImg] = useState('');
   const [locationTypes, setLocationTypes] = useState([]);
@@ -88,10 +92,9 @@ export default function LocationCard(props) {
   }, [props]);
 
   useEffect(() => {
-    // console.log(44, location);
+    console.log(44, location);
 
     if (location.mainImg) {
-      console.log('111, location mainImg', location.mainImg);
       setMainImg(location.mainImg);
     } else if (location.photos) {
       setMainImg(location.photos[0].getUrl());
