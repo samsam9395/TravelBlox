@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { checkImg, getGooglePlaceDetail } from '../utils/api';
 
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import StarRateIcon from '@mui/icons-material/StarRate';
+import { googleServices } from '../utils/api';
 import styled from 'styled-components';
 import { themeColours } from '../styles/globalTheme';
 
@@ -88,15 +88,13 @@ export default function LocationCard(props) {
   }, [props]);
 
   useEffect(() => {
-    console.log(44, location);
-    checkImg(location.mainImg);
+    // console.log(44, location);
 
     if (location.mainImg) {
       console.log('111, location mainImg', location.mainImg);
       setMainImg(location.mainImg);
     } else if (location.photos) {
       setMainImg(location.photos[0].getUrl());
-      console.log('url of img', location.photos[0].getUrl());
     } else if (location.place_img) {
       setMainImg(location.place_img);
       setLocationTypes(location.place_types);
@@ -106,11 +104,6 @@ export default function LocationCard(props) {
       setLocationTypes(location.types);
     }
   }, [location]);
-
-  // useEffect(() => {
-  //   getGooglePlaceDetail(ref.current);
-  // }, [ref.current]);
-  // console.log(ref);
 
   return (
     Object.keys(location).length !== 0 && (

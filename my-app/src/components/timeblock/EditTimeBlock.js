@@ -4,6 +4,11 @@ import { Close, Delete, PhotoCamera } from '@mui/icons-material';
 import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import React, { useEffect, useState } from 'react';
+import {
+  calculateIfGoogleImgExpired,
+  createLocationKeyPairs,
+  renameGoogleMaDataIntoFirebase,
+} from '../../utils/functionList';
 import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 
 import AutoCompleteInput from '../AutoCompleteInput';
@@ -12,7 +17,7 @@ import LocationCard from '../LocationCard';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
-import { renameGoogleMaDataIntoFirebase } from '../../utils/functionList';
+import { googleServices } from '../../utils/api';
 import styled from 'styled-components';
 
 const BlackWrapper = styled.div`
@@ -152,6 +157,7 @@ function EditTimeBlock(props) {
     location,
     timeBlockImage
   ) {
+    console.log(33, location);
     if (location.geometry) {
       const googleLocationData = renameGoogleMaDataIntoFirebase(
         location,
@@ -169,6 +175,7 @@ function EditTimeBlock(props) {
             timeblock_img: timeBlockImage || '',
             ...googleLocationData,
             status: 'origin',
+            timeEdited: new Date(),
           },
           {
             merge: true,
@@ -192,6 +199,8 @@ function EditTimeBlock(props) {
             end: endTimeValue,
             timeblock_img: timeBlockImage || '',
             status: 'origin',
+            timeEdited: new Date(),
+            place_img: location.mainImg || '',
           },
           {
             merge: true,
@@ -262,24 +271,13 @@ function EditTimeBlock(props) {
     });
   }, [importBlockData]);
 
-  useEffect(() => {
+  useEffect(async () => {
     const data = initBlockData;
 
     if (initBlockData) {
       setBlockTitle(data.title);
       setLocationName(data.place_name);
       setPlaceId(data.place_id);
-      setLocation({
-        name: data.place_name,
-        formatted_address: data.place_format_address,
-        formatted_phone_number: data.place_formatted_phone_number || '',
-        international_phone_number: data.place_international_phone_number || '',
-        url: data.place_url,
-        place_types: data.types || '',
-        mainImg: data.place_img || '',
-        rating: data.rating || '',
-        place_id: data.place_id,
-      });
       setDescription(data.text);
       setTimeBlockImage(data.timeblock_img);
       if (data.start) {
@@ -287,6 +285,24 @@ function EditTimeBlock(props) {
       }
       if (data.end) {
         setEndTimeValue(new Date(data.end.seconds * 1000));
+      }
+
+      if (data.timeEdited) {
+        if (calculateIfGoogleImgExpired(data.timeEdited.seconds * 1000)) {
+          const renewGoolgeImg = await googleServices.getlaceDetail(
+            data.place_id
+          );
+
+          console.log(11, renewGoolgeImg.photos[0].getUrl());
+          const locationInfo = createLocationKeyPairs(
+            data,
+            renewGoolgeImg.photos[0].getUrl()
+          );
+          setLocation(locationInfo);
+        } else {
+          const locationInfo = createLocationKeyPairs(data);
+          setLocation(locationInfo);
+        }
       }
     }
   }, [initBlockData]);

@@ -319,10 +319,52 @@ export async function getAutoCompleteData(
   );
   autocomplete.addListener('place_changed', () => {
     const place = autocomplete.getPlace();
-    console.log(12, place);
+
     handleDataCallback(place);
   });
 
   const place2 = autocomplete.getPlace();
   console.log(12, place2);
+}
+export function calculateIfGoogleImgExpired(dateEdited) {
+  const currentTime = new Date();
+  const expirationTime = new Date(dateEdited).setDate(
+    new Date(dateEdited).getDate() + 2
+  );
+
+  if (currentTime > expirationTime) {
+    console.log('google image expired');
+    return true;
+  } else {
+    console.log('google image NOT expired');
+    return false;
+  }
+}
+
+export function createLocationKeyPairs(data, renewGoolgeImg) {
+  if (renewGoolgeImg) {
+    return {
+      name: data.place_name,
+      formatted_address: data.place_format_address,
+      formatted_phone_number: data.place_formatted_phone_number || '',
+      international_phone_number: data.place_international_phone_number || '',
+      url: data.place_url,
+      place_types: data.types || '',
+      mainImg: renewGoolgeImg || data.place_img || '',
+      rating: data.rating || '',
+      place_id: data.place_id,
+    };
+  } else {
+    return {
+      name: data.place_name,
+      formatted_address: data.place_format_address,
+      formatted_phone_number: data.place_formatted_phone_number || '',
+      international_phone_number: data.place_international_phone_number || '',
+      url: data.place_url,
+      place_types: data.types || '',
+      mainImg: data.place_img || '',
+      rating: data.rating || '',
+      place_id: data.place_id,
+    };
+  }
 }
