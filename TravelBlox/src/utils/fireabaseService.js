@@ -9,7 +9,11 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signOut,
+} from 'firebase/auth';
 
 import Swal from 'sweetalert2';
 import firebaseDB from './firebaseConfig';
@@ -361,6 +365,18 @@ const firebaseService = {
     } catch (error) {
       console.log(error);
     }
+  },
+  signOutFirebase() {
+    const auth = getAuth();
+
+    return signOut(auth)
+      .then(() => {
+        return true;
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
   },
 };
 

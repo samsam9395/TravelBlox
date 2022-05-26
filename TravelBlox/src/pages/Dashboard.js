@@ -5,7 +5,6 @@ import {
   themeColours,
 } from '../styles/globalTheme';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { getAuth, signOut } from 'firebase/auth';
 
 import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
 import FullLoading from '../components/general/FullLoading';
@@ -177,56 +176,51 @@ const LogoutIcon = styled(LogoutMUIIcon)`
   margin-right: 5px;
 `;
 
-const SectionWrapper = styled.div`
+export const SectionWrapper = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const SubSectionWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SectionTitle = styled.div`
+  height: 100%;
+  font-weight: 600;
+  font-size: 36px;
+  margin-right: 20px;
 `;
 
 const SectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   font-family: ${fonts.secondary_font}, sans-serif;
+`;
 
-  .section_wrapper {
-    display: flex;
-    align-items: center;
-  }
+export const SectionItemAmount = styled.div`
+  color: grey;
+  font-size: 1.5em;
+`;
 
-  .sub_section_wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+export const SubSection = styled.div`
+  padding: 0 5%;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+`;
 
-  .section_title {
-    height: 100%;
-    font-weight: 600;
-    font-size: 36px;
-    margin-right: 20px;
-  }
+export const Dot = styled.div`
+  color: grey;
+  font-size: 3em;
+  margin-right: 15px;
+`;
 
-  .dot {
-    color: grey;
-    font-size: 3em;
-    margin-right: 15px;
-  }
-
-  .item_amount {
-    color: grey;
-    font-size: 1.5em;
-  }
-
-  .sub_section {
-    padding: 0 5%;
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .section_sub-title {
-    font-size: 30px;
-    margin-right: 20px;
-  }
+export const SectionSubTitle = styled.div`
+  font-size: 30px;
+  margin-right: 20px;
 `;
 
 const PlanCollectionWrapper = styled.div`
@@ -255,29 +249,31 @@ const SinglePlanContainer = styled.div`
   }
 `;
 
+const NoPlanTextTitle = styled.div`
+  font-size: 30px;
+  font-weight: 600;
+`;
+const NoPlanTextInstruction = styled.div`
+  font-size: 18px;
+  font-weight: 200;
+  display: flex;
+`;
+const NoPlanTexCallToAction = styled.div`
+  margin: 0 5px;
+  padding: 0 3px;
+  background-color: ${themeColours.light_orange};
+  color: white;
+`;
+
 const NoPlansText = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: ${fonts.main_font}, sans-serif;
+`;
 
-  .title {
-    font-size: 30px;
-    font-weight: 600;
-  }
-
-  .instruction {
-    font-size: 18px;
-    font-weight: 200;
-    display: flex;
-
-    .btn_cta {
-      margin: 0 5px;
-      padding: 0 3px;
-      background-color: ${themeColours.light_orange};
-      color: white;
-    }
-  }
+const Divider = styled.div`
+  color: ${themeColours.light_grey};
 `;
 
 const DisplaySwitch = styled.div`
@@ -293,15 +289,10 @@ const DisplaySwitch = styled.div`
   bottom: -24px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 
-  .divider {
-    color: ${themeColours.light_grey};
-  }
   @media (max-width: 768px) {
     width: 70%;
   }
 `;
-
-const Divider = styled.div``;
 
 const PlanTab = styled.div`
   min-width: 50%;
@@ -319,20 +310,6 @@ const PlanTab = styled.div`
     cursor: pointer;
   }
 `;
-
-function signOutFirebase() {
-  const auth = getAuth();
-
-  return signOut(auth)
-    .then(() => {
-      Swal.fire('You were signed out!');
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-}
 
 function Dashboard() {
   const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
@@ -360,9 +337,10 @@ function Dashboard() {
       Swal.fire('Please login first!');
       navigate('/');
     } else {
-      if (firebaseService.getOwnPlans(userInfo.userEmail)) {
+      const ownPlanList = await firebaseService.getOwnPlans(userInfo.userEmail);
+      if (ownPlanList.length !== 0) {
         setShowNoPlansText(false);
-        setOwnPlansIdList();
+        setOwnPlansIdList(ownPlanList);
       } else {
         setShowNoPlansText(true);
       }
@@ -430,11 +408,13 @@ function Dashboard() {
               <UserBasicInfo>{userName}</UserBasicInfo>
               <UserBasicInfo>{userInfo?.userEmail}</UserBasicInfo>
               <LogoutContainer
-                onClick={() => {
-                  if (signOutFirebase()) {
+                onClick={async () => {
+                  if (firebaseService.signOutFirebase()) {
+                    Swal.fire('You were signed out!');
                     navigate('/');
+                  } else {
+                    Swal.fire('Oops, please try sign out again!');
                   }
-                  console.log(signOutFirebase());
                 }}>
                 <LogoutIcon></LogoutIcon> Logout
               </LogoutContainer>
@@ -458,7 +438,7 @@ function Dashboard() {
               onClick={(e) => setDisplaySection(e.target.textContent)}>
               My Plans
             </PlanTab>
-            <div className="divider">|</div>
+            <Divider />
             <PlanTab
               value="fav_plan"
               onClick={(e) => setDisplaySection(e.target.textContent)}>
@@ -472,31 +452,35 @@ function Dashboard() {
         {displaySection === 'My Plans' && (
           <SectionContainer>
             <SectionWrapper>
-              <div className="section_title">Plans</div>
+              <SectionTitle>Plans</SectionTitle>
             </SectionWrapper>
 
-            <div className="sub_section">
-              <div className="sub_section_wrapper">
-                <div className="section_wrapper">
-                  <div className="section_sub-title">My Plans</div>
-                  <div className="dot"> {'\u00B7'} </div>
+            <SubSection>
+              <SubSectionWrapper>
+                <SectionWrapper>
+                  <SectionSubTitle>My Plans</SectionSubTitle>
+                  <Dot> {'\u00B7'} </Dot>
                   {ownPlansIdList && (
-                    <div className="item_amount">{ownPlansIdList.length}</div>
+                    <SectionItemAmount>
+                      {ownPlansIdList.length}
+                    </SectionItemAmount>
                   )}
-                </div>
-              </div>
+                </SectionWrapper>
+              </SubSectionWrapper>
 
               <PlanCollectionWrapper>
                 {showNoPlansText && (
                   <NoPlansText>
-                    <div className="title">
+                    <NoPlanTextTitle>
                       You haven't created any travel plans yet.
-                    </div>
-                    <div className="instruction">
+                    </NoPlanTextTitle>
+                    <NoPlanTextInstruction>
                       Click on
-                      <div className="btn_cta">ADD NEW PLAN</div>
+                      <NoPlanTexCallToAction>
+                        ADD NEW PLAN
+                      </NoPlanTexCallToAction>
                       to start one!
-                    </div>
+                    </NoPlanTextInstruction>
                   </NoPlansText>
                 )}
                 {ownPlansIdList?.map((ownPlanId) => {
@@ -513,15 +497,15 @@ function Dashboard() {
                   );
                 })}
               </PlanCollectionWrapper>
-            </div>
+            </SubSection>
           </SectionContainer>
         )}
 
         {displaySection === 'Favourite Plans' && (
           <SectionContainer>
-            <div className="section_wrapper">
-              <div className="section_title">Favourites</div>
-            </div>
+            <SectionWrapper>
+              <SectionTitle>Favourites</SectionTitle>
+            </SectionWrapper>
             <FavouriteFolderBar currentUserId={userInfo.userEmail} />
           </SectionContainer>
         )}

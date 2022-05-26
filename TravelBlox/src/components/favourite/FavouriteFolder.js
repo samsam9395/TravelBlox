@@ -9,41 +9,41 @@ import styled from 'styled-components';
 
 const db = firebaseDB();
 
+const EmptyNotification = styled.div`
+  font-family: ${fonts.main_font}, sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Instruction = styled.div`
+  font-size: 18px;
+  font-weight: 200;
+  display: flex;
+  margin-top: 5px;
+`;
+
+const CallToActionBtn = styled.div`
+  margin: 0 5px;
+  padding: 0 3px;
+  background-color: ${themeColours.light_orange};
+  color: white;
+`;
+
+const HighlightText = styled.div`
+  margin: 0 5px;
+  padding: 0 3px;
+  font-weight: 600;
+  font-style: italic;
+`;
+
 const FavPlansCtonainer = styled.div`
   display: flex;
   overflow: auto;
   justify-content: center;
   display: -webkit-box;
-
-  .empty_notification {
-    font-family: ${fonts.main_font}, sans-serif;
-    font-size: 30px;
-    font-weight: 600;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .instruction {
-      font-size: 18px;
-      font-weight: 200;
-      display: flex;
-      margin-top: 5px;
-
-      .btn_cta {
-        margin: 0 5px;
-        padding: 0 3px;
-        background-color: ${themeColours.light_orange};
-        color: white;
-      }
-
-      .hightlight_text {
-        margin: 0 5px;
-        padding: 0 3px;
-        font-weight: 600;
-        font-style: italic;
-      }
-    }
-  }
 `;
 
 const FavPlansWrapper = styled.div`
@@ -78,18 +78,18 @@ export default function FavouriteFolder({ selectedFolder, currentUserId }) {
   return (
     <FavPlansCtonainer>
       {isEmptyFolder ? (
-        <div className="empty_notification">
+        <EmptyNotification>
           No favourite plans added to this folder yet!
-          <div className="instruction">
+          <Instruction>
             Discover new plans and
-            <div className="btn_cta">add them to favourites</div>!
-          </div>
-          <div className="instruction">
+            <CallToActionBtn>add them to favourites</CallToActionBtn>!
+          </Instruction>
+          <Instruction>
             Those plans will appear here and
-            <div className="hightlight_text"> can be imported</div>
+            <HighlightText> can be imported</HighlightText>
             to your own travel plans!
-          </div>
-        </div>
+          </Instruction>
+        </EmptyNotification>
       ) : (
         favPlansList?.map((favPlanId, index) => (
           <FavPlansWrapper key={index}>
