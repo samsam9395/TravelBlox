@@ -30,9 +30,9 @@ const MainTtitle = styled.div`
   text-shadow: 0 0 4px #ffffff;
 `;
 
-const BgImg = styled.img.attrs(({ rightValue }) => ({
+const BgImg = styled.img.attrs(({ scrollvalue }) => ({
   style: {
-    right: rightValue * 0.5 + 'px',
+    right: scrollvalue * 0.5 + 'px',
   },
 }))`
   width: 300%;
@@ -43,7 +43,11 @@ const BgImg = styled.img.attrs(({ rightValue }) => ({
   position: absolute;
 `;
 
-const MountainImg = styled.img`
+const MountainImg = styled.img.attrs(({ scrollvalue }) => ({
+  style: {
+    top: scrollvalue * 1.8 + 'px',
+  },
+}))`
   width: 100%;
   position: absolute;
   height: 100%;
@@ -51,7 +55,6 @@ const MountainImg = styled.img`
   z-index: -1;
   top: 0;
   position: absolute;
-  top: ${(props) => `${props.scrollvalue * 1.8}px`};
   z-index: 1;
 `;
 
@@ -66,7 +69,11 @@ const TreeImg = styled.img`
   z-index: 2;
 `;
 
-const BirdImg = styled.img`
+const BirdImg = styled.img.attrs(({ scrollvalue }) => ({
+  style: {
+    left: scrollvalue * 1.8 + 20 + 'px',
+  },
+}))`
   width: 30px;
   position: absolute;
   height: 30px;
@@ -74,7 +81,6 @@ const BirdImg = styled.img`
   z-index: -1;
   top: 30%;
   position: absolute;
-  left: ${(props) => `${props.scrollvalue * 1.8 + 20}px`};
   z-index: 1;
 `;
 
