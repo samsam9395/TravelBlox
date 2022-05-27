@@ -7,6 +7,7 @@ import {
   FlexColumnWrapper,
   LightBlueBtn,
   PaleEmptyBtn,
+  ReminderText,
   themeColours,
 } from '../styles/globalTheme';
 import React, { useContext, useEffect, useState } from 'react';
@@ -37,11 +38,6 @@ const TopContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-`;
-
-const TitleInstructionText = styled.div`
-  color: ${themeColours.light_grey};
-  font-size: 12px;
 `;
 
 const TitleSection = styled.div`
@@ -198,9 +194,9 @@ function AddNewPlan(props) {
                   }
                   label="Published"
                 />
-                <TitleInstructionText>
+                <ReminderText>
                   Checking this will make your travel plan public to others.
-                </TitleInstructionText>
+                </ReminderText>
               </>
             )}
           </TitleSection>
@@ -247,6 +243,9 @@ function AddNewPlan(props) {
                 setCurrentSelectTimeId={setCurrentSelectTimeId}
               />
             </CalendarContainer>
+            <ReminderText>
+              Make sure to save for your changes after moving around the events!
+            </ReminderText>
             <BottomBtnContainer>
               <LightBlueBtn
                 onClick={() => {
@@ -306,22 +305,35 @@ function AddNewPlan(props) {
                   if (mainImage === null || '') {
                     const defaultImg = await firebaseService.getDefaultImg();
                     setMainImage(defaultImg);
-
-                    console.log(11, defaultImg);
-
-                    // if (
-                    //   firebaseService.createNewCollection(
-                    //     userInfo,
-                    //     username,
-                    //     startDateValue,
-                    //     endDateValue,
-                    //     planTitle,
-                    //     mainImage,
-                    //     country,
-                    //     isPublished
-                    //   )
-                    // ) {
-                    //   setHasCreatedCollection(true);
+                    if (
+                      firebaseService.createNewCollection(
+                        userInfo,
+                        username,
+                        startDateValue,
+                        endDateValue,
+                        planTitle,
+                        defaultImg,
+                        country,
+                        isPublished
+                      )
+                    ) {
+                      setHasCreatedCollection(true);
+                    } else {
+                      Swal.fire(
+                        'Oops, something went wrong...please try creating again!'
+                      );
+                    }
+                  } else {
+                    firebaseService.createNewCollection(
+                      userInfo,
+                      username,
+                      startDateValue,
+                      endDateValue,
+                      planTitle,
+                      mainImage,
+                      country,
+                      isPublished
+                    );
                   }
                 } else {
                   Swal.fire('Please provide the required fields!');

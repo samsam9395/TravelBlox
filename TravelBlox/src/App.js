@@ -20,6 +20,7 @@ import ParallaxLanding from './pages/ParallaxLanding';
 import StaticPlanDetail from './pages/StaticPlanDetail';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import firebaseDB from './utils/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -28,17 +29,25 @@ export const UserContext = createContext();
 function App() {
   const [defaultImg, setDefaultImg] = useState('');
   const [userInfo, setUserInfo] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
+      console.log(user);
       if (user) {
         setUserInfo({
           userToken: user.accessToken,
           userEmail: user.email,
         });
+        console.log(window.location.href);
+        if (window.location.href === '/') {
+          console.log('this line runs');
+          navigate('/discover');
+        }
       } else {
         console.log('not logged in');
+        navigate('/');
       }
     });
   }, []);

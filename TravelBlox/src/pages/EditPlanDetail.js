@@ -7,6 +7,7 @@ import {
   FlexColumnWrapper,
   LightBlueBtn,
   PaleBtn,
+  ReminderText,
   themeColours,
 } from '../styles/globalTheme';
 import React, { useContext, useEffect, useState } from 'react';
@@ -224,6 +225,9 @@ function EditPlanDetail() {
             }
             label="Published"
           />
+          <ReminderText>
+            Checking this will make your travel plan public to others.
+          </ReminderText>
         </TitleSection>
 
         <FlexColumnWrapper>
@@ -267,6 +271,9 @@ function EditPlanDetail() {
           />
         )}
       </CalendarContainer>
+      <ReminderText>
+        Make sure to save for your changes after moving around the events!
+      </ReminderText>
       <BottomBtnContainer>
         <div className="left_btns">
           <LightBlueBtn

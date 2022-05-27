@@ -1,7 +1,6 @@
 import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import React, { useState } from 'react';
-import { collection, doc, setDoc } from 'firebase/firestore';
 
 import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import Close from '@mui/icons-material/Close';
@@ -10,11 +9,9 @@ import LocationCard from '../timeblock/LocationCard';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
-import firebaseDB from '../../utils/firebaseConfig';
-import { renameGoogleMaDataIntoFirebase } from '../../utils/functionList';
+import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
-
-const db = firebaseDB();
+import { uploadImagePromise } from '../../utils/functionList';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -92,20 +89,6 @@ const TimeblockImgUploadContainer = styled.div`
   }
 `;
 
-function handleImageUpload(e, setTimeBlockImage) {
-  const reader = new FileReader();
-  if (e) {
-    reader.readAsDataURL(e.target.files[0]);
-  }
-
-  reader.onload = function () {
-    setTimeBlockImage(reader.result);
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-  };
-}
-
 AddNewTimeBlock.propTypes = {
   planDocRef: PropTypes.string,
   closePopUp: PropTypes.func,
@@ -119,49 +102,6 @@ function AddNewTimeBlock(props) {
   const [endTimeValue, setEndTimeValue] = useState(props.startDateValue);
   const [location, setLocation] = useState('');
   const [timeBlockImage, setTimeBlockImage] = useState('');
-
-  async function addToDataBase(
-    planDocRef,
-    blockTitle,
-    description,
-    startTimeValue,
-    endTimeValue,
-    location,
-    timeBlockImage
-  ) {
-    const timeBlockRef = doc(
-      collection(db, 'plans', planDocRef, 'time_blocks')
-    );
-
-    const googleLocationData = renameGoogleMaDataIntoFirebase(location);
-    try {
-      await setDoc(timeBlockRef, {
-        title: blockTitle,
-        text: description,
-        start: startTimeValue,
-        end: endTimeValue,
-        id: timeBlockRef.id,
-        timeblock_img: timeBlockImage || '',
-
-        ...googleLocationData,
-        status: 'origin',
-      });
-
-      props.closePopUp();
-      Swal.fire('Successfully added!');
-    } catch (error) {
-      if (
-        error.message ==
-        'The value of property "timeblock_img" is longer than 1048487 bytes.'
-      ) {
-        Swal.fire('Your image is too large, Please change another image.');
-      }
-    }
-
-    {
-      props.setAddedTimeBlock && props.setAddedTimeBlock(true);
-    }
-  }
 
   return (
     <>
@@ -227,8 +167,11 @@ function AddNewTimeBlock(props) {
                   accept="image/*"
                   type="file"
                   id="imgupload"
-                  onChange={(e) => {
-                    handleImageUpload(e, setTimeBlockImage);
+                  onChange={async (e) => {
+                    const imageFile = await uploadImagePromise(
+                      e.target.files[0]
+                    );
+                    setTimeBlockImage(imageFile);
                   }}
                 />
 
@@ -246,7 +189,7 @@ function AddNewTimeBlock(props) {
             </TimeblockImgUploadContainer>
           </FormsContainer>
           <LightOrangeBtn
-            onClick={(e) => {
+            onClick={async (e) => {
               if (
                 blockTitle &&
                 description &&
@@ -254,15 +197,30 @@ function AddNewTimeBlock(props) {
                 startTimeValue &&
                 endTimeValue
               ) {
-                addToDataBase(
-                  props.planDocRef,
-                  blockTitle,
-                  description,
-                  startTimeValue,
-                  endTimeValue,
-                  location,
-                  timeBlockImage
-                );
+                const addNewTimeBlockToDatabase =
+                  await firebaseService.addNewTimeBlockToDataBase(
+                    props.planDocRef,
+                    blockTitle,
+                    description,
+                    startTimeValue,
+                    endTimeValue,
+                    location,
+                    timeBlockImage
+                  );
+                if (addNewTimeBlockToDatabase.result === true) {
+                  props.closePopUp();
+                  Swal.fire('Successfully added!');
+                  props.setAddedTimeBlock && props.setAddedTimeBlock(true);
+                } else {
+                  if (
+                    addNewTimeBlockToDatabase.error.message ==
+                    'The value of property "timeblock_img" is longer than 1048487 bytes.'
+                  ) {
+                    Swal.fire(
+                      'Your image is too large, Please change another image.'
+                    );
+                  }
+                }
               } else {
                 Swal.fire('Please fill in all the requirements!');
               }

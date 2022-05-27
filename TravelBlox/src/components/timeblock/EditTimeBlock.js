@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import {
   checkGoogleImgExpirationDate,
   createLocationKeyPairs,
+  uploadImagePromise,
 } from '../../utils/functionList';
 
 import AutoCompleteInput from '../timeblock/AutoCompleteInput';
@@ -103,20 +104,6 @@ const TimeblockImgUploadContainer = styled.div`
     font-size: 12px;
   }
 `;
-
-function handleImageUpload(e, setTimeBlockImage) {
-  const reader = new FileReader();
-  if (e) {
-    reader.readAsDataURL(e.target.files[0]);
-  }
-
-  reader.onload = function () {
-    setTimeBlockImage(reader.result);
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-  };
-}
 
 EditTimeBlock.propTypes = {
   planDocRef: PropTypes.string,
@@ -314,8 +301,11 @@ function EditTimeBlock(props) {
                   accept="image/*"
                   type="file"
                   id="imgupload"
-                  onChange={(e) => {
-                    handleImageUpload(e, setTimeBlockImage);
+                  onChange={async (e) => {
+                    const imageFile = await uploadImagePromise(
+                      e.target.files[0]
+                    );
+                    setTimeBlockImage(imageFile);
                   }}
                 />
 
