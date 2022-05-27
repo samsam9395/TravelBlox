@@ -411,7 +411,7 @@ function Dashboard() {
                 onClick={async () => {
                   if (firebaseService.signOutFirebase()) {
                     Swal.fire('You were signed out!');
-                    navigate('/');
+                    // navigate('/');
                   } else {
                     Swal.fire('Oops, please try sign out again!');
                   }

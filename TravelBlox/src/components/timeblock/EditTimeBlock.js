@@ -5,18 +5,17 @@ import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import React, { useEffect, useState } from 'react';
 import {
-  calculateIfGoogleImgExpired,
   checkGoogleImgExpirationDate,
   createLocationKeyPairs,
-  renameGoogleMaDataIntoFirebase,
+  uploadImagePromise,
 } from '../../utils/functionList';
-import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 
 import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import DateTimeSelector from '../input/DateTimeSelector';
 import LocationCard from '../timeblock/LocationCard';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
+import { doc } from 'firebase/firestore';
 import firebaseDB from '../../utils/firebaseConfig';
 import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
@@ -106,20 +105,6 @@ const TimeblockImgUploadContainer = styled.div`
   }
 `;
 
-function handleImageUpload(e, setTimeBlockImage) {
-  const reader = new FileReader();
-  if (e) {
-    reader.readAsDataURL(e.target.files[0]);
-  }
-
-  reader.onload = function () {
-    setTimeBlockImage(reader.result);
-  };
-  reader.onerror = function (error) {
-    console.log('Error: ', error);
-  };
-}
-
 EditTimeBlock.propTypes = {
   planDocRef: PropTypes.string,
   closePopUp: PropTypes.func,
@@ -149,37 +134,15 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.id
   );
 
-  async function retreiveFromDataBase(timeBlockRef, setInitBlockData) {
-    const timeBlockSnap = await getDoc(timeBlockRef);
-
-    if (timeBlockSnap.exists()) {
-      const initialData = timeBlockSnap.data();
-
-      if (setInitBlockData) {
-        setInitBlockData(initialData);
-      }
-
-      return initialData;
-    } else {
-      console.log('No such document!');
-    }
-  }
-
-  async function deleteFromDataBase(timeBlockRef) {
-    try {
-      await deleteDoc(timeBlockRef);
-      return true;
-    } catch (error) {
-      console.log(error);
-      Swal.fire('Something went wrong, please try again!');
-    }
-  }
-
-  useEffect(() => {
+  useEffect(async () => {
     if (props.currentSelectTimeData.status === 'imported') {
       setImportBlockData(props.currentSelectTimeData);
     } else if (props.currentSelectTimeData.status === 'origin') {
-      retreiveFromDataBase(timeBlockRef, setInitBlockData);
+      const originTimeBlockData = await firebaseService.retreiveFromDataBase(
+        timeBlockRef
+      );
+
+      setInitBlockData(originTimeBlockData);
     } else console.log('something wrong with edit-time-block');
   }, [props.currentSelectTimeData]);
 
@@ -190,24 +153,19 @@ function EditTimeBlock(props) {
     setLocationName(data.place_name);
     setStartTimeValue(data.start);
     setEndTimeValue(data.end);
-    // setLocation({
-    //   name: data.place_name,
-    //   formatted_address: data.place_format_address,
-    //   formatted_phone_number: data.place_formatted_phone_number || '',
-    //   international_phone_number: data.place_international_phone_number || '',
-    //   url: data.place_url,
-    //   place_types: data.types || '',
-    //   mainImg: data.place_img || '',
-    //   rating: data.rating || '',
-    //   place_id: data.place_id,
-    // });
 
     if (data.timeEdited) {
       const imgExpiration = await checkGoogleImgExpirationDate(
         data,
         timeBlockRef
       );
+
+      console.log('imgExpiration', imgExpiration);
       setLocation(imgExpiration);
+    } else {
+      setLocation({
+        ...createLocationKeyPairs(data),
+      });
     }
   }, [importBlockData]);
 
@@ -233,6 +191,10 @@ function EditTimeBlock(props) {
           timeBlockRef
         );
         setLocation(imgExpiration);
+      } else {
+        setLocation({
+          ...createLocationKeyPairs(data),
+        });
       }
     }
   }, [initBlockData]);
@@ -256,7 +218,12 @@ function EditTimeBlock(props) {
                   backdrop: false,
                 }).then((result) => {
                   if (result.isConfirmed) {
-                    if (deleteFromDataBase(timeBlockRef, blockTitle)) {
+                    if (
+                      firebaseService.deleteTimeBlockFromDataBase(
+                        timeBlockRef,
+                        blockTitle
+                      )
+                    ) {
                       props.closePopUp();
                       Swal.fire(`${blockTitle} is deleted!`);
                     }
@@ -334,8 +301,11 @@ function EditTimeBlock(props) {
                   accept="image/*"
                   type="file"
                   id="imgupload"
-                  onChange={(e) => {
-                    handleImageUpload(e, setTimeBlockImage);
+                  onChange={async (e) => {
+                    const imageFile = await uploadImagePromise(
+                      e.target.files[0]
+                    );
+                    setTimeBlockImage(imageFile);
                   }}
                 />
 

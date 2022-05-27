@@ -20,6 +20,7 @@ import ParallaxLanding from './pages/ParallaxLanding';
 import StaticPlanDetail from './pages/StaticPlanDetail';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import firebaseDB from './utils/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
 
@@ -28,20 +29,27 @@ export const UserContext = createContext();
 function App() {
   const [defaultImg, setDefaultImg] = useState('');
   const [userInfo, setUserInfo] = useState(null);
+  const [hasSignedIn, setHasSignedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user && user.accessToken) {
         setUserInfo({
           userToken: user.accessToken,
           userEmail: user.email,
         });
+        setHasSignedIn(true);
       } else {
-        console.log('not logged in');
+        setHasSignedIn(false);
       }
     });
   }, []);
+
+  useEffect(() => {
+    hasSignedIn ? navigate('/discover') : navigate('/');
+  }, [hasSignedIn]);
 
   useEffect(async () => {
     const docSnap = await getDoc(

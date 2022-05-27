@@ -145,3 +145,8 @@ export const ContentWrapper = styled.div`
     padding: 80px 15px 80px 15px;
   }
 `;
+
+export const ReminderText = styled.div`
+  color: ${themeColours.light_grey};
+  font-size: 12px;
+`;

@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -452,6 +453,62 @@ const firebaseService = {
         console.log(error);
         return false;
       }
+    }
+  },
+  async deleteTimeBlockFromDataBase(timeBlockRef) {
+    try {
+      await deleteDoc(timeBlockRef);
+      return true;
+    } catch (error) {
+      console.log(error);
+      Swal.fire('Something went wrong, please try again!');
+    }
+  },
+  async retreiveFromDataBase(timeBlockRef) {
+    const timeBlockSnap = await getDoc(timeBlockRef);
+
+    if (timeBlockSnap.exists()) {
+      const initialData = timeBlockSnap.data();
+
+      return initialData;
+    } else {
+      console.log('No such document!');
+      return '';
+    }
+  },
+  async addNewTimeBlockToDataBase(
+    planDocRef,
+    blockTitle,
+    description,
+    startTimeValue,
+    endTimeValue,
+    location,
+    timeBlockImage
+  ) {
+    const timeBlockRef = doc(
+      collection(db, 'plans', planDocRef, 'time_blocks')
+    );
+
+    const googleLocationData = renameGoogleMaDataIntoFirebase(location);
+    try {
+      await setDoc(timeBlockRef, {
+        title: blockTitle,
+        text: description,
+        start: startTimeValue,
+        end: endTimeValue,
+        id: timeBlockRef.id,
+        timeblock_img: timeBlockImage || '',
+
+        ...googleLocationData,
+        status: 'origin',
+      });
+
+      return { result: true };
+    } catch (error) {
+      return {
+        result: false,
+        error,
+      };
     }
   },
 };
