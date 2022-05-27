@@ -29,28 +29,27 @@ export const UserContext = createContext();
 function App() {
   const [defaultImg, setDefaultImg] = useState('');
   const [userInfo, setUserInfo] = useState(null);
+  const [hasSignedIn, setHasSignedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
-      if (user) {
+      if (user && user.accessToken) {
         setUserInfo({
           userToken: user.accessToken,
           userEmail: user.email,
         });
-        console.log(window.location.href);
-        if (window.location.href === '/') {
-          console.log('this line runs');
-          navigate('/discover');
-        }
+        setHasSignedIn(true);
       } else {
-        console.log('not logged in');
-        navigate('/');
+        setHasSignedIn(false);
       }
     });
   }, []);
+
+  useEffect(() => {
+    hasSignedIn ? navigate('/discover') : navigate('/');
+  }, [hasSignedIn]);
 
   useEffect(async () => {
     const docSnap = await getDoc(

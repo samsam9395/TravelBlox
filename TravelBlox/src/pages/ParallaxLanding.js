@@ -169,7 +169,6 @@ function ParallaxLanding() {
   const [scrollYValue, setscrollYValue] = useState(0);
 
   const userInfo = useContext(UserContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     window.addEventListener(
@@ -181,12 +180,6 @@ function ParallaxLanding() {
       []
     );
   }, []);
-
-  useEffect(() => {
-    if (userInfo) {
-      navigate('/discover');
-    }
-  }, [userInfo]);
 
   return (
     <>
