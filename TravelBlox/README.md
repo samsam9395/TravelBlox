@@ -1,70 +1,104 @@
-# Getting Started with Create React App
+ <p></p>
+ <picture  >
+  <img align="left"  alt="TravelBlox Logo" src="./src/images/main-logo-whitebg.png" width="80" >
+</picture>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# TravelBlox
 
-## Available Scripts
+<br />
 
-In the project directory, you can run:
+## Table of Contents
 
-### `npm start`
+- About The Project
+- Technologies
+- Flow Chart
+- Demo Preview
+- Future Features
+- Contact
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<br />
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## About The Project
 
-### `npm test`
+##### Description
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+A travel planning website that ease the hassel of planning travel schedule by combining map direction, calendar timeline and travel blog with a beautiful and easy-to-use drag and drop interface.
 
-### `npm run build`
+Enables users to share, collect and import travel schedules made by others.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<details> 
+<summary><em> Reason behind this project </em></summary> 
+<blockquote>
+<p> Pandemic has stopped a lot of travel plans in the past few years. Recently locations around the world are beginning to open for travels, I think it's the perfect timing to build a travel planning website.  :wink: </p>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<p>
+I've been planning my trips with spreadsheets and note takers, in which I had to switch platforms between calendars, maps and a lot times many personal travel blogs for planning ideas.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+So here it is, **TravelBlox** that puts everything altogether :blush: :sparkling_heart:
 
-### `npm run eject`
+ </p>
+</blockquote>
+</details>
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<br />
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Demo
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+> Link: https://travelblox-a8094.web.app/
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Demo Account:
+  - Username: user@user.com
+  - Password: user1234
 
-## Learn More
+<br />
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Technologies
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Front-End
 
-### Code Splitting
+- React.js / React Router / Hooks
+- styled-components
+- SASS
+- Firebase
+  - Hoisting
+  - Firebase Database
+  - Authentication
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### Packages
 
-### Analyzing the Bundle Size
+- react-big-calendar
+- moment
+- react-date-range
+- Material UI
+- sweetalert2
+- react-spinners
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### Website Graphics
 
-### Making a Progressive Web App
+- SVG / Adobe Illustrator / Adobe Photoshop
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Third Party APIs
 
-### Advanced Configuration
+- Google's Maps API, Directions API, Places API, Autocomplete API, Calendar API
+- OpenWeather API, REST Countries API, Travel Advisor API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+<br />
 
-### Deployment
+## Flow Chart
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+<br />
 
-### `npm run build` fails to minify
+## Future Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Follow and Add friend system
+- Co-editing with friends
+- Commenting system
+- Export a plan as printable PDF booklet
+
+<br />
+
+## Contact
+
+Feel free to contact me :relaxed:
+
+- sammimi@gmail.com
