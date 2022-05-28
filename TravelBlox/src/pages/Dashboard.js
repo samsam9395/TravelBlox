@@ -380,14 +380,20 @@ function Dashboard() {
                   id="user_avatar_file"
                   type="file"
                   onChange={async (e) => {
-                    const imageFile = await uploadImagePromise(
-                      e.target.files[0]
-                    );
-                    setUserImage(imageFile);
-                    firebaseService.saveImgToDataBase(
-                      imageFile,
-                      userInfo.userEmail
-                    );
+                    if (e.target.files[0].size > 1048487) {
+                      Swal.fire(
+                        'Oops, image too large. Please upload images under 1MB.'
+                      );
+                    } else {
+                      const imageFile = await uploadImagePromise(
+                        e.target.files[0]
+                      );
+                      setUserImage(imageFile);
+                      firebaseService.saveImgToDataBase(
+                        imageFile,
+                        userInfo.userEmail
+                      );
+                    }
                   }}></input>
                 <IconButton
                   style={{

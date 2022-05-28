@@ -48,8 +48,8 @@ const InputContainer = styled.div`
 `;
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('user@user.com');
+  const [password, setPassword] = useState('user1234');
   const [username, setUserName] = useState('');
   const [showSignUp, setShowSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

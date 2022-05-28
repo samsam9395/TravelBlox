@@ -217,7 +217,7 @@ function AddNewTimeBlock(props) {
                     'The value of property "timeblock_img" is longer than 1048487 bytes.'
                   ) {
                     Swal.fire(
-                      'Your image is too large, Please change another image.'
+                      'Your image is too large, Please change another image under 1MB.'
                     );
                   }
                 }
