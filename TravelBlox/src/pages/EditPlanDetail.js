@@ -40,12 +40,20 @@ const Wrapper = styled.div`
 const TopContainer = styled.div`
   display: flex;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 30px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 30px;
+  }
 `;
 
 const CalendarColourBackground = styled.div`

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
-import { getAutoCompleteData } from '../../utils/functionList';
 import { themeColours } from '../../styles/globalTheme';
 
 SearchInput.propTypes = {
@@ -17,13 +16,14 @@ function SearchInput(props) {
 
   useEffect(async () => {
     if (ref.current) {
-      const googleLocationData = await getAutoCompleteData(
-        ref.current,
-        props.setLocation
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        ref.current
       );
-      props.setLocation(77, googleLocationData);
-
-      setInputLocationValue(googleLocationData.name);
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        props.setLocation(place);
+        setInputLocationValue(place.name);
+      });
     }
   }, [ref, props.setLocation]);
 

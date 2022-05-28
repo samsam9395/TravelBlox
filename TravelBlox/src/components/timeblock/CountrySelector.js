@@ -44,7 +44,7 @@ export default function CountrySelector(props) {
   return (
     <Autocomplete
       id="country-select"
-      sx={{ m: 1, width: 300, label: { color: themeColours.light_orange } }}
+      sx={{ m: 1, width: '97%', label: { color: themeColours.light_orange } }}
       value={displayValue}
       options={countryList}
       autoHighlight

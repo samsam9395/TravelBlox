@@ -33,6 +33,10 @@ const PopBox = styled.div`
   padding: 20px 20px;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    width: 80vw;
+  }
 `;
 
 const CloseBtn = styled(IconButton)`

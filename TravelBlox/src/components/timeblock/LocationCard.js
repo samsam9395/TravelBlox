@@ -8,16 +8,25 @@ import { themeColours } from '../../styles/globalTheme';
 
 const CardWrapper = styled.div`
   width: 100%;
-  max-height: 500px;
   display: flex;
   flex-direction: row;
   margin: 30px 0;
+  align-items: center;
+
+  @media (max-width: 490px) {
+    flex-direction: column;
+  }
 `;
 
 const MainImage = styled.img`
   max-height: 300px;
   max-width: 60%;
   flex: 1 1 auto;
+
+  @media (max-width: 490px) {
+    max-width: 95%;
+    margin: auto;
+  }
 `;
 
 const InfoWrapper = styled.div`
@@ -28,6 +37,11 @@ const InfoWrapper = styled.div`
   align-content: center;
   justify-content: center;
   align-items: flex-start;
+
+  @media (max-width: 490px) {
+    margin-top: 15px;
+    width: 100%;
+  }
 `;
 
 const InfoContainer = styled.div`

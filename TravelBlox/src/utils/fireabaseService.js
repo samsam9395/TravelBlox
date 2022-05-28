@@ -110,7 +110,10 @@ const firebaseService = {
         isPublished
       );
 
-      return true;
+      return {
+        result: true,
+        planDocId: createPlanDocId,
+      };
     } catch (e) {
       console.error('Error adding document: ', e);
       return false;

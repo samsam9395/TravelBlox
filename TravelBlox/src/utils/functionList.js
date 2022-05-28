@@ -111,19 +111,6 @@ export function loopThroughDays(startday, days) {
   return scheduleTimestampList;
 }
 
-export async function getAutoCompleteData(
-  autocompleteInputRef,
-  handleDataCallback
-) {
-  const autocomplete = new window.google.maps.places.Autocomplete(
-    autocompleteInputRef
-  );
-  autocomplete.addListener('place_changed', () => {
-    const place = autocomplete.getPlace();
-    handleDataCallback(place);
-  });
-}
-
 export function calculateIfGoogleImgExpired(dateEdited) {
   const currentTime = new Date();
   const expirationTime = new Date(dateEdited).setDate(

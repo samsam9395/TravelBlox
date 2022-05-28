@@ -32,17 +32,32 @@ import { useNavigate } from 'react-router-dom';
 const Wrapper = styled.div`
   padding: 100px 50px;
   margin: auto;
+
+  @media (max-width: 490px) {
+    padding: 100px 30px;
+  }
 `;
 
 const TopContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
+  margin-right: 20px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 30px;
+    width: 100%;
+    margin-right: 0;
+  }
 `;
 
 const CalendarContainer = styled.div`
@@ -96,7 +111,7 @@ AddNewPlan.propTypes = {
   defaultImg: PropTypes.string,
 };
 
-function AddNewPlan(props) {
+function AddNewPlan() {
   const [username, setUsername] = useState('');
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -119,15 +134,18 @@ function AddNewPlan(props) {
 
   const userInfo = useContext(UserContext);
 
-  // useEffect(() => {
-  //   if (addedTimeBlock) {
-  //     firebaseService.listenToSnapShot(planDocRef, setMyEvents);
-  //   }
-  // }, [addedTimeBlock]);
-
   useEffect(() => {
+    if (addedTimeBlock) {
+      firebaseService.listenToSnapShot(planDocRef, setMyEvents);
+    }
+  }, [addedTimeBlock]);
+
+  useEffect(async () => {
     if (userInfo.userEmail) {
-      setUsername(firebaseService.getUserName(userInfo.userEmail));
+      const usernamePromise = await firebaseService.getUserName(
+        userInfo.userEmail
+      );
+      setUsername(usernamePromise);
     }
   }, [userInfo.userEmail]);
 
@@ -143,7 +161,7 @@ function AddNewPlan(props) {
       )}
       {showEditPopUp && (
         <EditTimeBlock
-          setShowEditPopUp={setShowEditPopUp}
+          closePopUp={() => setShowEditPopUp(false)}
           currentSelectTimeData={currentSelectTimeData}
           currentSelectTimeId={currentSelectTimeId}
           planDocRef={planDocRef}
@@ -162,7 +180,7 @@ function AddNewPlan(props) {
               required
               sx={{
                 m: 1,
-                width: 300,
+                width: '97%',
                 label: { color: themeColours.light_orange },
               }}
               label="Title"
@@ -238,9 +256,9 @@ function AddNewPlan(props) {
                 startDateValue={startDateValue}
                 setMyEvents={setMyEvents}
                 myEvents={myEvents}
-                setShowEditPopUp={setShowEditPopUp}
                 setCurrentSelectTimeData={setCurrentSelectTimeData}
                 setCurrentSelectTimeId={setCurrentSelectTimeId}
+                toggleShowEditPopUp={() => setShowEditPopUp(true)}
               />
             </CalendarContainer>
             <ReminderText>
@@ -305,8 +323,8 @@ function AddNewPlan(props) {
                   if (mainImage === null || '') {
                     const defaultImg = await firebaseService.getDefaultImg();
                     setMainImage(defaultImg);
-                    if (
-                      firebaseService.createNewCollection(
+                    const createResult =
+                      await firebaseService.createNewCollection(
                         userInfo,
                         username,
                         startDateValue,
@@ -315,25 +333,36 @@ function AddNewPlan(props) {
                         defaultImg,
                         country,
                         isPublished
-                      )
-                    ) {
+                      );
+
+                    if (createResult.result) {
                       setHasCreatedCollection(true);
+                      setPlanDocRef(createResult.planDocId);
                     } else {
                       Swal.fire(
                         'Oops, something went wrong...please try creating again!'
                       );
                     }
                   } else {
-                    firebaseService.createNewCollection(
-                      userInfo,
-                      username,
-                      startDateValue,
-                      endDateValue,
-                      planTitle,
-                      mainImage,
-                      country,
-                      isPublished
-                    );
+                    const createResult =
+                      await firebaseService.createNewCollection(
+                        userInfo,
+                        username,
+                        startDateValue,
+                        endDateValue,
+                        planTitle,
+                        mainImage,
+                        country,
+                        isPublished
+                      );
+                    if (createResult.result) {
+                      setHasCreatedCollection(true);
+                      setPlanDocRef(createResult.planDocId);
+                    } else {
+                      Swal.fire(
+                        'Oops, something went wrong...please try creating again!'
+                      );
+                    }
                   }
                 } else {
                   Swal.fire('Please provide the required fields!');

@@ -39,7 +39,7 @@ const Wrapper = styled.div`
     padding: 80px 15px;
   }
 
-  @media (max-width: 390px) {
+  @media (max-width: 490px) {
     padding: 80px 5px;
   }
 `;
@@ -239,7 +239,7 @@ const PlanTitleText = styled.div`
     left: 3%;
   }
 
-  @media (max-width: 390px) {
+  @media (max-width: 490px) {
     top: 8%;
     width: 55%;
     left: 3%;
