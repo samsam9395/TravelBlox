@@ -1,4 +1,4 @@
-import { Divider, InputWrapper, SignUpSwitcher, Title } from './loginUIStyles';
+import { Divider, InputWrapper, SignUpSwitcher, Title } from './login_styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 

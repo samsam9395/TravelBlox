@@ -87,7 +87,6 @@ const firebaseService = {
   ) {
     const currentTimeMilli = new Date().getTime();
     const createPlanDocId = `plan${currentTimeMilli}`;
-    // setPlanDocRef(createPlanDocId);
     try {
       await setDoc(doc(db, 'plans', createPlanDocId), {
         author: userInfo.userEmail,
@@ -289,25 +288,43 @@ const firebaseService = {
     }
   },
   async signUp(email, password, username) {
+    const signUpErrorMessages = {
+      'auth/weak-password': 'Passwords need to be greater than 6 digits.',
+      'auth/email-already-in-use':
+        'This email is already an members, login directly.',
+      'auth/invalid-email': 'Invalid email, please try another one.',
+      'auth/wrong-password': 'Wrong password, please try again!',
+      'auth/user-not-found': 'User not found, please check your typings.',
+      'auth/internal-error': 'Something went wrong, please try again later.',
+      'auth/popup-closed-by-user': 'Login not successful, please try again!',
+    };
+
     const docRef = doc(db, 'userId', email);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return false;
       Swal.fire('You are a member already!');
+      return false;
     } else {
-      const auth = getAuth();
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      try {
+        const auth = getAuth();
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-      firebaseService.addNewUserToDataBase(
-        userCredential.user,
-        'firebase_native',
-        username
-      );
+        firebaseService.addNewUserToDataBase(
+          userCredential.user,
+          'firebase_native',
+          username
+        );
+      } catch (error) {
+        Swal.fire({
+          title: 'Oops!',
+          text: signUpErrorMessages[error.code],
+        });
+      }
     }
   },
   async getUserName(userEmail) {

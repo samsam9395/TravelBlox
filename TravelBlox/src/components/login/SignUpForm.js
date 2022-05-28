@@ -1,4 +1,4 @@
-import { InputWrapper, SignUpSwitcher, Title } from './loginUIStyles';
+import { InputWrapper, SignUpSwitcher, Title } from './login_styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import IconButton from '@mui/material/IconButton';
@@ -19,7 +19,7 @@ SignUpForm.propTypes = {
   email: PropTypes.string,
   password: PropTypes.string,
   username: PropTypes.string,
-  showPassword: PropTypes.func,
+  showPassword: PropTypes.bool,
 };
 
 function SignUpForm({

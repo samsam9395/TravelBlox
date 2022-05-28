@@ -483,19 +483,20 @@ function Dashboard() {
                     </NoPlanTextInstruction>
                   </NoPlansText>
                 )}
-                {ownPlansIdList?.map((ownPlanId) => {
-                  return (
-                    <SinglePlanContainer key={ownPlanId}>
-                      <OwnPlanCard
-                        userIdentity="author"
-                        ownPlanId={ownPlanId}
-                        key={ownPlanId}
-                        setOpenEditPopUp={setOpenEditPopUp}
-                        openEditPopUp={openEditPopUp}
-                      />
-                    </SinglePlanContainer>
-                  );
-                })}
+                {ownPlansIdList &&
+                  ownPlansIdList?.map((ownPlanId) => {
+                    return (
+                      <SinglePlanContainer key={ownPlanId}>
+                        <OwnPlanCard
+                          userIdentity="author"
+                          ownPlanId={ownPlanId}
+                          key={ownPlanId}
+                          setOpenEditPopUp={setOpenEditPopUp}
+                          openEditPopUp={openEditPopUp}
+                        />
+                      </SinglePlanContainer>
+                    );
+                  })}
               </PlanCollectionWrapper>
             </SubSection>
           </SectionContainer>

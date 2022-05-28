@@ -182,7 +182,6 @@ const DescriptionTextContainer = styled.div`
 function ParallaxLanding() {
   const [scrollYValue, setscrollYValue] = useState(0);
   let width = window.innerWidth;
-  console.log(scrollYValue);
 
   useEffect(() => {
     window.addEventListener(
