@@ -8,10 +8,17 @@ const DayMapContainer = styled.div`
   display: flex;
   width: 100%;
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const MapContainer = styled.div`
   width: 100%;
+  @media (max-width: 768px) {
+    height: 550px;
+  }
 `;
 
 const PanelContainer = styled.div`
@@ -21,6 +28,12 @@ const PanelContainer = styled.div`
   overflow: auto;
   height: 100%;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    margin-top: 20px;
+    margin-left: 0;
+    max-width: 100%;
+  }
 `;
 
 DayMapCard.propTypes = {

@@ -45,6 +45,7 @@ const MapIndivWrapper = styled.div`
 
   @media (max-width: 768px) {
     max-width: 100%;
+    height: 600px;
   }
 `;
 
