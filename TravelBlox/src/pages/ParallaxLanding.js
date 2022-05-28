@@ -28,6 +28,11 @@ const MainTtitle = styled.div`
   z-index: 1;
   font-weight: 600;
   text-shadow: 0 0 4px #ffffff;
+
+  @media (max-width: 768px) {
+    font-size: 3em;
+    top: 35%;
+  }
 `;
 
 const BgImg = styled.img.attrs(({ scrollvalue }) => ({
@@ -84,6 +89,15 @@ const BirdImg = styled.img.attrs(({ scrollvalue }) => ({
   z-index: 1;
 `;
 
+const SubsectionContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 60vh;
+  text-align: center;
+  top: 1050px;
+`;
+
 const SubSection = styled.div`
   height: 100vh;
   background: rgb(24, 24, 24);
@@ -100,24 +114,48 @@ const SubSection = styled.div`
     background: linear-gradient(to bottom, #161719 #e0b99f);
     z-index: 100;
   }
+`;
 
-  .subsection_container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    min-height: 60vh;
-    text-align: center;
-    top: 1050px;
-  }
+const DescriptionTextTitle = styled.div`
+  padding: 10px 20px;
+  font-size: 4em;
+  width: 500px;
+  font-family: ${fonts.secondary_font};
+  position: relative;
 
-  .text {
-    padding: 2rem 2rem;
-    font-size: 1.1rem;
+  @media (max-width: 768px) {
+    font-size: 2em;
   }
+`;
 
-  .content-images {
-    padding: 0 220px;
+const ContentSection = styled.div`
+  display: flex;
+  margin-bottom: 70px;
+  height: 200px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DescriptionTextMidTitle = styled.div`
+  padding: 10px 20px;
+  font-size: 4em;
+  width: 500px;
+  font-family: ${fonts.secondary_font};
+  position: relative;
+  text-align: center;
+  padding: 10px 20px;
+
+  @media (max-width: 768px) {
+    font-size: 2em;
   }
+`;
+
+const DescriptionTextHighLight = styled.div`
+  background-color: #e7ac818f;
+  width: 50%;
+  height: 22%;
+  position: absolute;
+  bottom: 0;
 `;
 
 const ContentContainer = styled.div`
@@ -127,54 +165,24 @@ const ContentContainer = styled.div`
   justify-content: center;
   margin: auto;
 
-  .content_section {
-    display: flex;
-    margin-bottom: 70px;
-    height: 200px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .description_text_title {
-    padding: 10px 20px;
-    font-size: 4em;
-    width: 500px;
-    font-family: ${fonts.secondary_font};
-    position: relative;
-
-    .highlight {
-      background-color: #e7ac818f;
-      width: 50%;
-      height: 22%;
-      position: absolute;
-      bottom: 0;
-    }
-  }
-
-  .mid_title {
-    text-align: center;
-    padding: 10px 20px;
-  }
-
-  .description_text_container {
-    width: 400px;
-
-    .description_text {
-      font-size: 1em;
-      text-align: start;
-    }
-  }
-
   @media (max-width: 768px) {
     width: 100%;
     padding: 0 15px;
   }
 `;
 
+const DescriptionText = styled.div`
+  font-size: 1em;
+  text-align: start;
+`;
+const DescriptionTextContainer = styled.div`
+  width: 400px;
+`;
+
 function ParallaxLanding() {
   const [scrollYValue, setscrollYValue] = useState(0);
-
-  const userInfo = useContext(UserContext);
+  let width = window.innerWidth;
+  console.log(scrollYValue);
 
   useEffect(() => {
     window.addEventListener(
@@ -182,68 +190,79 @@ function ParallaxLanding() {
       () => {
         let value = window.scrollY;
         setscrollYValue(value);
+
+        if (width < 768) {
+          setscrollYValue(value + 20);
+        }
       },
       []
     );
+  }, []);
+
+  useEffect(() => {
+    if (width < 768) {
+      setscrollYValue(20);
+    }
   }, []);
 
   return (
     <>
       <SectionWrapper>
         <MainTtitle>TRAVELBLOX</MainTtitle>
-        <BgImg src={bg} scrollvalue={scrollYValue}></BgImg>
+        <BgImg src={bg} scrollvalue={scrollYValue} />
 
-        <MountainImg src={mountain} scrollvalue={scrollYValue}></MountainImg>
-        <TreeImg src={tree} scrollvalue={scrollYValue}></TreeImg>
-        <BirdImg src={bird} scrollvalue={scrollYValue}></BirdImg>
+        <MountainImg src={mountain} scrollvalue={scrollYValue} />
+        <TreeImg src={tree} scrollvalue={scrollYValue} />
+        <BirdImg src={bird} scrollvalue={scrollYValue} />
       </SectionWrapper>
 
       <SubSection>
         <ContentContainer>
-          <div className="content_section">
-            <div className="description_text_title">
+          <ContentSection>
+            <DescriptionTextTitle>
               DRAG {'\u0026'}
               <br /> DROP
-              <div className="highlight"></div>
-            </div>
-            <div className="description_text_container">
-              <div className="description_text">
+              <DescriptionTextHighLight />
+            </DescriptionTextTitle>
+            <DescriptionTextContainer>
+              <DescriptionText>
                 Simply drag and drop timeblocks, and your travel schedule is
                 good to go!
-              </div>
-            </div>
-          </div>
+              </DescriptionText>
+            </DescriptionTextContainer>
+          </ContentSection>
 
-          <div className="content_section">
-            <div className="description_text_container">
-              <div className="description_text">
+          <ContentSection>
+            <DescriptionTextContainer>
+              <DescriptionText>
                 Wanting to travel, but not sure what attractions or places to
                 go? Discover travel experience and plans shared by others!
                 Favourite them, and customize it into your own!
-              </div>
-            </div>
+              </DescriptionText>
+            </DescriptionTextContainer>
 
-            <div className="description_text_title mid_title">
+            <DescriptionTextMidTitle>
               FAVOURITE {'\u0026'}
               <br />
               IMPORT
-              <div className="highlight" style={{ left: '25%' }}></div>
-            </div>
-          </div>
+              <DescriptionTextHighLight
+                style={{ left: '25%' }}></DescriptionTextHighLight>
+            </DescriptionTextMidTitle>
+          </ContentSection>
 
-          <div className="content_section">
-            <div className="description_text_title">
+          <ContentSection>
+            <DescriptionTextTitle>
               PLAN {'\u0026'} <br /> EXPORT
-              <div className="highlight"></div>
-            </div>
-            <div className="description_text_container">
-              <div className="description_text">
+              <DescriptionTextHighLight />
+            </DescriptionTextTitle>
+            <DescriptionTextContainer>
+              <DescriptionText>
                 Satisfied with your travel plan? Export to your google calendar,
                 integrate it with your own personal timetable and ready for your
                 trip!
-              </div>
-            </div>
-          </div>
+              </DescriptionText>
+            </DescriptionTextContainer>
+          </ContentSection>
         </ContentContainer>
       </SubSection>
       <Login />

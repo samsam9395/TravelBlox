@@ -12,10 +12,6 @@ const Wrapper = styled.div`
   background-color: white;
   border-radius: 20px;
   max-width: 100%;
-
-  @media (max-width: 768px) {
-    margin: 30px 0;
-  }
 `;
 
 const ImageContainer = styled.div`

@@ -1,9 +1,9 @@
  <p></p>
- <picture  >
   <img align="left"  alt="TravelBlox Logo" src="./src/images/main-logo-whitebg.png" width="80" >
-</picture>
 
 # TravelBlox
+
+![TravelBlox Logo](./src/images/main-logo-whitebg.png =80x)
 
 <br />
 
