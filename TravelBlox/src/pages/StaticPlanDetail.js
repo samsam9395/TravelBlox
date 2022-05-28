@@ -36,7 +36,11 @@ const Wrapper = styled.div`
   padding: 100px 0;
 
   @media (max-width: 768px) {
-    padding: 80px 15px 80px 15px;
+    padding: 80px 15px;
+  }
+
+  @media (max-width: 390px) {
+    padding: 80px 5px;
   }
 `;
 
@@ -85,6 +89,35 @@ const PlanInfoWrapper = styled.div`
     padding-right: 10px;
     width: 20%;
   }
+  @media (max-width: 390px) {
+    padding-right: 0;
+  }
+`;
+
+const UserInfoTitle = styled.div`
+  text-align: center;
+  display: flex;
+  margin-top: 20px;
+  color: ${themeColours.light_grey};
+  flex-direction: column;
+  font-weight: 600;
+  font-style: italic;
+`;
+
+const AuthorName = styled.div`
+  font-style: normal;
+  font-weight: 600;
+  margin: 10px 0 5px 0;
+  letter-spacing: 1px;
+  color: ${themeColours.darker_orange};
+`;
+
+const AuthorId = styled.div`
+  font-style: normal;
+  color: ${themeColours.dark_blue};
+  font-weight: 200;
+  padding-left: 10px;
+  font-size: 12px;
 `;
 
 const UserInfoContainer = styled.div`
@@ -93,39 +126,13 @@ const UserInfoContainer = styled.div`
   flex-direction: column;
   align-items: center;
   font-size: 14px;
+`;
 
-  .user_info_title {
-    text-align: center;
-    display: flex;
-    margin-top: 20px;
-    color: ${themeColours.light_grey};
-    flex-direction: column;
-    font-weight: 600;
-    font-style: italic;
-  }
-
-  .author_name {
-    font-style: normal;
-    font-weight: 600;
-    margin: 10px 0 5px 0;
-    letter-spacing: 1px;
-    color: ${themeColours.darker_orange};
-  }
-
-  .author_id {
-    font-style: normal;
-    color: ${themeColours.dark_blue};
-    font-weight: 200;
-    padding-left: 10px;
-    font-size: 12px;
-  }
-
-  .user_img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-  }
+const UserImg = styled.img`
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
 `;
 
 const PlanCardsWrapper = styled.div`
@@ -148,16 +155,16 @@ const FavouriteFolderDropDownOptions = styled.div`
   color: white;
   border-radius: 0 0 10px 10px;
   background-color: ${themeColours.light_orange};
-
-  .folder_option {
-    padding: 5px;
-    &:hover {
-      cursor: pointer;
-      background-color: ${themeColours.pale};
-      border-radius: 10px;
-    }
+`;
+const FolderOption = styled.div`
+  padding: 5px;
+  &:hover {
+    cursor: pointer;
+    background-color: ${themeColours.pale};
+    border-radius: 10px;
   }
 `;
+
 const PlanMainImageContainer = styled.div`
   width: 80%;
   height: 100%;
@@ -175,19 +182,19 @@ const PlanMainImageContainer = styled.div`
       -webkit-transition: all 0.3s ease-in-out 0s;
     }
   }
+`;
 
-  .sunburst {
-    position: absolute;
-    right: 34px;
-    top: 30px;
-    width: 60px;
-  }
-  .sunburst_small {
-    position: absolute;
-    right: 74px;
-    top: 217px;
-    width: 40px;
-  }
+const SunBurst = styled.img`
+  position: absolute;
+  right: 34px;
+  top: 30px;
+  width: 60px;
+`;
+const SunBurstSmall = styled.img`
+  position: absolute;
+  right: 74px;
+  top: 217px;
+  width: 40px;
 `;
 
 const PlanMainImage = styled.div`
@@ -226,24 +233,31 @@ const PlanTitleText = styled.div`
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
 
-  .location_text {
-    font-family: ${fonts.handwriting}, ${fonts.main_font};
-    font-weight: 400;
-    letter-spacing: 1px;
-    text-shadow: none;
-    color: ${themeColours.pale};
-    font-size: clamp(1.5em, 4vw, 5vw);
-    position: absolute;
-    color: #fceebf;
-    right: -44%;
-    text-shadow: 2px 1px ${themeColours.light_grey};
-  }
-
   @media (max-width: 768px) {
     top: 35%;
     width: 55%;
     left: 3%;
   }
+
+  @media (max-width: 390px) {
+    top: 8%;
+    width: 55%;
+    left: 3%;
+    font-size: 2em;
+  }
+`;
+
+const LocationText = styled.div`
+  font-family: ${fonts.handwriting}, ${fonts.main_font};
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-shadow: none;
+  color: ${themeColours.pale};
+  font-size: clamp(1.5em, 4vw, 5vw);
+  position: absolute;
+  color: #fceebf;
+  right: -44%;
+  text-shadow: 2px 1px ${themeColours.light_grey};
 `;
 
 const BtnWrapper = styled.div`
@@ -499,23 +513,23 @@ function StaticPlanDetail() {
             />
           </PlanMainImage>
 
-          <img src={sunburst} alt="sunburst" className="sunburst" />
-          <img src={sunburst} alt="sunburst" className="sunburst_small" />
+          <SunBurst alt="sunburst" src={sunburst} />
+          <SunBurstSmall alt="sunburst" src={sunburst} />
           <PlanTitleText>
             {planTitle}
-            <div className="location_text">{country.label}</div>
+            <LocationText>{country.label}</LocationText>
           </PlanTitleText>
         </PlanMainImageContainer>
 
         <PlanInfoWrapper>
           <UserInfoContainer>
-            <img className="user_img" src={userImage} alt="" />
+            <UserImg src={userImage} alt="User Image" />
 
-            <div className="user_info_title">
+            <UserInfoTitle>
               Planned by:
-              {authorName && <div className="author_name">{authorName}</div>}
-              <div className="author_id">{author}</div>
-            </div>
+              {authorName && <AuthorName>{authorName}</AuthorName>}
+              <AuthorId>{author}</AuthorId>
+            </UserInfoTitle>
           </UserInfoContainer>
 
           <BtnWrapper>
@@ -530,9 +544,8 @@ function StaticPlanDetail() {
               {showfavDropDown && (
                 <FavouriteFolderDropDownOptions>
                   {dropDownFavouriteFolderOption?.map((folderName, index) => (
-                    <div
+                    <FolderOption
                       key={index}
-                      className="folder_option"
                       onClick={() =>
                         handleFavouriteAction(
                           planDocRef,
@@ -543,7 +556,7 @@ function StaticPlanDetail() {
                         )
                       }>
                       {folderName}
-                    </div>
+                    </FolderOption>
                   ))}
                 </FavouriteFolderDropDownOptions>
               )}

@@ -46,6 +46,7 @@ const SmallNotice = styled.div`
 export default function DayCalendar({ planDocRef, currentDayDate }) {
   const localizer = momentLocalizer(moment);
   const [allPlansList, setAllPlansList] = useState([]);
+  const [calendarDefaultView, setCalendarDefaultView] = 'WEEK';
 
   useEffect(async () => {
     if (planDocRef) {
