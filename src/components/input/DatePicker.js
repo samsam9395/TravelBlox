@@ -41,6 +41,7 @@ function DatePicker(props) {
           key: 'selection',
         },
       ]);
+      props.setStartDateValue(props.startInitDateValue);
     }
   }, [props.startInitDateValue, props.endInitDateValue]);
 
