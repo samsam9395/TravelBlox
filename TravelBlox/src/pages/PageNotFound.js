@@ -40,23 +40,33 @@ const AstronautImg = styled.img`
 `;
 
 const Title = styled.div`
-  font-size: 225px;
+  font-size: 200px;
   color: white;
   font-weight: 800;
   position: absolute;
   top: 8%;
   left: 35%;
 
-  .subtext {
-    font-size: 0.2em;
-    text-shadow: 3px 5px 2px #474747;
+  @media (max-width: 768px) {
+    font-size: 100px;
+    top: 15%;
+    left: 20%;
   }
+`;
+
+const SubText = styled.div`
+  font-size: 0.2em;
+  text-shadow: 3px 5px 2px #474747;
 `;
 
 const BackBtnContainer = styled.div`
   position: absolute;
-  top: 65%;
+  top: 50%;
   right: 43%;
+
+  @media (max-width: 768px) {
+    top: 40%;
+  }
 `;
 
 function PageNotFound() {
@@ -68,9 +78,9 @@ function PageNotFound() {
       <AstronautImg src={astronaunt} />
       <Title>
         404
-        <div className="subtext">
+        <SubText>
           Oops, <br /> looks like you are lost in space
-        </div>
+        </SubText>
       </Title>
       <BackBtnContainer>
         <LightBlueBtn

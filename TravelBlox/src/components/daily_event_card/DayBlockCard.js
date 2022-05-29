@@ -19,6 +19,8 @@ const MainWrapper = styled.div`
 const SingleDayWrapper = styled.div`
   display: flex;
   margin-bottom: 60px;
+  justify-content: center;
+
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -81,21 +83,22 @@ const DayTitle = styled.div`
   color: ${themeColours.light_orange};
   display: flex;
   align-items: baseline;
-  .date {
-    padding-left: 10px;
-    font-size: 18px;
-  }
+`;
+
+const DateText = styled.div`
+  padding-left: 10px;
+  font-size: 18px;
 `;
 
 const EventTitle = styled.div`
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 20px;
+`;
 
-  .event_location {
-    font-size: 12px;
-    margin: 10px 0;
-  }
+const EventLocation = styled.div`
+  font-size: 12px;
+  margin: 10px 0;
 `;
 
 const EventContentText = styled.div`
@@ -200,7 +203,7 @@ function DayBlockCard(props) {
         }>
         <DayTitle ref={dayRef}>
           Day {props.index + 1}
-          <div className="date"> {props.currentDayDate.toDateString()}</div>
+          <DateText> {props.currentDayDate.toDateString()}</DateText>
         </DayTitle>
         <SingleDayWrapper>
           <LeftWrapper>
@@ -209,9 +212,9 @@ function DayBlockCard(props) {
                 <ContentContainer key={index}>
                   <EventTitle>
                     {singleEvent.title.toUpperCase()}
-                    <div className="event_location">
+                    <EventLocation>
                       Address: {singleEvent.place_format_address}
-                    </div>
+                    </EventLocation>
                   </EventTitle>
                   <TimeBlockImg
                     src={singleEvent.timeblock_img}
@@ -242,7 +245,7 @@ function DayBlockCard(props) {
         }>
         <DayTitle ref={dayRef}>
           Day {props.index + 1}
-          <div className="date"> {props.currentDayDate.toDateString()}</div>
+          <DateText> {props.currentDayDate.toDateString()}</DateText>
         </DayTitle>
         <SingleDayWrapper>
           <MapIndivWrapper>

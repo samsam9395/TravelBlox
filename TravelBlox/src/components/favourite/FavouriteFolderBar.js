@@ -7,7 +7,7 @@ import {
   SubSectionWrapper,
 } from '../../pages/Dashboard';
 import React, { useEffect, useRef, useState } from 'react';
-import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
 
 import AddIcon from '@mui/icons-material/Add';

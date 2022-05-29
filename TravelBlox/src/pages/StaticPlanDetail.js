@@ -138,6 +138,7 @@ const UserImg = styled.img`
 const PlanCardsWrapper = styled.div`
   margin-top: 50px;
   width: 100%;
+  max-width: 900px;
 
   @media (max-width: 768px) {
     max-width: 100%;
@@ -182,14 +183,6 @@ const PlanMainImageContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-grow: 1;
-
-  &:hover {
-    .planTitle_text_bakground {
-      transform: translate(0, 100%);
-      transition: all 0.3s ease-in-out 0s;
-      -webkit-transition: all 0.3s ease-in-out 0s;
-    }
-  }
 `;
 
 const SunBurst = styled.img`
@@ -235,16 +228,23 @@ const PlanTitleText = styled.div`
   width: 55%;
   position: absolute;
   left: 2%;
-  top: -3%;
-  font-size: clamp(55px, 4vw, 105px);
+  top: 20%;
+  font-size: clamp(50px, 4vw, 55px);
   letter-spacing: 5px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
 
+  @media (max-width: 1000px) {
+    top: -3%;
+    width: 70%;
+    font-size: clamp(42px, 2em, 55px);
+  }
+
   @media (max-width: 768px) {
-    top: 35%;
-    width: 55%;
-    left: 3%;
+    font-size: 2em;
+    top: 5%;
+    left: 0%;
+    width: 70%;
   }
 
   @media (max-width: 490px) {

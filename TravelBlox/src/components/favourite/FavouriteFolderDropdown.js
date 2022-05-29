@@ -106,7 +106,6 @@ function FavFolderDropdown({
 
     try {
       const list = await getDocs(favFolderRef);
-      list.docs.map((e) => console.log(e.data()));
       setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
     } catch (error) {
       console.log(error);

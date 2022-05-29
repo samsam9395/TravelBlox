@@ -61,26 +61,10 @@ const PlanMainImageContainer = styled.div`
   position: relative;
   margin: auto;
   overflow: hidden;
-  .content-overlay {
-    background: rgba(0, 0, 0, 0.7);
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    opacity: 0;
-    -webkit-transition: all 0.4s ease-in-out 0s;
-    -moz-transition: all 0.4s ease-in-out 0s;
-    transition: all 0.4s ease-in-out 0s;
-  }
 
   &:hover {
     cursor: pointer;
-    .content-overlay {
-      opacity: 1;
-    }
+
     .content-details {
       top: 50%;
       left: 50%;
@@ -93,6 +77,25 @@ const PlanMainImageContainer = styled.div`
   }
 `;
 
+const ContentOverlay = styled.div`
+  background: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  -webkit-transition: all 0.4s ease-in-out 0s;
+  -moz-transition: all 0.4s ease-in-out 0s;
+  transition: all 0.4s ease-in-out 0s;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 OwnPlanCard.propTypes = {
   ownPlanId: PropTypes.string,
   userIdentity: PropTypes.string,
@@ -100,7 +103,7 @@ OwnPlanCard.propTypes = {
 
 function OwnPlanCard(props) {
   const [docData, setDocData] = useState(null);
-  const [doImport, setDoimport] = useState(false);
+  const [doImport, setDoImport] = useState(false);
   const planId = props.ownPlanId;
 
   const navigate = useNavigate();
@@ -110,7 +113,7 @@ function OwnPlanCard(props) {
   };
 
   const redirectToStatic = () => {
-    navigate(`/static-plan-detail${planId}`);
+    navigate(`/static-plan-detail/${planId}`);
   };
 
   useEffect(async () => {
@@ -136,7 +139,7 @@ function OwnPlanCard(props) {
         redirectToEdit();
         break;
       case 'importer':
-        setDoimport(true);
+        setDoImport(true);
         break;
       case 'public':
         redirectToStatic();
@@ -148,7 +151,7 @@ function OwnPlanCard(props) {
     docData && (
       <SinglePlanContainer onClick={() => renderSwitch(props.userIdentity)}>
         <PlanMainImageContainer>
-          <div className="content-overlay"></div>
+          <ContentOverlay />
           <MainImage src={docData.main_image} alt="main image"></MainImage>
 
           <PlanTextContainer className="content-details fadeIn-bottom">
