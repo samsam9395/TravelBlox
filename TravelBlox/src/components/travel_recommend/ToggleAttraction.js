@@ -34,7 +34,6 @@ const QuestionText = styled.div`
 `;
 
 function ToggleAttractionSearch() {
-  const [showRecommends, setShowRecommends] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
 
   return (
@@ -43,17 +42,7 @@ function ToggleAttractionSearch() {
         Need some planning{' '}
         <div onClick={() => setShowSearch(!showSearch)}>idea</div>?
       </QuestionText>
-      {showSearch && (
-        <>
-          <AttractionInput
-            showRecommends={showRecommends}
-            setShowRecommends={setShowRecommends}
-          />
-          <LightOrangeBtn onClick={() => setShowRecommends(!showRecommends)}>
-            Hide Cards
-          </LightOrangeBtn>
-        </>
-      )}
+      {showSearch && <AttractionInput />}
     </>
   );
 }

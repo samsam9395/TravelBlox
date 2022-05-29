@@ -1,3 +1,4 @@
+import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
 import React, { useEffect, useState } from 'react';
 import {
   getAttraction,
@@ -10,7 +11,6 @@ import HashLoader from 'react-spinners/HashLoader';
 import RestaurantCard from './RestaurantCard';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
-import { themeColours } from '../../styles/globalTheme';
 
 const MainWrapper = styled.div`
   margin-top: 30px;
@@ -25,6 +25,10 @@ const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const Input = styled.input`
@@ -51,7 +55,6 @@ const AttractionCardWrapper = styled.div`
 
 const AttractionCardContainer = styled.div`
   margin-bottom: 20px;
-  /* height: 510px; */
   width: 100%;
   position: relative;
   display: flex;
@@ -80,17 +83,29 @@ const RecommendInfo = styled.div`
   color: ${themeColours.light_orange};
   margin-bottom: 10px;
   display: flex;
+
+  @media (max-width: 768px) {
+    margin-top: 30px;
+  }
 `;
 
-function AttractionInput({ showRecommends, setShowRecommends }) {
+function AttractionInput() {
   const [autoInput, setAutoInput] = useState('');
   const [attractionList, setAttractionList] = useState([]);
   const [restaurantList, setRestaurantList] = useState([]);
   const [loading, setLoading] = useState(null);
+  const [showRecommends, setShowRecommends] = useState(false);
+  const [showHideCardsBtn, setShowHideCardsBtn] = useState(false);
 
   useEffect(() => {
     if (attractionList === undefined || restaurantList === undefined) {
       Swal.fire('Please try search again!');
+    }
+  }, [attractionList, restaurantList]);
+
+  useEffect(() => {
+    if (attractionList.length > 0 || restaurantList.length > 0) {
+      setShowHideCardsBtn(true);
     }
   }, [attractionList, restaurantList]);
 
@@ -134,25 +149,38 @@ function AttractionInput({ showRecommends, setShowRecommends }) {
       )}
 
       {showRecommends && !loading && (
-        <AttractionCardWrapper>
-          <RecommendInfo>Top 10 Attractions {'\u2192'}</RecommendInfo>
-          <AttractionCardContainer>
-            {attractionList?.map((place, index) => (
-              <AttractionCards place={place} key={index} />
-            ))}
-          </AttractionCardContainer>
-        </AttractionCardWrapper>
+        <>
+          <RecommendInfo>Top Attractions {'\u2192'}</RecommendInfo>
+          <AttractionCardWrapper>
+            <AttractionCardContainer>
+              {attractionList?.map((place, index) => (
+                <AttractionCards place={place} key={index} />
+              ))}
+            </AttractionCardContainer>
+          </AttractionCardWrapper>
+        </>
       )}
 
       {showRecommends && !loading && (
-        <AttractionCardWrapper>
-          <RecommendInfo>Top 10 Restaurants {'\u2192'}</RecommendInfo>
-          <AttractionCardContainer>
-            {restaurantList?.map((place, index) => (
-              <RestaurantCard place={place} key={index} />
-            ))}
-          </AttractionCardContainer>
-        </AttractionCardWrapper>
+        <>
+          <RecommendInfo>Top Restaurants {'\u2192'}</RecommendInfo>
+          <AttractionCardWrapper>
+            <AttractionCardContainer>
+              {restaurantList?.map((place, index) => (
+                <RestaurantCard place={place} key={index} />
+              ))}
+            </AttractionCardContainer>
+          </AttractionCardWrapper>
+        </>
+      )}
+
+      {showHideCardsBtn && (
+        <LightOrangeBtn
+          marginTop="30px"
+          marginBottom="30px"
+          onClick={() => setShowRecommends(!showRecommends)}>
+          {showRecommends ? 'Hide Cards' : 'Show Cards'}
+        </LightOrangeBtn>
       )}
     </MainWrapper>
   );
