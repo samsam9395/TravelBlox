@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Login from './Login';
-import { UserContext } from '../App';
 import bg from '../images/parallx_img_layers/bg_full.png';
 import bird from '../images/parallx_img_layers/bird.png';
 import { fonts } from '../styles/globalTheme';
 import mountain from '../images/parallx_img_layers/mountain.png';
+import starsbg from '../images/parallx_img_layers/stars.png';
 import styled from 'styled-components';
 import tree from '../images/parallx_img_layers/tree_long.png';
-import { useNavigate } from 'react-router-dom';
 
 const SectionWrapper = styled.div`
   top: -80px;
-  height: 100vh;
+  height: calc(100vh + 80px);
   position: relative;
   background-color: #e0b99f;
   overflow: hidden;
@@ -35,17 +34,27 @@ const MainTtitle = styled.div`
   }
 `;
 
+const BgStaticImg = styled.img`
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  object-fit: cover;
+  top: 45px;
+  position: absolute;
+`;
+
 const BgImg = styled.img.attrs(({ scrollvalue }) => ({
   style: {
     right: scrollvalue * 0.5 + 'px',
   },
 }))`
-  width: 300%;
+  width: 100%;
   position: absolute;
   height: 100%;
   object-fit: cover;
   top: 0;
   position: absolute;
+  z-index: 1;
 `;
 
 const MountainImg = styled.img.attrs(({ scrollvalue }) => ({
@@ -57,8 +66,8 @@ const MountainImg = styled.img.attrs(({ scrollvalue }) => ({
   position: absolute;
   height: 100%;
   object-fit: cover;
-  z-index: -1;
   top: 0;
+  left: 0;
   position: absolute;
   z-index: 1;
 `;
@@ -68,10 +77,10 @@ const TreeImg = styled.img`
   position: absolute;
   height: 60%;
   object-fit: cover;
-  z-index: -1;
   position: absolute;
   bottom: -96px;
   z-index: 2;
+  left: 0;
 `;
 
 const BirdImg = styled.img.attrs(({ scrollvalue }) => ({
@@ -208,8 +217,8 @@ function ParallaxLanding() {
     <>
       <SectionWrapper>
         <MainTtitle>TRAVELBLOX</MainTtitle>
-        <BgImg src={bg} scrollvalue={scrollYValue} />
-
+        // <BgImg src={starsbg} scrollvalue={scrollYValue} />
+        <BgStaticImg src={bg} />
         <MountainImg src={mountain} scrollvalue={scrollYValue} />
         <TreeImg src={tree} scrollvalue={scrollYValue} />
         <BirdImg src={bird} scrollvalue={scrollYValue} />
