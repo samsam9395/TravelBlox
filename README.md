@@ -3,8 +3,6 @@
 
 # TravelBlox
 
-![TravelBlox Logo](./src/images/main-logo-whitebg.png =80x)
-
 <br />
 
 ## Table of Contents
@@ -86,6 +84,7 @@ So here it is, **TravelBlox** that puts everything altogether :blush: :sparkling
 
 ## Flow Chart
 
+<img align="center"  alt="TravelBlox Logo" src="./read_me/Userflow.png" >
 <br />
 
 ## Future Features
