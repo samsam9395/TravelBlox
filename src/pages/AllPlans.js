@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const AllPlansWrapper = styled.div`
-  padding: 10px 80px;
+  padding: 10px 20px;
   display: flex;
   justify-content: center;
 `;
@@ -21,9 +21,17 @@ const PlanCollectionWrapper = styled.div`
   box-sizing: content-box;
   flex-wrap: wrap;
   justify-content: flex-start;
-  max-width: 1400px;
+  width: 1290px;
   min-height: 450px;
   align-items: center;
+
+  @media (max-width: 1300px) {
+    width: 90%;
+  }
+
+  @media (max-width: 490px) {
+    width: 100%;
+  }
 `;
 
 const EmptyNotification = styled.div`

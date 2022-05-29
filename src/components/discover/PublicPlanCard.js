@@ -4,12 +4,13 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const SinglePlanWrapper = styled.div`
-  flex-grow: 1;
+  /* flex-grow: 1; */
   margin: 10px;
   width: 400px;
+  /* max-width: calc(100% / 3 - 30px); */
 
-  @media (max-width: 1470px) {
-    width: 300px;
+  @media (max-width: 490px) {
+    width: 100%;
   }
 `;
 
@@ -25,6 +26,10 @@ const SinglePlanContainer = styled.div`
   @media (max-width: 1470px) {
     margin: auto;
     width: 100%;
+  }
+
+  @media (max-width: 490px) {
+    min-width: 85vw;
   }
 `;
 
