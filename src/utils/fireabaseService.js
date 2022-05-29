@@ -279,7 +279,7 @@ const firebaseService = {
       console.log(error);
     }
   },
-  addNewFavouriteFolder(currentUserId, newFolder) {
+  async addNewFavouriteFolder(currentUserId, newFolder) {
     try {
       setDoc(doc(db, 'userId', currentUserId, 'fav_folders', newFolder), {
         folder_name: newFolder,
