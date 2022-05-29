@@ -33,7 +33,7 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 const Wrapper = styled.div`
-  padding: 50px;
+  padding: 100px 50px;
   margin: auto;
 `;
 
@@ -49,10 +49,12 @@ const TopContainer = styled.div`
 const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
-  margin-right: 30px;
+  margin-right: 20px;
 
   @media (max-width: 768px) {
     margin-bottom: 30px;
+    width: 100%;
+    margin-right: 0;
   }
 `;
 
@@ -86,19 +88,26 @@ const BottomBtnContainer = styled.div`
   height: 150px;
   margin-bottom: 30px;
 
-  .left_btns {
-    display: flex;
-    align-items: center;
+  .import_btn {
     position: relative;
   }
 
-  .import_btn_wrapper {
-    display: flex;
+  @media (max-width: 768px) {
     flex-direction: column;
+    align-items: normal;
+    height: auto;
+    margin: 30px 0;
+  }
+`;
 
-    .import_btn {
-      position: relative;
-    }
+const LeftBtnContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: normal;
   }
 `;
 
@@ -195,7 +204,7 @@ function EditPlanDetail() {
             required
             sx={{
               m: 1,
-              width: 300,
+              width: '97%',
               label: { color: themeColours.light_orange },
             }}
             label="Title"
@@ -283,7 +292,7 @@ function EditPlanDetail() {
         Make sure to save for your changes after moving around the events!
       </ReminderText>
       <BottomBtnContainer>
-        <div className="left_btns">
+        <LeftBtnContainer>
           <LightBlueBtn
             variant="contained"
             onClick={() => {
@@ -331,7 +340,7 @@ function EditPlanDetail() {
             }}>
             Save
           </LightBlueBtn>
-        </div>
+        </LeftBtnContainer>
         <PaleBtn
           variant="contained"
           onClick={() => {

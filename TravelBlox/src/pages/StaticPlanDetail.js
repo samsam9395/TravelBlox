@@ -155,6 +155,11 @@ const FavouriteFolderDropDownOptions = styled.div`
   color: white;
   border-radius: 0 0 10px 10px;
   background-color: ${themeColours.light_orange};
+  @media (max-width: 490px) {
+    padding: 10px;
+    top: 41px;
+    left: 6px;
+  }
 `;
 const FolderOption = styled.div`
   padding: 5px;
@@ -162,6 +167,9 @@ const FolderOption = styled.div`
     cursor: pointer;
     background-color: ${themeColours.pale};
     border-radius: 10px;
+  }
+  @media (max-width: 490px) {
+    font-size: 14px;
   }
 `;
 

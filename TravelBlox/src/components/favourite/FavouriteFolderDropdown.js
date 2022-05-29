@@ -14,6 +14,13 @@ const Wrapper = styled.div`
   align-items: center;
   width: 180px;
   position: absolute;
+
+  @media (max-width: 768px) {
+    position: unset;
+    flex-direction: column;
+    width: 80%;
+    margin: auto;
+  }
 `;
 
 const FavFolderDropDownOptions = styled.div`
@@ -30,13 +37,20 @@ const FavFolderDropDownOptions = styled.div`
   border: 1px solid ${themeColours.blue};
   transition: all 1.3s;
 
-  .folder_option {
-    padding: 5px;
-    &:hover {
-      cursor: pointer;
-      background-color: ${themeColours.pale};
-      border-radius: 10px;
-    }
+  @media (max-width: 768px) {
+    top: 0;
+    left: 0;
+    border-radius: 15px;
+    margin: 10px 0;
+  }
+`;
+
+const FolderOption = styled.div`
+  padding: 5px;
+  &:hover {
+    cursor: pointer;
+    background-color: ${themeColours.pale};
+    border-radius: 10px;
   }
 `;
 
@@ -54,13 +68,9 @@ const FavPlanDropDownOptions = styled.div`
 
   color: ${themeColours.blue};
 
-  .folder_option {
-    padding: 5px;
-    &:hover {
-      cursor: pointer;
-      background-color: ${themeColours.pale};
-      border-radius: 10px;
-    }
+  @media (max-width: 768px) {
+    position: unset;
+    border-radius: 15px;
   }
 `;
 
@@ -69,6 +79,12 @@ const ImportBtnWrapper = styled.div`
   position: absolute;
   top: calc(120% + 60px);
   right: -373px;
+
+  @media (max-width: 768px) {
+    position: unset;
+    left: 0;
+    margin: 15px 0;
+  }
 `;
 
 function FavFolderDropdown({
@@ -183,9 +199,8 @@ function FavFolderDropdown({
     <Wrapper>
       <FavFolderDropDownOptions>
         {dropDownFavFolderOption?.map((folderName, index) => (
-          <div
+          <FolderOption
             key={index}
-            className="folder_option"
             onClick={(e) => {
               setShowSecondLayer(true);
               firebaseService.getFavPlan(
@@ -195,20 +210,19 @@ function FavFolderDropdown({
               );
             }}>
             {folderName}
-          </div>
+          </FolderOption>
         ))}
       </FavFolderDropDownOptions>
 
       {showSecondLayer && (
         <FavPlanDropDownOptions>
           {favPlansNameList.length <= 0 ? (
-            <div className="folder_option">No plans yet!</div>
+            <FolderOption>No plans yet!</FolderOption>
           ) : (
             favPlansNameList?.map((planName, index) => (
-              <div
+              <FolderOption
                 ref={(element) => (dropDownRef.current[index] = element)}
                 key={index}
-                className="folder_option"
                 onClick={(e) => {
                   setSelectedPlanId(planName.fav_plan_doc_ref);
                   setShowImportBtn(true);
@@ -221,7 +235,7 @@ function FavFolderDropdown({
                   });
                 }}>
                 {planName.fav_plan_title}
-              </div>
+              </FolderOption>
             ))
           )}
         </FavPlanDropDownOptions>

@@ -291,6 +291,7 @@ const DisplaySwitch = styled.div`
 
   @media (max-width: 768px) {
     width: 70%;
+    letter-spacing: 1px;
   }
 `;
 

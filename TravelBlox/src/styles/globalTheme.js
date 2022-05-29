@@ -65,6 +65,9 @@ export const LightBlueBtn = styled.button`
 
   @media (max-width: 768px) {
     width: 100%;
+    letter-spacing: normal;
+    font-size: 12px;
+    padding: 10px;
   }
 `;
 
@@ -81,6 +84,13 @@ export const PaleBtn = styled.button`
   &:hover {
     cursor: pointer;
     background-color: ${themeColours.darker_orange};
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+    letter-spacing: normal;
+    font-size: 12px;
+    padding: 10px;
+    margin-top: 20px;
   }
 `;
 
@@ -99,8 +109,12 @@ export const PaleEmptyBtn = styled.button`
     cursor: pointer;
     background-color: ${themeColours.pale};
   }
+
   @media (max-width: 768px) {
     width: 100%;
+    letter-spacing: normal;
+    font-size: 12px;
+    padding: 10px;
   }
 `;
 
