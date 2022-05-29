@@ -71,6 +71,10 @@ const PlanMainImageContainer = styled.div`
       opacity: 1;
       height: 100%;
     }
+
+    .overlay {
+      opacity: 1;
+    }
   }
   .fadeIn-bottom {
     top: 100%;
@@ -90,10 +94,6 @@ const ContentOverlay = styled.div`
   -webkit-transition: all 0.4s ease-in-out 0s;
   -moz-transition: all 0.4s ease-in-out 0s;
   transition: all 0.4s ease-in-out 0s;
-
-  &:hover {
-    opacity: 1;
-  }
 `;
 
 OwnPlanCard.propTypes = {
@@ -151,7 +151,7 @@ function OwnPlanCard(props) {
     docData && (
       <SinglePlanContainer onClick={() => renderSwitch(props.userIdentity)}>
         <PlanMainImageContainer>
-          <ContentOverlay />
+          <ContentOverlay className="overlay" />
           <MainImage src={docData.main_image} alt="main image"></MainImage>
 
           <PlanTextContainer className="content-details fadeIn-bottom">
