@@ -216,9 +216,12 @@ function DayBlockCard(props) {
                       Address: {singleEvent.place_format_address}
                     </EventLocation>
                   </EventTitle>
-                  <TimeBlockImg
-                    src={singleEvent.timeblock_img}
-                    alt="evernt_main_image"></TimeBlockImg>
+                  {singleEvent.timeblock_img && (
+                    <TimeBlockImg
+                      src={singleEvent.timeblock_img}
+                      alt="Image for this time event."
+                    />
+                  )}
                   <EventContentText style={{ whiteSpace: 'pre-wrap' }}>
                     {singleEvent.text}
                   </EventContentText>
