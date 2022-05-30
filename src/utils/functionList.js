@@ -61,7 +61,6 @@ export async function signInProvider(e, providerPlatform) {
   }
 
   try {
-    console.log(provider);
     const result = await signInWithPopup(auth, provider);
 
     if (
@@ -118,10 +117,8 @@ export function calculateIfGoogleImgExpired(dateEdited) {
   );
 
   if (currentTime > expirationTime) {
-    console.log('google image expired');
     return true;
   } else {
-    console.log('google image NOT expired');
     return false;
   }
 }
@@ -158,7 +155,6 @@ export async function checkGoogleImgExpirationDate(data, timeBlockRef) {
   if (calculateIfGoogleImgExpired(data.timeEdited.seconds * 1000)) {
     const renewGoolgeImg = await googleServices.getlaceDetail(data.place_id);
 
-    console.log(11, renewGoolgeImg.photos[0].getUrl());
     const locationInfo = createLocationKeyPairs(
       data,
       renewGoolgeImg.photos[0].getUrl()

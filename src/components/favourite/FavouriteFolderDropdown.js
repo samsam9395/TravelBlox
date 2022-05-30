@@ -112,8 +112,6 @@ function FavFolderDropdown({
     }
   }, []);
 
-  console.log(startDateValue);
-
   async function importTimeBlock(selectedPlanId) {
     let importEndTime = new Date(startDateValue);
     importEndTime.setHours(importEndTime.getHours() + 2);

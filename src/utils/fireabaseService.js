@@ -226,7 +226,6 @@ const firebaseService = {
       const list = plansList.docs.map((e) => e.data());
 
       if (list.length === 0) {
-        console.log('No fav plans yet!');
         setFavPlansNameList('');
       } else {
         setFavPlansNameList(list);
@@ -492,7 +491,6 @@ const firebaseService = {
 
       return initialData;
     } else {
-      console.log('No such document!');
       return '';
     }
   },

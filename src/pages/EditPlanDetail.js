@@ -132,7 +132,6 @@ function EditPlanDetail() {
   const currentUserId = useContext(UserContext)?.userEmail;
   const navigate = useNavigate();
 
-  console.log(111, startDateValue);
   useEffect(() => {
     if (planAuthor) {
       if (currentUserId) {

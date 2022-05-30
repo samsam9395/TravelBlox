@@ -7,7 +7,7 @@ import styled, { css, keyframes } from 'styled-components';
 
 import DayBlockCard from '../components/daily_event_card/DayBlockCard';
 import DayCalendar from '../components/daily_event_card/DayCalendar';
-import ExportGCalendarBtn from '../components/google_calendar/ExportGCalendarBtn';
+import ExportCalendarBtn from '../components/google_calendar/ExportCalendarBtn';
 import FullLoading from '../components/general/FullLoading';
 import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
 import { ReactComponent as MilkTeaLeftCurveLineSVG } from '../images/static/milktea_line_left.svg';
@@ -569,7 +569,7 @@ function StaticPlanDetail() {
                 </FavouriteFolderDropDownOptions>
               )}
             </FavouriteFolderWrapper>
-            <ExportGCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
+            <ExportCalendarBtn planDocRef={planDocRef} planTitle={planTitle} />
           </BtnWrapper>
         </PlanInfoWrapper>
       </UpperContainer>

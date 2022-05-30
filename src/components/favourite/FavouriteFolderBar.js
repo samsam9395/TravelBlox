@@ -231,7 +231,6 @@ function FavouriteFolderBar({ currentUserId }) {
                       currentUserId,
                       newFolderName
                     );
-                  console.log(addnewFolder);
                   if (addnewFolder) {
                     Swal.fire('Folder added!');
                     setShowAddNewFolder(false);
