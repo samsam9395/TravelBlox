@@ -164,7 +164,6 @@ function EditTimeBlock(props) {
         timeBlockRef
       );
 
-      console.log('imgExpiration', imgExpiration);
       setLocation(imgExpiration);
     } else {
       setLocation({
