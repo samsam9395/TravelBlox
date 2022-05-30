@@ -7,15 +7,14 @@ import {
   SubSectionWrapper,
 } from '../../pages/Dashboard';
 import React, { useEffect, useRef, useState } from 'react';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditFavouriteFolderSelector from './EditFavouriteFolderSelector';
-import FavFolder from './FavouriteFolder';
+import FavouriteFolder from './FavouriteFolder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
 import firebaseService from '../../utils/fireabaseService';
@@ -39,6 +38,22 @@ const FolderWrapper = styled.div`
   flex-wrap: wrap;
 `;
 
+const FolderContainer = styled.div`
+  width: 300px;
+  height: 130px;
+  border-radius: 15px;
+  box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
+  -webkit-box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
+  -moz-box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
+  display: flex;
+  flex-direction: column;
+  padding: 15px 20px;
+  margin-right: 20px;
+  margin-bottom: 50px;
+  border: 1px solid ${themeColours.pale};
+  position: relative;
+`;
+
 const FolderSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -56,7 +71,7 @@ const NewFolderNameContainer = styled.div`
   align-items: center;
 `;
 
-const NewFolderNameInput = styled.div`
+const NewFolderNameInput = styled.input`
   width: 60%;
   font-size: 22px;
   font-family: ${fonts.secondary_font}, sans-serif;
@@ -77,22 +92,6 @@ const NewFolderNameConfirmBtn = styled.button`
   }
 `;
 
-const FolderContainer = styled.div`
-  width: 300px;
-  height: 130px;
-  border-radius: 15px;
-  box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
-  -webkit-box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
-  -moz-box-shadow: 9px 11px 23px -4px rgba(0, 0, 0, 0.56);
-  display: flex;
-  flex-direction: column;
-  padding: 15px 20px;
-  margin-right: 20px;
-  margin-bottom: 50px;
-  border: 1px solid ${themeColours.pale};
-  position: relative;
-`;
-
 const AddNewPlanButton = styled.button`
   display: flex;
   align-items: center;
@@ -110,10 +109,6 @@ const AddNewPlanButton = styled.button`
   }
 `;
 
-FavouriteFolderBar.propTypes = {
-  currentUserId: PropTypes.string,
-};
-
 function FavouriteFolderBar({ currentUserId }) {
   const [showAddNewFolder, setShowAddNewFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
@@ -121,23 +116,15 @@ function FavouriteFolderBar({ currentUserId }) {
   const [favFolderNames, setFavFolderNames] = useState(null);
   const [showFavFolderEdit, setShowFavFolderEdit] = useState(false);
   const [favFolderEditIndex, setFavFolderEditIndex] = useState(null);
-  const [showRenameBox, setShowRenameBox] = useState(null);
 
   const inputRef = useRef();
   const editPopRef = useRef();
-  const renameInputRef = useRef([]);
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, [inputRef.current]);
-
-  useEffect(() => {
-    if (showRenameBox !== null) {
-      renameInputRef.current[favFolderEditIndex].focus();
-    }
-  }, [showRenameBox, renameInputRef, favFolderEditIndex]);
 
   useEffect(async () => {
     if (currentUserId) {
@@ -216,13 +203,10 @@ function FavouriteFolderBar({ currentUserId }) {
                     favFolderName={favFolderName}
                     setShowFavFolderEdit={setShowFavFolderEdit}
                     currentUserId={currentUserId}
-                    setShowRenameBox={setShowRenameBox}
-                    showRenameBox={showRenameBox}
                   />
                 )}
               </FolderSection>
               <FolderName
-                ref={(element) => (renameInputRef.current[index] = element)}
                 className="hoverCursor"
                 onClick={() => setSelectedFolder(favFolderName)}>
                 {favFolderName}
@@ -238,19 +222,21 @@ function FavouriteFolderBar({ currentUserId }) {
                 ref={inputRef}
                 onChange={(e) => {
                   setNewFolderName(e.target.value);
-                }}></NewFolderNameInput>
+                }}
+              />
               <NewFolderNameConfirmBtn
-                onClick={(e) => {
-                  if (
-                    firebaseService.addNewFavouriteFolder(
+                onClick={async (e) => {
+                  const addnewFolder =
+                    await firebaseService.addNewFavouriteFolder(
                       currentUserId,
                       newFolderName
-                    )
-                  ) {
+                    );
+                  if (addnewFolder) {
                     Swal.fire('Folder added!');
                     setShowAddNewFolder(false);
+                  } else {
+                    Swal.fire('Oops, something went wrong, please try again!');
                   }
-                  Swal.fire('Oops, something went wrong, please try again!');
                 }}>
                 Create
               </NewFolderNameConfirmBtn>
@@ -260,7 +246,7 @@ function FavouriteFolderBar({ currentUserId }) {
       </FolderWrapper>
 
       <PlanCollectionWrapper>
-        <FavFolder
+        <FavouriteFolder
           selectedFolder={selectedFolder}
           currentUserId={currentUserId}
         />

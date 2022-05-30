@@ -339,7 +339,7 @@ function Dashboard() {
       navigate('/');
     } else {
       const ownPlanList = await firebaseService.getOwnPlans(userInfo.userEmail);
-      if (ownPlanList.length !== 0) {
+      if (ownPlanList) {
         setShowNoPlansText(false);
         setOwnPlansIdList(ownPlanList);
       } else {
@@ -418,7 +418,6 @@ function Dashboard() {
                 onClick={async () => {
                   if (firebaseService.signOutFirebase()) {
                     Swal.fire('You were signed out!');
-                    // navigate('/');
                   } else {
                     Swal.fire('Oops, please try sign out again!');
                   }

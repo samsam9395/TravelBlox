@@ -46,7 +46,6 @@ function EditFavouriteFolderSelector({
   favFolderName,
   setShowFavFolderEdit,
   currentUserId,
-  showRenameBox,
 }) {
   const renameInputRef = useRef(null);
 
@@ -54,7 +53,7 @@ function EditFavouriteFolderSelector({
     if (renameInputRef.current) {
       renameInputRef.current.focus();
     }
-  }, [showRenameBox, renameInputRef.current]);
+  }, [renameInputRef.current]);
 
   async function deleteFavFolder(favFolderName, currentUserId) {
     const batch = writeBatch(db);
