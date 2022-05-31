@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
+const localizer = momentLocalizer(moment);
 
 const SingleDayWrapper = styled.div`
   display: flex;
@@ -44,9 +45,7 @@ const SmallNotice = styled.div`
 `;
 
 export default function DayCalendar({ planDocRef, currentDayDate }) {
-  const localizer = momentLocalizer(moment);
   const [allPlansList, setAllPlansList] = useState([]);
-  const [calendarDefaultView, setCalendarDefaultView] = 'WEEK';
 
   useEffect(async () => {
     if (planDocRef) {

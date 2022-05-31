@@ -29,14 +29,11 @@ export const UserContext = createContext();
 function App() {
   const [defaultImg, setDefaultImg] = useState('');
   const [userInfo, setUserInfo] = useState(null);
-  const [hasSignedIn, setHasSignedIn] = useState(false);
-  const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
     const subscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.accessToken) {
-        console.log(user, user.accessToken);
         setUserInfo({
           userToken: user.accessToken,
           userEmail: user.email,
@@ -50,10 +47,6 @@ function App() {
     });
     return subscribe;
   }, []);
-
-  // useEffect(() => {
-  //   hasSignedIn ? navigate('/discover') : navigate('/');
-  // }, []);
 
   useEffect(async () => {
     const docSnap = await getDoc(
