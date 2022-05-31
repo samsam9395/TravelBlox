@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import Login from './Login';
+import { UserContext } from '../App';
 import bg from '../images/parallx_img_layers/bg_full.png';
 import bird from '../images/parallx_img_layers/bird.png';
 import { fonts } from '../styles/globalTheme';
@@ -8,6 +9,7 @@ import mountain from '../images/parallx_img_layers/mountain.png';
 import starsbg from '../images/parallx_img_layers/stars.png';
 import styled from 'styled-components';
 import tree from '../images/parallx_img_layers/tree_long.png';
+import { useNavigate } from 'react-router-dom';
 
 const SectionWrapper = styled.div`
   top: -80px;
@@ -191,6 +193,14 @@ const DescriptionTextContainer = styled.div`
 function ParallaxLanding() {
   const [scrollYValue, setscrollYValue] = useState(0);
   let width = window.innerWidth;
+  const userInfo = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/discover');
+    }
+  }, [userInfo]);
 
   useEffect(() => {
     window.addEventListener(
