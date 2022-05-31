@@ -196,6 +196,15 @@ function ParallaxLanding() {
   const userInfo = useContext(UserContext);
   const navigate = useNavigate();
 
+  const scrollEvent = () => {
+    let value = window.scrollY;
+    setscrollYValue(value);
+
+    if (width < 768) {
+      setscrollYValue(value + 20);
+    }
+  };
+
   useEffect(() => {
     if (userInfo) {
       navigate('/discover');
@@ -203,18 +212,11 @@ function ParallaxLanding() {
   }, [userInfo]);
 
   useEffect(() => {
-    window.addEventListener(
-      'scroll',
-      () => {
-        let value = window.scrollY;
-        setscrollYValue(value);
+    window.addEventListener('scroll', scrollEvent);
 
-        if (width < 768) {
-          setscrollYValue(value + 20);
-        }
-      },
-      []
-    );
+    return () => {
+      window.removeEventListener('scroll', scrollEvent);
+    };
   }, []);
 
   useEffect(() => {
@@ -227,7 +229,7 @@ function ParallaxLanding() {
     <>
       <SectionWrapper>
         <MainTtitle>TRAVELBLOX</MainTtitle>
-        // <BgImg src={starsbg} scrollvalue={scrollYValue} />
+        <BgImg src={starsbg} scrollvalue={scrollYValue} />
         <BgStaticImg src={bg} />
         <MountainImg src={mountain} scrollvalue={scrollYValue} />
         <TreeImg src={tree} scrollvalue={scrollYValue} />
