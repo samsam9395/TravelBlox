@@ -5,7 +5,6 @@ import IconButton from '@mui/material/IconButton';
 import { InputAdornment } from '@mui/material';
 import { LightOrangeBtn } from '../../styles/globalTheme';
 import PropTypes from 'prop-types';
-import React from 'react';
 import Swal from 'sweetalert2';
 import TextField from '@material-ui/core/TextField';
 import firebaseService from '../../utils/fireabaseService';

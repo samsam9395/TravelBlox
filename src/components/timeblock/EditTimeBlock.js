@@ -3,12 +3,12 @@ import '../../styles/libraryStyles.scss';
 import { Close, Delete, PhotoCamera } from '@mui/icons-material';
 import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import React, { useEffect, useState } from 'react';
 import {
   checkGoogleImgExpirationDate,
   createLocationKeyPairs,
   uploadImagePromise,
 } from '../../utils/functionList';
+import  { useEffect, useState } from 'react';
 
 import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import DateTimeSelector from '../input/DateTimeSelector';

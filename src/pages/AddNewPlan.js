@@ -10,7 +10,7 @@ import {
   ReminderText,
   themeColours,
 } from '../styles/globalTheme';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import AddNewTimeBlock from '../components/timeblock/AddNewTimeBlock';
 import CountrySelector from '../components/timeblock/CountrySelector';

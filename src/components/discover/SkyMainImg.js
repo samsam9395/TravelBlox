@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 
-import React from 'react';
+import PropTypes from 'prop-types';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import blueSky from '../../images/all_plan/orange_sky_brushed4.png';
@@ -61,7 +61,6 @@ const CloudsContainer = styled.div`
     animation: ${cloudAnimationMiddle} 65s linear infinite;
     transform: scale(0.4);
     position: absolute;
-    /* bottom: -98px; */
     top: -71px;
   }
 
@@ -102,7 +101,6 @@ const CloudsContainer = styled.div`
 
 const Wrapper = styled.div`
   max-width: 100vw;
-  /* left: -100px; */
   height: 530px;
 
   position: relative;
@@ -202,6 +200,11 @@ const SearchInputMUI = styled(TextField)({
       borderBottomColor: '#fff8',
     },
 });
+
+SkyMainImg.propTypes = {
+  inputValue: PropTypes.string,
+  setInputValue: PropTypes.func,
+};
 
 function SkyMainImg({ inputValue, setInputValue }) {
   return (

@@ -1,9 +1,10 @@
 import './weather.scss';
 
-import React, { useEffect, useState } from 'react';
 import { fonts, themeColours } from '../../styles/globalTheme';
+import { useEffect, useState } from 'react';
 
 import BeatLoader from 'react-spinners/BeatLoader';
+import PropTypes from 'prop-types';
 import WatercolourBluePng from '../../images/static/watercolour_blue2.png';
 import { getWeather } from '../../utils/api';
 import goldenSparkSimple from '../../images/static/golden_spark_simple.png';
@@ -199,6 +200,11 @@ const AnimationContainer = styled.div`
   width: 100%;
   height: 110px;
 `;
+
+Weather.propTypes = {
+  lat: PropTypes.number,
+  lng: PropTypes.number,
+};
 
 function Weather({ lat, lng }) {
   const [weatherData, setWeatherData] = useState(null);

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 import { LightBlueBtn } from '../../styles/globalTheme';
 import PropTypes from 'prop-types';

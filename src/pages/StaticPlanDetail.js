@@ -1,9 +1,9 @@
 import '../styles/libraryStyles.scss';
 
 import { LightOrangeBtn, fonts, themeColours } from '../styles/globalTheme';
-import React, { useContext, useEffect, useRef, useState } from 'react';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import styled, { css, keyframes } from 'styled-components';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import DayBlockCard from '../components/daily_event_card/DayBlockCard';
 import DayCalendar from '../components/daily_event_card/DayCalendar';
@@ -11,6 +11,7 @@ import ExportCalendarBtn from '../components/google_calendar/ExportCalendarBtn';
 import FullLoading from '../components/general/FullLoading';
 import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
 import { ReactComponent as MilkTeaLeftCurveLineSVG } from '../images/static/milktea_line_left.svg';
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Timeline from '../components/daily_event_card/Timeline';
 import { UserContext } from '../App';
@@ -285,6 +286,10 @@ const ColouredLine = ({ colour }) => (
     }}
   />
 );
+
+ColouredLine.propTypes = {
+  colour: PropTypes.string,
+};
 
 const Tab = styled.div`
   z-index: 5;

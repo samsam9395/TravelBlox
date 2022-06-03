@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
+import { useEffect, useRef, useState } from 'react';
 
 import DayMapCard from './DayMapCard';
 import PropTypes from 'prop-types';

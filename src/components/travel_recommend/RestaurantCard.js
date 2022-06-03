@@ -1,12 +1,16 @@
 import './attractionCard.scss';
 
-import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
   width: 400px;
   height: 100%;
 `;
+
+RestaurantCard.propTypes = {
+  place: PropTypes.object,
+};
 
 function RestaurantCard({ place }) {
   if (place.name && place.ranking) {

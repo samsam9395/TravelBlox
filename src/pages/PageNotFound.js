@@ -1,7 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 
 import { LightBlueBtn } from '../styles/globalTheme';
-import React from 'react';
 import astronaunt from '../images/404/astronaut_mono.png';
 import spaceBg from '../images/404/space_bg.png';
 import { useNavigate } from 'react-router-dom';

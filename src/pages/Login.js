@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-
 import SignInForm from '../components/login/SignInForm';
 import SignUpForm from '../components/login/SignUpForm';
 import styled from 'styled-components';
+import { useState } from 'react';
 
 const Wrapper = styled.div`
   display: flex;
