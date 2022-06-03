@@ -29,27 +29,24 @@ export const UserContext = createContext();
 function App() {
   const [defaultImg, setDefaultImg] = useState('');
   const [userInfo, setUserInfo] = useState(null);
-  const [hasSignedIn, setHasSignedIn] = useState(false);
-  const navigate = useNavigate();
+  const auth = getAuth();
 
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+    const subscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.accessToken) {
         setUserInfo({
           userToken: user.accessToken,
           userEmail: user.email,
         });
-        setHasSignedIn(true);
+
+        return user;
       } else {
-        setHasSignedIn(false);
+        setUserInfo(null);
+        return false;
       }
     });
+    return subscribe;
   }, []);
-
-  useEffect(() => {
-    hasSignedIn ? navigate('/discover') : navigate('/');
-  }, [hasSignedIn]);
 
   useEffect(async () => {
     const docSnap = await getDoc(

@@ -102,11 +102,6 @@ function DayMapCard(props) {
         directionsService.route(directionsRequest).then((result) => {
           if (result.status === 'OK') {
             directionsRenderer.setDirections(result);
-            // const travelDuration = result.routes.map((e) => {
-            //   return e.legs;
-            // });
-
-            // props.setResult(travelDuration);
             directionsRenderer.setPanel(document.getElementById('sidebar'));
           } else console.log('something wrong');
         });
@@ -137,11 +132,6 @@ function DayMapCard(props) {
           if (result.status === 'OK') {
             directionsRenderer.setDirections(result);
 
-            // const travelDuration = result.routes.map((e) => {
-            //   return e.legs;
-            // });
-
-            // props.setResult(travelDuration);
             directionsRenderer.setPanel(sideRouteRef.current);
           } else console.log('something wrong');
         });
