@@ -1,6 +1,5 @@
 import { Divider, InputWrapper, SignUpSwitcher, Title } from './login_styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 import GoogleLogin from './SocialProviderLogin';
 import IconButton from '@mui/material/IconButton';
@@ -9,21 +8,7 @@ import { LightOrangeBtn } from '../../styles/globalTheme';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import TextField from '@material-ui/core/TextField';
-
-function userLogIn(email, password) {
-  const auth = getAuth();
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      Swal.fire('Welcome back!', user.email);
-    })
-    .catch((error) => {
-      console.log(error.message);
-      if (error.message === 'EMAIL_NOT_FOUND') {
-        Swal.fire('Email not found! Please check again!');
-      }
-    });
-}
+import firebaseService from '../../utils/fireabaseService';
 
 SignInForm.propTypes = {
   setEmail: PropTypes.func,
@@ -90,7 +75,9 @@ function SignInForm({
         radius="20px"
         onClick={() =>
           email && password
-            ? (userLogIn(email, password), setEmail(''), setPassword(''))
+            ? (firebaseService.userLogIn(email, password),
+              setEmail(''),
+              setPassword(''))
             : Swal.fire('please fill in both !')
         }>
         Login
