@@ -72,8 +72,8 @@ const scrollEffect = (targetRef, index) => {
 
 Timeline.propTypes = {
   NumofDays: PropTypes.number,
-  RefList: PropTypes.array,
-  timelineRefArray: PropTypes.array,
+  RefList: PropTypes.object,
+  timelineRefArray: PropTypes.object,
   stopTimelineNav: PropTypes.string,
 };
 

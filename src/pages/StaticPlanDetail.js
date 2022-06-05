@@ -338,6 +338,18 @@ const ToTopScroll = styled.div`
   float: right;
 `;
 
+const KoreaDirectionNotification = styled.div`
+  text-align: center;
+  font-size: 20px;
+  font-style: italic;
+  padding: 30px 0;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    padding-bottom: 50px;
+  }
+`;
+
 function StaticPlanDetail() {
   const userInfo = useContext(UserContext);
   const { planDocRef } = useParams();
@@ -368,6 +380,7 @@ function StaticPlanDetail() {
   const [showFullImage, setShowFullImage] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
   const [showTab, setShowTab] = useState('calendar');
+  const [isKorea, setIsKorea] = useState(false);
 
   const planImageRef = useRef(null);
 
@@ -411,6 +424,10 @@ function StaticPlanDetail() {
       Swal.fire('Please select a folder!');
     }
   }
+
+  useEffect(() => {
+    setIsKorea(country.label === 'South Korea');
+  }, [country.label]);
 
   useEffect(async () => {
     if (userInfo) {
@@ -634,7 +651,8 @@ function StaticPlanDetail() {
           />
         )}
         <PlanCardsWrapper>
-          {showTab !== 'calendar' &&
+          {showTab === 'route' &&
+            !isKorea &&
             timestampList.map((day, index) => {
               return (
                 <DayBlockCard
@@ -649,6 +667,26 @@ function StaticPlanDetail() {
                 />
               );
             })}
+          {showTab === 'dayByday' &&
+            timestampList.map((day, index) => {
+              return (
+                <DayBlockCard
+                  timelineRefArray={timelineRefArray}
+                  itemEls={itemEls}
+                  currentDayDate={day}
+                  day={day}
+                  planDocRef={planDocRef}
+                  index={index}
+                  key={index}
+                  showTab={showTab}
+                />
+              );
+            })}
+          {showTab === 'route' && isKorea && (
+            <KoreaDirectionNotification>
+              Direction services are currently not available for South Korea.
+            </KoreaDirectionNotification>
+          )}
           {showTab === 'calendar' && timestampList[0] != 'Invalid Date' && (
             <DayCalendar
               planDocRef={planDocRef}

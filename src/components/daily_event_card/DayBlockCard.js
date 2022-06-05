@@ -138,6 +138,7 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
 DayBlockCard.propTypes = {
   currentDayDate: PropTypes.instanceOf(Date),
   planDocRef: PropTypes.string,
+  country: PropTypes.object,
   index: PropTypes.number,
   showTab: PropTypes.string,
   itemEls: PropTypes.object,

@@ -31,9 +31,6 @@ function DatePicker(props) {
   ]);
 
   const [hasUpdate, setHasUpdate] = useState(false);
-  console.log('props.startInitDateValue', props.startInitDateValue);
-  console.log('props.endInitDateValue', props.endInitDateValue);
-  console.log(state);
 
   useEffect(() => {
     if (props.startInitDateValue && props.endInitDateValue) {
