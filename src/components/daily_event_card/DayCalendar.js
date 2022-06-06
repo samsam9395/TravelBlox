@@ -1,10 +1,11 @@
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
-import React, { useCallback, useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
+import { useCallback, useEffect, useState } from 'react';
 
 import BeatLoader from 'react-spinners/BeatLoader';
+import PropTypes from 'prop-types';
 import firebaseDB from '../../utils/firebaseConfig';
 import moment from 'moment';
 import styled from 'styled-components';
@@ -43,6 +44,11 @@ const SmallNotice = styled.div`
   color: ${themeColours.orange_grey};
   margin: 50px 20px;
 `;
+
+DayCalendar.propTypes = {
+  planDocRef: PropTypes.string,
+  currentDayDate: PropTypes.instanceOf(Date),
+};
 
 export default function DayCalendar({ planDocRef, currentDayDate }) {
   const [allPlansList, setAllPlansList] = useState([]);

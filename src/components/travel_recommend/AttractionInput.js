@@ -1,10 +1,10 @@
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import React, { useEffect, useState } from 'react';
 import {
   getAttraction,
   getRestaurant,
   getTravelLocation,
 } from '../../utils/api';
+import { useEffect, useState } from 'react';
 
 import AttractionCards from './AttractionCards';
 import HashLoader from 'react-spinners/HashLoader';

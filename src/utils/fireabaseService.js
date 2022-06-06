@@ -13,6 +13,7 @@ import {
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
 
@@ -21,6 +22,19 @@ import firebaseDB from './firebaseConfig';
 import { renameGoogleMaDataIntoFirebase } from './functionList';
 
 const db = firebaseDB();
+
+const authMessages = {
+  'auth/weak-password': 'Passwords need to be greater than 6 digits.',
+  'auth/email-already-in-use':
+    'This email is already an members, login directly.',
+  'auth/invalid-email': 'Invalid email, please try another one.',
+  'auth/wrong-password': 'Wrong password, please try again!',
+  'auth/user-not-found': 'User not found, please check your typings.',
+  'auth/internal-error': 'Something went wrong, please try again later.',
+  'auth/popup-closed-by-user': 'Login not successful, please try again!',
+  'auth/account-exists-with-different-credential':
+    'This email is associated with another account already.',
+};
 
 async function addPlanToAllPlans(
   currentUserId,
@@ -289,18 +303,26 @@ const firebaseService = {
       return false;
     }
   },
+  userLogIn(email, password) {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        Swal.fire('Welcome back!', user.email);
+      })
+      .catch((error) => {
+        console.log(error.message, error.code);
+        if (error.message === 'EMAIL_NOT_FOUND') {
+          Swal.fire('Email not found! Please check again!');
+        } else {
+          Swal.fire({
+            title: 'Oops!',
+            text: authMessages[error.code],
+          });
+        }
+      });
+  },
   async signUp(email, password, username) {
-    const signUpErrorMessages = {
-      'auth/weak-password': 'Passwords need to be greater than 6 digits.',
-      'auth/email-already-in-use':
-        'This email is already an members, login directly.',
-      'auth/invalid-email': 'Invalid email, please try another one.',
-      'auth/wrong-password': 'Wrong password, please try again!',
-      'auth/user-not-found': 'User not found, please check your typings.',
-      'auth/internal-error': 'Something went wrong, please try again later.',
-      'auth/popup-closed-by-user': 'Login not successful, please try again!',
-    };
-
     const docRef = doc(db, 'userId', email);
     const docSnap = await getDoc(docRef);
 
@@ -324,7 +346,7 @@ const firebaseService = {
       } catch (error) {
         Swal.fire({
           title: 'Oops!',
-          text: signUpErrorMessages[error.code],
+          text: authMessages[error.code],
         });
       }
     }

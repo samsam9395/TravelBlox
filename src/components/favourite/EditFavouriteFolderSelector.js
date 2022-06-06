@@ -1,4 +1,3 @@
-import React, { useEffect, useRef } from 'react';
 import {
   collection,
   doc,
@@ -7,7 +6,9 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
+import { useEffect, useRef } from 'react';
 
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
 import styled from 'styled-components';
@@ -40,6 +41,14 @@ const Wrapper = styled.div`
     }
   }
 `;
+EditFavouriteFolderSelector.propTypes = {
+  index: PropTypes.number,
+  favFolderEditIndex: PropTypes.number,
+  favFolderName: PropTypes.string,
+  setShowFavFolderEdit: PropTypes.func,
+  currentUserId: PropTypes.string,
+};
+
 function EditFavouriteFolderSelector({
   index,
   favFolderEditIndex,

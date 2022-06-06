@@ -1,9 +1,9 @@
 import '../styles/libraryStyles.scss';
 
 import { LightOrangeBtn, fonts, themeColours } from '../styles/globalTheme';
-import React, { useContext, useEffect, useRef, useState } from 'react';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import styled, { css, keyframes } from 'styled-components';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import DayBlockCard from '../components/daily_event_card/DayBlockCard';
 import DayCalendar from '../components/daily_event_card/DayCalendar';
@@ -11,6 +11,7 @@ import ExportCalendarBtn from '../components/google_calendar/ExportCalendarBtn';
 import FullLoading from '../components/general/FullLoading';
 import ImageEnlarge from '../components/daily_event_card/ImageEnlarge';
 import { ReactComponent as MilkTeaLeftCurveLineSVG } from '../images/static/milktea_line_left.svg';
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Timeline from '../components/daily_event_card/Timeline';
 import { UserContext } from '../App';
@@ -286,6 +287,10 @@ const ColouredLine = ({ colour }) => (
   />
 );
 
+ColouredLine.propTypes = {
+  colour: PropTypes.string,
+};
+
 const Tab = styled.div`
   z-index: 5;
   padding: 10px;
@@ -333,6 +338,18 @@ const ToTopScroll = styled.div`
   float: right;
 `;
 
+const KoreaDirectionNotification = styled.div`
+  text-align: center;
+  font-size: 20px;
+  font-style: italic;
+  padding: 30px 0;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    padding-bottom: 50px;
+  }
+`;
+
 function StaticPlanDetail() {
   const userInfo = useContext(UserContext);
   const { planDocRef } = useParams();
@@ -363,6 +380,7 @@ function StaticPlanDetail() {
   const [showFullImage, setShowFullImage] = useState(false);
   const [loadindOpacity, setLoadindOpacity] = useState(1);
   const [showTab, setShowTab] = useState('calendar');
+  const [isKorea, setIsKorea] = useState(false);
 
   const planImageRef = useRef(null);
 
@@ -406,6 +424,10 @@ function StaticPlanDetail() {
       Swal.fire('Please select a folder!');
     }
   }
+
+  useEffect(() => {
+    setIsKorea(country.label === 'South Korea');
+  }, [country.label]);
 
   useEffect(async () => {
     if (userInfo) {
@@ -629,7 +651,8 @@ function StaticPlanDetail() {
           />
         )}
         <PlanCardsWrapper>
-          {showTab !== 'calendar' &&
+          {showTab === 'route' &&
+            !isKorea &&
             timestampList.map((day, index) => {
               return (
                 <DayBlockCard
@@ -644,6 +667,26 @@ function StaticPlanDetail() {
                 />
               );
             })}
+          {showTab === 'dayByday' &&
+            timestampList.map((day, index) => {
+              return (
+                <DayBlockCard
+                  timelineRefArray={timelineRefArray}
+                  itemEls={itemEls}
+                  currentDayDate={day}
+                  day={day}
+                  planDocRef={planDocRef}
+                  index={index}
+                  key={index}
+                  showTab={showTab}
+                />
+              );
+            })}
+          {showTab === 'route' && isKorea && (
+            <KoreaDirectionNotification>
+              Direction services are currently not available for South Korea.
+            </KoreaDirectionNotification>
+          )}
           {showTab === 'calendar' && timestampList[0] != 'Invalid Date' && (
             <DayCalendar
               planDocRef={planDocRef}

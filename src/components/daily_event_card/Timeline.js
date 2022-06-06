@@ -1,14 +1,9 @@
-import React, { useEffect, useRef } from 'react';
 import { fonts, themeColours } from '../../styles/globalTheme';
+import { useEffect, useRef } from 'react';
 
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  margin-right: 15px;
-  transition: top 0.2s ease;
-  font-size: 16px;
-  flex: 0 0 100px;
-`;
 const DayBox = styled.div`
   top: 155px;
   box-sizing: border-box;
@@ -73,6 +68,13 @@ const scrollEffect = (targetRef, index) => {
     behavior: 'smooth',
     block: 'start',
   });
+};
+
+Timeline.propTypes = {
+  NumofDays: PropTypes.number,
+  RefList: PropTypes.object,
+  timelineRefArray: PropTypes.object,
+  stopTimelineNav: PropTypes.string,
 };
 
 function Timeline({ NumofDays, RefList, timelineRefArray, stopTimelineNav }) {

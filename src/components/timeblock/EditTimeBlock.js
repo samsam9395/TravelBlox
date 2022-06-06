@@ -3,12 +3,12 @@ import '../../styles/libraryStyles.scss';
 import { Close, Delete, PhotoCamera } from '@mui/icons-material';
 import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import React, { useEffect, useState } from 'react';
 import {
   checkGoogleImgExpirationDate,
   createLocationKeyPairs,
   uploadImagePromise,
 } from '../../utils/functionList';
+import { useEffect, useState } from 'react';
 
 import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import DateTimeSelector from '../input/DateTimeSelector';
@@ -85,28 +85,28 @@ const TimeblockImgUploadContainer = styled.div`
   input {
     display: none;
   }
-  .upload_image {
-    margin-top: 30px;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: none;
-  }
+`;
 
-  .uploadBtn_camera {
-    margin: 10px 0;
-    &:hover {
-      background-color: ${themeColours.pale};
-    }
+const UploadBtnCamera = styled(IconButton)`
+  margin: 10px 0;
+  &:hover {
+    background-color: ${themeColours.pale};
   }
+`;
+const InstructionText = styled.div`
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.66;
+  letter-spacing: 0.03333em;
+  text-align: left;
+  font-size: 12px;
+`;
 
-  .instruction_text {
-    color: rgba(0, 0, 0, 0.6);
-    line-height: 1.66;
-    letter-spacing: 0.03333em;
-    text-align: left;
-    font-size: 12px;
-  }
+const UploadImage = styled.img`
+  margin-top: 30px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: none;
 `;
 
 EditTimeBlock.propTypes = {
@@ -153,10 +153,12 @@ function EditTimeBlock(props) {
   useEffect(async () => {
     const data = importBlockData;
 
-    setBlockTitle(data.title);
-    setLocationName(data.place_name);
-    setStartTimeValue(data.start);
-    setEndTimeValue(data.end);
+    if (data) {
+      setBlockTitle(data.title);
+      setLocationName(data.place_name);
+      setStartTimeValue(data.start);
+      setEndTimeValue(data.end);
+    }
 
     if (data.timeEdited) {
       const imgExpiration = await checkGoogleImgExpirationDate(
@@ -293,11 +295,7 @@ function EditTimeBlock(props) {
 
             <TimeblockImgUploadContainer>
               {timeBlockImage && (
-                <img
-                  src={timeBlockImage}
-                  alt="upload image"
-                  className="upload_image"
-                />
+                <UploadImage src={timeBlockImage} alt="upload image" />
               )}
               <label htmlFor="imgupload">
                 <input
@@ -312,17 +310,16 @@ function EditTimeBlock(props) {
                   }}
                 />
 
-                <IconButton
-                  className="uploadBtn_camera"
+                <UploadBtnCamera
                   color="primary"
                   aria-label="upload picture"
                   component="div">
                   <PhotoCamera style={{ color: themeColours.light_blue }} />
-                </IconButton>
+                </UploadBtnCamera>
               </label>
-              <div className="instruction_text">
+              <InstructionText>
                 You can upload an image for this time event.
-              </div>
+              </InstructionText>
             </TimeblockImgUploadContainer>
           </FormsContainer>
           <LightOrangeBtn

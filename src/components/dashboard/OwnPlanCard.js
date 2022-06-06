@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import firebaseDB from '../../utils/firebaseConfig';

@@ -113,7 +113,7 @@ export function loopThroughDays(startday, days) {
 export function calculateIfGoogleImgExpired(dateEdited) {
   const currentTime = new Date();
   const expirationTime = new Date(dateEdited).setDate(
-    new Date(dateEdited).getDate() + 2
+    new Date(dateEdited).getDate() + 1
   );
 
   if (currentTime > expirationTime) {

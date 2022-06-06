@@ -1,6 +1,5 @@
 import { IconButton, TextField } from '@mui/material';
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import React, { useState } from 'react';
 
 import AutoCompleteInput from '../timeblock/AutoCompleteInput';
 import Close from '@mui/icons-material/Close';
@@ -12,6 +11,7 @@ import Swal from 'sweetalert2';
 import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
 import { uploadImagePromise } from '../../utils/functionList';
+import { useState } from 'react';
 
 const BlackWrapper = styled.div`
   position: fixed;
@@ -96,6 +96,7 @@ const TimeblockImgUploadContainer = styled.div`
 AddNewTimeBlock.propTypes = {
   planDocRef: PropTypes.string,
   closePopUp: PropTypes.func,
+  setAddedTimeBlock: PropTypes.func,
   startDateValue: PropTypes.instanceOf(Date),
 };
 

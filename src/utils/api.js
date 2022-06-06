@@ -104,7 +104,6 @@ export const googleServices = {
         },
         (place) => {
           resolve(place);
-          console.log(place);
         }
       );
     });

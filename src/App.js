@@ -20,7 +20,6 @@ import ParallaxLanding from './pages/ParallaxLanding';
 import StaticPlanDetail from './pages/StaticPlanDetail';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import firebaseDB from './utils/firebaseConfig';
-import { useNavigate } from 'react-router-dom';
 
 const db = firebaseDB();
 

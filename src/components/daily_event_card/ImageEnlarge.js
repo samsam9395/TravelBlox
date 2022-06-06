@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Close from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
   position: fixed;
-  /* top: 55px; */
   top: 0;
   left: 0;
   background-color: #000000d9;
@@ -25,7 +25,6 @@ const ImageContainer = styled.div`
   position: relative;
 
   img {
-    /* max-width: 80%; */
     border-radius: 10px;
     max-height: 80%;
   }
@@ -45,6 +44,11 @@ const CloseBtn = styled(IconButton)`
   position: absolute;
 `;
 
+ImageEnlarge.propTypes = {
+  mainImage: PropTypes.string,
+  setShowFullImage: PropTypes.func,
+};
+
 function ImageEnlarge({ mainImage, setShowFullImage }) {
   return (
     <Wrapper>
@@ -57,9 +61,7 @@ function ImageEnlarge({ mainImage, setShowFullImage }) {
           }}>
           <Close style={{ color: 'white' }} />
         </CloseBtn>
-        {/* <div className="img_container"> */}
         <img src={mainImage} alt="Plan image full size" />
-        {/* </div> */}
       </ImageContainer>
     </Wrapper>
   );

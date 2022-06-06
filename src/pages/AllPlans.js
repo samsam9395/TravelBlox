@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import FullLoading from '../components/general/FullLoading';
 import PropTypes from 'prop-types';
