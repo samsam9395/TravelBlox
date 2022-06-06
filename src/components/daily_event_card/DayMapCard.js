@@ -37,18 +37,6 @@ const PanelContainer = styled.div`
   }
 `;
 
-const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-right',
-  iconColor: 'white',
-  customClass: {
-    popup: 'colored-toast',
-  },
-  showConfirmButton: false,
-  timer: 1500,
-  timerProgressBar: true,
-});
-
 DayMapCard.propTypes = {
   dayEvents: PropTypes.array,
 };
@@ -127,7 +115,7 @@ function DayMapCard(props) {
           .then((result) => {
             if (result.status === 'OK') {
               directionsRenderer.setDirections(result);
-              directionsRenderer.setPanel(document.getElementById('sidebar'));
+              directionsRenderer.setPanel(sideRouteRef.current);
             }
           })
           .catch((e) => {

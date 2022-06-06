@@ -91,7 +91,7 @@ const StarContainer = styled.div`
 `;
 
 LocationCard.propTypes = {
-  location: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+  location: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
 
 export default function LocationCard(props) {
