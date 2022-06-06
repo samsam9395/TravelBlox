@@ -127,6 +127,7 @@ function DayMapCard(props) {
               });
             }
           });
+
       }
 
       if (placeIdList && placeIdList.length > 2) {
@@ -150,6 +151,7 @@ function DayMapCard(props) {
         };
         directionsRenderer.setMap(map);
 
+
         directionsService
           .route(directionsRequest)
           .then((result) => {
@@ -168,6 +170,7 @@ function DayMapCard(props) {
               });
             }
           });
+
       }
     }
   }, [ref.current, props.dayEvents]);

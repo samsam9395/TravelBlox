@@ -50,7 +50,7 @@ So here it is, **TravelBlox** that integrates everything altogether :blush: :spa
   - Password: user1234
 
 - Demo Account for Google Calendar:
-  - Username:demopurposeuser@gmail.com
+  - Username: demopurposeuser@gmail.com
   - Password: demouser1234
 
 <br />
