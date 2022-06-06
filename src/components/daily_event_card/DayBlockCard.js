@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
+import { useEffect, useRef, useState } from 'react';
 
 import DayMapCard from './DayMapCard';
 import PropTypes from 'prop-types';
@@ -138,6 +138,7 @@ async function CalendarByDay(blocksListRef, currentDayDate) {
 DayBlockCard.propTypes = {
   currentDayDate: PropTypes.instanceOf(Date),
   planDocRef: PropTypes.string,
+  country: PropTypes.object,
   index: PropTypes.number,
   showTab: PropTypes.string,
   itemEls: PropTypes.object,

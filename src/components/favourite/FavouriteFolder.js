@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
+import { useEffect, useState } from 'react';
 
 import OwnPlanCard from '../dashboard/OwnPlanCard';
 import PropTypes from 'prop-types';

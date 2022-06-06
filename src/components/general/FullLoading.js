@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useEffect, useState } from 'react';
 
 import { ReactComponent as CircularMoon } from '../../images/loading/circular_moon.svg';
 import GoldenPalmTreeWindow from '../../images/loading/golden_palm_window.png';
+import PropTypes from 'prop-types';
 import SimpleSparkle from '../../images/loading/simple_sparkle.png';
 
 const rotate = keyframes`
@@ -113,6 +114,9 @@ const ElementContainer = styled.div`
   }
 `;
 
+FullLoading.propTypes = {
+  opacity: PropTypes.number,
+};
 function FullLoading({ opacity }) {
   const [changeDisplay, setChangeDisplay] = useState(false);
 

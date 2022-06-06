@@ -1,6 +1,7 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
 import styled from 'styled-components';
 
 const DayMapContainer = styled.div`
@@ -81,12 +82,22 @@ function DayMapCard(props) {
           unitSystem: window.google.maps.UnitSystem.METRIC,
         };
         directionsRenderer.setMap(map);
-
-        directionsService.route(directionsRequest).then((result) => {
-          if (result.status === 'OK') {
-            directionsRenderer.setDirections(result);
-          } else console.log('something wrong');
-        });
+        directionsService
+          .route(directionsRequest)
+          .then((result) => {
+            if (result.status === 'OK') {
+              directionsRenderer.setDirections(result);
+            }
+          })
+          .catch((e) => {
+            if (e.code === 'ZERO_RESULTS') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops! ',
+                text: 'No route found for this schedule.',
+              });
+            }
+          });
       }
 
       if (placeIdList && placeIdList.length === 2) {
@@ -99,17 +110,24 @@ function DayMapCard(props) {
         };
         directionsRenderer.setMap(map);
 
-        directionsService.route(directionsRequest).then((result) => {
-          if (result.status === 'OK') {
-            directionsRenderer.setDirections(result);
-            // const travelDuration = result.routes.map((e) => {
-            //   return e.legs;
-            // });
+        directionsService
+          .route(directionsRequest)
+          .then((result) => {
+            if (result.status === 'OK') {
+              directionsRenderer.setDirections(result);
+              directionsRenderer.setPanel(sideRouteRef.current);
+            }
+          })
+          .catch((e) => {
+            if (e.code === 'ZERO_RESULTS') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops! ',
+                text: 'No route found for this schedule.',
+              });
+            }
+          });
 
-            // props.setResult(travelDuration);
-            directionsRenderer.setPanel(document.getElementById('sidebar'));
-          } else console.log('something wrong');
-        });
       }
 
       if (placeIdList && placeIdList.length > 2) {
@@ -133,18 +151,26 @@ function DayMapCard(props) {
         };
         directionsRenderer.setMap(map);
 
-        directionsService.route(directionsRequest).then((result) => {
-          if (result.status === 'OK') {
-            directionsRenderer.setDirections(result);
 
-            // const travelDuration = result.routes.map((e) => {
-            //   return e.legs;
-            // });
+        directionsService
+          .route(directionsRequest)
+          .then((result) => {
+            if (result.status === 'OK') {
+              directionsRenderer.setDirections(result);
 
-            // props.setResult(travelDuration);
-            directionsRenderer.setPanel(sideRouteRef.current);
-          } else console.log('something wrong');
-        });
+              directionsRenderer.setPanel(sideRouteRef.current);
+            }
+          })
+          .catch((e) => {
+            if (e.code === 'ZERO_RESULTS') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops! ',
+                text: 'No route found for this schedule.',
+              });
+            }
+          });
+
       }
     }
   }, [ref.current, props.dayEvents]);
@@ -162,7 +188,6 @@ function DayMapCard(props) {
           />
         </MapContainer>
       )}
-      {/* {hasMarker && <Marker position={markerPosition} />} */}
 
       <PanelContainer id="sidebar" ref={sideRouteRef}></PanelContainer>
     </DayMapContainer>

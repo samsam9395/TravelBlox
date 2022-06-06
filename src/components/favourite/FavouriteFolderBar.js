@@ -6,15 +6,16 @@ import {
   SubSection,
   SubSectionWrapper,
 } from '../../pages/Dashboard';
-import React, { useEffect, useRef, useState } from 'react';
-import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
+import { useEffect, useRef, useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import EditFavouriteFolderSelector from './EditFavouriteFolderSelector';
 import FavouriteFolder from './FavouriteFolder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
 import firebaseService from '../../utils/fireabaseService';
@@ -108,6 +109,10 @@ const AddNewPlanButton = styled.button`
     background-color: ${themeColours.blue};
   }
 `;
+
+FavouriteFolderBar.propTypes = {
+  currentUserId: PropTypes.string,
+};
 
 function FavouriteFolderBar({ currentUserId }) {
   const [showAddNewFolder, setShowAddNewFolder] = useState(false);

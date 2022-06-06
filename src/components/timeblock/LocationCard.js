@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
@@ -91,7 +91,7 @@ const StarContainer = styled.div`
 `;
 
 LocationCard.propTypes = {
-  location: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+  location: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };
 
 export default function LocationCard(props) {

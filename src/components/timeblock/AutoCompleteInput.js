@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
@@ -7,6 +7,12 @@ import { themeColours } from '../../styles/globalTheme';
 SearchInput.propTypes = {
   setLocation: PropTypes.func,
   locationName: PropTypes.string,
+};
+
+AutoCompleteInput.propTypes = {
+  setLocation: PropTypes.func,
+  locationName: PropTypes.string,
+  placeId: PropTypes.string,
 };
 
 function SearchInput(props) {

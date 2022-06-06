@@ -4,7 +4,7 @@ import {
   fonts,
   themeColours,
 } from '../styles/globalTheme';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import FavouriteFolderBar from '../components/favourite/FavouriteFolderBar';
 import FullLoading from '../components/general/FullLoading';
@@ -415,9 +415,11 @@ function Dashboard() {
               <UserBasicInfo>{userName}</UserBasicInfo>
               <UserBasicInfo>{userInfo?.userEmail}</UserBasicInfo>
               <LogoutContainer
-                onClick={async () => {
-                  if (firebaseService.signOutFirebase()) {
+                onClick={() => {
+                  const signout = firebaseService.signOutFirebase();
+                  if (signout) {
                     Swal.fire('You were signed out!');
+                    navigate('/');
                   } else {
                     Swal.fire('Oops, please try sign out again!');
                   }
@@ -478,7 +480,7 @@ function Dashboard() {
                 {showNoPlansText && (
                   <NoPlansText>
                     <NoPlanTextTitle>
-                      You haven't created any travel plans yet.
+                      You have not created any travel plans yet.
                     </NoPlanTextTitle>
                     <NoPlanTextInstruction>
                       Click on

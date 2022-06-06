@@ -1,16 +1,18 @@
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
-import React, { useCallback, useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
+import { useCallback, useEffect, useState } from 'react';
 
 import BeatLoader from 'react-spinners/BeatLoader';
+import PropTypes from 'prop-types';
 import firebaseDB from '../../utils/firebaseConfig';
 import moment from 'moment';
 import styled from 'styled-components';
 import { themeColours } from '../../styles/globalTheme';
 
 const db = firebaseDB();
+const localizer = momentLocalizer(moment);
 
 const SingleDayWrapper = styled.div`
   display: flex;
@@ -43,10 +45,13 @@ const SmallNotice = styled.div`
   margin: 50px 20px;
 `;
 
+DayCalendar.propTypes = {
+  planDocRef: PropTypes.string,
+  currentDayDate: PropTypes.instanceOf(Date),
+};
+
 export default function DayCalendar({ planDocRef, currentDayDate }) {
-  const localizer = momentLocalizer(moment);
   const [allPlansList, setAllPlansList] = useState([]);
-  const [calendarDefaultView, setCalendarDefaultView] = 'WEEK';
 
   useEffect(async () => {
     if (planDocRef) {

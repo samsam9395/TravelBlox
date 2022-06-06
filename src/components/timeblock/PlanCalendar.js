@@ -16,6 +16,7 @@ PlanCalendar.propTypes = {
   startDateValue: PropTypes.string,
   setMyEvents: PropTypes.func,
   setCurrentSelectTimeData: PropTypes.func,
+  toggleShowEditPopUp: PropTypes.func,
 };
 
 function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {

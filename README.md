@@ -32,7 +32,7 @@ Enables users to share, collect and import travel schedules made by others.
 <p>
 I've been planning my trips with spreadsheets and note-takers, in which I had to switch platforms between calendars, maps and a lot of times many personal travel blogs for planning ideas.
 
-So here it is, **TravelBlox** that puts everything altogether :blush: :sparkling_heart:
+So here it is, **TravelBlox** that integrates everything altogether :blush: :sparkling_heart:
 
  </p>
 </blockquote>
@@ -50,13 +50,14 @@ So here it is, **TravelBlox** that puts everything altogether :blush: :sparkling
   - Password: user1234
 
 - Demo Account for Google Calendar:
-  - Username:demopurposeuser@gmail.com
+  - Username: demopurposeuser@gmail.com
   - Password: demouser1234
 
+<br />
 <em>
 *This application is still in review by Google for release, which takes 4-6 weeks, so you may not be able to export it to your google calendar yet.
 <br>
-*For demo purposes, please use the provided Google account for Google Calendar 
+*For demo purposes, <u>please use the provided Google account for Google Calendar </u>
 </em>
 
 <br />
@@ -116,9 +117,12 @@ So here it is, **TravelBlox** that puts everything altogether :blush: :sparkling
 - Furnished schedule events' information details with **calendar view** in day, week, month or agenda, along with **map directions** and a **blog** section for user-uploaded images and descriptions
 - Favourite travel plans that could be later <em>imported and customized</em> into your own travel schedule
 
- <img align="center"  alt="TravelBlox Logo" src="./read_me/discover-and-favourite-optimized.gif" >
+ <img align="center"  alt="TravelBlox Logo" src="./read_me/discover-and-favourite-optimized-v2.gif" >
 
-#### Import travel schedules and Search through attractions
+#### Create / Import travel schedules and Search through attractions
+
+- Accelerate the process of creating new events to your timeline with Google's Autocomplete API
+  <img align="center"  alt="TravelBlox Logo" src="./read_me/add-new-time-block.gif" >
 
 - **Import** events from plans that you've favourited and add your own images or description
 - Facilitated schedule arrangement by **draggable** event time blocks

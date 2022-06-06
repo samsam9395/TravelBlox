@@ -33,7 +33,7 @@ function DatePicker(props) {
   const [hasUpdate, setHasUpdate] = useState(false);
 
   useEffect(() => {
-    if (props.startInitDateValue) {
+    if (props.startInitDateValue && props.endInitDateValue) {
       setState([
         {
           startDate: props.startInitDateValue,
@@ -42,6 +42,7 @@ function DatePicker(props) {
         },
       ]);
       props.setStartDateValue(props.startInitDateValue);
+      props.setEndDateValue(props.endInitDateValue);
     }
   }, [props.startInitDateValue, props.endInitDateValue]);
 

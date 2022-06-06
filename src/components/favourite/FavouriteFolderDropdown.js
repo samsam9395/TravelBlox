@@ -1,7 +1,8 @@
 import { LightOrangeBtn, themeColours } from '../../styles/globalTheme';
-import React, { useEffect, useRef, useState } from 'react';
 import { collection, doc, getDocs, writeBatch } from 'firebase/firestore';
+import { useEffect, useRef, useState } from 'react';
 
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import firebaseDB from '../../utils/firebaseConfig';
 import firebaseService from '../../utils/fireabaseService';
@@ -86,6 +87,15 @@ const ImportBtnWrapper = styled.div`
     margin: 15px 0;
   }
 `;
+
+FavFolderDropdown.propTypes = {
+  importTimeBlock: PropTypes.string,
+  planDocRef: PropTypes.string,
+  setAddedTimeBlock: PropTypes.func,
+  startDateValue: PropTypes.instanceOf(Date),
+  currentUserId: PropTypes.string,
+  setShowFavContainer: PropTypes.func,
+};
 
 function FavFolderDropdown({
   importTimeBlock,

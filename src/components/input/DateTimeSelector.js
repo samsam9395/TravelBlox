@@ -2,7 +2,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import PropTypes from 'prop-types';
-import React from 'react';
 import TextField from '@mui/material/TextField';
 import { themeColours } from '../../styles/globalTheme';
 
@@ -10,6 +9,7 @@ DateTimeSelector.propTypes = {
   startTimeValue: PropTypes.instanceOf(Date),
   endTimeValue: PropTypes.instanceOf(Date),
   setEndTimeValue: PropTypes.func,
+  setStartTimeValue: PropTypes.func,
 };
 
 export default function DateTimeSelector(props) {
