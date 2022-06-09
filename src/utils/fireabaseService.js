@@ -249,6 +249,8 @@ const firebaseService = {
     }
   },
   addNewUserToDataBase(user, providerPlatform, username) {
+    console.log('user', user);
+    console.log('providerPlatform, username', providerPlatform, username);
     try {
       setDoc(doc(db, 'userId', user.email), {
         id: user.email,
@@ -389,6 +391,8 @@ const firebaseService = {
   async getUserBasicInfo(userEmail) {
     try {
       const userDoc = await getDoc(doc(db, 'userId', userEmail));
+      console.log(11, userDoc);
+      console.log(12, userDoc.data());
       return userDoc.data();
     } catch (error) {
       console.log(error);

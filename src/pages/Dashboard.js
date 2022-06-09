@@ -349,6 +349,7 @@ function Dashboard() {
       const userBasicInfo = await firebaseService.getUserBasicInfo(
         userInfo.userEmail
       );
+      console.log(userBasicInfo);
       setUserImage(userBasicInfo.userImage);
       setUserName(userBasicInfo.username);
     }

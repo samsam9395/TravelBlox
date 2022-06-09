@@ -65,14 +65,15 @@ export async function signInProvider(e, providerPlatform) {
 
     if (
       getAdditionalUserInfo(result).isNewUser === true &&
-      provider === 'google'
+      providerPlatform === 'google'
     ) {
+      console.log('is new google user', result.user);
       firebaseService.addNewUserToDataBase(result.user, 'google');
     }
 
     if (
       getAdditionalUserInfo(result).isNewUser === true &&
-      provider === 'facebook'
+      providerPlatform === 'facebook'
     ) {
       firebaseService.addNewUserToDataBase(result.user, 'facebook');
     }
