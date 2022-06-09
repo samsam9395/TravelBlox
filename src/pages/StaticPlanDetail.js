@@ -366,7 +366,7 @@ function StaticPlanDetail() {
 
   const [stopTimelineNav, settopTimelineNav] = useState(false);
   const planCollectionRef = doc(db, 'plans', planDocRef);
-  const itemEls = useRef(new Array());
+  let itemEls = useRef(new Array());
   const timelineRefArray = useRef(new Array());
 
   const navTabDay = useRef(null);
@@ -507,14 +507,18 @@ function StaticPlanDetail() {
     };
   }, [showfavDropDown]);
 
-  if (itemEls.current.length > 0) {
-    for (let ref of itemEls.current) {
-      if (ref.current === null) {
-        let index = itemEls.current.indexOf(ref);
-        itemEls.current.splice(index, 1);
+  useEffect(() => {
+    if (itemEls.current.length > 0) {
+      for (let ref of itemEls.current) {
+        if (ref.current === null) {
+          const result = itemEls.current.filter(
+            (addRef) => addRef.current !== null
+          );
+          itemEls.current = result;
+        }
       }
     }
-  }
+  }, [showTab]);
 
   useEffect(() => {
     if (mainImage && authorName && timestampList.length !== 0) {

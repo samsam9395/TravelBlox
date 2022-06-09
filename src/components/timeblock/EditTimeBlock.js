@@ -145,7 +145,6 @@ function EditTimeBlock(props) {
       const originTimeBlockData = await firebaseService.retreiveFromDataBase(
         timeBlockRef
       );
-
       setInitBlockData(originTimeBlockData);
     } else console.log('something wrong with edit-time-block');
   }, [props.currentSelectTimeData]);
@@ -159,7 +158,7 @@ function EditTimeBlock(props) {
       setStartTimeValue(data.start);
       setEndTimeValue(data.end);
     }
-
+    console.log('expire', data.timeEdited);
     if (data.timeEdited) {
       const imgExpiration = await checkGoogleImgExpirationDate(
         data,
