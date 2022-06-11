@@ -162,6 +162,47 @@ function EditPlanDetail() {
     setMainImage(imageFile);
   }
 
+  function saveEditPlanToDataBase() {
+    try {
+      if (
+        firebaseService.saveToDataBase(
+          myEvents,
+          planTitle,
+          country,
+          mainImage,
+          planDocRef,
+          startDateValue,
+          endDateValue,
+          isPublished
+        )
+      ) {
+        Swal.fire('Successfully saved!');
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire('Oops!Something went wrong, please try again!');
+    }
+  }
+
+  function confirmDeletePlan() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (firebaseService.deletePlan(planDocRef, currentUserId)) {
+          Swal.fire('Successfully deleted!');
+          navigate('/dashboard');
+        }
+      }
+    });
+  }
+
   useEffect(() => {
     if (planAuthor) {
       if (currentUserId) {
@@ -324,51 +365,11 @@ function EditPlanDetail() {
             />
           )}
 
-          <LightBlueBtn
-            onClick={() => {
-              try {
-                if (
-                  firebaseService.saveToDataBase(
-                    myEvents,
-                    planTitle,
-                    country,
-                    mainImage,
-                    planDocRef,
-                    startDateValue,
-                    endDateValue,
-                    isPublished
-                  )
-                ) {
-                  Swal.fire('Successfully saved!');
-                }
-              } catch (error) {
-                console.log(error);
-                Swal.fire('Oops!Something went wrong, please try again!');
-              }
-            }}>
+          <LightBlueBtn onClick={() => saveEditPlanToDataBase()}>
             Save
           </LightBlueBtn>
         </LeftBtnContainer>
-        <PaleBtn
-          variant="contained"
-          onClick={() => {
-            Swal.fire({
-              title: 'Are you sure?',
-              text: "You won't be able to revert this!",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                if (firebaseService.deletePlan(planDocRef, currentUserId)) {
-                  Swal.fire('Successfully deleted!');
-                  navigate('/dashboard');
-                }
-              }
-            });
-          }}>
+        <PaleBtn variant="contained" onClick={() => confirmDeletePlan()}>
           Delete
         </PaleBtn>
       </BottomBtnContainer>

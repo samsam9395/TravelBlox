@@ -145,6 +145,73 @@ function AddNewPlan() {
     }
   }
 
+  async function createNewPlan() {
+    if (startDateValue && endDateValue && planTitle) {
+      if (mainImage === null || '') {
+        const defaultImg = await firebaseService.getDefaultImg();
+        setMainImage(defaultImg);
+        const createResult = await firebaseService.createNewCollection(
+          userInfo,
+          username,
+          startDateValue,
+          endDateValue,
+          planTitle,
+          defaultImg,
+          country,
+          isPublished
+        );
+
+        if (createResult.result) {
+          setHasCreatedCollection(true);
+          setPlanDocRef(createResult.planDocId);
+        } else {
+          Swal.fire('Oops, something went wrong...please try creating again!');
+        }
+      } else {
+        const createResult = await firebaseService.createNewCollection(
+          userInfo,
+          username,
+          startDateValue,
+          endDateValue,
+          planTitle,
+          mainImage,
+          country,
+          isPublished
+        );
+        if (createResult.result) {
+          setHasCreatedCollection(true);
+          setPlanDocRef(createResult.planDocId);
+        } else {
+          Swal.fire('Oops, something went wrong...please try creating again!');
+        }
+      }
+    } else {
+      Swal.fire('Please provide the required fields!');
+    }
+  }
+
+  function saveNewPlanToDataBase() {
+    if (myEvents.length === 0) {
+      Swal.fire('Please create at least one event!');
+    } else {
+      if (
+        firebaseService.saveToDataBase(
+          myEvents,
+          planTitle,
+          country,
+          mainImage,
+          planDocRef,
+          startDateValue,
+          endDateValue,
+          isPublished
+        )
+      ) {
+        Swal.fire('Successfully saved!');
+        navigate('/dashboard');
+      }
+    }
+  }
+
   useEffect(() => {
     if (addedTimeBlock) {
       firebaseService.listenToSnapShot(planDocRef, setMyEvents);
@@ -310,25 +377,7 @@ function AddNewPlan() {
               <LightBlueBtn
                 variant="contained"
                 onClick={() => {
-                  if (myEvents.length === 0) {
-                    Swal.fire('Please create at least one event!');
-                  } else {
-                    if (
-                      firebaseService.saveToDataBase(
-                        myEvents,
-                        planTitle,
-                        country,
-                        mainImage,
-                        planDocRef,
-                        startDateValue,
-                        endDateValue,
-                        isPublished
-                      )
-                    ) {
-                      Swal.fire('Successfully saved!');
-                      navigate('/dashboard');
-                    }
-                  }
+                  saveNewPlanToDataBase();
                 }}>
                 Save
               </LightBlueBtn>
@@ -336,58 +385,7 @@ function AddNewPlan() {
           </>
         ) : (
           <ButtonContainer>
-            <LightBlueBtn
-              variant="contained"
-              onClick={async () => {
-                if (startDateValue && endDateValue && planTitle) {
-                  if (mainImage === null || '') {
-                    const defaultImg = await firebaseService.getDefaultImg();
-                    setMainImage(defaultImg);
-                    const createResult =
-                      await firebaseService.createNewCollection(
-                        userInfo,
-                        username,
-                        startDateValue,
-                        endDateValue,
-                        planTitle,
-                        defaultImg,
-                        country,
-                        isPublished
-                      );
-
-                    if (createResult.result) {
-                      setHasCreatedCollection(true);
-                      setPlanDocRef(createResult.planDocId);
-                    } else {
-                      Swal.fire(
-                        'Oops, something went wrong...please try creating again!'
-                      );
-                    }
-                  } else {
-                    const createResult =
-                      await firebaseService.createNewCollection(
-                        userInfo,
-                        username,
-                        startDateValue,
-                        endDateValue,
-                        planTitle,
-                        mainImage,
-                        country,
-                        isPublished
-                      );
-                    if (createResult.result) {
-                      setHasCreatedCollection(true);
-                      setPlanDocRef(createResult.planDocId);
-                    } else {
-                      Swal.fire(
-                        'Oops, something went wrong...please try creating again!'
-                      );
-                    }
-                  }
-                } else {
-                  Swal.fire('Please provide the required fields!');
-                }
-              }}>
+            <LightBlueBtn variant="contained" onClick={() => createNewPlan()}>
               All Set
             </LightBlueBtn>
             <PaleEmptyBtn onClick={() => navigate('/dashboard')}>

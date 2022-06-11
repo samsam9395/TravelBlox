@@ -110,6 +110,7 @@ function FavFolderDropdown({
   const [selectedPlanId, setSelectedPlanId] = useState('');
   const [showSecondLayer, setShowSecondLayer] = useState(false);
   const [showImportBtn, setShowImportBtn] = useState(false);
+  const dropDownRef = useRef([]);
 
   async function getFavouriteFolderDropDownOption() {
     const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
@@ -204,7 +205,17 @@ function FavFolderDropdown({
     }
   }
 
-  const dropDownRef = useRef([]);
+  function displaySelectPlanId(planName) {
+    setSelectedPlanId(planName.fav_plan_doc_ref);
+    setShowImportBtn(true);
+    dropDownRef.current.forEach((ref) => {
+      if (dropDownRef.current.indexOf(ref) === index) {
+        ref.style.color = themeColours.light_orange;
+      } else {
+        ref.style.color = 'white';
+      }
+    });
+  }
 
   useEffect(() => {
     getFavouriteFolderDropDownOption();
@@ -238,16 +249,8 @@ function FavFolderDropdown({
               <FolderOption
                 ref={(element) => (dropDownRef.current[index] = element)}
                 key={index}
-                onClick={(e) => {
-                  setSelectedPlanId(planName.fav_plan_doc_ref);
-                  setShowImportBtn(true);
-                  dropDownRef.current.forEach((ref) => {
-                    if (dropDownRef.current.indexOf(ref) === index) {
-                      ref.style.color = themeColours.light_orange;
-                    } else {
-                      ref.style.color = 'white';
-                    }
-                  });
+                onClick={() => {
+                  displaySelectPlanId(planName);
                 }}>
                 {planName.fav_plan_title}
               </FolderOption>
