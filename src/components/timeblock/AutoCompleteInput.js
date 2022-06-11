@@ -20,7 +20,7 @@ function SearchInput(props) {
 
   const ref = useRef(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (ref.current) {
       const autocomplete = new window.google.maps.places.Autocomplete(
         ref.current

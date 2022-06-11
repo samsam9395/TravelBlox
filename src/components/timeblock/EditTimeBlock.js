@@ -138,19 +138,18 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.id
   );
 
-  useEffect(async () => {
-    if (props.currentSelectTimeData.status === 'imported') {
-      setImportBlockData(props.currentSelectTimeData);
-    } else if (props.currentSelectTimeData.status === 'origin') {
+  async function setTimeBlockData(currentSelectTimeData) {
+    if (currentSelectTimeData.status === 'imported') {
+      setImportBlockData(currentSelectTimeData);
+    } else if (currentSelectTimeData.status === 'origin') {
       const originTimeBlockData = await firebaseService.retreiveFromDataBase(
         timeBlockRef
       );
-
       setInitBlockData(originTimeBlockData);
     } else console.log('something wrong with edit-time-block');
-  }, [props.currentSelectTimeData]);
+  }
 
-  useEffect(async () => {
+  async function setImportTimeBlockData() {
     const data = importBlockData;
 
     if (data) {
@@ -172,9 +171,9 @@ function EditTimeBlock(props) {
         ...createLocationKeyPairs(data),
       });
     }
-  }, [importBlockData]);
+  }
 
-  useEffect(async () => {
+  async function setInitialTimeblockData(initBlockData) {
     const data = initBlockData;
 
     if (initBlockData) {
@@ -202,6 +201,20 @@ function EditTimeBlock(props) {
         });
       }
     }
+  }
+
+  useEffect(() => {
+    setTimeBlockData(props.currentSelectTimeData);
+  }, [props.currentSelectTimeData]);
+
+  useEffect(() => {
+    if (importBlockData) {
+      setImportTimeBlockData();
+    }
+  }, [importBlockData]);
+
+  useEffect(() => {
+    setInitialTimeblockData(initBlockData);
   }, [initBlockData]);
 
   return (

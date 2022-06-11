@@ -132,21 +132,7 @@ function EditPlanDetail() {
   const currentUserId = useContext(UserContext)?.userEmail;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (planAuthor) {
-      if (currentUserId) {
-        if (currentUserId !== planAuthor) {
-          Swal.fire('You do not have authority to edit this plan!');
-          navigate('/dashboard');
-        }
-      } else {
-        Swal.fire('Please login to your account first!');
-        navigate('/');
-      }
-    }
-  }, [planAuthor]);
-
-  useEffect(async () => {
+  async function setInitialPlanInfo() {
     const {
       author,
       country,
@@ -169,6 +155,70 @@ function EditPlanDetail() {
     setEndInitDateValue(new Date(end_date.seconds * 1000));
 
     firebaseService.listenToSnapShot(planDocRef, setMyEvents);
+  }
+
+  async function uploadMainImage(e) {
+    const imageFile = await uploadImagePromise(e.target.files[0]);
+    setMainImage(imageFile);
+  }
+
+  function saveEditPlanToDataBase() {
+    try {
+      if (
+        firebaseService.saveToDataBase(
+          myEvents,
+          planTitle,
+          country,
+          mainImage,
+          planDocRef,
+          startDateValue,
+          endDateValue,
+          isPublished
+        )
+      ) {
+        Swal.fire('Successfully saved!');
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire('Oops!Something went wrong, please try again!');
+    }
+  }
+
+  function confirmDeletePlan() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (firebaseService.deletePlan(planDocRef, currentUserId)) {
+          Swal.fire('Successfully deleted!');
+          navigate('/dashboard');
+        }
+      }
+    });
+  }
+
+  useEffect(() => {
+    if (planAuthor) {
+      if (currentUserId) {
+        if (currentUserId !== planAuthor) {
+          Swal.fire('You do not have authority to edit this plan!');
+          navigate('/dashboard');
+        }
+      } else {
+        Swal.fire('Please login to your account first!');
+        navigate('/');
+      }
+    }
+  }, [planAuthor]);
+
+  useEffect(() => {
+    setInitialPlanInfo();
   }, []);
 
   useEffect(() => {
@@ -257,9 +307,8 @@ function EditPlanDetail() {
               accept="image/*"
               id="icon-button-file"
               type="file"
-              onChange={async (e) => {
-                const imageFile = await uploadImagePromise(e.target.files[0]);
-                setMainImage(imageFile);
+              onChange={(e) => {
+                uploadMainImage(e);
               }}
             />
             <Box textAlign="center">
@@ -316,51 +365,11 @@ function EditPlanDetail() {
             />
           )}
 
-          <LightBlueBtn
-            onClick={() => {
-              try {
-                if (
-                  firebaseService.saveToDataBase(
-                    myEvents,
-                    planTitle,
-                    country,
-                    mainImage,
-                    planDocRef,
-                    startDateValue,
-                    endDateValue,
-                    isPublished
-                  )
-                ) {
-                  Swal.fire('Successfully saved!');
-                }
-              } catch (error) {
-                console.log(error);
-                Swal.fire('Oops!Something went wrong, please try again!');
-              }
-            }}>
+          <LightBlueBtn onClick={() => saveEditPlanToDataBase()}>
             Save
           </LightBlueBtn>
         </LeftBtnContainer>
-        <PaleBtn
-          variant="contained"
-          onClick={() => {
-            Swal.fire({
-              title: 'Are you sure?',
-              text: "You won't be able to revert this!",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                if (firebaseService.deletePlan(planDocRef, currentUserId)) {
-                  Swal.fire('Successfully deleted!');
-                  navigate('/dashboard');
-                }
-              }
-            });
-          }}>
+        <PaleBtn variant="contained" onClick={() => confirmDeletePlan()}>
           Delete
         </PaleBtn>
       </BottomBtnContainer>

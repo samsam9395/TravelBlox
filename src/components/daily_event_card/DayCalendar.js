@@ -52,8 +52,7 @@ DayCalendar.propTypes = {
 
 export default function DayCalendar({ planDocRef, currentDayDate }) {
   const [allPlansList, setAllPlansList] = useState([]);
-
-  useEffect(async () => {
+  async function fetchDayCalendarTimeBlock() {
     if (planDocRef) {
       const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
       const allTimeBlocks = await getDocs(blocksListRef);
@@ -74,6 +73,9 @@ export default function DayCalendar({ planDocRef, currentDayDate }) {
         ]);
       });
     }
+  }
+  useEffect(() => {
+    fetchDayCalendarTimeBlock();
   }, []);
 
   const handleSelectEvent = useCallback((event) => {

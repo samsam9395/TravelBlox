@@ -110,8 +110,9 @@ function FavFolderDropdown({
   const [selectedPlanId, setSelectedPlanId] = useState('');
   const [showSecondLayer, setShowSecondLayer] = useState(false);
   const [showImportBtn, setShowImportBtn] = useState(false);
+  const dropDownRef = useRef([]);
 
-  useEffect(async () => {
+  async function getFavouriteFolderDropDownOption() {
     const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
 
     try {
@@ -120,7 +121,7 @@ function FavFolderDropdown({
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }
 
   async function importTimeBlock(selectedPlanId) {
     let importEndTime = new Date(startDateValue);
@@ -136,6 +137,7 @@ function FavFolderDropdown({
     const docSnap = await getDocs(blocksListRef);
 
     const data = docSnap.docs.map((e) => e.data());
+
     const importEvents = data.map((e) => ({
       status: 'imported',
       start: new Date(startDateValue),
@@ -149,6 +151,7 @@ function FavFolderDropdown({
       place_url: e.place_url,
       place_types: e.place_types,
       place_img: e.place_img,
+      timeEdited: e.timeEdited,
     }));
     return importEvents; //for updating local event
   }
@@ -168,7 +171,6 @@ function FavFolderDropdown({
           'time_blocks',
           createRef.id
         );
-
         batch.set(
           importActionRef,
           {
@@ -185,14 +187,15 @@ function FavFolderDropdown({
             place_url: timeblock.place_url,
             place_types: timeblock.place_types || '',
             status: 'imported',
+            timeEdited: timeblock.timeEdited,
           },
           { merge: true }
         );
       });
       try {
         await batch.commit();
-        if (setAddedTimeBlock) {
-          setAddedTimeBlock(true);
+        {
+          setAddedTimeBlock && setAddedTimeBlock(true);
         }
         Swal.fire('Successfully imported!');
         setShowFavContainer(false);
@@ -202,7 +205,21 @@ function FavFolderDropdown({
     }
   }
 
-  const dropDownRef = useRef([]);
+  function displaySelectPlanId(planName) {
+    setSelectedPlanId(planName.fav_plan_doc_ref);
+    setShowImportBtn(true);
+    dropDownRef.current.forEach((ref) => {
+      if (dropDownRef.current.indexOf(ref) === index) {
+        ref.style.color = themeColours.light_orange;
+      } else {
+        ref.style.color = 'white';
+      }
+    });
+  }
+
+  useEffect(() => {
+    getFavouriteFolderDropDownOption();
+  }, []);
 
   return (
     <Wrapper>
@@ -232,16 +249,8 @@ function FavFolderDropdown({
               <FolderOption
                 ref={(element) => (dropDownRef.current[index] = element)}
                 key={index}
-                onClick={(e) => {
-                  setSelectedPlanId(planName.fav_plan_doc_ref);
-                  setShowImportBtn(true);
-                  dropDownRef.current.forEach((ref) => {
-                    if (dropDownRef.current.indexOf(ref) === index) {
-                      ref.style.color = themeColours.light_orange;
-                    } else {
-                      ref.style.color = 'white';
-                    }
-                  });
+                onClick={() => {
+                  displaySelectPlanId(planName);
                 }}>
                 {planName.fav_plan_title}
               </FolderOption>

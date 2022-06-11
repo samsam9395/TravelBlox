@@ -89,6 +89,37 @@ async function addPlanToUserInfo(currentUserId, createPlanDocId) {
 }
 
 const firebaseService = {
+  async getUserFavouriteFolderNames(currentUserId, setFavFolderNames) {
+    const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
+
+    onSnapshot(favFolderRef, (doc) => {
+      const foldernames = doc.docs.map((e) => e.data().folder_name);
+      setFavFolderNames(foldernames);
+    });
+  },
+  async getUserFavouritePlanIdList(currentUserId, selectedFolder) {
+    const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
+    const planQuery = query(favRef, where('infolder', '==', selectedFolder));
+    const favPlansIdList = await getDocs(planQuery);
+
+    return favPlansIdList;
+  },
+  async getImportBlocks() {
+    const ref = collection(db, 'plans', planId, 'time_blocks');
+    const importTimeBlocks = await getDocs(ref);
+
+    return importTimeBlocks;
+  },
+  async getPlanId(planId) {
+    const docSnap = await getDoc(doc(db, 'plans', planId));
+    return docSnap.data();
+  },
+  async fetchDefaultPlanImage() {
+    const docSnap = await getDoc(
+      doc(db, 'main-components', 'default_plan_img')
+    );
+    return docSnap.data().default_plan_img;
+  },
   async createNewCollection(
     userInfo,
     username,
@@ -209,6 +240,7 @@ const firebaseService = {
           place_types,
           place_formatted_phone_number,
           rating,
+          timeEdited,
         } = docs.docs[e].data();
 
         return {
@@ -225,6 +257,7 @@ const firebaseService = {
           place_types: place_types || '',
           place_formatted_phone_number: place_formatted_phone_number || '',
           rating: rating || '',
+          timeEdited,
         };
       });
 
