@@ -97,10 +97,7 @@ const CurrentSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* background: ${themeColours.blue}; */
-  /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
   height: 315px;
-  /* border-radius: 15px 15px 0 0; */
   margin: 0;
   background-color: #fdfdfd;
   border: 2px solid #e7ac81;

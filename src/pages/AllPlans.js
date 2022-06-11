@@ -16,14 +16,8 @@ const AllPlansWrapper = styled.div`
 `;
 
 const PlanCollectionWrapper = styled.div`
-  /* display: flex; */
-  /* padding: 15px; */
   box-sizing: content-box;
-  /* flex-wrap: wrap;
-  justify-content: flex-start; */
   width: 1290px;
-  /* min-height: 450px;
-  align-items: center; */
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;

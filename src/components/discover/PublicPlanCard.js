@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 const SinglePlanWrapper = styled.div`
   margin: 10px;
-  /* width: 400px; */
 
   @media (max-width: 490px) {
     width: 100%;
@@ -12,8 +11,6 @@ const SinglePlanWrapper = styled.div`
 `;
 
 const SinglePlanContainer = styled.div`
-  /* min-width: 300px; */
-  /* max-width: 450px; */
   width: 100%;
   height: 320px;
   object-fit: contain;
