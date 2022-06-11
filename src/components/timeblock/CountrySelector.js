@@ -16,7 +16,7 @@ export default function CountrySelector(props) {
   const [countryList, setCountryList] = useState([{ label: '' }]);
   const [displayValue, setDisplayValue] = useState({});
 
-  useEffect(async () => {
+  async function getCountryList() {
     const list = await (
       await fetch('https://restcountries.com/v3.1/all')
     ).json();
@@ -33,6 +33,10 @@ export default function CountrySelector(props) {
     });
 
     setCountryList(countries);
+  }
+
+  useEffect(() => {
+    getCountryList();
   }, []);
 
   useEffect(() => {

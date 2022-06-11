@@ -58,7 +58,6 @@ function PlanCalendar(props, { dayLayoutAlgorithm = 'no-overlap' }) {
         scrollToTime={scrollToTime}
         draggableAccessor={(event) => true}
         selectable
-        resizable
       />
     )
   );

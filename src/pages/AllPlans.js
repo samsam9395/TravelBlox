@@ -16,21 +16,18 @@ const AllPlansWrapper = styled.div`
 `;
 
 const PlanCollectionWrapper = styled.div`
-  display: flex;
-  padding: 15px;
   box-sizing: content-box;
-  flex-wrap: wrap;
-  justify-content: flex-start;
   width: 1290px;
-  min-height: 450px;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
 
   @media (max-width: 1300px) {
-    width: 90%;
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 490px) {
-    width: 100%;
+  @media (max-width: 748px) {
+    grid-template-columns: repeat(1, 1fr);
   }
 `;
 
@@ -54,16 +51,20 @@ function Allplans(props) {
   const userInfo = useContext(UserContext);
   const navigate = useNavigate();
 
+  async function getAllPlansList() {
+    const publishedPlans = await firebaseService.getPublishedPlans();
+    setAllPlansList(publishedPlans);
+    setDisplayPlans(publishedPlans);
+  }
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     }
   }, [userInfo]);
 
-  useEffect(async () => {
-    const publishedPlans = await firebaseService.getPublishedPlans();
-    setAllPlansList(publishedPlans);
-    setDisplayPlans(publishedPlans);
+  useEffect(() => {
+    getAllPlansList();
   }, []);
 
   useEffect(() => {

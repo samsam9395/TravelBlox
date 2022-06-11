@@ -7,7 +7,6 @@ import 'sweetalert2/src/sweetalert2.scss';
 
 import { Route, Routes } from 'react-router-dom';
 import { createContext, useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 import AddNewPlan from './pages/AddNewPlan';
@@ -19,9 +18,7 @@ import PageNotFound from './pages/PageNotFound';
 import ParallaxLanding from './pages/ParallaxLanding';
 import StaticPlanDetail from './pages/StaticPlanDetail';
 import { Wrapper } from '@googlemaps/react-wrapper';
-import firebaseDB from './utils/firebaseConfig';
-
-const db = firebaseDB();
+import firebaseService from './utils/fireabaseService';
 
 export const UserContext = createContext();
 
@@ -47,12 +44,9 @@ function App() {
     return subscribe;
   }, []);
 
-  useEffect(async () => {
-    const docSnap = await getDoc(
-      doc(db, 'main-components', 'default_plan_img')
-    );
-
-    setDefaultImg(docSnap.data().default_plan_img);
+  useEffect(() => {
+    const defaultPlanImage = firebaseService.fetchDefaultPlanImage();
+    defaultPlanImage.then((image) => setDefaultImg(image));
   }, []);
 
   return (
@@ -70,6 +64,10 @@ function App() {
           />
           <Route
             path="/new-plan"
+            element={<AddNewPlan defaultImg={defaultImg} />}
+          />
+          <Route
+            path="/new-plan/:createdPlanId"
             element={<AddNewPlan defaultImg={defaultImg} />}
           />
           <Route

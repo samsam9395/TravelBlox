@@ -16,36 +16,39 @@ ExportCalendarBtn.propTypes = {
 function ExportCalendarBtn(props) {
   const [eventsToExport, setEventsToExport] = useState([]);
 
-  useEffect(async () => {
-    const blocksListRef = collection(
-      db,
-      'plans',
-      props.planDocRef,
-      'time_blocks'
-    );
-    const docSnap = await getDocs(blocksListRef);
-    const data = docSnap.docs.map((e) => e.data());
+  useEffect(() => {
+    async function prepareEventForGoogleCalendar() {
+      const blocksListRef = collection(
+        db,
+        'plans',
+        props.planDocRef,
+        'time_blocks'
+      );
+      const docSnap = await getDocs(blocksListRef);
+      const data = docSnap.docs.map((e) => e.data());
 
-    const events = data.map((e) => ({
-      summary: e.title,
-      location: e.place_format_address,
-      description: `Place link is: ${e.place_url}`,
-      start: {
-        dateTime: new Date(e.start.seconds * 1000).toISOString(),
-      },
-      end: {
-        dateTime: new Date(e.end.seconds * 1000).toISOString(),
-      },
-      reminders: {
-        useDefault: false,
-        overrides: [
-          { method: 'email', minutes: 24 * 60 },
-          { method: 'popup', minutes: 30 },
-        ],
-      },
-    }));
+      const events = data.map((e) => ({
+        summary: e.title,
+        location: e.place_format_address,
+        description: `Place link is: ${e.place_url}`,
+        start: {
+          dateTime: new Date(e.start.seconds * 1000).toISOString(),
+        },
+        end: {
+          dateTime: new Date(e.end.seconds * 1000).toISOString(),
+        },
+        reminders: {
+          useDefault: false,
+          overrides: [
+            { method: 'email', minutes: 24 * 60 },
+            { method: 'popup', minutes: 30 },
+          ],
+        },
+      }));
 
-    setEventsToExport(events);
+      setEventsToExport(events);
+    }
+    prepareEventForGoogleCalendar();
   }, []);
 
   function handleExport() {
