@@ -138,55 +138,29 @@ function EditTimeBlock(props) {
     props.currentSelectTimeData.id
   );
 
-  useEffect(async () => {
-    if (props.currentSelectTimeData.status === 'imported') {
-      setImportBlockData(props.currentSelectTimeData);
-    } else if (props.currentSelectTimeData.status === 'origin') {
-      const originTimeBlockData = await firebaseService.retreiveFromDataBase(
-        timeBlockRef
-      );
-      setInitBlockData(originTimeBlockData);
-    } else console.log('something wrong with edit-time-block');
+  useEffect(() => {
+    async function setTimeBlockData() {
+      if (props.currentSelectTimeData.status === 'imported') {
+        setImportBlockData(props.currentSelectTimeData);
+      } else if (props.currentSelectTimeData.status === 'origin') {
+        const originTimeBlockData = await firebaseService.retreiveFromDataBase(
+          timeBlockRef
+        );
+        setInitBlockData(originTimeBlockData);
+      } else console.log('something wrong with edit-time-block');
+    }
+    setTimeBlockData();
   }, [props.currentSelectTimeData]);
 
-  useEffect(async () => {
-    const data = importBlockData;
+  useEffect(() => {
+    async function setImportTimeBlockData() {
+      const data = importBlockData;
 
-    if (data) {
-      setBlockTitle(data.title);
-      setLocationName(data.place_name);
-      setStartTimeValue(data.start);
-      setEndTimeValue(data.end);
-    }
-    console.log('expire', data.timeEdited);
-    if (data.timeEdited) {
-      const imgExpiration = await checkGoogleImgExpirationDate(
-        data,
-        timeBlockRef
-      );
-
-      setLocation(imgExpiration);
-    } else {
-      setLocation({
-        ...createLocationKeyPairs(data),
-      });
-    }
-  }, [importBlockData]);
-
-  useEffect(async () => {
-    const data = initBlockData;
-
-    if (initBlockData) {
-      setBlockTitle(data.title);
-      setLocationName(data.place_name);
-      setPlaceId(data.place_id);
-      setDescription(data.text);
-      setTimeBlockImage(data.timeblock_img);
-      if (data.start) {
-        setStartTimeValue(new Date(data.start.seconds * 1000));
-      }
-      if (data.end) {
-        setEndTimeValue(new Date(data.end.seconds * 1000));
+      if (data) {
+        setBlockTitle(data.title);
+        setLocationName(data.place_name);
+        setStartTimeValue(data.start);
+        setEndTimeValue(data.end);
       }
 
       if (data.timeEdited) {
@@ -194,6 +168,7 @@ function EditTimeBlock(props) {
           data,
           timeBlockRef
         );
+
         setLocation(imgExpiration);
       } else {
         setLocation({
@@ -201,6 +176,42 @@ function EditTimeBlock(props) {
         });
       }
     }
+    if (importBlockData) {
+      setImportTimeBlockData();
+    }
+  }, [importBlockData]);
+
+  useEffect(() => {
+    async function setInitialTimeblockData() {
+      const data = initBlockData;
+
+      if (initBlockData) {
+        setBlockTitle(data.title);
+        setLocationName(data.place_name);
+        setPlaceId(data.place_id);
+        setDescription(data.text);
+        setTimeBlockImage(data.timeblock_img);
+        if (data.start) {
+          setStartTimeValue(new Date(data.start.seconds * 1000));
+        }
+        if (data.end) {
+          setEndTimeValue(new Date(data.end.seconds * 1000));
+        }
+
+        if (data.timeEdited) {
+          const imgExpiration = await checkGoogleImgExpirationDate(
+            data,
+            timeBlockRef
+          );
+          setLocation(imgExpiration);
+        } else {
+          setLocation({
+            ...createLocationKeyPairs(data),
+          });
+        }
+      }
+    }
+    setInitialTimeblockData();
   }, [initBlockData]);
 
   return (

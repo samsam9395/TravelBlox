@@ -146,29 +146,32 @@ function EditPlanDetail() {
     }
   }, [planAuthor]);
 
-  useEffect(async () => {
-    const {
-      author,
-      country,
-      title,
-      main_image,
-      published,
-      start_date,
-      end_date,
-    } = await firebaseService.getEditDetailData(planDocRef);
+  useEffect(() => {
+    async function setInitialPlanInfo() {
+      const {
+        author,
+        country,
+        title,
+        main_image,
+        published,
+        start_date,
+        end_date,
+      } = await firebaseService.getEditDetailData(planDocRef);
 
-    setPlanAuthor(author);
-    setCountry(country);
-    setPlanTitle(title);
-    setMainImage(main_image);
-    setIsPublished(published);
-    setStartDateValue(new Date(start_date.seconds * 1000));
-    setEndDateValue(new Date(end_date.seconds * 1000));
+      setPlanAuthor(author);
+      setCountry(country);
+      setPlanTitle(title);
+      setMainImage(main_image);
+      setIsPublished(published);
+      setStartDateValue(new Date(start_date.seconds * 1000));
+      setEndDateValue(new Date(end_date.seconds * 1000));
 
-    setStartInitDateValue(new Date(start_date.seconds * 1000));
-    setEndInitDateValue(new Date(end_date.seconds * 1000));
+      setStartInitDateValue(new Date(start_date.seconds * 1000));
+      setEndInitDateValue(new Date(end_date.seconds * 1000));
 
-    firebaseService.listenToSnapShot(planDocRef, setMyEvents);
+      firebaseService.listenToSnapShot(planDocRef, setMyEvents);
+    }
+    setInitialPlanInfo();
   }, []);
 
   useEffect(() => {

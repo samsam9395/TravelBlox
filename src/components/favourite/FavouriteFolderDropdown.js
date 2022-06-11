@@ -111,15 +111,23 @@ function FavFolderDropdown({
   const [showSecondLayer, setShowSecondLayer] = useState(false);
   const [showImportBtn, setShowImportBtn] = useState(false);
 
-  useEffect(async () => {
-    const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
+  useEffect(() => {
+    async function getFavouriteFolderDropDownOption() {
+      const favFolderRef = collection(
+        db,
+        'userId',
+        currentUserId,
+        'fav_folders'
+      );
 
-    try {
-      const list = await getDocs(favFolderRef);
-      setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
-    } catch (error) {
-      console.log(error);
+      try {
+        const list = await getDocs(favFolderRef);
+        setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
+      } catch (error) {
+        console.log(error);
+      }
     }
+    getFavouriteFolderDropDownOption();
   }, []);
 
   async function importTimeBlock(selectedPlanId) {
@@ -136,6 +144,7 @@ function FavFolderDropdown({
     const docSnap = await getDocs(blocksListRef);
 
     const data = docSnap.docs.map((e) => e.data());
+
     const importEvents = data.map((e) => ({
       status: 'imported',
       start: new Date(startDateValue),
@@ -149,6 +158,7 @@ function FavFolderDropdown({
       place_url: e.place_url,
       place_types: e.place_types,
       place_img: e.place_img,
+      timeEdited: e.timeEdited,
     }));
     return importEvents; //for updating local event
   }
@@ -158,6 +168,7 @@ function FavFolderDropdown({
       const batch = writeBatch(db);
 
       importResult.forEach(async (timeblock) => {
+        console.log('timeblock', timeblock);
         const createRef = doc(
           collection(db, 'plans', planDocRef, 'time_blocks')
         );
@@ -168,7 +179,6 @@ function FavFolderDropdown({
           'time_blocks',
           createRef.id
         );
-
         batch.set(
           importActionRef,
           {
@@ -185,14 +195,15 @@ function FavFolderDropdown({
             place_url: timeblock.place_url,
             place_types: timeblock.place_types || '',
             status: 'imported',
+            timeEdited: timeblock.timeEdited,
           },
           { merge: true }
         );
       });
       try {
         await batch.commit();
-        if (setAddedTimeBlock) {
-          setAddedTimeBlock(true);
+        {
+          setAddedTimeBlock && setAddedTimeBlock(true);
         }
         Swal.fire('Successfully imported!');
         setShowFavContainer(false);

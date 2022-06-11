@@ -38,6 +38,8 @@ export function renameGoogleMaDataIntoFirebase(location, placeId) {
     place_types: location.types || '',
     place_lat: location.geometry.location.lat(),
     place_lng: location.geometry.location.lng(),
+    rating: location.rating,
+    place_types: location.types,
   };
 }
 
@@ -67,7 +69,6 @@ export async function signInProvider(e, providerPlatform) {
       getAdditionalUserInfo(result).isNewUser === true &&
       providerPlatform === 'google'
     ) {
-      console.log('is new google user', result.user);
       firebaseService.addNewUserToDataBase(result.user, 'google');
     }
 
@@ -144,7 +145,7 @@ export function createLocationKeyPairs(data, renewGoolgeImg) {
       formatted_phone_number: data.place_formatted_phone_number || '',
       international_phone_number: data.place_international_phone_number || '',
       url: data.place_url,
-      place_types: data.types || '',
+      place_types: data.types || data.place_types || '',
       mainImg: data.place_img || '',
       rating: data.rating || '',
       place_id: data.place_id,

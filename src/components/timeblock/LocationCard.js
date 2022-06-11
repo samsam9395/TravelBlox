@@ -112,11 +112,12 @@ export default function LocationCard(props) {
       setMainImg(location.photos[0].getUrl());
     } else if (location.place_img) {
       setMainImg(location.place_img);
-      setLocationTypes(location.place_types);
     }
 
-    if (location) {
+    if (location.types) {
       setLocationTypes(location.types);
+    } else if (location.place_types) {
+      setLocationTypes(location.place_types);
     }
   }, [location]);
 

@@ -131,17 +131,12 @@ function FavouriteFolderBar({ currentUserId }) {
     }
   }, [inputRef.current]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (currentUserId) {
-      const favFolderRef = collection(
-        db,
-        'userId',
+      firebaseService.getUserFavouriteFolderNames(
         currentUserId,
-        'fav_folders'
+        setFavFolderNames
       );
-      onSnapshot(favFolderRef, (doc) => {
-        setFavFolderNames(doc.docs.map((e) => e.data().folder_name));
-      });
     }
   }, [currentUserId]);
 

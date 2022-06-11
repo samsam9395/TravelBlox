@@ -1,12 +1,9 @@
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-import firebaseDB from '../../utils/firebaseConfig';
+import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const db = firebaseDB();
 
 const SinglePlanContainer = styled.div`
   width: 450px;
@@ -116,18 +113,13 @@ function OwnPlanCard(props) {
     navigate(`/static-plan-detail/${planId}`);
   };
 
-  useEffect(async () => {
-    const docSnap = await getDoc(doc(db, 'plans', planId));
-
-    setDocData(docSnap.data());
+  useEffect(() => {
+    firebaseService.getPlanId(planId).then((id) => setDocData(id));
   }, [planId]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (doImport) {
-      const ref = collection(db, 'plans', planId, 'time_blocks');
-      const importTimeBlocks = await getDocs(ref);
-
-      importTimeBlocks.forEach((doc) => {
+      firebaseService.getImportBlocks().forEach((doc) => {
         return doc.data();
       });
     }

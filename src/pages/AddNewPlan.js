@@ -140,14 +140,17 @@ function AddNewPlan() {
     }
   }, [addedTimeBlock]);
 
-  useEffect(async () => {
-    if (userInfo.userEmail) {
-      const usernamePromise = await firebaseService.getUserName(
-        userInfo.userEmail
-      );
-      setUsername(usernamePromise);
+  useEffect(() => {
+    async function getUserName() {
+      if (userInfo.userEmail) {
+        const usernamePromise = await firebaseService.getUserName(
+          userInfo.userEmail
+        );
+        setUsername(usernamePromise);
+      }
     }
-  }, [userInfo.userEmail]);
+    getUserName();
+  }, [userInfo]);
 
   return (
     <Wrapper>
@@ -284,6 +287,8 @@ function AddNewPlan() {
                   planDocRef={planDocRef}
                   startDateValue={startDateValue}
                   currentUserId={userInfo.userEmail}
+                  setAddedTimeBlock={setAddedTimeBlock}
+                  setShowFavContainer={setShowFavContainer}
                 />
               )}
 

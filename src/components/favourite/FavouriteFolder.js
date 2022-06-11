@@ -1,13 +1,10 @@
-import { collection, getDocs, query, where } from 'firebase/firestore';
 import { fonts, themeColours } from '../../styles/globalTheme';
 import { useEffect, useState } from 'react';
 
 import OwnPlanCard from '../dashboard/OwnPlanCard';
 import PropTypes from 'prop-types';
-import firebaseDB from '../../utils/firebaseConfig';
+import firebaseService from '../../utils/fireabaseService';
 import styled from 'styled-components';
-
-const db = firebaseDB();
 
 const EmptyNotification = styled.div`
   font-family: ${fonts.main_font}, sans-serif;
@@ -60,18 +57,18 @@ export default function FavouriteFolder({ selectedFolder, currentUserId }) {
   const [favPlansList, setFavlansList] = useState(null);
   const [isEmptyFolder, setIsEmptyFolder] = useState(false);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (currentUserId) {
-      const favRef = collection(db, 'userId', currentUserId, 'fav_plans');
-      const planQuery = query(favRef, where('infolder', '==', selectedFolder));
-      const favPlansIdList = await getDocs(planQuery);
-
-      if (favPlansIdList.docs.length === 0 && selectedFolder !== null) {
-        setIsEmptyFolder(true);
-      } else {
-        setIsEmptyFolder(false);
-        setFavlansList(favPlansIdList.docs.map((e) => e.data()));
-      }
+      firebaseService
+        .getUserFavouritePlanIdList(currentUserId, selectedFolder)
+        .then((favPlansIdList) => {
+          if (favPlansIdList.docs.length === 0 && selectedFolder !== null) {
+            setIsEmptyFolder(true);
+          } else {
+            setIsEmptyFolder(false);
+            setFavlansList(favPlansIdList.docs.map((e) => e.data()));
+          }
+        });
     }
   }, [selectedFolder]);
 

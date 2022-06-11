@@ -229,10 +229,10 @@ function Weather({ lat, lng }) {
     }
   }
 
-  useEffect(async () => {
-    const data = await getWeather(lat, lng);
-
-    setWeatherData(data.data);
+  useEffect(() => {
+    getWeather(lat, lng).then((data) => {
+      setWeatherData(data.data);
+    });
   }, []);
 
   return weatherData ? (

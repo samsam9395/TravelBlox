@@ -57,10 +57,13 @@ function Allplans(props) {
     }
   }, [userInfo]);
 
-  useEffect(async () => {
-    const publishedPlans = await firebaseService.getPublishedPlans();
-    setAllPlansList(publishedPlans);
-    setDisplayPlans(publishedPlans);
+  useEffect(() => {
+    async function getAllPlansList() {
+      const publishedPlans = await firebaseService.getPublishedPlans();
+      setAllPlansList(publishedPlans);
+      setDisplayPlans(publishedPlans);
+    }
+    getAllPlansList();
   }, []);
 
   useEffect(() => {

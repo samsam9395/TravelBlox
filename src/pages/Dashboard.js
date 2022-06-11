@@ -333,26 +333,31 @@ function Dashboard() {
     }
   }, [userName]);
 
-  useEffect(async () => {
-    if (!userInfo) {
-      Swal.fire('Please login first!');
-      navigate('/');
-    } else {
-      const ownPlanList = await firebaseService.getOwnPlans(userInfo.userEmail);
-      if (ownPlanList) {
-        setShowNoPlansText(false);
-        setOwnPlansIdList(ownPlanList);
+  useEffect(() => {
+    async function getUserInfoAndOwnPlanIds() {
+      if (!userInfo) {
+        Swal.fire('Please login first!');
+        navigate('/');
       } else {
-        setShowNoPlansText(true);
-      }
+        const ownPlanList = await firebaseService.getOwnPlans(
+          userInfo.userEmail
+        );
+        if (ownPlanList) {
+          setShowNoPlansText(false);
+          setOwnPlansIdList(ownPlanList);
+        } else {
+          setShowNoPlansText(true);
+        }
 
-      const userBasicInfo = await firebaseService.getUserBasicInfo(
-        userInfo.userEmail
-      );
-      console.log(userBasicInfo);
-      setUserImage(userBasicInfo.userImage);
-      setUserName(userBasicInfo.username);
+        const userBasicInfo = await firebaseService.getUserBasicInfo(
+          userInfo.userEmail
+        );
+
+        setUserImage(userBasicInfo.userImage);
+        setUserName(userBasicInfo.username);
+      }
     }
+    getUserInfoAndOwnPlanIds();
   }, []);
 
   return (
