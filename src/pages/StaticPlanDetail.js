@@ -429,7 +429,7 @@ function StaticPlanDetail() {
     setIsKorea(country.label === 'South Korea');
   }, [country.label]);
 
-  useEffect(async () => {
+  async function getUserFavouriteFolders(userInfo) {
     if (userInfo) {
       const favFolderRef = collection(
         db,
@@ -447,9 +447,13 @@ function StaticPlanDetail() {
         console.log(error);
       }
     }
+  }
+
+  useEffect(() => {
+    getUserFavouriteFolders(userInfo);
   }, [userInfo]);
 
-  useEffect(async () => {
+  async function setStaticPlanBasicInfo() {
     const docSnap = await getDoc(planCollectionRef);
     const data = docSnap.data();
 
@@ -459,9 +463,13 @@ function StaticPlanDetail() {
     setStartDate(data.start_date);
     setEndDate(data.end_date);
     setAuthor(data.author);
+  }
+
+  useEffect(() => {
+    setStaticPlanBasicInfo();
   }, []);
 
-  useEffect(async () => {
+  async function getAuthorInfo(author) {
     if (author) {
       try {
         const userDoc = await getDoc(doc(db, 'userId', author));
@@ -471,6 +479,9 @@ function StaticPlanDetail() {
         console.log(error);
       }
     }
+  }
+  useEffect(() => {
+    getAuthorInfo(author);
   }, [author]);
 
   useEffect(() => {

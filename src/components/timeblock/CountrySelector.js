@@ -16,25 +16,26 @@ export default function CountrySelector(props) {
   const [countryList, setCountryList] = useState([{ label: '' }]);
   const [displayValue, setDisplayValue] = useState({});
 
+  async function getCountryList() {
+    const list = await (
+      await fetch('https://restcountries.com/v3.1/all')
+    ).json();
+
+    const countries = list.map((e) => {
+      return {
+        label: e.name.common,
+        region: e.region,
+        subregion: e.subregion,
+        trans_mando: e.translations.zho || '',
+        map: e.maps.googleMaps,
+        flags: e.flags.svg,
+      };
+    });
+
+    setCountryList(countries);
+  }
+
   useEffect(() => {
-    async function getCountryList() {
-      const list = await (
-        await fetch('https://restcountries.com/v3.1/all')
-      ).json();
-
-      const countries = list.map((e) => {
-        return {
-          label: e.name.common,
-          region: e.region,
-          subregion: e.subregion,
-          trans_mando: e.translations.zho || '',
-          map: e.maps.googleMaps,
-          flags: e.flags.svg,
-        };
-      });
-
-      setCountryList(countries);
-    }
     getCountryList();
   }, []);
 

@@ -28,6 +28,7 @@ import firebaseService from '../utils/fireabaseService';
 import styled from 'styled-components';
 import { uploadImagePromise } from '../utils/functionList';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Wrapper = styled.div`
   padding: 100px 50px;
@@ -112,6 +113,7 @@ AddNewPlan.propTypes = {
 };
 
 function AddNewPlan() {
+  const { createdPlanId } = useParams();
   const [username, setUsername] = useState('');
   const [planTitle, setPlanTitle] = useState('');
   const [country, setCountry] = useState('');
@@ -134,6 +136,15 @@ function AddNewPlan() {
 
   const userInfo = useContext(UserContext);
 
+  async function getUserName() {
+    if (userInfo) {
+      const usernamePromise = await firebaseService.getUserName(
+        userInfo.userEmail
+      );
+      setUsername(usernamePromise);
+    }
+  }
+
   useEffect(() => {
     if (addedTimeBlock) {
       firebaseService.listenToSnapShot(planDocRef, setMyEvents);
@@ -141,14 +152,18 @@ function AddNewPlan() {
   }, [addedTimeBlock]);
 
   useEffect(() => {
-    async function getUserName() {
-      if (userInfo.userEmail) {
-        const usernamePromise = await firebaseService.getUserName(
-          userInfo.userEmail
-        );
-        setUsername(usernamePromise);
-      }
+    if (hasCreatedCollection && planDocRef) {
+      navigate(`/new-plan/${planDocRef}`);
     }
+  }, [hasCreatedCollection, planDocRef]);
+
+  useEffect(() => {
+    if (createdPlanId) {
+      navigate(`/edit-plan-detail/${createdPlanId}`);
+    }
+  }, []);
+
+  useEffect(() => {
     getUserName();
   }, [userInfo]);
 

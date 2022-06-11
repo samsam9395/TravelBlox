@@ -67,6 +67,10 @@ function App() {
             element={<AddNewPlan defaultImg={defaultImg} />}
           />
           <Route
+            path="/new-plan/:createdPlanId"
+            element={<AddNewPlan defaultImg={defaultImg} />}
+          />
+          <Route
             path="/static-plan-detail/:planDocRef"
             element={<StaticPlanDetail />}
           />

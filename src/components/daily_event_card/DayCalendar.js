@@ -52,35 +52,29 @@ DayCalendar.propTypes = {
 
 export default function DayCalendar({ planDocRef, currentDayDate }) {
   const [allPlansList, setAllPlansList] = useState([]);
-
-  useEffect(() => {
-    async function fetchDayCalendarTimeBlock() {
-      if (planDocRef) {
-        const blocksListRef = collection(
-          db,
-          'plans',
-          planDocRef,
-          'time_blocks'
-        );
-        const allTimeBlocks = await getDocs(blocksListRef);
-        allTimeBlocks.docs.forEach((e) => {
-          const block = e.data();
-          setAllPlansList((prev) => [
-            ...prev,
-            {
-              start: new Date(block.start.seconds * 1000),
-              end: new Date(block.end.seconds * 1000),
-              title: block.title,
-              id: block.id,
-              address: block.address,
-              text: block.text,
-              place_name: block.place_name,
-              place_url: block.place_url,
-            },
-          ]);
-        });
-      }
+  async function fetchDayCalendarTimeBlock() {
+    if (planDocRef) {
+      const blocksListRef = collection(db, 'plans', planDocRef, 'time_blocks');
+      const allTimeBlocks = await getDocs(blocksListRef);
+      allTimeBlocks.docs.forEach((e) => {
+        const block = e.data();
+        setAllPlansList((prev) => [
+          ...prev,
+          {
+            start: new Date(block.start.seconds * 1000),
+            end: new Date(block.end.seconds * 1000),
+            title: block.title,
+            id: block.id,
+            address: block.address,
+            text: block.text,
+            place_name: block.place_name,
+            place_url: block.place_url,
+          },
+        ]);
+      });
     }
+  }
+  useEffect(() => {
     fetchDayCalendarTimeBlock();
   }, []);
 

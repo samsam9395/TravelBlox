@@ -111,24 +111,16 @@ function FavFolderDropdown({
   const [showSecondLayer, setShowSecondLayer] = useState(false);
   const [showImportBtn, setShowImportBtn] = useState(false);
 
-  useEffect(() => {
-    async function getFavouriteFolderDropDownOption() {
-      const favFolderRef = collection(
-        db,
-        'userId',
-        currentUserId,
-        'fav_folders'
-      );
+  async function getFavouriteFolderDropDownOption() {
+    const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
 
-      try {
-        const list = await getDocs(favFolderRef);
-        setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const list = await getDocs(favFolderRef);
+      setDropDownFavFolderOption(list.docs.map((e) => e.data().folder_name));
+    } catch (error) {
+      console.log(error);
     }
-    getFavouriteFolderDropDownOption();
-  }, []);
+  }
 
   async function importTimeBlock(selectedPlanId) {
     let importEndTime = new Date(startDateValue);
@@ -168,7 +160,6 @@ function FavFolderDropdown({
       const batch = writeBatch(db);
 
       importResult.forEach(async (timeblock) => {
-        console.log('timeblock', timeblock);
         const createRef = doc(
           collection(db, 'plans', planDocRef, 'time_blocks')
         );
@@ -214,6 +205,10 @@ function FavFolderDropdown({
   }
 
   const dropDownRef = useRef([]);
+
+  useEffect(() => {
+    getFavouriteFolderDropDownOption();
+  }, []);
 
   return (
     <Wrapper>

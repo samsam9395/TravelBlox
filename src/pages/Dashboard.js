@@ -313,7 +313,6 @@ const PlanTab = styled.div`
 `;
 
 function Dashboard() {
-  const [showAddPlanPopUp, setShowAddPlanPopup] = useState(false);
   const [userName, setUserName] = useState('');
   const [ownPlansIdList, setOwnPlansIdList] = useState([]);
   const [openEditPopUp, setOpenEditPopUp] = useState(false);
@@ -327,6 +326,36 @@ function Dashboard() {
 
   const userInfo = useContext(UserContext);
 
+  async function getUserInfoAndOwnPlanIds() {
+    if (!userInfo) {
+      Swal.fire('Please login first!');
+      navigate('/');
+    } else {
+      const ownPlanList = await firebaseService.getOwnPlans(userInfo.userEmail);
+      if (ownPlanList) {
+        setShowNoPlansText(false);
+        setOwnPlansIdList(ownPlanList);
+      } else {
+        setShowNoPlansText(true);
+      }
+
+      const userBasicInfo = await firebaseService.getUserBasicInfo(
+        userInfo.userEmail
+      );
+
+      setUserImage(userBasicInfo.userImage);
+      setUserName(userBasicInfo.username);
+    }
+  }
+  async function uploadUserAvatar(e) {
+    if (e.target.files[0].size > 1048487) {
+      Swal.fire('Oops, image too large. Please upload images under 1MB.');
+    } else {
+      const imageFile = await uploadImagePromise(e.target.files[0]);
+      setUserImage(imageFile);
+      firebaseService.saveImgToDataBase(imageFile, userInfo.userEmail);
+    }
+  }
   useEffect(() => {
     if (userName) {
       setLoadindOpacity(0);
@@ -334,31 +363,18 @@ function Dashboard() {
   }, [userName]);
 
   useEffect(() => {
-    async function getUserInfoAndOwnPlanIds() {
-      if (!userInfo) {
-        Swal.fire('Please login first!');
-        navigate('/');
-      } else {
-        const ownPlanList = await firebaseService.getOwnPlans(
-          userInfo.userEmail
-        );
-        if (ownPlanList) {
-          setShowNoPlansText(false);
-          setOwnPlansIdList(ownPlanList);
-        } else {
-          setShowNoPlansText(true);
-        }
-
-        const userBasicInfo = await firebaseService.getUserBasicInfo(
-          userInfo.userEmail
-        );
-
-        setUserImage(userBasicInfo.userImage);
-        setUserName(userBasicInfo.username);
-      }
-    }
     getUserInfoAndOwnPlanIds();
   }, []);
+
+  function signOut() {
+    const signout = firebaseService.signOutFirebase();
+    if (signout) {
+      Swal.fire('You were signed out!');
+      navigate('/');
+    } else {
+      Swal.fire('Oops, please try sign out again!');
+    }
+  }
 
   return (
     <ContentWrapper>
@@ -386,22 +402,7 @@ function Dashboard() {
                   accept="image/*"
                   id="user_avatar_file"
                   type="file"
-                  onChange={async (e) => {
-                    if (e.target.files[0].size > 1048487) {
-                      Swal.fire(
-                        'Oops, image too large. Please upload images under 1MB.'
-                      );
-                    } else {
-                      const imageFile = await uploadImagePromise(
-                        e.target.files[0]
-                      );
-                      setUserImage(imageFile);
-                      firebaseService.saveImgToDataBase(
-                        imageFile,
-                        userInfo.userEmail
-                      );
-                    }
-                  }}></input>
+                  onChange={(e) => uploadUserAvatar(e)}></input>
                 <IconButton
                   style={{
                     visibility: showUserUploadIcon,
@@ -420,16 +421,7 @@ function Dashboard() {
               <Greeting>Hello!</Greeting>
               <UserBasicInfo>{userName}</UserBasicInfo>
               <UserBasicInfo>{userInfo?.userEmail}</UserBasicInfo>
-              <LogoutContainer
-                onClick={() => {
-                  const signout = firebaseService.signOutFirebase();
-                  if (signout) {
-                    Swal.fire('You were signed out!');
-                    navigate('/');
-                  } else {
-                    Swal.fire('Oops, please try sign out again!');
-                  }
-                }}>
+              <LogoutContainer onClick={() => signOut()}>
                 <LogoutIcon></LogoutIcon> Logout
               </LogoutContainer>
             </UserInfoContainer>
@@ -442,7 +434,7 @@ function Dashboard() {
               fontWeight: 600,
             }}
             onClick={() => {
-              setShowAddPlanPopup(true);
+              navigate('/new-plan');
             }}>
             ADD NEW PLAN
           </LightOrangeBtn>
@@ -460,8 +452,6 @@ function Dashboard() {
             </PlanTab>
           </DisplaySwitch>
         </TopSectionWrapper>
-
-        {showAddPlanPopUp && navigate('/new-plan')}
 
         {displaySection === 'My Plans' && (
           <SectionContainer>

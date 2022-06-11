@@ -93,7 +93,6 @@ const firebaseService = {
     const favFolderRef = collection(db, 'userId', currentUserId, 'fav_folders');
 
     onSnapshot(favFolderRef, (doc) => {
-      console.log(doc.docs.map((e) => e.data().folder_name));
       const foldernames = doc.docs.map((e) => e.data().folder_name);
       setFavFolderNames(foldernames);
     });

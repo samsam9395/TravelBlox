@@ -132,6 +132,36 @@ function EditPlanDetail() {
   const currentUserId = useContext(UserContext)?.userEmail;
   const navigate = useNavigate();
 
+  async function setInitialPlanInfo() {
+    const {
+      author,
+      country,
+      title,
+      main_image,
+      published,
+      start_date,
+      end_date,
+    } = await firebaseService.getEditDetailData(planDocRef);
+
+    setPlanAuthor(author);
+    setCountry(country);
+    setPlanTitle(title);
+    setMainImage(main_image);
+    setIsPublished(published);
+    setStartDateValue(new Date(start_date.seconds * 1000));
+    setEndDateValue(new Date(end_date.seconds * 1000));
+
+    setStartInitDateValue(new Date(start_date.seconds * 1000));
+    setEndInitDateValue(new Date(end_date.seconds * 1000));
+
+    firebaseService.listenToSnapShot(planDocRef, setMyEvents);
+  }
+
+  async function uploadMainImage(e) {
+    const imageFile = await uploadImagePromise(e.target.files[0]);
+    setMainImage(imageFile);
+  }
+
   useEffect(() => {
     if (planAuthor) {
       if (currentUserId) {
@@ -147,30 +177,6 @@ function EditPlanDetail() {
   }, [planAuthor]);
 
   useEffect(() => {
-    async function setInitialPlanInfo() {
-      const {
-        author,
-        country,
-        title,
-        main_image,
-        published,
-        start_date,
-        end_date,
-      } = await firebaseService.getEditDetailData(planDocRef);
-
-      setPlanAuthor(author);
-      setCountry(country);
-      setPlanTitle(title);
-      setMainImage(main_image);
-      setIsPublished(published);
-      setStartDateValue(new Date(start_date.seconds * 1000));
-      setEndDateValue(new Date(end_date.seconds * 1000));
-
-      setStartInitDateValue(new Date(start_date.seconds * 1000));
-      setEndInitDateValue(new Date(end_date.seconds * 1000));
-
-      firebaseService.listenToSnapShot(planDocRef, setMyEvents);
-    }
     setInitialPlanInfo();
   }, []);
 
@@ -260,9 +266,8 @@ function EditPlanDetail() {
               accept="image/*"
               id="icon-button-file"
               type="file"
-              onChange={async (e) => {
-                const imageFile = await uploadImagePromise(e.target.files[0]);
-                setMainImage(imageFile);
+              onChange={(e) => {
+                uploadMainImage(e);
               }}
             />
             <Box textAlign="center">

@@ -51,6 +51,12 @@ function Allplans(props) {
   const userInfo = useContext(UserContext);
   const navigate = useNavigate();
 
+  async function getAllPlansList() {
+    const publishedPlans = await firebaseService.getPublishedPlans();
+    setAllPlansList(publishedPlans);
+    setDisplayPlans(publishedPlans);
+  }
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
@@ -58,11 +64,6 @@ function Allplans(props) {
   }, [userInfo]);
 
   useEffect(() => {
-    async function getAllPlansList() {
-      const publishedPlans = await firebaseService.getPublishedPlans();
-      setAllPlansList(publishedPlans);
-      setDisplayPlans(publishedPlans);
-    }
     getAllPlansList();
   }, []);
 
