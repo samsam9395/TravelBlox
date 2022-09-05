@@ -229,19 +229,19 @@ const PlanTitleText = styled.div`
   width: 55%;
   position: absolute;
   left: 2%;
-  top: 20%;
+  top: 30px;
   font-size: clamp(50px, 4vw, 55px);
   letter-spacing: 5px;
   color: ${themeColours.dark_blue};
   text-shadow: 2px 1px ${themeColours.pale};
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1200px) {
     top: -3%;
     width: 70%;
     font-size: clamp(42px, 2em, 55px);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 850px) {
     font-size: 2em;
     top: 5%;
     left: 0%;
